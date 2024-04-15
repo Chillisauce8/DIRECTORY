@@ -1,42 +1,28 @@
-import { defineNuxtConfig } from 'nuxt/config';
+// https://nuxt.com/docs/api/configuration/nuxt-config
 import environment from './environment';
 
-
-function prepareNitroRouteRules(): Record<string, any> {
-  const proxyConfig = Object.entries(environment?.devProxy ?? {})
-    .reduce((config, [suffix, target]) => {
-      const wildcardUrl = '**'
-      if (!suffix?.endsWith(wildcardUrl)) {
-        suffix = suffix.endsWith('/') ? suffix + wildcardUrl : suffix + '/' + wildcardUrl;
-      }
-
-      config[suffix] = {proxy: target + suffix};
-
-      return config;
-    }, {});
-
-  return {
-    ...(proxyConfig ?? {}),
-    ...(environment?.routeRules ?? {}),
-  };
-}
-
-
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: [
-      '@nuxt/ui-pro',
-  ],
+  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
   modules: [
     '@nuxt/ui',
-    '@pinia/nuxt',
-    'nuxt-delay-hydration',],
+    '@nuxt/fonts',
+    '@vueuse/nuxt',
+    'nuxt-delay-hydration'
+  ],
+  ui: {
+    icons: ['heroicons', 'simple-icons'],
+    safelistColors: ['primary', 'red', 'orange', 'green']
+  },
+  devtools: {
+    enabled: true
+  },
+  ssr: environment.ssr ?? true,
   ssr: environment.ssr ?? true,
   // css: [
   //   "@/assets/css/global.scss"
   // ],
   app: {
-  // Added below for page transitions   
+    // Added below for page transitions
     pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       htmlAttrs: {
@@ -136,23 +122,4 @@ export default defineNuxtConfig({
   plugins: [
     // {src: '~/plugins/clear-path-from-app-payload.ts', mode: 'server'},
   ],
-  components: [
-    {
-      path: '~/components', // will get any components nested in let's say /components/test too
-      pathPrefix: false,
-    },
-  ],
-  nitro: {
-    routeRules: prepareNitroRouteRules(),
-    preset: 'node-server'
-  },
-  hooks: {
-    // 'pages:extend': pages => pagesExtend(pages),
-  },
-  experimental: {
-    componentIslands: true
-  },
-  // router: {
-  //   prefetchLinks: false
-  // },
 })
