@@ -1,0 +1,399 @@
+.None {
+  display: none;
+}
+
+.Row,
+.Row-Column,
+.Column,
+.Column-Row,
+.Column-Row-Reverse,
+.Column-Reverse-Row-Reverse,
+.Wrap,
+.X-Center,
+.Y-Center,
+.Center {
+  display: flex;
+  &.Grow > * {
+    flex-grow: 1;
+  }
+}
+
+.Wrap {
+  flex-wrap: wrap;
+}
+
+.X-Center,
+.Y-Center,
+.Center {
+  flex-direction: column;
+}
+
+.X-Center,
+.Center {
+  align-items: center;
+}
+.Y-Center,
+.Center {
+  justify-content: center;
+}
+
+.Flex {
+  flex: 1;
+}
+
+// ROWS AND COLUMNS
+
+.Row {
+  flex-direction: row;
+}
+.Column {
+  flex-direction: column;
+}
+
+.Column {
+  &.Center {
+    justify-content: center;
+    align-items: center;
+  }
+  &.Top {
+    justify-content: flex-start;
+  }
+  &.Bottom {
+    justify-content: flex-end;
+  }
+  &.Y-Center {
+    justify-content: center;
+  }
+  &.Between {
+    justify-content: space-between;
+  }
+  &.Around {
+    justify-content: space-around;
+  }
+  &.Evenly {
+    justify-content: space-evenly;
+  }
+  &.Left {
+    align-items: flex-start;
+  }
+  &.Right {
+    align-items: flex-end;
+  }
+  &.X-Center {
+    align-items: center;
+  }
+  &.Stretch {
+    align-items: stretch;
+  }
+  &.Baseline {
+    align-items: stretch;
+  }
+}
+
+.Row {
+  &.Center {
+    justify-content: center;
+    align-items: center;
+  }
+  &.Left {
+    justify-content: flex-start;
+  }
+  &.Right {
+    justify-content: flex-end;
+  }
+  &.X-Center {
+    justify-content: center;
+  }
+  &.Between {
+    justify-content: space-between;
+  }
+  &.Around {
+    justify-content: space-around;
+  }
+  &.Evenly {
+    justify-content: space-evenly;
+  }
+  &.Top {
+    align-items: flex-start;
+  }
+  &.Bottom {
+    align-items: flex-end;
+  }
+  &.Y-Center {
+    align-items: center;
+  }
+  &.Stretch {
+    align-items: stretch;
+  }
+  &.Baseline {
+    align-items: stretch;
+  }
+}
+
+@include mobile() {
+  .Column-Reverse-Row,
+  .Column-Reverse-Row-Reverse {
+    flex-direction: column-Reverse;
+  }
+  .Column-Row,
+  .Column-Row-Reverse {
+    flex-direction: column;
+  }
+  .Column-Row,
+  .Column-Row-Reverse,
+  .Column-Reverse-Row,
+  .Column-Reverse-Row-Reverse {
+    align-items: center;
+    &.Center {
+      justify-content: center;
+      align-items: center;
+    }
+    &.Top {
+      justify-content: flex-start;
+    }
+    &.Bottom {
+      justify-content: flex-end;
+    }
+    &.Y-Center {
+      justify-content: center;
+    }
+    &.Between {
+      justify-content: space-between;
+    }
+    &.Around {
+      justify-content: space-around;
+    }
+    &.Evenly {
+      justify-content: space-evenly;
+    }
+    &.Left {
+      align-items: flex-start;
+    }
+    &.Right {
+      align-items: flex-end;
+    }
+    &.X-Center {
+      align-items: center;
+    }
+    &.Stretch {
+      align-items: stretch;
+    }
+    &.Baseline {
+      align-items: stretch;
+    }
+  }
+}
+
+@include desktop {
+  .Column-Row,
+  .Column-Reverse-Row {
+    flex-direction: row;
+  }
+  .Column-Row-Reverse,
+  .Column-Reverse-Row-Reverse {
+    flex-direction: row-Reverse;
+  }
+  .Column-Row,
+  .Column-Reverse-Row,
+  .Column-Row-Reverse,
+  .Column-Reverse-Row-Reverse {
+    justify-content: center;
+    &.Row-Center {
+      justify-content: center;
+      align-items: center;
+    }
+    &.Row-Left {
+      justify-content: flex-start;
+    }
+    &.Row-Right {
+      justify-content: flex-end;
+    }
+    &.Row-X-Center {
+      justify-content: center;
+    }
+    &.Row-Between {
+      justify-content: space-between;
+    }
+    &.Row-Around {
+      justify-content: space-around;
+    }
+    &.Row-Evenly {
+      justify-content: space-evenly;
+    }
+    &.Row-Top {
+      align-items: flex-start;
+    }
+    &.Row-Bottom {
+      align-items: flex-end;
+    }
+    &.Row-Y-Center {
+      align-items: center;
+    }
+    &.Row-Stretch {
+      align-items: stretch;
+    }
+    &.Row-Baseline {
+      align-items: stretch;
+    }
+  }
+}
+
+.space-around-start {
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.space-around-end {
+  justify-content: space-around;
+  align-items: flex-end;
+}
+.space-around-center {
+  justify-content: space-around;
+  align-items: center;
+}
+.space-around-baseline {
+  justify-content: space-around;
+  align-items: baseline;
+}
+.space-around-stretch {
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+.padding_ {
+  &0 {
+    padding: 0;
+  }
+  &-5 {
+    padding: 0.5rem;
+  }
+  &-5_0 {
+    padding: 0.5rem 0;
+  }
+  &0_-5 {
+    padding: 0 0.5rem;
+  }
+  &0_0_-5 {
+    padding: 0 0 0.5rem;
+  }
+  &-5_0_0 {
+    padding: 0.5rem 0 0;
+  }
+  &1 {
+    padding: 1rem;
+  }
+  &1_0 {
+    padding: 1rem 0;
+  }
+  &1_0_0 {
+    padding: 1rem 0 0;
+  }
+  &0_1 {
+    padding: 0 1rem;
+  }
+  &0_0_1 {
+    padding: 0 0 1rem;
+  }
+  &1-5 {
+    padding: 1.5rem;
+  }
+  &1-5_0 {
+    padding: 1.5rem 0;
+  }
+  &0_1-5 {
+    padding: 0 1.5rem;
+  }
+  &2_0_0 {
+    padding: 2rem 0 0;
+  }
+  &2 {
+    padding: 2rem;
+  }
+  &2_0 {
+    padding: 2rem 0;
+  }
+  &0_2 {
+    padding: 0 2rem;
+  }
+  &2-5_0 {
+    padding: 2.5rem 0;
+  }
+  &0_2-5 {
+    padding: 0 2.5rem;
+  }
+  &0-25_0_0 {
+    padding: 0 0.25rem 0 0;
+  }
+}
+
+/* MARGIN */
+.margin_ {
+  &auto {
+    margin: auto;
+  }
+  &0 {
+    margin: 0;
+  }
+  &-5_0 {
+    margin: 0.5rem 0;
+  }
+  &0_-5 {
+    margin: 0 0.5rem;
+  }
+  &0_-5_0_0 {
+    margin: 0 0.5rem 0 0;
+  }
+  &-5_0_0 {
+    margin: 0.5rem 0 0;
+  }
+  &0_0_-5 {
+    margin: 0 0 0.5rem;
+  }
+  &1_0 {
+    margin: 1rem 0;
+  }
+  &1_0_0 {
+    margin: 1rem 0 0;
+  }
+  &0_0_1 {
+    margin: 0 0 1rem;
+  }
+  &2_0 {
+    margin: 2rem 0;
+  }
+  &2_0_0 {
+    margin: 2rem 0 0;
+  }
+  &5p {
+    margin: 5%;
+  }
+  &0_30px {
+    margin: 0 30px;
+  }
+}
+
+.None {
+  display: none;
+}
+
+// Creates .show classes
+$bp-from: 4;
+$bp-to: 21; // needs to be 1 more than what we want
+$bp-inc: 100; // Breakpoint increments (IE 100px)
+
+@for $i from $bp-from to $bp-to {
+  $x: $i * $bp-inc;
+  .show-#{$x} {
+    @media (max-width: $x + px) {
+      display: none;
+    }
+  }
+}
+
+@for $i from $bp-from to $bp-to {
+  $x: $i * $bp-inc;
+  .hide-#{$x} {
+    @media (min-width: $x + px) {
+      display: none;
+    }
+  }
+}

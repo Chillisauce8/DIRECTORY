@@ -1,0 +1,27 @@
+@charset "UTF-8";
+:root {
+  --global-file: blue;
+}
+
+@import 'transitions';
+@import 'default';
+@import 'helpers';
+@import 'layout';
+@import 'body';
+// @import 'common';
+
+@import 'font-family';
+
+
+@import "button-wrapper";
+@import "user-form";
+@import "dialogs";
+@import "tooltip";
+@import "toasted";
+@import "text-color";
+@import "form-components";
+@import "context-menu";
+@import "headers";
+@import "spit-box";
+@import "location-section-card";
+@import "cards";

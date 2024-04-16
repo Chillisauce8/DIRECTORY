@@ -1,0 +1,102 @@
+
+$body-classes: section-stag,
+section-hen,
+section-groups,
+section-events,
+section-none,
+user-staff,
+user-supplier,
+user-customer,
+user-none, 
+page-home, 
+page-section-home, 
+page-locations, 
+page-location, 
+page-activities, 
+page-activity, 
+page-location-activity,
+page-product,  
+page-blog, 
+page-post, 
+page-about,
+area-main,  
+area-my-events, 
+area-supplier,
+function-edit-package,
+function-view-product,
+page-preview-product,
+function-swap-product,
+function-new-package,
+function-view-event,
+page-preview-post,
+view-as-customer,
+customer-organiser, 
+customer-guest, 
+status-enquiry,
+status-pending-booking,
+status-booked,
+status-cancelled,
+status-postponed,
+status-refund-credit-note,
+attending-yes,
+attending-no,
+basket-not-viewed,
+basket-viewed,
+basket-empty,
+basket-full,
+basket-saved,
+basket-not-saved,
+package-location-true, 
+package-location-false, 
+package-date-true, 
+package-date-false,
+package-products-true,
+package-products-false, 
+event-products-true,
+event-products-false,  
+event-location-true, 
+event-location-false,
+event-manager-true,
+event-manager-false,
+
+enquiry-button-clicked,
+package-save-button-clicked;
+
+@each $class in $body-classes {
+
+    body.#{$class} .#{$class}-hidden{
+        visibility:hidden;
+    }
+    body.#{$class} .#{$class}-none{
+        display:none;
+    }
+    .#{$class}-show, .#{$class}-show-flex{
+        display: none;
+    }
+    body.#{$class} .#{$class}-show{
+        display: initial;
+        visibility: initial;
+    }
+    body.#{$class} .#{$class}-show-flex{
+        display: flex;
+    }
+    .#{$class}-visible{
+        visibility: hidden;
+    }
+    body.#{$class} .#{$class}-visible{
+        visibility: visible;
+    }
+}
+
+body{
+    &.area-main{
+        .price, .price-per, .hidevenue{
+        display: none;
+        }
+    }
+    &.area-main.user-staff{
+          .price, .price-per, .hidevenue{
+        display: initial;
+        }
+    }
+}

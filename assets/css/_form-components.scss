@@ -1,0 +1,82 @@
+.cs-error {
+}
+
+.cs-form-text-error {
+  @include fc-cs-form-text-error-default;
+}
+
+
+/* Datepicker */
+@import '@vuepic/vue-datepicker/dist/main.css';
+
+.dp__ {
+  &theme_light {
+    --dp-font-size: #{$fc-font-size};
+    --dp-border-color-hover: #{$fc-border-color};
+    --dp-border-radius: 0px;
+    --dp-input-icon-padding: 20px;
+    --dp-input-padding: 0px 10px 0px 0px;
+  }
+
+  &disabled {
+    @include fc-input-disabled;
+  }
+
+  &input {
+    @include fc-input;
+
+    &_icon {
+      padding: 6px 0;
+    }
+  }
+}
+
+
+/* Multiselect */
+@import "@vueform/multiselect/themes/default.css";
+
+.multiselect {
+  --ms-font-size: #{$fc-font-size};
+  --ms-option-font-size: #{$fc-font-size};
+  --ms-tag-font-size: #{$fc-font-size};
+  --ms-line-height: #{$fc-font-line-height};
+  --ms-tag-line-height: #{$fc-font-line-height};
+  --ms-group-label-line-height: #{$fc-font-line-height};
+  --ms-option-line-height: #{$fc-font-line-height};
+  --ms-spinner-color: #{$fc-background-color-highlight};
+  --ms-border-width: 0px;
+  --ms-px: 0px;
+  --ms-py: 0px;
+  --ms-tag-mx: 0px;
+  --ms-tag-my: 0px;
+
+  @include fc-input;
+
+  &.is-disabled {
+    @include fc-input-disabled;
+  }
+
+  &.is-active {
+    box-shadow: none !important;
+    @include fc-input;
+  }
+
+  &-search {
+    @include fc-input;
+  }
+
+  &-tag {
+    background-color: $fc-background-color-highlight;
+  }
+
+  &-option {
+    &.is-selected {
+      background-color: $fc-background-color-highlight;
+    }
+  }
+}
+
+
+.text-align_center {
+  text-align: center;
+}
