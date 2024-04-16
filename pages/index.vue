@@ -19,6 +19,7 @@ const period = ref<Period>('daily')
 </script>
 
 <template>
+  <TopNavWrapper />
   <UDashboardPage>
     <UDashboardPanel grow>
       <UDashboardNavbar title="Beautiful & Raucous">

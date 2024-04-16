@@ -17,10 +17,10 @@ export default defineNuxtConfig({
     enabled: true
   },
   ssr: environment.ssr ?? true,
-  ssr: environment.ssr ?? true,
-  // css: [
-  //   "@/assets/css/global.scss"
-  // ],
+
+ css: [
+   "@/assets/css/global.scss"
+ ],
   app: {
     // Added below for page transitions
     pageTransition: { name: 'page', mode: 'out-in' },
