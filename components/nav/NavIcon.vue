@@ -2,21 +2,21 @@
   <div class="nav-icon">
     <div v-if="alert" class="alert">{{ alert }}</div>
     <nuxt-link v-if="link" :to="link" class="nav-link column Center">
-      <LazySvgIcon :svg="svg" />
+      <SvgIcon :svg="svg" />
       <div class="link-text">{{ title }}</div>
     </nuxt-link>
     <template v-else>
       <template v-if="phone">
         <a :href="'tel:' + phone">
           <div class="column Center">
-            <LazySvgIcon :svg="svg" />
+            <SvgIcon :svg="svg" />
           </div>
           {{ phone }}
         </a>
       </template>
       <template v-else>
         <div class="column Center">
-          <LazySvgIcon :svg="svg" />
+          <SvgIcon :svg="svg" />
         </div>
         <p class="link-text">{{ title }}</p>
       </template>
