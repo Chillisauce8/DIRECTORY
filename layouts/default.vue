@@ -86,17 +86,13 @@ const colors = computed(() => defaultColors.value.map(color => ({ ...color, acti
 
 <template>
 <TopNav />
-<div>Layout Here</div>
+<div class="main-page">
+
+</div>
 
 
-<UAccordion
-    color="primary"
-    variant="soft"
-    size="sm"
-    :items="[{ label: '1. What is Nuxt UI?', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '2. Getting Started', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '3. Theming', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '4. Components', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }]"
-  />
     <slot />
 
-
+<MainFooter/>
 
 </template>

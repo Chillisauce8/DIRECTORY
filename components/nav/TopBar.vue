@@ -43,7 +43,6 @@
 <style lang="scss">
 .top-bar{
   width: 100%;
-
 }
 
 </style>

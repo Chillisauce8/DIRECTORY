@@ -17,6 +17,7 @@ export default {
   z-index: 1;
   position: fixed;
   height: 64px;
+
   @include frosted-glass();
   @include shadow-soft();
 }

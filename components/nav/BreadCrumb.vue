@@ -15,12 +15,9 @@
     cursor: not-allowed;
     pointer-events: none;
   }
-
-
   font-size: 10px;
   padding: 10px 10px 10px 5%;
   font-weight: 400;
-
   font-family: $ff2;
   text-transform: uppercase;
   letter-spacing: 2px;
