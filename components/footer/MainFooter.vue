@@ -68,8 +68,6 @@
 export default {
 
   data() {
-    const currentSection = this.currentSection.getSafe();
-
     return {
       sectionStoreSubscription: undefined,
       footerLinks: [],
@@ -109,8 +107,6 @@ export default {
   },
   methods: {
     initFooterLinks() {
-      const currentSection = this.currentSection.getSafe();
-
       this.footerLinks = [
         {
           title: 'Departments',
@@ -133,15 +129,15 @@ export default {
             },
             {
               title: 'Destinations',
-              link: `/${currentSection}/locations`,
+              link: `/locations`,
             },
             {
               title: 'Activities',
-              link: `/${currentSection}/activities`,
+              link: `/activities`,
             },
             {
               title: 'Blog',
-              link: `/${currentSection}/blog`,
+              link: `/blog`,
             }
           ],
         },
@@ -210,16 +206,6 @@ export default {
           ],
         },
       ];
-    },
-
-    subscribeOnSectionStoreChanges() {
-      this.sectionStoreSubscription = this.sectionStore.$onAction(({name, after}) => {
-        if (!['set'].includes(name)) {
-          return;
-        }
-
-        after(() => this.initFooterLinks());
-      });
     },
   },
 }

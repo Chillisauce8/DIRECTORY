@@ -10,7 +10,7 @@
       :height="400"
     />
     <list-wrapper class="slider thumbnails" v-if="media.length > 1">
-  
+
         <ImageWrapper v-for="(item, index) in media" :key="item.id"
           :id="item.id"
           class="thumbnail"
@@ -28,13 +28,13 @@
 <script>
 
 
-import {usePageDataLoadedStore} from "~/store/pageDataLoaded";
+// import {usePageDataLoadedStore} from "~/store/pageDataLoaded";
 
 export default {
   props: ['id', 'mediaData', 'loading'],
   setup() {
     return {
-      pageDataLoadedStore: usePageDataLoadedStore(),
+      // pageDataLoadedStore: usePageDataLoadedStore(),
     }
   },
   data() {
@@ -60,7 +60,7 @@ export default {
     },
   },
   beforeMount() {
-    this.pageDataLoadedStore.set();
+    // this.pageDataLoadedStore.set();
   }
 }
 </script>

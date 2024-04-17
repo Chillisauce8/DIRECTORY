@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import {useImageWrapperRandomisationStore} from '~/store/imageWrapperRandomisationTransfer';
+// import {useImageWrapperRandomisationStore} from '~/store/imageWrapperRandomisationTransfer';
 
 export default {
   props: {
@@ -93,7 +93,7 @@ export default {
   },
   setup() {
     return {
-      imageWrapperRandomisationStore: useImageWrapperRandomisationStore(),
+      // imageWrapperRandomisationStore: useImageWrapperRandomisationStore(),
       instance: getCurrentInstance(),
     };
   },
@@ -157,34 +157,21 @@ export default {
           this.imageArray = this.images;
         }
 
-        if (this.random) {
-          const arrayFromStore = this.imageWrapperRandomisationStore.getImagesList(this.getContentForRandomisationStore());
-
-          if (arrayFromStore) {
-            this.imageArray = arrayFromStore;
-            this.amount = arrayFromStore.length;
-          } else {
-            this.imageArray = this.shuffle(this.imageArray);
-
-            this.amount = this.randomNumber(this.min, this.max);
-            this.imageArray.splice(this.amount);
-
-            this.imageWrapperRandomisationStore.setImagesList(this.getContentForRandomisationStore(), this.imageArray);
-          }
-
-          // if (this.preloadRandom && process.server) {
-          //   const links = this.imageArray.map(image => {
-          //     return {
-          //       rel: 'preload',
-          //       as: 'image',
-          //       href: image.src,
-          //     };
-          //   });
-          //   useHead({
-          //     link: links
-          //   });
-          // }
-        }
+        // if (this.random) {
+        //   const arrayFromStore = this.imageWrapperRandomisationStore.getImagesList(this.getContentForRandomisationStore());
+        //
+        //   if (arrayFromStore) {
+        //     this.imageArray = arrayFromStore;
+        //     this.amount = arrayFromStore.length;
+        //   } else {
+        //     this.imageArray = this.shuffle(this.imageArray);
+        //
+        //     this.amount = this.randomNumber(this.min, this.max);
+        //     this.imageArray.splice(this.amount);
+        //
+        //     this.imageWrapperRandomisationStore.setImagesList(this.getContentForRandomisationStore(), this.imageArray);
+        //   }
+        // }
       } else if (this.src) {
         this.imageArray.push({ src: this.src, alt: this.alt ?? 'image' });
       } else if (this.cloudinaryId) {
@@ -194,10 +181,10 @@ export default {
         });
       }
 
-      if (this.tint) {
-        this.tintClass = "tint-" + this.imageWrapperRandomisationStore
-          .getOrGenerateTintIndex(this.getContentForRandomisationStore());
-      }
+      // if (this.tint) {
+      //   this.tintClass = "tint-" + this.imageWrapperRandomisationStore
+      //     .getOrGenerateTintIndex(this.getContentForRandomisationStore());
+      // }
     },
     getContentForRandomisationStore() {
       return {
@@ -262,7 +249,7 @@ $image-border: 5px;
   }
   &.random-tint .tint-3 {
     background-image: radial-gradient(circle, rgba(4,171,191,.7) 0%, rgba(0,74,83,.8) 100%);
-    
+
   }
   &.random-tint .tint-4 {
     background-image: linear-gradient(

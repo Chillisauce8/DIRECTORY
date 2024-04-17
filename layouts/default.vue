@@ -85,14 +85,11 @@ const colors = computed(() => defaultColors.value.map(color => ({ ...color, acti
 </script>
 
 <template>
-<TopNav />
-<div class="main-page">
+  <TopNav />
+  <div class="main-page">
+  </div>
 
-</div>
+  <slot />
 
-
-    <slot />
-
-<MainFooter/>
-
+  <MainFooter/>
 </template>
