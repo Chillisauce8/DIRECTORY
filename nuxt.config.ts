@@ -122,4 +122,10 @@ export default defineNuxtConfig({
   plugins: [
     // {src: '~/plugins/clear-path-from-app-payload.ts', mode: 'server'},
   ],
+  components: [
+    {
+      path: '~/components', // will get any components nested in let's say /components/test too
+      pathPrefix: false,
+    },
+  ],
 })
