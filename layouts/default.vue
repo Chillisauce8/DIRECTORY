@@ -86,8 +86,8 @@ const colors = computed(() => defaultColors.value.map(color => ({ ...color, acti
 
 <template>
 <TopNav />
-<div>hello</div>
-<div>hello 2</div>
+<div>Layout Here</div>
+
 
 <UAccordion
     color="primary"
