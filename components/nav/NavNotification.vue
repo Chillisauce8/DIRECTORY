@@ -10,7 +10,6 @@ export default {}
 
 <style lang="scss">
 .nav-notification {
-
   background-color: $C2;
   color: white;
   text-transform: uppercase;

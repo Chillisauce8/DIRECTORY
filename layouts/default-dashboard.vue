@@ -85,13 +85,47 @@ const colors = computed(() => defaultColors.value.map(color => ({ ...color, acti
 </script>
 
 <template>
-<TopNav />
-<div>hello</div>
-<div>hello 2</div>
+  <UDashboardLayout>
+    <UDashboardPanel :width="250" :resizable="{ min: 200, max: 300 }" collapsible>
+      <UDashboardNavbar class="!border-transparent" :ui="{ left: 'flex-1' }">
+        <template #left>
+          <TeamsDropdown />
+        </template>
+      </UDashboardNavbar>
 
+      <UDashboardSidebar>
+        <template #header>
+          <UDashboardSearchButton />
+        </template>
+
+        <UDashboardSidebarLinks :links="links" />
+
+        <UDivider />
+
+        <UDashboardSidebarLinks :links="[{ label: 'Colors', draggable: true, children: colors }]" @update:links="colors => defaultColors = colors" />
+
+        <div class="flex-1" />
+
+        <UDashboardSidebarLinks :links="footerLinks" />
+
+        <UDivider class="sticky bottom-0" />
+
+        <template #footer>
+          <!-- ~/components/UserDropdown.vue -->
+          <UserDropdown />
+        </template>
+      </UDashboardSidebar>
+    </UDashboardPanel>
 
     <slot />
 
+    <!-- ~/components/HelpSlideover.vue -->
+    <HelpSlideover />
+    <!-- ~/components/NotificationsSlideover.vue -->
+    <NotificationsSlideover />
 
-
+    <ClientOnly>
+      <LazyUDashboardSearch :groups="groups" />
+    </ClientOnly>
+  </UDashboardLayout>
 </template>

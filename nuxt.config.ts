@@ -93,9 +93,9 @@ export default defineNuxtConfig({
   vite: {
     css: {
       preprocessorOptions: {
-        // scss: {
-        //   additionalData: '@use "@/assets/css/vars.scss" as *;',
-        // },
+         scss: {
+           additionalData: '@use "@/assets/css/vars.scss" as *;',
+         },
       },
     },
     esbuild: environment.leaveDebuggers ? undefined : {
