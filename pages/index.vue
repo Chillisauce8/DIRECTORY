@@ -38,9 +38,17 @@
   </CardsContainer>
 
   <CardsContainer display="slider" :toggle="false" title="Browse By Stag Do Location">
+    
     <MarketingCard :props="vm.marketingCard12Props"></MarketingCard>
     <MarketingCard :props="vm.marketingCard13Props"></MarketingCard>
     <MarketingCard :props="vm.marketingCard14Props"></MarketingCard>
+  </CardsContainer>
+  <CardsContainer display="slider" :toggle="false" title="Vehicles">
+    
+   <VehicleCard />
+   <VehicleCard />
+   <VehicleCard />
+
   </CardsContainer>
 </template>
 
