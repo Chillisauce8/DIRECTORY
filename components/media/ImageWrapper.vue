@@ -7,6 +7,7 @@
           :alt="image.alt"
           :width=width
           :height=height
+          :tint=tint
           :transformToElementSize="transformToElementSize"
           :preloadRandom="preloadRandom"
         ></SWPImage>

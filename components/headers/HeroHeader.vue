@@ -1,7 +1,13 @@
 <template>
-  <header class="hero-header-wrapper">
- <slot/>
-  </header>
+  <figure class="hero-header">
+    <image-wrapper :images="props.images" :random="props.random" loading="eager"
+                   :max="props.max" :min="props.min" :grayscale="props.grayscale"
+                   :width="props.width" :height="props.height" :tint="true"
+                   :preload-random="true" dpr="1"
+                   class="random-tint image-row">
+     <BarText :props="props" /> 
+    </image-wrapper>
+  </figure>
 </template>
 
 <script>
@@ -11,7 +17,8 @@ export default {
 </script>
 
 <style lang="scss">
-.hero-header-wrapper {
+
+.hero-header {
 
   & .images{
     height: 300px;
@@ -43,3 +50,6 @@ export default {
   }
 }
 </style>
+
+
+

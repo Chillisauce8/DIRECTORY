@@ -27,11 +27,6 @@
           title="Login"
           svg="person"
         />
- 
-        <NavIcon
-          title="Contact"
-          svg="phone"
-        />
       </div>
   </div>
 </TopBarWrapper>

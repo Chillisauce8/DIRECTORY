@@ -1,11 +1,4 @@
 <template>
-<HeroHeader :props="heroHeaderProps"/>
-<UAccordion
-    color="primary"
-    variant="soft"
-    size="sm"
-    :items="[{ label: '1. What is Nuxt UI?', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '2. Getting Started', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '3. Theming', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }, { label: '4. Components', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit' }]"
-  />
   <CardsContainer display="slider" :toggle="false" title="Steps to a Brilliant Stag Do"
                   subTitle="We make it simple to organise a legendary stag weekend">
     <MarketingCard :props="vm.marketingCard1Props"></MarketingCard>
@@ -14,6 +7,7 @@
     <MarketingCard :props="vm.marketingCard4Props"></MarketingCard>
   </CardsContainer>
   <AbtaStripSmall/>
+  <TopLocations title="Top Stag Do Locations" :section="vm.section" :limit="10"></TopLocations>
   <MarketingBooster2/>
   <MarketingTimeline :eventType="vm.eventType"></MarketingTimeline>
   <MarketingBooster1/>
@@ -27,7 +21,7 @@
     <MarketingCard :props="vm.marketingCard11Props"></MarketingCard>
   </CardsContainer>
 
- 
+  <TopActivities title="Popular Stag Do Activities" :section="vm.section"></TopActivities>
   <CardsContainer display="slider" :toggle="false"
                   title="Take the Stress Out of Payments"
                   subTitle="Managing the money from a large group of people is STRESSFUL - chasing up guests for money, being let down, and out of pocket - we solve all the problems."
@@ -44,24 +38,7 @@
   </CardsContainer>
 </template>
 
-
-<script setup lang="ts">
-const heroHeaderProps =
-   {
-        title: 'Beautiful Cars',
-        subTitle: 'Get your rocks off with some beautiful classics',
-        type: 'barText',
-        random: true,
-        min: 1,
-        max: 1,
-        grayscale: false,
-        width: 1200,
-        images: [
-    {
-      cloudinaryId: '661fecb3d7eafa12344017a8',
-    },
-  ],
-}
+<script setup>
 const vm = {
   section: 'stag',
   eventType: 'stag do',
@@ -218,12 +195,8 @@ const vm = {
     ],
   }
 };
-
-
-
-
- 
 </script>
 
+<style scoped>
 
-
+</style>

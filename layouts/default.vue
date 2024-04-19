@@ -87,9 +87,14 @@ const colors = computed(() => defaultColors.value.map(color => ({ ...color, acti
 <template>
   <TopNav />
   <div class="main-page">
+    <SideNav/>
+    <main><slot /></main>
   </div>
-
-  <slot />
-
   <MainFooter/>
 </template>
+<style lang="scss">
+.main-page{
+  display:flex;
+}
+
+</style>

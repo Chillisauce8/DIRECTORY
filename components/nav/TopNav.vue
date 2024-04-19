@@ -3,7 +3,7 @@
     
     <TopBar />
     <BelowBarWrapper>
-    <nav-notification class="user-staff-none"> The UK's Largest Events Company </nav-notification>
+    <nav-notification class="user-staff-none"> Everything For the Classic Car Enthusiast </nav-notification>
     <BreadCrumb/>
     </BelowBarWrapper>
   </nav>

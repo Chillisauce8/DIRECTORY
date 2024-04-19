@@ -1,6 +1,6 @@
 <template>
   <footer class="the-footer">
-    <ImageWrapper cloudinaryId="6558d0b3c409d60f99a0d198" :width="1000" class="footer-content">
+    <ImageWrapper cloudinaryId="661fec4e622206049c762a44" :width="2000" class="footer-content">
 
       <section class="footer-links">
         <template v-for="linkSection in footerLinks"
@@ -98,10 +98,7 @@ export default {
           icon: 'abta',
           link: 'https://www.abta.com/abta-member-search/results?search=chillisauce',
         },
-        {
-          icon: 'abtot',
-          link: 'https://www.abtot.com/',
-        },
+
       ],
     };
   },
@@ -226,7 +223,7 @@ export default {
   }
  & .footer-content{
     width: 100%;
-    height:700px;
+    height:400px;
   & .footer-links{
     width: 90%;
     margin-top: 50px;
