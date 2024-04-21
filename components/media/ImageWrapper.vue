@@ -1,21 +1,21 @@
 <template>
   <div class="images">
-      <figure v-for="image in imageArray" :key="image.src">
-        <SWPImage
-          :loading="loading"
-          :src="image.src"
-          :alt="image.alt"
-          :width=width
-          :height=height
-          :tint=tint
-          :transformToElementSize="transformToElementSize"
-          :preloadRandom="preloadRandom"
-        ></SWPImage>
-      </figure>
+    <figure v-for="image in imageArray" :key="image.src">
+      <SWPImage
+        :loading="loading"
+        :src="image.src"
+        :alt="image.alt"
+        :width="width"
+        :height="height"
+        :tint="tint"
+        :transformToElementSize="transformToElementSize"
+        :preloadRandom="preloadRandom"
+      ></SWPImage>
+    </figure>
 
-      <div v-if="$slots.default" class="overlay Center" :class="tintClass">
-        <slot />
-      </div>
+    <div v-if="$slots.default" class="overlay Center" :class="tintClass">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -31,6 +31,7 @@ export default {
     images: Array,
     width: Number,
     height: Number,
+    tintClass: String,
 
     min: {
       type: Number,
@@ -82,15 +83,15 @@ export default {
     },
   },
   watch: {
-    src: function(newVal, oldVal) {
+    src: function (newVal, oldVal) {
       this.onImagePropUpdated();
     },
     images: function (newVal, oldVal) {
       this.onImagePropUpdated();
     },
-    cloudinaryId: function(newVal, oldVal) {
+    cloudinaryId: function (newVal, oldVal) {
       this.onImagePropUpdated();
-    }
+    },
   },
   setup() {
     return {
@@ -105,8 +106,9 @@ export default {
       amount: 1,
       imageArray: [],
       cloudinaryApiPath: "https://media.chillisauce.com/image/upload/",
-      cloudinaryParams: `${this.grayscale ? 'e_grayscale/' : ''}c_${this.c},q_${this.q},f_${this.f},dpr_${this.dpr}/`,
-      tintClass: '',
+      cloudinaryParams: `${this.grayscale ? "e_grayscale/" : ""}c_${this.c},q_${
+        this.q
+      },f_${this.f},dpr_${this.dpr}/`,
     };
   },
 
@@ -140,7 +142,7 @@ export default {
       }
     },
     init() {
-      this.imageArray.length = 0
+      this.imageArray.length = 0;
       this.amount = 1;
 
       if (this.images) {
@@ -148,10 +150,10 @@ export default {
           this.images.forEach((element) => {
             this.imageArray.push({
               src:
-                  this.cloudinaryApiPath +
-                  this.cloudinaryParams +
-                  element.cloudinaryId,
-              alt: element.alt ?? this.alt ?? 'image',
+                this.cloudinaryApiPath +
+                this.cloudinaryParams +
+                element.cloudinaryId,
+              alt: element.alt ?? this.alt ?? "image",
             });
           });
         } else {
@@ -174,18 +176,23 @@ export default {
         //   }
         // }
       } else if (this.src) {
-        this.imageArray.push({ src: this.src, alt: this.alt ?? 'image' });
+        this.imageArray.push({ src: this.src, alt: this.alt ?? "image" });
       } else if (this.cloudinaryId) {
         this.imageArray.push({
-          src: this.cloudinaryApiPath + this.cloudinaryParams + this.cloudinaryId,
-          alt: this.alt ?? 'image',
+          src:
+            this.cloudinaryApiPath + this.cloudinaryParams + this.cloudinaryId,
+          alt: this.alt ?? "image",
         });
       }
 
-      // if (this.tint) {
-      //   this.tintClass = "tint-" + this.imageWrapperRandomisationStore
-      //     .getOrGenerateTintIndex(this.getContentForRandomisationStore());
-      // }
+      /*   if (this.tint) {
+        this.tintClass =
+          "tint-" +
+          this.imageWrapperRandomisationStore.getOrGenerateTintIndex(
+            this.getContentForRandomisationStore()
+          );
+      }
+    */
     },
     getContentForRandomisationStore() {
       return {
@@ -193,7 +200,7 @@ export default {
         src: this.src,
         cloudinaryId: this.cloudinaryId,
       };
-    }
+    },
   },
   created() {
     this.init();
@@ -207,31 +214,31 @@ $image-border: 5px;
 .images {
   position: relative;
   & figure {
-  position: relative;
-  background-size: cover;
-  background-position: center;
- // display: flex; // Needed in some cases can be display: grid as well.
-  color: white; // Default white text over image
-  height: 100%;
-  //  @include aspect-ratio(1, 1); //default square
-  & > img,
-  > div {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-    object-fit: cover;
-    width: 100%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    // display: flex; // Needed in some cases can be display: grid as well.
+    color: white; // Default white text over image
     height: 100%;
+    //  @include aspect-ratio(1, 1); //default square
+    & > img,
+    > div {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
   }
-}
 
   & > .overlay {
     @include overlay();
     color: white;
   }
-  & .random-tint{
+  & .random-tint {
     background-color: rgba(0, 0, 0, 0.1);
   }
   &.random-tint .tint-1 {
@@ -249,8 +256,11 @@ $image-border: 5px;
     );
   }
   &.random-tint .tint-3 {
-    background-image: radial-gradient(circle, rgba(4,171,191,.7) 0%, rgba(0,74,83,.8) 100%);
-
+    background-image: radial-gradient(
+      circle,
+      rgba(4, 171, 191, 0.7) 0%,
+      rgba(0, 74, 83, 0.8) 100%
+    );
   }
   &.random-tint .tint-4 {
     background-image: linear-gradient(
@@ -303,96 +313,96 @@ $image-border: 5px;
   }
   &.image-row {
     display: flex;
-    & figure{
+    & figure {
       flex-grow: 1;
     }
   }
   &.image-grid {
-  //min-height: 193px; // Needed to fix issue in IOS and Mac Safari
-  display: grid;
-  grid-gap: $image-border;
-  grid-template-columns: repeat(12, 1fr);
-  & figure {
-    //Block of 1
-    &:nth-of-type(1):nth-last-of-type(1) {
-      grid-column: span 12;
-      grid-row: span 1;
-    }
-    //Block of 2
-    &:nth-of-type(1):nth-last-of-type(2) {
-      grid-column: span 7;
-      grid-row: span 1;
-      //     @include aspect-ratio(7, 8);
-      //   height: 100%;
-    }
-    &:nth-of-type(2):nth-last-of-type(1) {
-      grid-column: span 5;
-      grid-row: span 1;
-    }
-    //Block of 3
-    &:nth-of-type(1):nth-last-of-type(3) {
-      //    @include aspect-ratio(1, 1);
-      grid-column: span 8;
-      grid-row: span 2;
-    }
-    &:nth-of-type(2):nth-last-of-type(2),
-    &:nth-of-type(3):nth-last-of-type(1) {
-      grid-column: span 4;
-      grid-row: span 1;
-    }
-    //Block of 4
-    &:nth-of-type(1):nth-last-of-type(4) {
-      //    @include aspect-ratio(1, 1.15);
-      grid-column: span 7;
-      grid-row: span 3;
-    }
-    &:nth-of-type(2):nth-last-of-type(3) {
-      grid-column: span 5;
-      grid-row: span 2;
-    }
-    &:nth-of-type(3):nth-last-of-type(2) {
-      grid-column: span 3;
-      grid-row: span 1;
-    }
-    &:nth-of-type(4):nth-last-of-type(1) {
-      grid-column: span 2;
-      grid-row: span 1;
-    }
-    //Block of 5
-    &:nth-of-type(1):nth-last-of-type(5) {
-      grid-column: span 7;
-      grid-row: span 2;
-    }
-    &:nth-of-type(2):nth-last-of-type(4) {
-      grid-column: span 5;
-      grid-row: span 2;
-    }
-    &:nth-of-type(3):nth-last-of-type(3),
-    &:nth-of-type(4):nth-last-of-type(2),
-    &:nth-of-type(5):nth-last-of-type(1) {
-      //   @include aspect-ratio(3, 2.5);
-      grid-column: span 4;
-      grid-row: span 1;
-    }
-    //Block of 6
-    &:nth-of-type(1):nth-last-of-type(6) {
-      grid-column: span 8;
-      grid-row: span 2;
-    }
-    &:nth-of-type(2):nth-last-of-type(5),
-    &:nth-of-type(3):nth-last-of-type(4) {
-      grid-column: span 4;
-      grid-row: span 1;
-    }
+    //min-height: 193px; // Needed to fix issue in IOS and Mac Safari
+    display: grid;
+    grid-gap: $image-border;
+    grid-template-columns: repeat(12, 1fr);
+    & figure {
+      //Block of 1
+      &:nth-of-type(1):nth-last-of-type(1) {
+        grid-column: span 12;
+        grid-row: span 1;
+      }
+      //Block of 2
+      &:nth-of-type(1):nth-last-of-type(2) {
+        grid-column: span 7;
+        grid-row: span 1;
+        //     @include aspect-ratio(7, 8);
+        //   height: 100%;
+      }
+      &:nth-of-type(2):nth-last-of-type(1) {
+        grid-column: span 5;
+        grid-row: span 1;
+      }
+      //Block of 3
+      &:nth-of-type(1):nth-last-of-type(3) {
+        //    @include aspect-ratio(1, 1);
+        grid-column: span 8;
+        grid-row: span 2;
+      }
+      &:nth-of-type(2):nth-last-of-type(2),
+      &:nth-of-type(3):nth-last-of-type(1) {
+        grid-column: span 4;
+        grid-row: span 1;
+      }
+      //Block of 4
+      &:nth-of-type(1):nth-last-of-type(4) {
+        //    @include aspect-ratio(1, 1.15);
+        grid-column: span 7;
+        grid-row: span 3;
+      }
+      &:nth-of-type(2):nth-last-of-type(3) {
+        grid-column: span 5;
+        grid-row: span 2;
+      }
+      &:nth-of-type(3):nth-last-of-type(2) {
+        grid-column: span 3;
+        grid-row: span 1;
+      }
+      &:nth-of-type(4):nth-last-of-type(1) {
+        grid-column: span 2;
+        grid-row: span 1;
+      }
+      //Block of 5
+      &:nth-of-type(1):nth-last-of-type(5) {
+        grid-column: span 7;
+        grid-row: span 2;
+      }
+      &:nth-of-type(2):nth-last-of-type(4) {
+        grid-column: span 5;
+        grid-row: span 2;
+      }
+      &:nth-of-type(3):nth-last-of-type(3),
+      &:nth-of-type(4):nth-last-of-type(2),
+      &:nth-of-type(5):nth-last-of-type(1) {
+        //   @include aspect-ratio(3, 2.5);
+        grid-column: span 4;
+        grid-row: span 1;
+      }
+      //Block of 6
+      &:nth-of-type(1):nth-last-of-type(6) {
+        grid-column: span 8;
+        grid-row: span 2;
+      }
+      &:nth-of-type(2):nth-last-of-type(5),
+      &:nth-of-type(3):nth-last-of-type(4) {
+        grid-column: span 4;
+        grid-row: span 1;
+      }
 
-    &:nth-of-type(4):nth-last-of-type(3),
-    &:nth-of-type(5):nth-last-of-type(2),
-    &:nth-of-type(6):nth-last-of-type(1) {
-      grid-column: span 4;
-      grid-row: span 1;
+      &:nth-of-type(4):nth-last-of-type(3),
+      &:nth-of-type(5):nth-last-of-type(2),
+      &:nth-of-type(6):nth-last-of-type(1) {
+        grid-column: span 4;
+        grid-row: span 1;
+      }
     }
   }
-}
 }
 </style>
 

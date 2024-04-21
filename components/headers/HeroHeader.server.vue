@@ -1,10 +1,19 @@
 <template>
   <figure class="hero-header">
-    <image-wrapper :images="props.images" :random="props.random" loading="eager"
-                   :max="props.max" :min="props.min" :grayscale="props.grayscale"
-                   :width="props.width" :height="props.height" :tint="true"
-                   :preload-random="true" dpr="1"
-                   class="random-tint image-row">
+    <image-wrapper
+      :images="props.images"
+      :random="props.random"
+      loading="eager"
+      :max="props.max"
+      :min="props.min"
+      :grayscale="props.grayscale"
+      :width="props.width"
+      :height="props.height"
+      :tint="true"
+      :preload-random="true"
+      dpr="1"
+      class="random-tint image-row"
+    >
       <BarText :props="props" />
     </image-wrapper>
   </figure>
@@ -12,22 +21,20 @@
 
 <script>
 export default {
-  props: ['props'],
-}
+  props: ["props"],
+};
 </script>
 
 <style lang="scss">
-
-.hero-header {
-  & .images{
+.hero-header1 {
+  & .images {
     height: 300px;
     width: 100%;
-    @include mobile{
-      & figure:nth-child(1n+2) {
-      display: none;
+    @include mobile {
+      & figure:nth-child(1n + 2) {
+        display: none;
       }
     }
-
   }
   & h1 {
     @include font-size(4);
@@ -49,6 +56,3 @@ export default {
   }
 }
 </style>
-
-
-

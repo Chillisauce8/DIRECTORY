@@ -1,44 +1,55 @@
 <template>
   <figure class="hero-header">
-    <image-wrapper :images="props.images" :random="props.random" loading="eager"
-                   :max="props.max" :min="props.min" :grayscale="props.grayscale"
-                   :width="props.width" :height="props.height" :tint="true"
-                   :preload-random="true" dpr="1"
-                   class="random-tint image-row">
-     <BarText :props="props" /> 
+    <image-wrapper
+      :images="props.images"
+      :random="props.random"
+      loading="eager"
+      :max="props.max"
+      :min="props.min"
+      :grayscale="props.grayscale"
+      :width="props.width"
+      :height="props.height"
+      :tint="true"
+      :tintClass="props.tintClass"
+      :preload-random="true"
+      dpr="2"
+      class="random-tint image-row"
+    >
+      <h1 class="text-1">{{ props.title }}</h1>
+      <h2 class="text-2">
+        {{ props.subTitle }}
+      </h2>
     </image-wrapper>
   </figure>
 </template>
 
 <script>
 export default {
-  props: ['props'],
-}
+  props: ["props"],
+};
 </script>
 
 <style lang="scss">
-
 .hero-header {
-
-  & .images{
-    height: 300px;
+  & .images {
+    height: 500px;
     width: 100%;
-    @include mobile{
-      & figure:nth-child(1n+2) {
-      display: none;
+    @include mobile {
+      & figure:nth-child(1n + 2) {
+        display: none;
       }
     }
-
   }
   & h1 {
-    @include font-size(4);
+    // @include font-size(7);
+    @include scale("font-size", 40px, 60px, 1.2);
     color: white;
-    text-shadow: 1px 1px #000000;
+    //    text-shadow: 1px 1px #000000;
   }
 
   & h2 {
     @include font-size(0);
-    text-shadow: 1px 1px #000000;
+    //   text-shadow: 1px 1px #000000;
   }
 
   & .overlay {
@@ -50,6 +61,3 @@ export default {
   }
 }
 </style>
-
-
-
