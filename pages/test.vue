@@ -9,10 +9,6 @@
         :name="vehicle.name"
         :year="vehicle.year"
         :price="vehicle.price"
-        :engine="vehicle.engine"
-        :odometer="vehicle.odometer"
-        :transmission="vehicle.transmission"
-        :stearingSide="vehicle.stearingSide"
       />
     </template>
   </CardsContainer>
@@ -94,13 +90,9 @@ const vehicles = [
       },
     ],
     saleType: "Advert",
-    name: "Alfa Romeo 2000 Spider Veloce",
+    name: "1973 Alfa Romeo 2000 Spider Veloce",
     year: "1973",
     price: "£33,000",
-    engine: "4.3L I4",
-    odometer: "40000 miles",
-    transmission: "Manual",
-    stearingSide: "RHD",
   },
   {
     images: [
@@ -110,13 +102,9 @@ const vehicles = [
       },
     ],
     saleType: "Auction",
-    name: "Ford Model A 'The Ballard Special' Speedster",
+    name: "1930 Ford Model A 'The Ballard Special' Speedster",
     year: "1930",
     price: "Estimate £140,000",
-    engine: "5L V8",
-    odometer: "3400 miles",
-    transmission: "Automatic",
-    stearingSide: "LHD",
   },
   {
     images: [
@@ -126,13 +114,9 @@ const vehicles = [
       },
     ],
     saleType: "Auction",
-    name: "Alpine Renault A110",
+    name: "1974 Alpine Renault A110",
     year: "1956",
     price: "Estimate £12,000 - £15,000",
-
-    odometer: "213000 miles",
-
-    stearingSide: "RHD",
   },
   {
     images: [
@@ -142,12 +126,9 @@ const vehicles = [
       },
     ],
     saleType: "Advert",
-    name: "Porsche 911 (997) GT3 RS",
+    name: "2007 Porsche 911 (997) GT3 RS",
     year: "2007",
     price: "£98,000",
-    engine: "2.3L",
-    odometer: "45000 miles",
-    stearingSide: "RHD",
   },
   {
     images: [
@@ -157,12 +138,9 @@ const vehicles = [
       },
     ],
     saleType: "Advert",
-    name: "Austin-Healey 3000 MK II",
+    name: "1961 Austin-Healey 3000 MK II",
     year: "1961",
     price: "£56,000",
-    engine: "2.6L I4",
-    odometer: "14000 miles",
-    stearingSide: "RHD",
   },
 ];
 

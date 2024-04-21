@@ -1,52 +1,95 @@
 <template>
   <card-wrapper class="vehicle-listing-card card">
-    <ImageWrapper
+    <image-wrapper
       v-if="images"
       :images="images"
       :max="1"
       :width="290"
       :height="145"
       loading="lazy"
-    />
+    >
+      <SvgIcon svg="heart" class="heart" />
+    </image-wrapper>
     <card-text-wrapper>
-      <div class="sale-type">{{ saleType }}</div>
-      <h1 class="name">{{ name }}</h1>
-      <div class="year">2000cc · Petrol · 58,000 Miles · Manual</div>
+      <!--     <div class="sale-type">{{ saleType }}</div> -->
+      <h1 class="name">{{ year }} {{ name }}</h1>
+
       <div class="price">{{ price }}</div>
+
+      <div class="specs">
+        <span v-if="engine" class="engine">{{ engine }}</span>
+        <span v-if="odometer" class="odometer">{{ odometer }}</span>
+        <span v-if="transmission" class="transmission">{{ transmission }}</span>
+        <span v-if="stearingSide" class="stearing-side">{{
+          stearingSide
+        }}</span>
+      </div>
+      <!--   <SvgIcon svg="heart" class="heart" /> -->
     </card-text-wrapper>
   </card-wrapper>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(["images", "name", "saleType", "year", "price"]);
+const props = defineProps([
+  "images",
+  "name",
+  "saleType",
+  "year",
+  "price",
+  "engine",
+  "odometer",
+  "transmission",
+  "stearingSide",
+]);
 </script>
 
 <style lang="scss">
 .vehicle-listing-card {
   width: 300px;
-  & figure {
+  figure {
     @include aspect-ratio(3, 2);
   }
-  & header {
+  header {
     @include aspect-ratio(3, 2);
     //     min-height: 150px;
   }
-  & .name {
+  .name {
     font-family: $ff2;
     font-size: 15px;
     font-weight: 100;
   }
-  & .sale-type {
+  .sale-type {
     font-size: 10px;
     font-weight: 600;
     text-transform: uppercase;
   }
-  & .year {
+  .year {
     font-size: 12px;
   }
-  & .price {
+  .price {
     font-size: 14px;
     font-weight: 400;
   }
+  .heart {
+    width: 24px;
+    height: 24px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    & svg {
+      fill: rgba(150, 150, 150, 0.5);
+    }
+    &:hover svg {
+      fill: red;
+      stroke: grey;
+    }
+  }
+  .specs span:not(:last-child):after {
+    content: " · ";
+  }
+  /* .specs span:after {
+    content: " · ";
+  }
+  */
 }
 </style>
