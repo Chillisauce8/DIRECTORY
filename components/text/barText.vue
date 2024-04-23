@@ -15,16 +15,14 @@
 
 <script>
 export default {
-  props: ['props'],
-}
+  props: ["props"],
+};
 </script>
 
 <style lang="scss">
 .bar-text-disabled {
   display: flex;
   flex-direction: column;
-  //  align-items: flex-start; // ALTER THIS TO CENTER
-  // max-width: 600px;
   color: white;
   & .block-1,
   & .block-2 {
@@ -45,28 +43,36 @@ export default {
     //  background-color: red;
   }
   & .bar-1 {
-    background-image: linear-gradient(to right, rgb(0, 180, 219, 1), rgb(0, 131, 176, 1));
+    background-image: linear-gradient(
+      to right,
+      rgb(0, 180, 219, 1),
+      rgb(0, 131, 176, 1)
+    );
     transform: translateX(-100%);
     animation: bar-in 1s ease-in-out 1s, bar-out 1s ease-in-out 2s;
   }
   & .bar-2 {
-    background-image: linear-gradient(to right, rgb(115, 200, 169, 1),rgb(55,59,68, 1));
+    background-image: linear-gradient(
+      to right,
+      rgb(115, 200, 169, 1),
+      rgb(55, 59, 68, 1)
+    );
     animation: bar-in 1s ease-in-out 3s, bar-out 1s ease-in 4s;
     transform: translateX(-100%);
   }
   & .text-1 {
     // font-family: 'Times New Roman', Times, serif;
     opacity: 0;
-//    font-weight: 600;
-//    text-transform: uppercase;
-//    letter-spacing: 20px;
+    //    font-weight: 600;
+    //    text-transform: uppercase;
+    //    letter-spacing: 20px;
 
     //   text-shadow: 5px 5px #000000, 4px 4px #000000, 3px 3px #000000,
     //     2px 2px #000000, 1px 1px #000000;
     animation: fade-in 1s ease-in-out 2.5s both;
   }
   & .text-2 {
-   // font-size: 16px;
+    // font-size: 16px;
     opacity: 0;
     text-shadow: 1px 1px #000000;
     animation: fade-in 1s ease-in-out 4.5s both;

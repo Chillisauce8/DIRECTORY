@@ -1,11 +1,13 @@
 <template>
-  <section-wrapper class="cards-container"
-                   :class="{togglecards: toggle}"
-                   :title="title"
-                   :subTitle="subTitle"
-                   :id="id"
-                   :display="currentDisplayValue"
-                   @closeClicked="$emit('closeClicked')">
+  <section-wrapper
+    class="cards-container"
+    :class="{ togglecards: toggle }"
+    :title="title"
+    :subTitle="subTitle"
+    :id="id"
+    :display="currentDisplayValue"
+    @closeClicked="$emit('closeClicked')"
+  >
     <client-only>
       <CardsContainerToggle
         slot="toggle"
@@ -20,7 +22,8 @@
       />
     </client-only>
     <slot name="above-cards" />
-    <list-wrapper @needToggle="updateNeedToggle"
+    <list-wrapper
+      @needToggle="updateNeedToggle"
       :class="[
         {
           closing: classes.gridClose,
@@ -28,7 +31,8 @@
           INTERSECTING: classes.intersecting,
         },
         currentDisplayValue,
-      ]">
+      ]"
+    >
       <slot />
     </list-wrapper>
   </section-wrapper>
@@ -78,7 +82,7 @@ export default {
       default: () => null,
     },
   },
-  emits: ['closeClicked'],
+  emits: ["closeClicked"],
   data() {
     return {
       classes: {
@@ -88,16 +92,16 @@ export default {
       },
       initialDisplay: this.display,
       currentDisplayValue: this.display || this.calculateDisplayIfEmpty(),
-      currentNeedToggle: this.needToggle
-    }
+      currentNeedToggle: this.needToggle,
+    };
   },
   methods: {
     calculateDisplayIfEmpty() {
       if (this.currentNeedToggle) {
-        return 'grid';
+        return "grid";
       }
 
-      return 'slider';
+      return "slider";
     },
 
     onDisplayChanged(value) {
@@ -117,9 +121,9 @@ export default {
       if (!this.initialDisplay) {
         this.currentDisplayValue = this.calculateDisplayIfEmpty();
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss">
@@ -127,6 +131,6 @@ export default {
   .section-title {
     color: $CB-1;
   }
-  background-image: $GBC-1;
+  background-image: $GBC-7;
 }
 </style>
