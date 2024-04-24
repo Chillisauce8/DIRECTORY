@@ -35,7 +35,7 @@ export default {
 .hero-header {
   & .images {
     height: 500px;
-    width: 100%;
+    width: auto;
     @include mobile {
       & figure:nth-child(1n + 2) {
         display: none;

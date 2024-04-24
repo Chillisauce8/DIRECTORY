@@ -201,7 +201,7 @@ onBeforeUnmount(() => {
 <template>
   <TopNav />
   <div class="main-page">
-    <!-- <SideNav/> -->
+    <SideNav />
     <main><slot /></main>
   </div>
   <MainFooter />

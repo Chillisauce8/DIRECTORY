@@ -178,7 +178,7 @@ body.page-section-home .page-nav {
   z-index: 2;
   overflow-x: auto;
   overflow-y: hidden;
-  width: 100%;
+  width: auto;
   height: 64px;
 
   &.nav-down {
