@@ -6,6 +6,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@nuxt/fonts',
+    '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-delay-hydration'
   ],

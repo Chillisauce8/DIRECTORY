@@ -23,7 +23,6 @@
 export default {
   props: [
     "navItems",
-    "hideSectionDoHelp",
     "filterSelectTitle",
     "filterSelectLink",
     "hideFilterSelect",
