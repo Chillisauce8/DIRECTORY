@@ -28,7 +28,7 @@
     "pinia-plugin-persist": "^1.0.0",
     "sass": "^1.75.0",
     "v-calendar": "^3.1.2",
-    "vue": "^3.4.21",
+    "vue": "^3.4.21"
 
   },
   "devDependencies": {
