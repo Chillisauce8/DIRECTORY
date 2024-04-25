@@ -8,6 +8,7 @@
       :height="145"
       loading="lazy"
     >
+      <div v-if="nickname" class="nickname">{{ nickname }}</div>
     </image-wrapper>
     <card-text-wrapper>
       <h1 class="name">
@@ -20,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps(["images", "name", "make", "year"]);
+const props = defineProps(["images", "name", "nickname", "make", "year"]);
 </script>
 
 <style lang="scss">
@@ -44,8 +45,19 @@ const props = defineProps(["images", "name", "make", "year"]);
     font-size: 16px;
     font-weight: 100;
   }
+  .nickname {
+    font-family: $ff2;
+    padding: 0 0.5rem 0;
+    font-weight: 600;
+    letter-spacing: 0.3rem;
+    text-transform: uppercase;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: black;
+  }
 
-  .years {
+  .year {
     font-family: $ff2;
     font-size: 14px;
     font-weight: 100;

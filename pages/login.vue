@@ -1,12 +1,12 @@
 <template>
   <CardsContainer display="grid" :toggle="false" title="My Cars">
-    <template v-for="(model, index) in models" :key="index">
+    <template v-for="(vehicle, index) in vehicles" :key="index">
       <VehicleCard
-        :images="model.images"
-        :make="model.make"
-        :name="model.name"
-        :yearFrom="model.yearFrom"
-        :yearToo="model.yearToo"
+        :images="vehicle.images"
+        :nickname="vehicle.nickname"
+        :make="vehicle.make"
+        :name="vehicle.name"
+        :year="vehicle.year"
       />
     </template>
   </CardsContainer>
@@ -91,7 +91,7 @@ const vehicles = [
         alt: "Car Alt Text",
       },
     ],
-
+    nickname: "The Red Devil",
     make: "Alfa Romeo",
     name: "325Ci Convertible 5-Speed",
     year: 2000,
@@ -103,7 +103,7 @@ const vehicles = [
         alt: "Car Alt Text",
       },
     ],
-
+    nickname: "Froggy",
     make: "Ford",
     name: "Capri",
     year: 1984,
@@ -126,11 +126,10 @@ const vehicles = [
         alt: "Car Alt Text",
       },
     ],
-
+    nickname: "Little Bastard",
     make: "Porsche",
     name: "25th Anniversary Special Edition Coupe",
-    yearFrom: 1988,
-    yearToo: 1994,
+    year: 1988,
   },
   {
     images: [
@@ -141,8 +140,7 @@ const vehicles = [
     ],
     make: "Bentley",
     name: "Continental GT",
-    yearFrom: 2002,
-    yearToo: 2010,
+    year: 2002,
   },
 ];
 
