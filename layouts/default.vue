@@ -209,5 +209,8 @@ onBeforeUnmount(() => {
 <style lang="scss">
 .main-page {
   display: flex;
+  & main {
+    background-color: var(--bg-color);
+  }
 }
 </style>

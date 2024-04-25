@@ -174,7 +174,7 @@ body.page-section-home .page-nav {
   transition: all 0.5s ease-in-out;
   background-color: $CB-05;
   position: sticky;
-  top: 0;
+  top: 0px;
   z-index: 2;
   overflow-x: auto;
   overflow-y: hidden;

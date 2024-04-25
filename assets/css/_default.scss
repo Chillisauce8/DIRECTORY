@@ -31,6 +31,14 @@ body{
   }
 }
 
+@mixin frosted-glass() {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+
+
+
 *,
 *:before,
 *:after {
@@ -42,7 +50,7 @@ body{
   text-transform: inherit;
   margin: 0;
   padding: 0;
-  border: 0;
+//  border: 0;
   outline: 0;
   text-rendering: optimizeLegibility;
   background-color: transparent;
@@ -170,7 +178,7 @@ button {
 
 main {
   background-color: $CB;
-  width: auto;
+  width: 100%;
   & > section,
   > header {
  //   margin: 0 auto 5rem auto; Removed - stop gaps in section wrapper?

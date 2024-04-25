@@ -1,7 +1,7 @@
 <template>
   <CardsContainer display="grid" :toggle="false" title="My Cars">
     <template v-for="(model, index) in models" :key="index">
-      <ModelCard
+      <VehicleCard
         :images="model.images"
         :make="model.make"
         :name="model.name"
@@ -83,7 +83,7 @@ const makes = [
   },
 ];
 
-const models = [
+const vehicles = [
   {
     images: [
       {
@@ -94,8 +94,7 @@ const models = [
 
     make: "Alfa Romeo",
     name: "325Ci Convertible 5-Speed",
-    yearFrom: 2000,
-    yearToo: 2013,
+    year: 2000,
   },
   {
     images: [
@@ -107,8 +106,7 @@ const models = [
 
     make: "Ford",
     name: "Capri",
-    yearFrom: 1984,
-    yearToo: 1998,
+    year: 1984,
   },
   {
     images: [
@@ -119,8 +117,7 @@ const models = [
     ],
     make: "Austin Healey",
     name: "100 BN2",
-    yearFrom: 1956,
-    yearToo: 1960,
+    year: 1956,
   },
   {
     images: [

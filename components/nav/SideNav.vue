@@ -1,10 +1,12 @@
 <template>
   <nav class="side-nav open">
-    <SideNavButton icon="submarine">Garage</SideNavButton>
-    <SideNavButton icon="compass">History Files</SideNavButton>
-    <SideNavButton icon="beer">Tasks</SideNavButton>
-    <SideNavButton icon="squid">Messages</SideNavButton>
-    <SideNavButton icon="email">Profile</SideNavButton>
+    <div class="side-nav-slider">
+      <SideNavButton icon="submarine">Garage</SideNavButton>
+      <SideNavButton icon="compass">History Files</SideNavButton>
+      <SideNavButton icon="beer">Tasks</SideNavButton>
+      <SideNavButton icon="squid">Messages</SideNavButton>
+      <SideNavButton icon="email">Profile</SideNavButton>
+    </div>
   </nav>
 </template>
 
@@ -15,6 +17,10 @@ export default {};
 <style lang="scss">
 .side-nav {
   background-color: var(--bg-color-darker);
+  .side-nav-slider {
+    position: sticky;
+    top: 64px;
+  }
   &.open {
     width: 300px;
   }

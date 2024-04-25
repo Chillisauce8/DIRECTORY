@@ -1,24 +1,24 @@
 <template>
   <div class="top-bar-wrapper">
-    <slot/>
-</div>
+    <slot />
+  </div>
 </template>
 
 <script>
-export default {
-}
+export default {};
 </script>
 
 <style lang="scss">
 .top-bar-wrapper {
-  display:flex;
+  display: flex;
   width: 100%;
   top: 0;
   z-index: 1;
   position: fixed;
   height: 64px;
-
-  @include frosted-glass();
+  backdrop-filter: blur(10px);
+  background-color: var(--bg-color);
+  opacity: 95%;
   @include shadow-soft();
 }
 </style>

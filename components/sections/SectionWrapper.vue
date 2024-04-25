@@ -1,14 +1,21 @@
 <template>
-  <section class="section-wrapper" >
+  <section class="section-wrapper">
     <client-only>
-      <div class="anchor" :id="id"/>
+      <div class="anchor" :id="id" />
     </client-only>
-    <CloseButton v-if="closeButton"  @click="closed = !closed; $emit('closeClicked')"/>
+    <CloseButton
+      v-if="closeButton"
+      @click="
+        closed = !closed;
+        $emit('closeClicked');
+      "
+    />
     <header :class="display" class="W3" v-if="title || subTitle">
       <h1 v-if="title" class="section-title">
         <span v-if="titleNumber" class="title-number">{{ titleNumber }}</span>
-        {{ title }}</h1>
-     
+        {{ title }}
+      </h1>
+
       <h2 v-if="subTitle" class="section-sub-title">{{ subTitle }}</h2>
     </header>
     <slot name="toggle" />
@@ -20,20 +27,33 @@
 
 <script>
 export default {
-  props: ['props', 'title', 'subTitle', 'id', 'display', 'titleNumber', 'closeButton'],
-  emits: ['closeClicked']
-}
+  props: [
+    "props",
+    "title",
+    "subTitle",
+    "id",
+    "display",
+    "titleNumber",
+    "closeButton",
+  ],
+  emits: ["closeClicked"],
+};
 </script>
 
 <style lang="scss">
 .section-wrapper {
+  width: auto;
   position: relative;
-  &.Dark{ // For Dark Backgrounds
-    .section-title, .section-sub-title, .close-button, .cancelled-wrapper{
+  &.Dark {
+    // For Dark Backgrounds
+    .section-title,
+    .section-sub-title,
+    .close-button,
+    .cancelled-wrapper {
       color: $CB-2;
     }
   }
-  .close-button{
+  .close-button {
     position: absolute;
     right: 0;
     top: 0;
@@ -44,10 +64,11 @@ export default {
   & > * {
     margin: 0 auto;
   }
-  & .anchor{ // Makes Nav scroll to correct position
+  & .anchor {
+    // Makes Nav scroll to correct position
     position: relative;
     bottom: 100px;
-   // display:none;
+    // display:none;
   }
 
   & > header {
@@ -55,9 +76,8 @@ export default {
     @include scale(padding-top, 20px, 40px, 1.5);
     & > .section-title {
       @include font-size(4);
-      @include font-style('header');
+      @include font-style("header");
       padding-bottom: 20px;
-      
     }
   }
   & .section-content {

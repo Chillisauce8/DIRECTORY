@@ -1,11 +1,8 @@
 <template>
   <TopBarWrapper>
-  <div class="top-bar Row Evenly">
-      <div class="Row Y-Center" >
-        <NavIcon
-          title="Locations"
-          svg="map-pin"
-        />
+    <div class="top-bar Row Evenly">
+      <div class="Row Y-Center">
+        <NavIcon title="Locations" svg="map-pin" />
         <NavIcon
           class="activities-nav-button"
           title="Activities"
@@ -23,21 +20,18 @@
       </div>
 
       <div class="Row Y-Center">
-        <NavIcon
-          title="Login"
-          svg="person"
-        />
+        <NavIcon title="Login" svg="person" /> <UToggle v-model="selected" />
       </div>
-  </div>
-</TopBarWrapper>
+    </div>
+  </TopBarWrapper>
 </template>
 
 <script setup lang="ts">
+const selected = ref(false);
 </script>
 
 <style lang="scss">
-.top-bar{
+.top-bar {
   width: 100%;
 }
-
 </style>
