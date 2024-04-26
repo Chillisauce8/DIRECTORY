@@ -22,33 +22,33 @@ const noSsrRule = {
 }
 
 const env: EnvironmentConfiguration =  {
-  ssr: true,
+  ssr: false,
   http: {
     serverBaseURL: serverURL
   },
   routeRules: {
-    '/my-events/**': noSsrRule,
-    '/supplier/**': noSsrRule,
-    '/inv/**': noSsrRule,
-    '/product-preview': noSsrRule,
-    '/': pageCacheRule,
-    '/stag/**': pageCacheRule,
-    '/hen/**': pageCacheRule,
-    '/groups/**': pageCacheRule,
-    '/events/**': pageCacheRule,
-    '/blog/**': pageCacheRule,
-    '/about-**': pageCacheRule,
-    '/_nuxt/**': staticCacheRule,
+    // '/my-events/**': noSsrRule,
+    // '/supplier/**': noSsrRule,
+    // '/inv/**': noSsrRule,
+    // '/product-preview': noSsrRule,
+    // '/': pageCacheRule,
+    // '/stag/**': pageCacheRule,
+    // '/hen/**': pageCacheRule,
+    // '/groups/**': pageCacheRule,
+    // '/events/**': pageCacheRule,
+    // '/blog/**': pageCacheRule,
+    // '/about-**': pageCacheRule,
+    // '/_nuxt/**': staticCacheRule,
   },
   devProxy: {
     '/api/': serverURL,
-    '/login': serverURL,
-    '/logout': serverURL,
-    '/register': serverURL,
+    // '/login': serverURL,
+    // '/logout': serverURL,
+    // '/register': serverURL,
   },
   IS_LOCAL: true,
   IS_LIVE: false,
-  ST_SITE_REFERENCE: 'test_chillisaucelimited97423',
+  // ST_SITE_REFERENCE: 'test_chillisaucelimited97423',
 };
 
 

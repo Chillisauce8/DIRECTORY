@@ -8,29 +8,28 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-delay-hydration',
-    'nuxt-primevue'
+    // 'nuxt-primevue'
   ],
   primevue: {
-    importTheme: { from: '@/themes/mytheme.js' },
+    // importTheme: { from: '@/themes/mytheme.js' },
     usePrimeVue: true,
+    // cssLayerOrder: 'primevue',
     components: {
       prefix: 'Prime',
+      include: ['Button', ],
+    },
+    directives: {
       include: '*',
-  },
-  directives: {
-    include: '*',
-    },     
+    },
     composables: {
-    include: '*',
+      include: '*',
     }
-},
- 
+  },
   devtools: {
     enabled: true
   },
   ssr: environment.ssr ?? true,
-
- css: [
+  css: [
    "@/assets/css/global.scss"
  ],
   app: {
@@ -133,6 +132,7 @@ export default defineNuxtConfig({
   },
   plugins: [
     // {src: '~/plugins/clear-path-from-app-payload.ts', mode: 'server'},
+    {src: '~/plugins/primevue.ts'},
   ],
   components: [
     {

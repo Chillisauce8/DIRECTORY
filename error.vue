@@ -22,14 +22,14 @@ useHead({
 
 <template>
   <div>
-    <UMain>
-      <UContainer>
-        <UPage>
-          <UPageError :error="error" />
-        </UPage>
-      </UContainer>
-    </UMain>
+<!--    <UMain>-->
+<!--      <UContainer>-->
+<!--        <UPage>-->
+<!--          <UPageError :error="error" />-->
+<!--        </UPage>-->
+<!--      </UContainer>-->
+<!--    </UMain>-->
 
-    <UNotifications />
+<!--    <UNotifications />-->
   </div>
 </template>
