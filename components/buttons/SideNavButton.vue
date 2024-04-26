@@ -4,7 +4,6 @@
     :disabled="disabled"
     :data-processing="processing ? '' : null"
     class="side-nav-button"
-    :type="buttonType"
   >
     <div class="button-inner">
       <div v-if="icon" class="button-icon">
@@ -19,7 +18,6 @@
 export default {
   props: [
     "id",
-    "type",
     "form",
     "disabled",
     "text",

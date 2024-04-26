@@ -2,17 +2,29 @@
 import environment from './environment';
 
 export default defineNuxtConfig({
-  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
+//  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
   modules: [
     '@nuxt/fonts',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    'nuxt-delay-hydration'
+    'nuxt-delay-hydration',
+    'nuxt-primevue'
   ],
-  ui: {
-    icons: ['heroicons', 'simple-icons'],
-    safelistColors: ['primary', 'red', 'orange', 'green']
+  primevue: {
+    importTheme: { from: '@/themes/mytheme.js' },
+    usePrimeVue: true,
+    components: {
+      prefix: 'Prime',
+      include: '*',
   },
+  directives: {
+    include: '*',
+    },     
+    composables: {
+    include: '*',
+    }
+},
+ 
   devtools: {
     enabled: true
   },
