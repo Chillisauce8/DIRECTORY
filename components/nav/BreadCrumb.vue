@@ -4,12 +4,12 @@
     <nuxt-link to="/">Home</nuxt-link>
     <nuxt-link to="/">Home</nuxt-link>
     <nuxt-link to="/">Home</nuxt-link>
-    </nav>
+  </nav>
 </template>
-<script>
-</script>
+<script></script>
 <style lang="scss">
 .breadcrumb {
+  background-color: var(--bg-color-2);
   .router-link-exact-active {
     opacity: 0.5;
     cursor: not-allowed;
@@ -27,7 +27,7 @@
       color: $C1;
     }
     &:not(:last-child):after {
-      content: ' > ';
+      content: " > ";
     }
   }
 }

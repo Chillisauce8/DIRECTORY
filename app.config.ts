@@ -6,6 +6,11 @@ export default defineAppConfig({
       default: {
         openDelay: 500
       }
+    },
+    input:{
+
+        rounded: 'rounded-sm'
+      
     }
   }
 })

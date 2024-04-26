@@ -1,5 +1,5 @@
 <template>
-  <card-wrapper class="model-card card">
+  <card-wrapper class="vehicle-card card">
     <image-wrapper
       v-if="images"
       :images="images"
@@ -8,14 +8,11 @@
       :height="145"
       loading="lazy"
     >
-      <div v-if="nickname" class="nickname">{{ nickname }}</div>
+      <div v-if="nickname" class="nickname1">" {{ nickname }} "</div>
     </image-wrapper>
     <card-text-wrapper>
-      <h1 class="name">
-        <div class="make">{{ make }}</div>
-        <div class="name">{{ name }}</div>
-      </h1>
-      <div class="year">{{ year }}</div>
+      <div v-if="nickname" class="nickname">"{{ nickname }}"</div>
+      <h1 class="name">{{ year }} {{ make }} {{ name }}</h1>
     </card-text-wrapper>
   </card-wrapper>
 </template>
@@ -25,70 +22,27 @@ const props = defineProps(["images", "name", "nickname", "make", "year"]);
 </script>
 
 <style lang="scss">
-.model-card {
+.vehicle-card {
   width: 300px;
   figure {
     @include aspect-ratio(3, 2);
   }
   header {
-    @include aspect-ratio(3, 2);
+    @include aspect-ratio(3, 1);
     //     min-height: 150px;
   }
 
-  .make {
-    font-family: $ff2;
-    font-size: 12px;
-    font-weight: 600;
-  }
   .name {
     font-family: $ff2;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 100;
   }
   .nickname {
+    font-size: 16px;
     font-family: $ff2;
-    padding: 0 0.5rem 0;
     font-weight: 600;
     letter-spacing: 0.3rem;
     text-transform: uppercase;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    background-color: black;
-  }
-
-  .year {
-    font-family: $ff2;
-    font-size: 14px;
-    font-weight: 100;
-  }
-  .price {
-    font-size: 14px;
-    font-weight: 400;
-  }
-  .heart {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    & svg {
-      fill: rgba(150, 150, 150, 0.5);
-    }
-    &:hover svg {
-      fill: red;
-      stroke: grey;
-    }
-  }
-  .specs span:not(:last-child):after {
-    content: " · ";
-  }
-  .location {
-    padding: 0 5px 0;
-    background: rgba(0, 0, 0, 0.5);
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
   }
 }
 </style>

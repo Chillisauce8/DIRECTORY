@@ -21,7 +21,7 @@
         {{ props.subTitle }}
       </h2>
     </image-wrapper>
-    <PageNav></PageNav>
+    <!--<PageNav></PageNav> -->
   </figure>
 </template>
 

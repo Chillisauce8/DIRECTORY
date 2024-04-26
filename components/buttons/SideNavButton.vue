@@ -45,7 +45,7 @@ export default {
   cursor: pointer;
   transition: all 0.5s ease-in-out;
   &:hover {
-    background-color: var(--bg-color-darkest);
+    background-color: var(--bg-color-2);
     color: var(--text-color-contrast);
   }
   @include mobile {
@@ -73,33 +73,6 @@ export default {
       }
     }
   }
-  /*
-  &[data-processing] {
-    cursor: progress;
-    // background-image: linear-gradient(to right,  var(--background-color),white, var(--background-color));
-    background-image: linear-gradient(to right, var(--background-color), white);
-    background-size: 200%;
-    animation: processing 2s linear infinite;
-  }
-  &[disabled] {
-    font-size: 12px;
-    cursor: not-allowed;
-    --background-color: #{$CB-3};
-    border: 2px solid var(--background-color);
-    background-color: var(--color);
-    background-color: $CB-05;
-    border-color: $CB-1;
-    color: var(--background-color);
-    & .disabled-text {
-      font-size: 10px;
-      text-transform: uppercase;
-      color: $CB-6;
-    }
-  }
-  &:hover:not([disabled]) {
-    animation: hover-over 2s linear infinite;
-  }
-  */
 }
 
 @keyframes hover-over {

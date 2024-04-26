@@ -1,15 +1,31 @@
 <template>
-  <nuxt-link v-if="link" :to="link" class="card-wrapper" :class="{searchhide: searchHide}">
+  <nuxt-link
+    v-if="link"
+    :to="link"
+    class="card-wrapper"
+    :class="{ searchhide: searchHide }"
+  >
     <article @click="onSelect($event)" :data-search="searchTerms">
       <slot />
     </article>
   </nuxt-link>
-  <article v-else class="card-wrapper" @click="onSelect($event)" :class="{searchhide: searchHide}"
-           :data-search="searchTerms">
+  <article
+    v-else
+    class="card-wrapper"
+    @click="onSelect($event)"
+    :class="{ searchhide: searchHide }"
+    :data-search="searchTerms"
+  >
     <slot />
     <transition name="selected">
-      <div v-if="selectable || selected" class="selected-wrapper" :class="{ selected: selected }">
-      <LazySvgIcon svg="tick" /> <div>Selected </div></div>
+      <div
+        v-if="selectable || selected"
+        class="selected-wrapper"
+        :class="{ selected: selected }"
+      >
+        <LazySvgIcon svg="tick" />
+        <div>Selected</div>
+      </div>
     </transition>
   </article>
 </template>
@@ -45,48 +61,47 @@ export default {
   data() {
     return {
       selectedInternalValue: this.selected,
-    }
+    };
   },
   methods: {
     onSelect(event: Event) {
       this.selectedInternalValue = !this.selectedInternalValue;
 
       if (this.selectable || this.link || this.clickable) {
-        this.$emit('selected', this.selectedInternalValue);
+        this.$emit("selected", this.selectedInternalValue);
       }
-    }
+    },
   },
-}
+};
 </script>
 
 <style lang="scss">
 $card-border: 5px;
 
-
 .card-wrapper {
   cursor: pointer;
-  &.Dark{
+  &.Dark {
     color: $CB-2;
   }
-  &.Transparent{
+  &.Transparent {
     background-color: transparent;
   }
   & header {
     position: relative;
   }
   position: relative; // For smooth Vue transition-group https://www.youtube.com/watch?v=DGI_aKld0Jg
-  background-color: $CB;
+  background-color: var(--bg-color-1);
   padding: $card-border;
   font-size: 12px;
   transition: all 1s ease;
   margin: 0 auto;
-  &.searchhide{
+  &.searchhide {
     animation: search-hide 3s ease 0.4s forwards;
   }
-  & .selected-wrapper{
+  & .selected-wrapper {
     display: flex;
     justify-content: space-around;
-    align-items:center;
+    align-items: center;
     background-color: $C2;
     color: white;
     font-size: 12px;
@@ -100,21 +115,21 @@ $card-border: 5px;
     right: 0px;
     width: 120px;
     height: 20px;
-    transition:all 0.3s ease-in-out;
-    & i.icon{
+    transition: all 0.3s ease-in-out;
+    & i.icon {
       width: 14px;
       height: 14px;
     }
-    & svg path{
+    & svg path {
       fill: white;
     }
     @include shadow-right();
   }
-  & .selected-wrapper:not(.selected){
+  & .selected-wrapper:not(.selected) {
     background-color: $C2;
-    width:0px;
-    height:0px;
-    overflow:hidden;
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
   }
   & .selected-wrapper.selected {
     visibility: inherit;
@@ -168,7 +183,7 @@ $card-border: 5px;
     }
     & .information {
       font-size: 14px;
-    //  font-weight: bold;
+      //  font-weight: bold;
       padding: 20px 10px;
     }
     & li {
@@ -199,11 +214,10 @@ $card-border: 5px;
     position: absolute;
     opacity: 1;
   }
-  100%{
+  100% {
     opacity: 0;
     position: absolute;
     transform: translateY(1000vh);
   }
 }
-
 </style>

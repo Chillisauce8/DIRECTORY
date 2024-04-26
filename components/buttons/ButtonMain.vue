@@ -10,17 +10,29 @@
       <div v-if="icon" class="button-icon">
         <LazySvgIcon :svg="icon" class="inline" />
       </div>
-      <div v-if="processing && processingText" class="button-text">{{processingText}}</div>
-      <div v-else-if="processing && !processingText" class="button-text">Processing...</div>
-      <div v-else class="button-text"><slot />{{ text }}
+      <div v-if="processing && processingText" class="button-text">
+        {{ processingText }}
       </div>
+      <div v-else-if="processing && !processingText" class="button-text">
+        Processing...
+      </div>
+      <div v-else class="button-text"><slot />{{ text }}</div>
     </div>
   </button>
 </template>
 
 <script>
 export default {
-  props: ["id", "type", "form", "disabled", "text", "icon", "processing", "processingText"],
+  props: [
+    "id",
+    "type",
+    "form",
+    "disabled",
+    "text",
+    "icon",
+    "processing",
+    "processingText",
+  ],
   data() {
     return {
       buttonType: this.type ?? "button",
@@ -30,8 +42,8 @@ export default {
 </script>
 
 <style lang="scss">
-body.page-location{
-  button.button-main.test-wide{
+body.page-location {
+  button.button-main.test-wide {
     width: clamp(120px, 260px, 80vw);
   }
 }
@@ -40,7 +52,7 @@ button.button-main {
   --background-color: #{$C1};
 
   color: var(--color);
-  background-color: var(--background-color);
+  background-color: var(--background-color-1);
   border-radius: 3px;
   text-transform: uppercase;
   font-family: $ff2;
@@ -49,22 +61,23 @@ button.button-main {
   height: 48px;
   cursor: pointer;
   margin: 0 auto;
-  @include mobile{
+  @include mobile {
     font-size: 13px;
     letter-spacing: 2px;
     font-weight: 600;
-  }  @include desktop{
+  }
+  @include desktop {
     font-size: 14px;
     letter-spacing: 2px;
     font-weight: 700;
   }
- 
-  &.edit-content{
+
+  &.edit-content {
     color: inherit;
     font-size: inherit;
     text-transform: inherit;
     font-weight: inherit;
-    letter-spacing:inherit;
+    letter-spacing: inherit;
   }
   &._2nd {
     --background-color: #{$CB-3};
@@ -74,25 +87,25 @@ button.button-main {
     --background-color: white;
     text-transform: none;
     transition: all 1s ease-in-out;
-    &:hover{
+    &:hover {
       background-color: $CB-1;
     }
   }
-  &.black{
+  &.black {
     --background-color: #{$CB-8};
   }
-  &.transparent{
-   // --background-color:transparent;
+  &.transparent {
+    // --background-color:transparent;
   }
-  &.border{
-   // border: 2px solid var(--color);
-   --background-color: #{$CB-8};
+  &.border {
+    // border: 2px solid var(--color);
+    --background-color: #{$CB-8};
     border: 2px solid $CB-8;
   }
-  &.beautiful-green{
+  &.beautiful-green {
     background-image: linear-gradient(to bottom right, #48b1bf, #06beb6);
-}
-  &.outline{
+  }
+  &.outline {
     border: 2px solid var(--background-color);
     background-color: var(--color);
     color: var(--background-color);
@@ -123,40 +136,37 @@ button.button-main {
       letter-spacing: 0px;
     }
   }
-  &[data-processing]{
+  &[data-processing] {
     cursor: progress;
-   // background-image: linear-gradient(to right,  var(--background-color),white, var(--background-color));
-    background-image: linear-gradient(to right,  var(--background-color),white);
+    // background-image: linear-gradient(to right,  var(--background-color),white, var(--background-color));
+    background-image: linear-gradient(to right, var(--background-color), white);
     background-size: 200%;
-      animation: processing 2s linear infinite;
+    animation: processing 2s linear infinite;
   }
-    &[disabled]{
-       font-size: 12px;
+  &[disabled] {
+    font-size: 12px;
     cursor: not-allowed;
     --background-color: #{$CB-3};
     border: 2px solid var(--background-color);
     background-color: var(--color);
-    background-color:$CB-05;
+    background-color: $CB-05;
     border-color: $CB-1;
     color: var(--background-color);
-    & .disabled-text{
+    & .disabled-text {
       font-size: 10px;
       text-transform: uppercase;
       color: $CB-6;
     }
-   
   }
-  &:hover:not([disabled]){
+  &:hover:not([disabled]) {
     animation: hover-over 2s linear infinite;
   }
-
- 
 }
 @keyframes processing {
   0% {
     background-position: 100%;
   }
-  50%{
+  50% {
     background-position: -100%;
   }
   100% {
@@ -175,6 +185,4 @@ button.button-main {
     scale: 100%;
   }
 }
-
-
 </style>

@@ -16,7 +16,7 @@ export default {};
 
 <style lang="scss">
 .side-nav {
-  background-color: var(--bg-color-darker);
+  background-color: var(--bg-color-3);
   .side-nav-slider {
     position: sticky;
     top: 64px;

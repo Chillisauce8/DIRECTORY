@@ -17,8 +17,9 @@ export default {};
   position: fixed;
   height: 64px;
   backdrop-filter: blur(10px);
-  background-color: var(--bg-color);
+  background-color: var(--bg-color-1);
   opacity: 95%;
-  @include shadow-soft();
+  color: var(--text-color-contrast);
+  //  @include shadow-soft();
 }
 </style>

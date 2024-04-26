@@ -7,7 +7,7 @@
       </nav-notification>
       <BreadCrumb />
     </BelowBarWrapper>
-    <PageNav />
+    <!-- <PageNav /> -->
   </nav>
 </template>
 
