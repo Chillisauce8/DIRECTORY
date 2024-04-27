@@ -7,7 +7,6 @@
       </nav-notification>
       <BreadCrumb />
       <PrimeButton label="Check" icon="pi pi-check" />
-      <PrimeSpeedDial />
     </BelowBarWrapper>
     <!-- <PageNav /> -->
   </nav>
