@@ -7,10 +7,10 @@
 </template>
 
 <script setup lang="ts">
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {eventEmitterTake, eventEmitterTap} from '~/services/models/event-emitter-observable-helpers';
-import {useRoutingHelper} from '~/services/helpers/routing-helper.fabric';
-import type {AuthErrorWithLink} from '~/services/helpers/auth/auth-errors-helper.service';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {eventEmitterTake, eventEmitterTap} from '~/service/models/event-emitter-observable-helpers';
+import {useRoutingHelper} from '~/service/helpers/routing-helper.fabric';
+import type {AuthErrorWithLink} from '~/service/helpers/auth/auth-errors-helper.service';
 
 
 export interface SignInDialogData {

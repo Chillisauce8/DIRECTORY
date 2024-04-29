@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {provideSignUpStrategy, useSignUpCustomerStrategy} from '~/services/helpers/auth/sign-up-strategy';
-import type {SignUpError} from '~/services/helpers/auth/sign-up-strategy';
+import {provideSignUpStrategy, useSignUpCustomerStrategy} from '~/service/helpers/auth/sign-up-strategy';
+import type {SignUpError} from '~/service/helpers/auth/sign-up-strategy';
 import {email, helpers, required} from '@vuelidate/validators';
 import SignUpForm from '~/components/auth/SignUpForm.vue';
 import type {SignUpFormValidationRules} from '~/components/auth/SignUpForm.vue';
-import type {AuthErrorWithLink} from '~/services/helpers/auth/auth-errors-helper.service';
+import type {AuthErrorWithLink} from '~/service/helpers/auth/auth-errors-helper.service';
 
 
 interface UserSignUpFormEmits {

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
-import {useDialogInstance, useDialogData} from '~/services/dialog/core/dialog.composables';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
+import {useDialogInstance, useDialogData} from '~/service/dialog/core/dialog.composables';
 import {
   useGlobalElementsTemplateService
-} from '~/services/helpers/data-templates/global-elements-template.factory';
+} from '~/service/helpers/data-templates/global-elements-template.factory';
 import type { ExternalResultMessageData } from '~/utils/cs-form-validation-helpers';
 
 

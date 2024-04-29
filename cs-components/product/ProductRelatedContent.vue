@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { useProductPageHelperService } from "~/services/helpers/product/product-page-helper.service.factory";
+import { useProductPageHelperService } from "~/service/helpers/product/product-page-helper.service.factory";
 
 export default {
   setup() {

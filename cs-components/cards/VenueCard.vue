@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { ProductVenueType } from "~/services/models/venue";
+import { ProductVenueType } from "~/service/models/venue";
 
 export default {
   props: ['venue', 'section', 'selectable', 'selected'],

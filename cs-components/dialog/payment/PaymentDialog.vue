@@ -34,7 +34,7 @@
 <script lang="ts">
 
 
-import { usePaymentService } from "~/services/helpers/payment/payment.service.factory";
+import { usePaymentService } from "~/service/helpers/payment/payment.service.factory";
 
 export interface PaymentDialogData {
 
@@ -46,19 +46,19 @@ export interface PaymentDialogResult {
 }
 
 import paymentDialogMixin from './base-payment-dialog.mixin'
-import type { ICustomerPaymentAmount } from "~/services/helpers/payment/payment.service";
-import { useCsLodash } from "~/services/cs-lodash.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useUserService } from "~/services/helpers/user-common/user-service.factory";
-import { useCurrentCustomer } from "~/services/helpers/user-common/current-customer-service.factory";
-import { usePaymentDetailsService } from "~/services/helpers/payment/payment-details.service.factory";
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
+import type { ICustomerPaymentAmount } from "~/service/helpers/payment/payment.service";
+import { useCsLodash } from "~/service/cs-lodash.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useUserService } from "~/service/helpers/user-common/user-service.factory";
+import { useCurrentCustomer } from "~/service/helpers/user-common/current-customer-service.factory";
+import { usePaymentDetailsService } from "~/service/helpers/payment/payment-details.service.factory";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
 import { useDataTemplatesStore } from "~/store/dataTemplates";
-import chilliLocalStorageService from "~/services/helpers/storage/chilli-local-storage.service";
-import { useDateHelper } from "~/services/helpers/date-helper.factory";
-import { useEventService } from "~/services/helpers/event/event.service.factory";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import chilliLocalStorageService from "~/service/helpers/storage/chilli-local-storage.service";
+import { useDateHelper } from "~/service/helpers/date-helper.factory";
+import { useEventService } from "~/service/helpers/event/event.service.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 export default {
   name: "PaymentDialog",

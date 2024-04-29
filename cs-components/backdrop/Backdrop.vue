@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useBackdropContentComponent} from '~/services/helpers/backdrop/backdrop.service';
+import {useBackdropContentComponent} from '~/service/helpers/backdrop/backdrop.service';
 
 const contentComponent = useBackdropContentComponent();
 </script>

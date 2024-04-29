@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {
   useEnquirySignInOrSignUpDialog,
-} from '~/services/helpers/auth/sign-in-or-sign-up-dialog.composable';
+} from '~/service/helpers/auth/sign-in-or-sign-up-dialog.composable';
 
 
 const {

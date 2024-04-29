@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type {FormTrackingParams} from '~/services/helpers/forms-tracking/form-tracking-params';
+import type {FormTrackingParams} from '~/service/helpers/forms-tracking/form-tracking-params';
 import {
   useUserPasswordFieldSettingsService
-} from '~/services/helpers/user-common/user-password-field-settings.service.factory';
-import {SettingsPasswordVisibilityOption} from '~/services/helpers/user-common/user-password-field-settings.service';
+} from '~/service/helpers/user-common/user-password-field-settings.service.factory';
+import {SettingsPasswordVisibilityOption} from '~/service/helpers/user-common/user-password-field-settings.service';
 import {useVuelidate} from '@vuelidate/core';
 import type {BaseValidation, ValidationRule} from '@vuelidate/core';
 import {vZukoAttrsPreparer} from '~/utils/directives/zuko-attrs-preparer.directive';

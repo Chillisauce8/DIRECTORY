@@ -35,8 +35,8 @@
   <iframe class="Column Flex" name="payment-iframe" ref="iframe"></iframe>
 </template>
 <script>
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
 
 
 export default {

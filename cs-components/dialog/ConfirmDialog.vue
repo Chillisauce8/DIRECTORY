@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useDialogConfig, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogConfig, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface ConfirmDialogData {

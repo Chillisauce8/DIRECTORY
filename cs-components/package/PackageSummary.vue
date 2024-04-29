@@ -30,15 +30,15 @@
 </template>
 
 <script lang="ts">
-import { useHidingPriceService } from "~/services/helpers/pricing/hiding-price-service.factory";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import { getPriceMarkUpString } from "~/services/models/pricing";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
-import { useGlobalElementsTemplateService } from "~/services/helpers/data-templates/global-elements-template.factory";
-import { EventPackage } from "~/services/models/package";
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import {useProductPriceViewService} from '~/services/helpers/pricing/product-price-view-service.factory';
+import { useHidingPriceService } from "~/service/helpers/pricing/hiding-price-service.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import { getPriceMarkUpString } from "~/service/models/pricing";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
+import { useGlobalElementsTemplateService } from "~/service/helpers/data-templates/global-elements-template.factory";
+import { EventPackage } from "~/service/models/package";
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import {useProductPriceViewService} from '~/service/helpers/pricing/product-price-view-service.factory';
 
 export default {
   props: [],

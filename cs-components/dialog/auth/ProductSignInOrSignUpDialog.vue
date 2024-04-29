@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {useEnquiryFormHelperService} from '~/services/helpers/enquiry/enquiry-form-helper.service.factory';
-import {useEnquirySignInOrSignUpDialog} from '~/services/helpers/auth/sign-in-or-sign-up-dialog.composable';
+import {useEnquiryFormHelperService} from '~/service/helpers/enquiry/enquiry-form-helper.service.factory';
+import {useEnquirySignInOrSignUpDialog} from '~/service/helpers/auth/sign-in-or-sign-up-dialog.composable';
 import type {SignInFormModelValue} from '~/components/auth/SignInForm.vue';
-import type {SignUpFormModelValue} from '~/services/helpers/auth/sign-up-strategy';
-import {useCurrentLocationService} from '~/services/helpers/current-location.service.factory';
+import type {SignUpFormModelValue} from '~/service/helpers/auth/sign-up-strategy';
+import {useCurrentLocationService} from '~/service/helpers/current-location.service.factory';
 
 const enquiryFormHelperService = useEnquiryFormHelperService();
 const currentLocation = useCurrentLocationService();

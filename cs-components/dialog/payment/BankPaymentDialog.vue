@@ -18,23 +18,23 @@
 
 <script lang="ts">
 
-import { useDialogData, useDialogInstance } from "~/services/dialog/core/dialog.composables";
+import { useDialogData, useDialogInstance } from "~/service/dialog/core/dialog.composables";
 import paymentDialogMixin from "~/components/dialog/payment/base-payment-dialog.mixin";
-import type { ICustomerPaymentAmount } from "~/services/helpers/payment/payment.service";
-import { usePaymentService } from "~/services/helpers/payment/payment.service.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useCurrentCustomer } from "~/services/helpers/user-common/current-customer-service.factory";
-import { useGlobalElementsTemplateService } from "~/services/helpers/data-templates/global-elements-template.factory";
-import { useCsLodash } from "~/services/cs-lodash.factory";
-import { useEventService } from "~/services/helpers/event/event.service.factory";
-import { useUserService } from "~/services/helpers/user-common/user-service.factory";
-import { usePaymentDetailsService } from "~/services/helpers/payment/payment-details.service.factory";
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
+import type { ICustomerPaymentAmount } from "~/service/helpers/payment/payment.service";
+import { usePaymentService } from "~/service/helpers/payment/payment.service.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useCurrentCustomer } from "~/service/helpers/user-common/current-customer-service.factory";
+import { useGlobalElementsTemplateService } from "~/service/helpers/data-templates/global-elements-template.factory";
+import { useCsLodash } from "~/service/cs-lodash.factory";
+import { useEventService } from "~/service/helpers/event/event.service.factory";
+import { useUserService } from "~/service/helpers/user-common/user-service.factory";
+import { usePaymentDetailsService } from "~/service/helpers/payment/payment-details.service.factory";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
 import { useDataTemplatesStore } from "~/store/dataTemplates";
-import chilliLocalStorageService from "~/services/helpers/storage/chilli-local-storage.service";
-import { useDateHelper } from "~/services/helpers/date-helper.factory";
-import { useCustomerEvents } from "~/services/helpers/event/customer-events.service.factory";
-import {useEventPackageBuilder} from '~/services/helpers/package-builder/package-builder.service.factory';
+import chilliLocalStorageService from "~/service/helpers/storage/chilli-local-storage.service";
+import { useDateHelper } from "~/service/helpers/date-helper.factory";
+import { useCustomerEvents } from "~/service/helpers/event/customer-events.service.factory";
+import {useEventPackageBuilder} from '~/service/helpers/package-builder/package-builder.service.factory';
 
 export interface BankPaymentDialogData {
 

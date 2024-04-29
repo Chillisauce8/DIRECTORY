@@ -44,15 +44,15 @@
 </template>
 
 <script setup lang="ts">
-import {PackageProduct} from '~/services/models/packageProduct';
-import {useEventPermissionsService} from '~/services/helpers/event/event-permissions.service.factory';
-import type {IVenue} from '~/services/models/venue.interface';
-import {VENUE_TO_BE_CONFIRMED_ID} from '~/services/models/venue.interface';
-import {useCsLodash} from '~/services/cs-lodash.factory';
-import {useVenueService} from '~/services/helpers/product/venue.service.factory';
+import {PackageProduct} from '~/service/models/packageProduct';
+import {useEventPermissionsService} from '~/service/helpers/event/event-permissions.service.factory';
+import type {IVenue} from '~/service/models/venue.interface';
+import {VENUE_TO_BE_CONFIRMED_ID} from '~/service/models/venue.interface';
+import {useCsLodash} from '~/service/cs-lodash.factory';
+import {useVenueService} from '~/service/helpers/product/venue.service.factory';
 import CSSelect from '~/components/forms/CSSelect.vue';
-import type {DbNode} from '~/services/helpers/db-node.typings';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import type {DbNode} from '~/service/helpers/db-node.typings';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditVenueDialogData {

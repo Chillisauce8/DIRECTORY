@@ -17,13 +17,13 @@
 </template>
 
 <script lang="ts" setup>
-import {useCsLodash} from "~/services/cs-lodash.factory";
-import {useHidingPriceService} from "~/services/helpers/pricing/hiding-price-service.factory";
-import {ProductAddon} from '~/services/models/productAddon';
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
-import { useProductPageHelperService } from "~/services/helpers/product/product-page-helper.service.factory";
-import { Product } from "~/services/models/product";
-import { useProductPriceViewService } from '~/services/helpers/pricing/product-price-view-service.factory';
+import {useCsLodash} from "~/service/cs-lodash.factory";
+import {useHidingPriceService} from "~/service/helpers/pricing/hiding-price-service.factory";
+import {ProductAddon} from '~/service/models/productAddon';
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
+import { useProductPageHelperService } from "~/service/helpers/product/product-page-helper.service.factory";
+import { Product } from "~/service/models/product";
+import { useProductPriceViewService } from '~/service/helpers/pricing/product-price-view-service.factory';
 import { nextTick } from 'vue';
 
 

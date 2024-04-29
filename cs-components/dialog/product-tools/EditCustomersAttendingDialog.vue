@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type {IPackageProductViewModel} from '~/services/helpers/package-builder/package-view-day.interface';
+import type {IPackageProductViewModel} from '~/service/helpers/package-builder/package-view-day.interface';
 import type {EditCustomersDialogResult} from '~/components/dialog/product-tools/EditCustomersDialog.vue';
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
 import {useCurrentEventStore} from '~/store/currentEvent';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useUnitsCountHelper} from '~/services/helpers/package-builder/units-count-helper.servise.factory';
-import {useCsLodash} from '~/services/cs-lodash.factory';
-import type {ICustomerAttending} from '~/services/helpers/package-builder/package-builder-params.interface';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useUnitsCountHelper} from '~/service/helpers/package-builder/units-count-helper.servise.factory';
+import {useCsLodash} from '~/service/cs-lodash.factory';
+import type {ICustomerAttending} from '~/service/helpers/package-builder/package-builder-params.interface';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditCustomersAttendingDialogData {
@@ -167,7 +167,7 @@ function calculatePossibleMaxPeopleCount(): number {
 
 function calculateMinPossibleUnitsCount(): number {
   let needPeople = vm.needPeople;
-  
+
   return unitsCountHelper
     .calculateMinNeedUnitsCount(dialogData.packageProductDescription.packageProduct, {needPeople});
 }

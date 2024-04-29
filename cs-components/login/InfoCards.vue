@@ -7,12 +7,12 @@
 </template>
 
 <script lang="ts" setup>
-import {useDataTemplateFabricService} from "~/services/helpers/data-templates/data-template-fabric.factory";
-import {useEventPermissionsService} from "~/services/helpers/event/event-permissions.service.factory";
-import {useCurrentEvent} from "~/services/helpers/event/current-event.service.factory";
+import {useDataTemplateFabricService} from "~/service/helpers/data-templates/data-template-fabric.factory";
+import {useEventPermissionsService} from "~/service/helpers/event/event-permissions.service.factory";
+import {useCurrentEvent} from "~/service/helpers/event/current-event.service.factory";
 import {useDataTemplatesStore} from '~/store/dataTemplates';
-import { useCurrentUser } from '~/services/helpers/user-common/current-user.factory';
-import {EventEmitterSubscription} from '~/services/models/event-emitter-observable';
+import { useCurrentUser } from '~/service/helpers/user-common/current-user.factory';
+import {EventEmitterSubscription} from '~/service/models/event-emitter-observable';
 
 interface InfoCardsProps {
   event: any;

@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 
-import { useDialogData, useDialogInstance } from '~/services/dialog/core/dialog.composables';
+import { useDialogData, useDialogInstance } from '~/service/dialog/core/dialog.composables';
 
 export interface CustomContentDialogData {
   eventId?: string,

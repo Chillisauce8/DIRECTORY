@@ -18,18 +18,18 @@
 </template>
 
 <script lang="ts">
-import type { Product } from "~/services/models/product";
-import type { IProduct } from "~/services/models/product.interface";
-import type { IProductAddon } from "~/services/models/productAddon";
-import { useCsLodash } from "~/services/cs-lodash.factory";
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
-import type { IHidePricesParams } from "~/services/helpers/pricing/hiding-price.service";
-import type { IFiltrationContext } from "~/services/helpers/filter-helper.service";
-import { useHidingPriceService } from "~/services/helpers/pricing/hiding-price-service.factory";
-import { useProductPagePriceHelperService } from "~/services/helpers/pricing/product-page-price-helper-service.factory";
-import type {IPriceConfig} from '~/services/models/pricing';
-import type {IProductGroup} from '~/services/helpers/product/product-groups-helper.service';
-import { useQuickAddProductService } from "~/services/helpers/package-builder/quick-add-product.factory";
+import type { Product } from "~/service/models/product";
+import type { IProduct } from "~/service/models/product.interface";
+import type { IProductAddon } from "~/service/models/productAddon";
+import { useCsLodash } from "~/service/cs-lodash.factory";
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
+import type { IHidePricesParams } from "~/service/helpers/pricing/hiding-price.service";
+import type { IFiltrationContext } from "~/service/helpers/filter-helper.service";
+import { useHidingPriceService } from "~/service/helpers/pricing/hiding-price-service.factory";
+import { useProductPagePriceHelperService } from "~/service/helpers/pricing/product-page-price-helper-service.factory";
+import type {IPriceConfig} from '~/service/models/pricing';
+import type {IProductGroup} from '~/service/helpers/product/product-groups-helper.service';
+import { useQuickAddProductService } from "~/service/helpers/package-builder/quick-add-product.factory";
 
 
 export default {

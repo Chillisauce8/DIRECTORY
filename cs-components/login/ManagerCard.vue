@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import {useCurrentEvent} from "~/services/helpers/event/current-event.service.factory";
-import {useStaffService} from "~/services/helpers/staff-common/staff.factory";
+import {useCurrentEvent} from "~/service/helpers/event/current-event.service.factory";
+import {useStaffService} from "~/service/helpers/staff-common/staff.factory";
 
 export default {
   props: ['event'],

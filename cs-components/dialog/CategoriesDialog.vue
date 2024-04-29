@@ -3,7 +3,7 @@
     class="categories-dialog"
     :title="getTitle()"
     :fullscreen="true">
-    <DialogMainLink class="page-location-none" :to=" '/' + this.getCurrentSection() + '/activities'">Browse Activities By Category</DialogMainLink> 
+    <DialogMainLink class="page-location-none" :to=" '/' + this.getCurrentSection() + '/activities'">Browse Activities By Category</DialogMainLink>
     <dialog-grid>
       <template v-for="category in categories" :key="category._doc">
         <DialogGridItem :link="getLink(category)"
@@ -16,13 +16,13 @@
 </template>
 
 <script lang="ts">
-import {useSelectMediaHelper} from "~/services/helpers/select-media-helper.factory";
-import {useHttpService} from '~/services/helpers/api-common/http-service.factory';
-import {useDialogData} from '~/services/dialog/core/dialog.composables';
-import { useCurrentSection } from '~/services/helpers/current-section.factory';
-import { useCurrentUser } from '~/services/helpers/user-common/current-user.factory';
-import { useCsLodash } from '~/services/cs-lodash.factory';
-import { useRoutingHelper } from '~/services/helpers/routing-helper.fabric';
+import {useSelectMediaHelper} from "~/service/helpers/select-media-helper.factory";
+import {useHttpService} from '~/service/helpers/api-common/http-service.factory';
+import {useDialogData} from '~/service/dialog/core/dialog.composables';
+import { useCurrentSection } from '~/service/helpers/current-section.factory';
+import { useCurrentUser } from '~/service/helpers/user-common/current-user.factory';
+import { useCsLodash } from '~/service/cs-lodash.factory';
+import { useRoutingHelper } from '~/service/helpers/routing-helper.fabric';
 
 
 export interface CategoriesDialogData {

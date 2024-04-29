@@ -11,12 +11,12 @@
 <script lang="ts">
 import {
   usePermissionDetailsService
-} from "~/services/helpers/package/permission-details.service.factory";
-import { SupplierConfirmMethod } from "~/services/models/supplier";
-import type { IConfirmation } from "~/services/models/packageProduct";
-import { useTaskListService } from "~/services/helpers/event/task-list.service.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
+} from "~/service/helpers/package/permission-details.service.factory";
+import { SupplierConfirmMethod } from "~/service/models/supplier";
+import type { IConfirmation } from "~/service/models/packageProduct";
+import { useTaskListService } from "~/service/helpers/event/task-list.service.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
 
 export default {
   props: ['packageProductDescription'],

@@ -20,14 +20,14 @@
 </template>
 
 <script setup lang="ts">
-import type {OpenDialogParams} from '~/services/dialog/core/dialog-notification.service';
-import {useDialogNotificationService} from '~/services/dialog/core/dialog-notification.service';
+import type {OpenDialogParams} from '~/service/dialog/core/dialog-notification.service';
+import {useDialogNotificationService} from '~/service/dialog/core/dialog-notification.service';
 import {nextTick, onMounted, onUnmounted, reactive, toRaw} from 'vue';
-import {addEventListenerSafe, getDocumentSafe, getWindowSafe} from '~/services/helpers/browser/browser.helpers';
-import {useDialogContainerCreator} from '~/services/dialog/core/dialog-container-creator';
-import type {CoreDialogConfig} from '~/services/dialog/core/dialog.typings';
-import {EventEmitterSubscription} from '~/services/models/event-emitter-observable';
-import {eventEmitterTake, eventEmitterTap} from '~/services/models/event-emitter-observable-helpers';
+import {addEventListenerSafe, getDocumentSafe, getWindowSafe} from '~/service/helpers/browser/browser.helpers';
+import {useDialogContainerCreator} from '~/service/dialog/core/dialog-container-creator';
+import type {CoreDialogConfig} from '~/service/dialog/core/dialog.typings';
+import {EventEmitterSubscription} from '~/service/models/event-emitter-observable';
+import {eventEmitterTake, eventEmitterTap} from '~/service/models/event-emitter-observable-helpers';
 
 
 interface DialogConfigListItem {

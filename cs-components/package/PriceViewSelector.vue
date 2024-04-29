@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { useProductPriceViewService } from "~/services/helpers/pricing/product-price-view-service.factory";
+import { useProductPriceViewService } from "~/service/helpers/pricing/product-price-view-service.factory";
 
 export default {
   props: ['eventPackage', 'product', 'siteArea'],

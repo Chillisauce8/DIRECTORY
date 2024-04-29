@@ -4,9 +4,9 @@
 
 <script setup lang="ts">
 import {provide} from 'vue';
-import {DialogInstance, DialogInstanceInjToken} from '~/services/dialog/core/dialog-instance';
-import {DialogConfigInjToken, DialogDataInjToken} from '~/services/dialog/core/dialog.typings';
-import type {CoreDialogConfig, DialogConfig} from '~/services/dialog/core/dialog.typings';
+import {DialogInstance, DialogInstanceInjToken} from '~/service/dialog/core/dialog-instance';
+import {DialogConfigInjToken, DialogDataInjToken} from '~/service/dialog/core/dialog.typings';
+import type {CoreDialogConfig, DialogConfig} from '~/service/dialog/core/dialog.typings';
 
 
 interface DialogComponentRendererProps {

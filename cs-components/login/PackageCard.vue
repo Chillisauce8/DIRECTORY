@@ -7,7 +7,7 @@
       <div class="content">
         <div class="location"> {{cardName}} </div>
         <div class="nights">{{nightsCount}} Night{{nightsCount > 1 ? 's' : ''}}</div>
-      
+
 <!--        <div class="notes" v-if="isWebPackage">-->
 <!--          A good base package to start building up a bigger packages-->
 <!--        </div>-->
@@ -28,8 +28,8 @@
 <script>
 
 
-import {useSelectMediaHelper} from "~/services/helpers/select-media-helper.factory";
-import {useCurrentSection} from "~/services/helpers/current-section.factory";
+import {useSelectMediaHelper} from "~/service/helpers/select-media-helper.factory";
+import {useCurrentSection} from "~/service/helpers/current-section.factory";
 
 export default {
   props: ['eventPackage', 'selected', 'useCurrent', 'packageIndex', 'isWebPackage'],
@@ -73,7 +73,7 @@ body {
   &:not(.package-card.package-product-card){
     width: 300px;
   }
-  
+
   :hover {
     cursor: pointer;
   }
@@ -87,7 +87,7 @@ body {
   & .top-image  {
     font-size:18px;
     text-transform: uppercase;
-   
+
     & figure {
       @include aspect-ratio(3, 1);
       margin-top: 0;
@@ -99,7 +99,7 @@ body {
       top: -10px;
       width: 56px;
       height: 56px;
-      
+
       svg{
         stroke:black;
       }

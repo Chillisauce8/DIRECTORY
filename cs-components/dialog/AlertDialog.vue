@@ -4,7 +4,7 @@
       <p class="dialog-text">{{ dialogData.message }}</p>
 
       <FormButtonWrapper :class="dialogData.horizontalButtons ? '' : 'Flex Column Center'">
-        <ButtonMain 
+        <ButtonMain
                     v-if="dialogData.button"
                     @click.native="dialogInstance.cancel()">{{ dialogData.button }}</ButtonMain>
 
@@ -12,7 +12,7 @@
                     :class="dialogData?.redYesButton ? 'C1' : 'C2'"
                     @click.native="buttonYesClick">{{ dialogData.buttonYes }}</ButtonMain>
 
-        <ButtonMain 
+        <ButtonMain
                     v-if="dialogData.buttonNo"
                     @click.native="buttonNoClick">{{ dialogData.buttonNo }}</ButtonMain>
       </FormButtonWrapper>
@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 export interface AlertDialogData {
   message: string;

@@ -15,13 +15,13 @@
 </template>
 
 <script>
-import { useEventService } from "~/services/helpers/event/event.service.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { usePackageSaver } from "~/services/helpers/package-builder/package-saver.service.factory";
-import { useNotificationMessageService } from "~/services/helpers/notification-message.factory";
+import { useEventService } from "~/service/helpers/event/event.service.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { usePackageSaver } from "~/service/helpers/package-builder/package-saver.service.factory";
+import { useNotificationMessageService } from "~/service/helpers/notification-message.factory";
 import {
   useAddUnregisteredGuestsDialogShowService
-} from "~/services/dialog/add-unregistered-guests-dialog-show.service";
+} from "~/service/dialog/add-unregistered-guests-dialog-show.service";
 
 export default {
   props: ["id", "event"],

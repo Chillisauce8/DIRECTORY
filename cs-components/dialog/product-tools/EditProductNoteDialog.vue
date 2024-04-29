@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type {ProductNote} from '~/services/models/packageProduct';
-import {ProductNoteShowEnum, ProductNoteShowToEnum} from '~/services/models/packageProduct';
-import {useEventPackageBuilder} from '~/services/helpers/package-builder/package-builder.service.factory';
-import {useCsLodash} from '~/services/cs-lodash.factory';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import type {ProductNote} from '~/service/models/packageProduct';
+import {ProductNoteShowEnum, ProductNoteShowToEnum} from '~/service/models/packageProduct';
+import {useEventPackageBuilder} from '~/service/helpers/package-builder/package-builder.service.factory';
+import {useCsLodash} from '~/service/cs-lodash.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditProductNoteDialogData {

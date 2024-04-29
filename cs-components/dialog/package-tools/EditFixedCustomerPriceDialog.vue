@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {useCsLodash} from '~/services/cs-lodash.factory';
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
+import {useCsLodash} from '~/service/cs-lodash.factory';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
 import {helpers, required} from '@vuelidate/validators';
 import {useVuelidate} from '@vuelidate/core';
 import CSCheckbox from '~/components/forms/CSCheckbox.vue';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 interface CustomerInfo {
   id: string;

@@ -11,26 +11,26 @@
 </template>
 
 <script setup lang="ts">
-import {useEventPermissionsService} from "~/services/helpers/event/event-permissions.service.factory";
-import {usePackageSaver} from "~/services/helpers/package-builder/package-saver.service.factory";
-import {useCurrentEvent} from "~/services/helpers/event/current-event.service.factory";
-import {useCustomerEvents} from "~/services/helpers/event/customer-events.service.factory";
-import {useEventPackageBuilder} from "~/services/helpers/package-builder/package-builder.service.factory";
-import {useConfirmDialogShowService} from "~/services/dialog/confirm-dialog-show.service";
-import {useGlobalElementsTemplateService} from "~/services/helpers/data-templates/global-elements-template.factory";
-import {useDataTemplateFabricService} from "~/services/helpers/data-templates/data-template-fabric.factory";
-import {usePackageUpdateCommands} from "~/services/helpers/package-builder/package-update-commands.service.factory";
-import {useHidingPriceService} from "~/services/helpers/pricing/hiding-price-service.factory";
-import {useUserService} from "~/services/helpers/user-common/user-service.factory";
+import {useEventPermissionsService} from "~/service/helpers/event/event-permissions.service.factory";
+import {usePackageSaver} from "~/service/helpers/package-builder/package-saver.service.factory";
+import {useCurrentEvent} from "~/service/helpers/event/current-event.service.factory";
+import {useCustomerEvents} from "~/service/helpers/event/customer-events.service.factory";
+import {useEventPackageBuilder} from "~/service/helpers/package-builder/package-builder.service.factory";
+import {useConfirmDialogShowService} from "~/service/dialog/confirm-dialog-show.service";
+import {useGlobalElementsTemplateService} from "~/service/helpers/data-templates/global-elements-template.factory";
+import {useDataTemplateFabricService} from "~/service/helpers/data-templates/data-template-fabric.factory";
+import {usePackageUpdateCommands} from "~/service/helpers/package-builder/package-update-commands.service.factory";
+import {useHidingPriceService} from "~/service/helpers/pricing/hiding-price-service.factory";
+import {useUserService} from "~/service/helpers/user-common/user-service.factory";
 import {useCurrentEventStore} from "~/store/currentEvent";
 import {useCurrentSavePackageStrategyStore} from "~/store/currentSavePackageStrategy";
-import {PACKAGE_STRATEGY_TYPE_ACTIONS} from "~/services/helpers/package/package-strategy-type-actions";
-import {useUiLockerService} from "~/services/helpers/ui-locker.service.factory";
+import {PACKAGE_STRATEGY_TYPE_ACTIONS} from "~/service/helpers/package/package-strategy-type-actions";
+import {useUiLockerService} from "~/service/helpers/ui-locker.service.factory";
 import {
   eventEmitterFilter,
   eventEmitterObsFirstValueFrom
-} from '~/services/models/event-emitter-observable-helpers';
-import { CurrentEventInitStates } from '~/services/helpers/event/current-event.service';
+} from '~/service/models/event-emitter-observable-helpers';
+import { CurrentEventInitStates } from '~/service/helpers/event/current-event.service';
 
 const emits = defineEmits(['update:savePackageInProgress', 'update:saveButtonVisibility']);
 

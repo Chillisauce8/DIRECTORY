@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {SectionName} from '~/utils/secten-detector-utils';
-import {useCsLodash} from '~/services/cs-lodash.factory';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useCsLodash} from '~/service/cs-lodash.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface SwapEventTypeDialogData {

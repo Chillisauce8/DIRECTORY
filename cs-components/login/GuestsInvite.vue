@@ -21,11 +21,11 @@
 </template>
 
 <script >
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
 import { Clipboard } from "v-clipboard"
-import { useIsMobileDeviceService } from "~/services/helpers/browser/is-mobile-device.service.factory";
-import { useGlobalElementsTemplateService } from '~/services/helpers/data-templates/global-elements-template.factory';
-import {useMessageService} from "~/services/helpers/message.factory";
+import { useIsMobileDeviceService } from "~/service/helpers/browser/is-mobile-device.service.factory";
+import { useGlobalElementsTemplateService } from '~/service/helpers/data-templates/global-elements-template.factory';
+import {useMessageService} from "~/service/helpers/message.factory";
 
 export default {
   props: ["id", "event"],

@@ -10,8 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import {Venue} from '~/services/models/venue';
-import {useVenueService} from '~/services/helpers/product/venue.service.factory';
+import {Venue} from '~/service/models/venue';
+import {useVenueService} from '~/service/helpers/product/venue.service.factory';
 
 
 interface SelectVenueProps {

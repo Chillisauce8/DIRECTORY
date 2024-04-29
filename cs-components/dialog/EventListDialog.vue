@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {useEnquiryFormDialogShowService} from '~/services/dialog/enquiry-form-dialog-show.service';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useEnquiryFormDialogShowService} from '~/service/dialog/enquiry-form-dialog-show.service';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 const dialogInstance = useDialogInstance();

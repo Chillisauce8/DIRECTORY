@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {required} from '@vuelidate/validators';
 import {useVuelidate} from '@vuelidate/core';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 export type DeclineProductDialogData = never;
 export type DeclineProductDialogResult = string | never;

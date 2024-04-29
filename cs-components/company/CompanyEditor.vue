@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {vAutofocus} from '~/utils/directives/autofocus';
-import {useCompanyService} from '~/services/helpers/company.service.factory';
+import {useCompanyService} from '~/service/helpers/company.service.factory';
 
 
 interface CompanyEditorProps {

@@ -99,18 +99,18 @@
 </template>
 
 <script lang="ts" setup>
-import {useCsLodash} from "~/services/cs-lodash.factory";
-import {useProductIncludedDataPreparer} from "~/services/helpers/product/product-included-data-preparer.factory";
-import {useCurrentUser} from "~/services/helpers/user-common/current-user.factory";
-import {useHidingPriceService} from "~/services/helpers/pricing/hiding-price-service.factory";
-import type { IPackageProductViewModel } from '~/services/helpers/package-builder/package-view-day.interface';
-import { useCurrentSection } from '~/services/helpers/current-section.factory';
-import { useCurrentLocationService } from '~/services/helpers/current-location.service.factory';
-import { useCurrentEvent } from '~/services/helpers/event/current-event.service.factory';
+import {useCsLodash} from "~/service/cs-lodash.factory";
+import {useProductIncludedDataPreparer} from "~/service/helpers/product/product-included-data-preparer.factory";
+import {useCurrentUser} from "~/service/helpers/user-common/current-user.factory";
+import {useHidingPriceService} from "~/service/helpers/pricing/hiding-price-service.factory";
+import type { IPackageProductViewModel } from '~/service/helpers/package-builder/package-view-day.interface';
+import { useCurrentSection } from '~/service/helpers/current-section.factory';
+import { useCurrentLocationService } from '~/service/helpers/current-location.service.factory';
+import { useCurrentEvent } from '~/service/helpers/event/current-event.service.factory';
 import {
   usePackageProductContextMenuService
-} from '~/services/helpers/package-builder/package-product-context-menu.service.factory';
-import { useReviewService } from '~/services/helpers/review/review.factory';
+} from '~/service/helpers/package-builder/package-product-context-menu.service.factory';
+import { useReviewService } from '~/service/helpers/review/review.factory';
 
 
 

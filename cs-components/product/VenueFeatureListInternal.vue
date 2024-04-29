@@ -35,8 +35,8 @@
 <script>
 
 
-import {useCsLodash} from "~/services/cs-lodash.factory";
-import {useDateHelper} from "~/services/helpers/date-helper.factory";
+import {useCsLodash} from "~/service/cs-lodash.factory";
+import {useDateHelper} from "~/service/helpers/date-helper.factory";
 
 export default {
   props: ['venue'],

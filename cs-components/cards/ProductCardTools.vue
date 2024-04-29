@@ -15,75 +15,75 @@
 </template>
 
 <script lang="ts">
-import {useEventPackageBuilder} from "~/services/helpers/package-builder/package-builder.service.factory";
-import {useCsLodash} from "~/services/cs-lodash.factory";
-import {useCurrentCustomer} from "~/services/helpers/user-common/current-customer-service.factory";
-import {useCategoryService} from "~/services/helpers/category.service.factory.";
-import {useCurrentEvent} from "~/services/helpers/event/current-event.service.factory";
-import {usePackageSaver} from "~/services/helpers/package-builder/package-saver.service.factory";
-import {usePermissionFunctionsService} from "~/services/helpers/event/permission-functions.service.factory";
-import {PackageQueryParams} from "~/services/helpers/package-builder/package-url-query-params";
-import {useLocationService} from "~/services/helpers/location.service.factory";
-import {useToolsDialogShowService} from '~/services/dialog/tools-dialog-show.service';
-import {useHideProductDialogShowService} from '~/services/dialog/product-tools/hide-product-dialog-show.service';
+import {useEventPackageBuilder} from "~/service/helpers/package-builder/package-builder.service.factory";
+import {useCsLodash} from "~/service/cs-lodash.factory";
+import {useCurrentCustomer} from "~/service/helpers/user-common/current-customer-service.factory";
+import {useCategoryService} from "~/service/helpers/category.service.factory.";
+import {useCurrentEvent} from "~/service/helpers/event/current-event.service.factory";
+import {usePackageSaver} from "~/service/helpers/package-builder/package-saver.service.factory";
+import {usePermissionFunctionsService} from "~/service/helpers/event/permission-functions.service.factory";
+import {PackageQueryParams} from "~/service/helpers/package-builder/package-url-query-params";
+import {useLocationService} from "~/service/helpers/location.service.factory";
+import {useToolsDialogShowService} from '~/service/dialog/tools-dialog-show.service';
+import {useHideProductDialogShowService} from '~/service/dialog/product-tools/hide-product-dialog-show.service';
 import {
   usePreferredStartTimeDialogShowService
-} from '~/services/dialog/product-tools/preferred-start-time-dialog-show.service';
+} from '~/service/dialog/product-tools/preferred-start-time-dialog-show.service';
 import {useBasketStore} from '~/store/basket';
-import {useStartTimeDialogShowService} from '~/services/dialog/product-tools/start-time-dialog-show.service';
+import {useStartTimeDialogShowService} from '~/service/dialog/product-tools/start-time-dialog-show.service';
 import {
   useSwapProductSupplierDialogShowService
-} from '~/services/dialog/product-tools/swap-product-supplier-dialog-show.service';
-import {useEditVenueDialogShowService} from '~/services/dialog/product-tools/edit-venue-dialog-show.service';
-import {useEditCustomersDialogShowService} from '~/services/dialog/product-tools/edit-customers-dialog-show.service';
+} from '~/service/dialog/product-tools/swap-product-supplier-dialog-show.service';
+import {useEditVenueDialogShowService} from '~/service/dialog/product-tools/edit-venue-dialog-show.service';
+import {useEditCustomersDialogShowService} from '~/service/dialog/product-tools/edit-customers-dialog-show.service';
 import {
   useEditCustomersAttendingDialogShowService
-} from '~/services/dialog/product-tools/edit-customers-attending-dialog-show.service';
+} from '~/service/dialog/product-tools/edit-customers-attending-dialog-show.service';
 import type {EditCustomersDialogResult} from '~/components/dialog/product-tools/EditCustomersDialog.vue';
 import type {EditCustomersAttendingDialogResult} from '~/components/dialog/product-tools/EditCustomersAttendingDialog.vue';
-import type {DialogResult} from '~/services/dialog/core/dialog.typings';
+import type {DialogResult} from '~/service/dialog/core/dialog.typings';
 import {
   useAcceptDeclineProductDialogShowService
-} from '~/services/dialog/product-tools/accept-decline-product-dialog-show.service';
+} from '~/service/dialog/product-tools/accept-decline-product-dialog-show.service';
 import {
   useEditProductStageDialogShowService
-} from '~/services/dialog/product-tools/edit-product-stage-dialog-show.service';
+} from '~/service/dialog/product-tools/edit-product-stage-dialog-show.service';
 import {
   useAcceptProductCancellationDialogShowService
-} from '~/services/dialog/product-tools/accept-product-cancellation-dialog-show.service';
+} from '~/service/dialog/product-tools/accept-product-cancellation-dialog-show.service';
 import {
   useEditParticipationDialogShowService
-} from '~/services/dialog/product-tools/edit-participation-dialog-show.service';
+} from '~/service/dialog/product-tools/edit-participation-dialog-show.service';
 import {
   usePackageBuilderAlertsService
-} from '~/services/helpers/package-builder/package-builder-alerts.service.factory';
+} from '~/service/helpers/package-builder/package-builder-alerts.service.factory';
 import {
   useEditFlightDetailsDialogShowService
-} from '~/services/dialog/product-tools/edit-flight-details-dialog-show.service';
+} from '~/service/dialog/product-tools/edit-flight-details-dialog-show.service';
 import {
   useEditProductNoteDialogShowService
-} from '~/services/dialog/product-tools/edit-product-note-dialog-show.service';
-import {useCancelProductDialogShowService} from '~/services/dialog/product-tools/cancel-product-dialog-show.service';
+} from '~/service/dialog/product-tools/edit-product-note-dialog-show.service';
+import {useCancelProductDialogShowService} from '~/service/dialog/product-tools/cancel-product-dialog-show.service';
 import {
   useEditProductCostDialogShowService
-} from '~/services/dialog/product-tools/edit-product-cost-dialog-show.service';
+} from '~/service/dialog/product-tools/edit-product-cost-dialog-show.service';
 import {
   useEditProductPriceDialogShowService
-} from '~/services/dialog/product-tools/edit-product-price-dialog-show.service';
-import {useVenueMapUrlBuilderService} from '~/services/helpers/venue-map-url-builder.factory';
-import {getWindowSafe} from '~/services/helpers/browser/browser.helpers';
+} from '~/service/dialog/product-tools/edit-product-price-dialog-show.service';
+import {useVenueMapUrlBuilderService} from '~/service/helpers/venue-map-url-builder.factory';
+import {getWindowSafe} from '~/service/helpers/browser/browser.helpers';
 import {
   usePackageConfirmationHelperService
-} from '~/services/helpers/package-builder/package-confirmation-helper.service.factory';
-import { useEventBookedHistoryService } from '~/services/helpers/event/event-booked-history.service.factory';
-import { useCurrentSupplier } from '~/services/helpers/supplier-common/current-supplier.factory';
+} from '~/service/helpers/package-builder/package-confirmation-helper.service.factory';
+import { useEventBookedHistoryService } from '~/service/helpers/event/event-booked-history.service.factory';
+import { useCurrentSupplier } from '~/service/helpers/supplier-common/current-supplier.factory';
 import {ProductViewMode, useProductViewModeStore} from '~/store/productViewMode';
-import {useMessageService} from '~/services/helpers/message.factory';
+import {useMessageService} from '~/service/helpers/message.factory';
 import {
   useCustomContentDialogShowService
-} from '~/services/dialog/product-tools/custom-content-dialog-show.service';
-import { useCustomerEvents } from '~/services/helpers/event/customer-events.service.factory';
-import chilliLocalStorageService from '~/services/helpers/storage/chilli-local-storage.service';
+} from '~/service/dialog/product-tools/custom-content-dialog-show.service';
+import { useCustomerEvents } from '~/service/helpers/event/customer-events.service.factory';
+import chilliLocalStorageService from '~/service/helpers/storage/chilli-local-storage.service';
 
 export default {
   setup() {

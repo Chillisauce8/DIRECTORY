@@ -68,23 +68,23 @@
 <script lang="ts">
 
 
-import {useProductIncludedDataPreparer} from "~/services/helpers/product/product-included-data-preparer.factory";
+import {useProductIncludedDataPreparer} from "~/service/helpers/product/product-included-data-preparer.factory";
 import {usePackageCommonSettingsStore} from '~/store/packageCommonSettings';
 import {useSectionStore} from '~/store/section';
-import { calculatePriceMarkUp, getPriceMarkUpString } from "~/services/models/pricing";
-import { useProductPagePriceHelperService } from "~/services/helpers/pricing/product-page-price-helper-service.factory";
-import { useHidingPriceService } from "~/services/helpers/pricing/hiding-price-service.factory";
-import type { IHidePricesParams } from "~/services/helpers/pricing/hiding-price.service";
-import type { IFiltrationContext } from "~/services/helpers/filter-helper.service";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
-import { EventPackage } from "~/services/models/package";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useProductPriceViewService } from "~/services/helpers/pricing/product-price-view-service.factory";
-import { getWindowSafe } from '~/services/helpers/browser/browser.helpers';
-import { SITE_AREAS } from '~/services/siteAreas.const';
-import { useProductPageHelperService } from '~/services/helpers/product/product-page-helper.service.factory';
-import {useCurrentSiteArea} from '~/services/helpers/current-site-area.factory';
+import { calculatePriceMarkUp, getPriceMarkUpString } from "~/service/models/pricing";
+import { useProductPagePriceHelperService } from "~/service/helpers/pricing/product-page-price-helper-service.factory";
+import { useHidingPriceService } from "~/service/helpers/pricing/hiding-price-service.factory";
+import type { IHidePricesParams } from "~/service/helpers/pricing/hiding-price.service";
+import type { IFiltrationContext } from "~/service/helpers/filter-helper.service";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
+import { EventPackage } from "~/service/models/package";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useProductPriceViewService } from "~/service/helpers/pricing/product-price-view-service.factory";
+import { getWindowSafe } from '~/service/helpers/browser/browser.helpers';
+import { SITE_AREAS } from '~/service/siteAreas.const';
+import { useProductPageHelperService } from '~/service/helpers/product/product-page-helper.service.factory';
+import {useCurrentSiteArea} from '~/service/helpers/current-site-area.factory';
 
 export default {
   props: ['product', 'reviewScore', 'reviewCount', 'priceValue', 'packageSettings',

@@ -19,11 +19,11 @@
 </template>
 
 <script setup lang="ts">
-import { useCurrentSection } from "~/services/helpers/current-section.factory";
-import { useContentService } from "~/services/helpers/content.service.factory";
-import { useContentListGridModelPreparer } from "~/services/helpers/content-grid-model-preparer.service.factory";
+import { useCurrentSection } from "~/service/helpers/current-section.factory";
+import { useContentService } from "~/service/helpers/content.service.factory";
+import { useContentListGridModelPreparer } from "~/service/helpers/content-grid-model-preparer.service.factory";
 import { useCurrentLocationStore } from "~/store/currentLocation";
-import { useLocationService } from "~/services/helpers/location.service.factory";
+import { useLocationService } from "~/service/helpers/location.service.factory";
 import { usePageDataLoadedStore } from "~/store/pageDataLoaded";
 
 interface SectionDestinationGuidesProps {

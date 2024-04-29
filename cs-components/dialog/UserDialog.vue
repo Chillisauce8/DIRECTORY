@@ -13,9 +13,9 @@
 <script lang="ts">
 import {reactive} from 'vue';
 import type {UserFormUserData} from '~/components/auth/UserForm.vue';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
 import type {BaseUserDbNode} from '~/helpers/user-data-helpers';
 
 

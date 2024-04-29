@@ -21,18 +21,18 @@
 </template>
 
 <script lang="ts" setup>
-import { usePackageTimesHelperService } from '~/services/helpers/package-builder/package-times-helper.service.factory';
-import { useProductTimesHelperService } from '~/services/helpers/product/product-times-helper-service.factory';
-import { useUnitsCountHelper } from '~/services/helpers/package-builder/units-count-helper.servise.factory';
-import { useEventPermissionsService } from '~/services/helpers/event/event-permissions.service.factory';
-import { useDataTemplateFabricService } from '~/services/helpers/data-templates/data-template-fabric.factory';
-import { useGlobalElementsTemplateService } from '~/services/helpers/data-templates/global-elements-template.factory';
-import { useDateHelper } from '~/services/helpers/date-helper.factory';
-import { useEventSummaryService } from '~/services/helpers/event/event-summary.service.factory';
-import { useVenueService } from '~/services/helpers/product/venue.service.factory';
-import {PackageProduct} from '~/services/models/packageProduct';
+import { usePackageTimesHelperService } from '~/service/helpers/package-builder/package-times-helper.service.factory';
+import { useProductTimesHelperService } from '~/service/helpers/product/product-times-helper-service.factory';
+import { useUnitsCountHelper } from '~/service/helpers/package-builder/units-count-helper.servise.factory';
+import { useEventPermissionsService } from '~/service/helpers/event/event-permissions.service.factory';
+import { useDataTemplateFabricService } from '~/service/helpers/data-templates/data-template-fabric.factory';
+import { useGlobalElementsTemplateService } from '~/service/helpers/data-templates/global-elements-template.factory';
+import { useDateHelper } from '~/service/helpers/date-helper.factory';
+import { useEventSummaryService } from '~/service/helpers/event/event-summary.service.factory';
+import { useVenueService } from '~/service/helpers/product/venue.service.factory';
+import {PackageProduct} from '~/service/models/packageProduct';
 import {useDataTemplatesStore} from '~/store/dataTemplates';
-import { useProductPageHelperService } from '~/services/helpers/product/product-page-helper.service.factory';
+import { useProductPageHelperService } from '~/service/helpers/product/product-page-helper.service.factory';
 
 
 interface ProductCardBasketDetailsProps {

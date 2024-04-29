@@ -1,6 +1,6 @@
 <script lang="ts">
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {useCurrentSection} from '~/services/helpers/current-section.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {useCurrentSection} from '~/service/helpers/current-section.factory';
 export type ContactDialogData  = void;
 export type ContactDialogResult = void;
 
@@ -36,7 +36,7 @@ export default {
 <template>
   <TheDialog title="Contact"
              class="contact-dialog">
-   
+
 
   <!--  <p>Example of the section: {{ sectionStoredInData }}</p>
     <p>Example of the long section name: {{ longSectionNameStoredInData }}</p> -->

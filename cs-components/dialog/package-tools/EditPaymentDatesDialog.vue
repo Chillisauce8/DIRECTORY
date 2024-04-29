@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditPaymentDatesDialogData {

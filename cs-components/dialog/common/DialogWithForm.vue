@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import type {DialogProps} from '~/components/dialog/core/TheDialog.vue';
 import {reactive, watch} from 'vue';
-import {defaultCloseButtonClickHandlerFactory} from '~/services/dialog/core/dialog.helpers';
+import {defaultCloseButtonClickHandlerFactory} from '~/service/dialog/core/dialog.helpers';
 
 
 export interface DialogWithFormProps {

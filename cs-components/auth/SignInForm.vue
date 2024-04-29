@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import {vZukoAttrsPreparer} from '~/utils/directives/zuko-attrs-preparer.directive';
-import type {FormTrackingParams} from '~/services/helpers/forms-tracking/form-tracking-params';
+import type {FormTrackingParams} from '~/service/helpers/forms-tracking/form-tracking-params';
 import type {ValidationRule} from '@vuelidate/core';
 import {useVuelidate} from '@vuelidate/core';
 import type {YesNoValue} from '~/utils/common.types';
-import type {AuthFormDescription} from '~/services/helpers/auth/sign-up-or-login-description-helper.service';
+import type {AuthFormDescription} from '~/service/helpers/auth/sign-up-or-login-description-helper.service';
 import {email, minLength, required} from '@vuelidate/validators';
-import {useLoginOrSignUpFormHelperService} from '~/services/helpers/auth/login-or-sign-up-form-helper.service.factory';
-import {EventEmitterSubscription} from '~/services/models/event-emitter-observable';
-import {eventEmitterTap} from '~/services/models/event-emitter-observable-helpers';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
-import {useResetPasswordDialogService} from '~/services/dialog/reset-password-dialog.service';
-import {DEFAULT_SIGN_IN_FORM} from '~/services/helpers/auth/auth-form.types';
+import {useLoginOrSignUpFormHelperService} from '~/service/helpers/auth/login-or-sign-up-form-helper.service.factory';
+import {EventEmitterSubscription} from '~/service/models/event-emitter-observable';
+import {eventEmitterTap} from '~/service/models/event-emitter-observable-helpers';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
+import {useResetPasswordDialogService} from '~/service/dialog/reset-password-dialog.service';
+import {DEFAULT_SIGN_IN_FORM} from '~/service/helpers/auth/auth-form.types';
 
 
 export interface SignInFormTrackingParams {
@@ -292,7 +292,7 @@ defineExpose({formModel: vm.formModel, validation: v$});
 
       <ButtonMain v-if="vm.needUseOAuthGoogleTokenLogin"
                   :processing="vm.inProgress"
-                
+
                   type="submit"
                   @click.native="doLoginWithOAuthGoogleToken">Sign In Via Google</ButtonMain>
     </div>

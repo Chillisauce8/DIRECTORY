@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type {EventManager} from '~/services/helpers/event/event.service';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import type {EventManager} from '~/service/helpers/event/event.service';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditManagerDialogData {

@@ -204,20 +204,20 @@
 </template>
 
 <script lang="ts" setup>
-import { usePackageTimesHelperService } from "~/services/helpers/package-builder/package-times-helper.service.factory";
-import { useProductTimesHelperService } from "~/services/helpers/product/product-times-helper-service.factory";
-import { useUnitsCountHelper } from "~/services/helpers/package-builder/units-count-helper.servise.factory";
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
-import { useGlobalElementsTemplateService } from "~/services/helpers/data-templates/global-elements-template.factory";
-import { useDateHelper } from "~/services/helpers/date-helper.factory";
-import { useVenueService } from "~/services/helpers/product/venue.service.factory";
-import { useCurrentUser } from "~~/services/helpers/user-common/current-user.factory";
-import { useCurrentSiteArea } from "~/services/helpers/current-site-area.factory";
+import { usePackageTimesHelperService } from "~/service/helpers/package-builder/package-times-helper.service.factory";
+import { useProductTimesHelperService } from "~/service/helpers/product/product-times-helper-service.factory";
+import { useUnitsCountHelper } from "~/service/helpers/package-builder/units-count-helper.servise.factory";
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
+import { useGlobalElementsTemplateService } from "~/service/helpers/data-templates/global-elements-template.factory";
+import { useDateHelper } from "~/service/helpers/date-helper.factory";
+import { useVenueService } from "~/service/helpers/product/venue.service.factory";
+import { useCurrentUser } from "~~/service/helpers/user-common/current-user.factory";
+import { useCurrentSiteArea } from "~/service/helpers/current-site-area.factory";
 import { useIsStaffToggledStore } from "~/store/isStaffToggled";
-import type { IPackageProductViewModel } from "~/services/helpers/package-builder/package-view-day.interface";
-import { useProductPageHelperService } from '~/services/helpers/product/product-page-helper.service.factory';
-import {useProductPriceViewService} from '~/services/helpers/pricing/product-price-view-service.factory';
+import type { IPackageProductViewModel } from "~/service/helpers/package-builder/package-view-day.interface";
+import { useProductPageHelperService } from '~/service/helpers/product/product-page-helper.service.factory';
+import {useProductPriceViewService} from '~/service/helpers/pricing/product-price-view-service.factory';
 
 interface ProductCardDetailsProps {
   open?: boolean;

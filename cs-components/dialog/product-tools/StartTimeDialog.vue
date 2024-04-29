@@ -24,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 interface StartTimeSelectItem {

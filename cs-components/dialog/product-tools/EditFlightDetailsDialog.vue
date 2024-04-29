@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type {IFlightDetails} from '~/services/models/packageProduct';
+import type {IFlightDetails} from '~/service/models/packageProduct';
 import {useVuelidate} from '@vuelidate/core';
 import {maxLength, required} from '@vuelidate/validators';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditFlightDetailsDialogData extends IFlightDetails {}

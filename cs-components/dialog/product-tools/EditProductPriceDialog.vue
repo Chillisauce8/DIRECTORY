@@ -2,7 +2,7 @@
 import type {YesNoValue} from '~/utils/common.types';
 import {minValue, required} from '@vuelidate/validators';
 import {useVuelidate} from '@vuelidate/core';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditProductPriceDialogData {

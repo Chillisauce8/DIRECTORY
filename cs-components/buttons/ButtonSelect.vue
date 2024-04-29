@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import {getDocumentSafe} from '~/services/helpers/browser/browser.helpers';
+import {getDocumentSafe} from '~/service/helpers/browser/browser.helpers';
 
 export default {
   props: {

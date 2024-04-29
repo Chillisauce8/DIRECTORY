@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
 
 export default {
   name: "payment-result",

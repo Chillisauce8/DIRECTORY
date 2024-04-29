@@ -58,13 +58,13 @@
 <script>
 
 
-import {useCsLodash} from "~/services/cs-lodash.factory";
-import {useProductIncludedDataPreparer} from "~/services/helpers/product/product-included-data-preparer.factory";
-import {useHidingPriceService} from "~/services/helpers/pricing/hiding-price-service.factory";
-import {Product} from "~/services/models/product";
-import {useCurrentSection} from "~/services/helpers/current-section.factory";
-import {useCurrentLocationService} from "~/services/helpers/current-location.service.factory";
-import {useProductContextMenuService} from "~/services/helpers/product/product-context-menu.factory";
+import {useCsLodash} from "~/service/cs-lodash.factory";
+import {useProductIncludedDataPreparer} from "~/service/helpers/product/product-included-data-preparer.factory";
+import {useHidingPriceService} from "~/service/helpers/pricing/hiding-price-service.factory";
+import {Product} from "~/service/models/product";
+import {useCurrentSection} from "~/service/helpers/current-section.factory";
+import {useCurrentLocationService} from "~/service/helpers/current-location.service.factory";
+import {useProductContextMenuService} from "~/service/helpers/product/product-context-menu.factory";
 
 export default {
   props: {

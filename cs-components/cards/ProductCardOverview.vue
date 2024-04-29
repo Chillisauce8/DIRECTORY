@@ -5,7 +5,7 @@
       <h1 v-if="!hideName">
         {{ product.getName() }}
       </h1>
-    
+
       <div
         class="options"
         v-if="product.getOptions() && product.getOptions().length"
@@ -33,7 +33,7 @@
       <div class="price" >
         {{ productPriceView }}
       </div>
-  
+
    <div class="margin user-staff-show" v-if="productData.productMarkUpView">
         {{ productData.productMarkUpView }}
       </div>
@@ -64,8 +64,8 @@
 </template>
 
 <script>
-import { Product } from "~/services/models/product";
-import { useCurrentLocationService } from "~/services/helpers/current-location.service.factory";
+import { Product } from "~/service/models/product";
+import { useCurrentLocationService } from "~/service/helpers/current-location.service.factory";
 
 export default {
   setup(props) {
@@ -152,7 +152,7 @@ $stars-color: $C1;
 }
 
     & .margin, .allocation{
-  
+
       font-size: 14px;
     }
   }

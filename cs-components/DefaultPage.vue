@@ -3,8 +3,8 @@
 </template>
 
 <script lang="ts">
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
-import { DataTemplate } from "~/services/models/dataTemplate";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
+import { DataTemplate } from "~/service/models/dataTemplate";
 import { useDataTemplatesStore } from "~/store/dataTemplates";
 
 export default {

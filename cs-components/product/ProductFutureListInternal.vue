@@ -168,10 +168,10 @@
 <script>
 
 
-import {useGlobalElementsTemplateService} from "~/services/helpers/data-templates/global-elements-template.factory";
-import {useCsLodash} from "~/services/cs-lodash.factory";
-import {useDateHelper} from "~/services/helpers/date-helper.factory";
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
+import {useGlobalElementsTemplateService} from "~/service/helpers/data-templates/global-elements-template.factory";
+import {useCsLodash} from "~/service/cs-lodash.factory";
+import {useDateHelper} from "~/service/helpers/date-helper.factory";
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
 
 export default {
   props: ['product', 'isVenueOnTop'],

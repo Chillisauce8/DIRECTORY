@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { useSectionStore } from '~/store/section';
-import { useCsLodash } from '~/services/cs-lodash.factory';
+import { useCsLodash } from '~/service/cs-lodash.factory';
 
 
 export default {

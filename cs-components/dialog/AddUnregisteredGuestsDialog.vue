@@ -23,8 +23,8 @@ import { nameUniqValidator, csUserNameValidator } from "~/utils/cs-form-validato
 import type { Validation } from '@vuelidate/core';
 import { useVuelidate } from '@vuelidate/core';
 import {getValidationErrorMessage} from '~/utils/cs-form-validation-helpers';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
 
 
 

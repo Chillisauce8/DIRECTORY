@@ -78,8 +78,8 @@
 
 <script lang="ts">
 import PaymentField from "~/components/payments/payment-field.vue";
-import { useCurrentCustomer } from "~/services/helpers/user-common/current-customer-service.factory";
-import type { ICustomerPaymentAmount } from "~/services/helpers/payment/payment.service";
+import { useCurrentCustomer } from "~/service/helpers/user-common/current-customer-service.factory";
+import type { ICustomerPaymentAmount } from "~/service/helpers/payment/payment.service";
 import type { Validation } from '@vuelidate/core';
 import { maxValue, minValue } from "@vuelidate/validators";
 import {
@@ -456,7 +456,7 @@ export default {
       return resultPaymentAmount;
     }
 
-    
+
     init();
 
     v$ = useVuelidate(formValidationRules, formData);
@@ -469,7 +469,7 @@ export default {
     watch(() => props.paymentType, v => {
       init();
     });
-    
+
     return {
       formData,
       v$,

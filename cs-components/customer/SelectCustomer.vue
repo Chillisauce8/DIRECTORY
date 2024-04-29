@@ -10,7 +10,7 @@
 
 
 <script setup lang="ts">
-import { useCustomerService} from '~/services/helpers/customer/customer.service';
+import { useCustomerService} from '~/service/helpers/customer/customer.service';
 import {reactive} from 'vue';
 import type {CS5CustomerDbNode} from '~/helpers/user-data-helpers';
 import {useCurrentCustomerIdStore} from '~/store/currentCustomerId';

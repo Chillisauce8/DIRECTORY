@@ -7,17 +7,17 @@
 </template>
 
 <script setup lang="ts">
-import { usePackageSaver } from "~/services/helpers/package-builder/package-saver.service.factory";
-import { useSavePackageChangesHelperService } from "~/services/helpers/package-builder/save-package-changes-helper.service.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
+import { usePackageSaver } from "~/service/helpers/package-builder/package-saver.service.factory";
+import { useSavePackageChangesHelperService } from "~/service/helpers/package-builder/save-package-changes-helper.service.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
 import {
   eventEmitterFilter,
   eventEmitterObsFirstValueFrom,
-} from "~/services/models/event-emitter-observable-helpers";
-import { CurrentEventInitStates } from "~/services/helpers/event/current-event.service";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
+} from "~/service/models/event-emitter-observable-helpers";
+import { CurrentEventInitStates } from "~/service/helpers/event/current-event.service";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
 import { useProductViewModeStore } from '~/store/productViewMode';
-import { useCsLodash } from '~/services/cs-lodash.factory';
+import { useCsLodash } from '~/service/cs-lodash.factory';
 
 const packageSaver = usePackageSaver();
 const packageBuilder = useEventPackageBuilder();

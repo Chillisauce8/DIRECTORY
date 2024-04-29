@@ -87,13 +87,13 @@
 </template>
 
 <script lang="ts">
-import type { Product } from "~/services/models/product";
+import type { Product } from "~/service/models/product";
 import type { PropType } from "vue";
-import { useProductUrlGetterService } from "~/services/helpers/product-url-getter.service.factory";
-import { useCurrentSection } from "~/services/helpers/current-section.factory";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import type { IProductGroup } from "~/services/helpers/product/product-groups-helper.service";
-import { useQuickAddProductService } from "~/services/helpers/package-builder/quick-add-product.factory";
+import { useProductUrlGetterService } from "~/service/helpers/product-url-getter.service.factory";
+import { useCurrentSection } from "~/service/helpers/current-section.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import type { IProductGroup } from "~/service/helpers/product/product-groups-helper.service";
+import { useQuickAddProductService } from "~/service/helpers/package-builder/quick-add-product.factory";
 
 interface PageSearchProductCardContent extends IProductGroup<Product> {
   //

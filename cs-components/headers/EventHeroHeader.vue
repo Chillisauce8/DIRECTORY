@@ -13,32 +13,32 @@
         <LazySvgIcon v-if="canChangeEventName" svg="edit" />
       </div>
         <h2 v-if="canChangeEventName">Click to Edit Event Name</h2>
-     
+
       </div>
     </image-wrapper>
   </HeroHeaderWrapper>
 </template>
 
 <script>
-import { useDateHelper } from "~/services/helpers/date-helper.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useSettingsTemplateService } from "~/services/helpers/data-templates/settings-template.factory";
-import { useEventBookedHistoryService } from "~/services/helpers/event/event-booked-history.service.factory";
+import { useDateHelper } from "~/service/helpers/date-helper.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useSettingsTemplateService } from "~/service/helpers/data-templates/settings-template.factory";
+import { useEventBookedHistoryService } from "~/service/helpers/event/event-booked-history.service.factory";
 import { useCurrentEventStore } from "~/store/currentEvent";
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
-import {usePackageBookingNotifyService} from '~/services/helpers/package/package-booking-notify.service.factory';
-import {usePackageSaver} from '~/services/helpers/package-builder/package-saver.service.factory';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
+import {usePackageBookingNotifyService} from '~/service/helpers/package/package-booking-notify.service.factory';
+import {usePackageSaver} from '~/service/helpers/package-builder/package-saver.service.factory';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
 import {useCustomerEventsStore} from '~/store/customerEvents';
-import {useUserDialogShowService} from '~/services/dialog/user-dialog-show.service';
-import {useSelectCustomerDialogShowService} from '~/services/dialog/select-customer-dialog-show.service';
-import {useCustomerEvents} from '~/services/helpers/event/customer-events.service.factory';
-import {useCurrentSection} from "~/services/helpers/current-section.factory";
-import {useGlobalElementsTemplateService} from '~/services/helpers/data-templates/global-elements-template.factory';
-import {useMessageService} from '~/services/helpers/message.factory';
-import {getDocumentSafe, getWindowSafe} from '~/services/helpers/browser/browser.helpers';
+import {useUserDialogShowService} from '~/service/dialog/user-dialog-show.service';
+import {useSelectCustomerDialogShowService} from '~/service/dialog/select-customer-dialog-show.service';
+import {useCustomerEvents} from '~/service/helpers/event/customer-events.service.factory';
+import {useCurrentSection} from "~/service/helpers/current-section.factory";
+import {useGlobalElementsTemplateService} from '~/service/helpers/data-templates/global-elements-template.factory';
+import {useMessageService} from '~/service/helpers/message.factory';
+import {getDocumentSafe, getWindowSafe} from '~/service/helpers/browser/browser.helpers';
 
 export default {
   name: "EventHeroHeader",
@@ -105,7 +105,7 @@ export default {
       packageLoadedSubscription: undefined,
       subscriptionList: [],
       images: {
-          stag: [      
+          stag: [
 
         {
           cloudinaryId: '6546652cafa7da0f9649fdbb', // Karts Racing

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {vTextareaAutosize} from '~/utils/directives/textarea-autosize.directive';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditCustomerNotesDialogData {

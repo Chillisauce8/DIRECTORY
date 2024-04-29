@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import {useDataTemplateFabricService} from "~/services/helpers/data-templates/data-template-fabric.factory";
+import {useDataTemplateFabricService} from "~/service/helpers/data-templates/data-template-fabric.factory";
 import { useDataTemplatesStore } from '~/store/dataTemplates';
 import {usePageDataLoadedStore} from '~/store/pageDataLoaded';
 

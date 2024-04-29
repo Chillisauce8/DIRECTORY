@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type {EnquiryFormModelValue} from '~/services/helpers/enquiry/enquiry-form-helper.service';
-import {EnquiryFormHelperService} from '~/services/helpers/enquiry/enquiry-form-helper.service';
+import type {EnquiryFormModelValue} from '~/service/helpers/enquiry/enquiry-form-helper.service';
+import {EnquiryFormHelperService} from '~/service/helpers/enquiry/enquiry-form-helper.service';
 import type {SignInFormModelValue} from '~/components/auth/SignInForm.vue';
-import {useEnquiryFormHelperService} from '~/services/helpers/enquiry/enquiry-form-helper.service.factory';
-import type {AuthFormDescription} from '~/services/helpers/auth/sign-up-or-login-description-helper.service';
+import {useEnquiryFormHelperService} from '~/service/helpers/enquiry/enquiry-form-helper.service.factory';
+import type {AuthFormDescription} from '~/service/helpers/auth/sign-up-or-login-description-helper.service';
 import {email, minLength, required} from '@vuelidate/validators';
 
 

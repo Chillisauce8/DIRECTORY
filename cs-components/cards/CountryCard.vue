@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import {useLocationService} from "~/services/helpers/location.service.factory";
-import {useCurrentSection} from "~/services/helpers/current-section.factory";
+import {useLocationService} from "~/service/helpers/location.service.factory";
+import {useCurrentSection} from "~/service/helpers/current-section.factory";
 
 export default {
   props: ['name', 'images', 'section', 'searchTerms', 'searchHide'],

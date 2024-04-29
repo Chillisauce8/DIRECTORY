@@ -2,12 +2,12 @@
 import {vZukoAttrsPreparer} from '~/utils/directives/zuko-attrs-preparer.directive';
 import {vAutofocus} from '~/utils/directives/autofocus';
 import {email, helpers, required} from '@vuelidate/validators';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
 import {useVuelidate} from '@vuelidate/core';
-import type {EmailVerificationResult} from '~/services/helpers/user-common/user.service';
+import type {EmailVerificationResult} from '~/service/helpers/user-common/user.service';
 import type {BaseValidation, ValidationRule} from '@vuelidate/core';
-import type {FormTrackingParams} from '~/services/helpers/forms-tracking/form-tracking-params';
+import type {FormTrackingParams} from '~/service/helpers/forms-tracking/form-tracking-params';
 
 
 export interface EmailFormValidationData {

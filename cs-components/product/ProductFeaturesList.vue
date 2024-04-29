@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import { useCsLodash } from "~/services/cs-lodash.factory";
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
+import { useCsLodash } from "~/service/cs-lodash.factory";
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
 
 export default {
   props: ['id', 'product', 'noWrapper', 'isVenueOnTop'],

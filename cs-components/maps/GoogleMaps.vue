@@ -58,7 +58,7 @@
 
 <script lang="ts">
 import { useGoogleMapsApiPromiseLazy } from '@gmap-vue/v3/composables';
-import { ProductVenueType } from '~/services/models/venue';
+import { ProductVenueType } from '~/service/models/venue';
 
 export default {
   props: ['product', 'section', 'isVenueConfirmed'],

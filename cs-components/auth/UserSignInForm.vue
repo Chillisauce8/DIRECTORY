@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type {AuthErrorWithLink} from '~/services/helpers/auth/auth-errors-helper.service';
-import {useAuthErrorsHelperService} from '~/services/helpers/auth/auth-errors-helper.service.factory';
-import {useResetPasswordDialogService} from '~/services/dialog/reset-password-dialog.service';
-import {useGlobalElementsTemplateService} from '~/services/helpers/data-templates/global-elements-template.factory';
+import type {AuthErrorWithLink} from '~/service/helpers/auth/auth-errors-helper.service';
+import {useAuthErrorsHelperService} from '~/service/helpers/auth/auth-errors-helper.service.factory';
+import {useResetPasswordDialogService} from '~/service/dialog/reset-password-dialog.service';
+import {useGlobalElementsTemplateService} from '~/service/helpers/data-templates/global-elements-template.factory';
 
 
 interface UserSignInFormProps {

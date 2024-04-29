@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useEventService} from '~/services/helpers/event/event.service.factory';
+import {useEventService} from '~/service/helpers/event/event.service.factory';
 
 
 interface EventManager {

@@ -14,7 +14,7 @@
 <script>
 
 
-import {useEnquiryFormDialogShowService} from "~/services/dialog/enquiry-form-dialog-show.service";
+import {useEnquiryFormDialogShowService} from "~/service/dialog/enquiry-form-dialog-show.service";
 
 export default {
   props: ['props'],
@@ -34,7 +34,7 @@ export default {
 <style lang="scss">
 .locked-card {
     @include desktop{
-        display: flex;  
+        display: flex;
         flex-direction: row;
         width: 800px;
         .images{

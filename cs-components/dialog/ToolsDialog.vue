@@ -14,8 +14,8 @@
 
 <script lang="ts">
 import {reactive} from 'vue';
-import type {Tool, ToolButton} from '~/services/helpers/package-builder/tool.typings';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import type {Tool, ToolButton} from '~/service/helpers/package-builder/tool.typings';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 

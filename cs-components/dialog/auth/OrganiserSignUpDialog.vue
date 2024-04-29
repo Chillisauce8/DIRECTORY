@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {useOrganiserSignUpDialog,} from '~/services/helpers/auth/sign-in-or-sign-up-dialog.composable';
+import {useOrganiserSignUpDialog,} from '~/service/helpers/auth/sign-in-or-sign-up-dialog.composable';
 import {
   provideSignUpStrategy,
   type SignUpResult,
   useSignUpOrganiserStrategy
-} from '~/services/helpers/auth/sign-up-strategy';
+} from '~/service/helpers/auth/sign-up-strategy';
 
 const {
   vm,

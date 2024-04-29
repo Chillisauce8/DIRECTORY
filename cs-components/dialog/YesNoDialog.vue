@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {YesNoValue} from '~/utils/common.types';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 export interface YesNoDialogData {
   title: string;

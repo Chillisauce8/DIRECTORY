@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type {ICustomerAttending} from '~/services/helpers/package-builder/package-builder-params.interface';
-import type {IPackageProductViewModel} from '~/services/helpers/package-builder/package-view-day.interface';
+import type {ICustomerAttending} from '~/service/helpers/package-builder/package-builder-params.interface';
+import type {IPackageProductViewModel} from '~/service/helpers/package-builder/package-view-day.interface';
 import {useCurrentEventStore} from '~/store/currentEvent';
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
-import type {IProduct} from '~/services/models/product.interface';
-import {useUnitsCountHelper} from '~/services/helpers/package-builder/units-count-helper.servise.factory';
-import {useMessageService} from '~/services/helpers/message.factory';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useCsLodash} from '~/services/cs-lodash.factory';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
+import type {IProduct} from '~/service/models/product.interface';
+import {useUnitsCountHelper} from '~/service/helpers/package-builder/units-count-helper.servise.factory';
+import {useMessageService} from '~/service/helpers/message.factory';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useCsLodash} from '~/service/cs-lodash.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditCustomersDialogData {

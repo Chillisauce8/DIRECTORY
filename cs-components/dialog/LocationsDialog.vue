@@ -27,12 +27,12 @@
 </template>
 
 <script lang="ts">
-import { useSelectMediaHelper } from '~/services/helpers/select-media-helper.factory';
-import { useLocationService } from '~/services/helpers/location.service.factory';
-import {useHttpService} from '~/services/helpers/api-common/http-service.factory';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import { useRoutingHelper } from '~/services/helpers/routing-helper.fabric';
-import { useCurrentLocationService } from '~/services/helpers/current-location.service.factory';
+import { useSelectMediaHelper } from '~/service/helpers/select-media-helper.factory';
+import { useLocationService } from '~/service/helpers/location.service.factory';
+import {useHttpService} from '~/service/helpers/api-common/http-service.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import { useRoutingHelper } from '~/service/helpers/routing-helper.fabric';
+import { useCurrentLocationService } from '~/service/helpers/current-location.service.factory';
 
 
 export interface LocationDialogData {

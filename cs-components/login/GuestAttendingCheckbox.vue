@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import {useCurrentCustomer} from "~/services/helpers/user-common/current-customer-service.factory";
+import {useCurrentCustomer} from "~/service/helpers/user-common/current-customer-service.factory";
 
 export default {
   props: ["isGuestOfHonour", "customerId", "savePackageInProgress", "hasEditOwnAttendingPermission",

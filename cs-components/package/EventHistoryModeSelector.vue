@@ -12,9 +12,9 @@
 
 <script lang="ts">
 import { ref, computed } from "vue";
-import {useCurrentEvent} from "~/services/helpers/event/current-event.service.factory";
-import {useCurrentUser} from "~/services/helpers/user-common/current-user.factory";
-import { useEventBookedHistoryService } from '~/services/helpers/event/event-booked-history.service.factory';
+import {useCurrentEvent} from "~/service/helpers/event/current-event.service.factory";
+import {useCurrentUser} from "~/service/helpers/user-common/current-user.factory";
+import { useEventBookedHistoryService } from '~/service/helpers/event/event-booked-history.service.factory';
 import { useCurrentEventStore } from '~/store/currentEvent';
 
 

@@ -24,7 +24,7 @@
 <script lang="ts">
 
 import { reactive } from "vue";
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface AcceptInviteDialogData {

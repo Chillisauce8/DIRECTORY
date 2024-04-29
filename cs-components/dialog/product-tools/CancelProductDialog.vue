@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {useVuelidate} from '@vuelidate/core';
 import {minValue, required} from '@vuelidate/validators';
-import {roundNumberAtLeastDecimalPoints} from '~/services/models/pricing';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {roundNumberAtLeastDecimalPoints} from '~/service/models/pricing';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface CancelProductDialogData {

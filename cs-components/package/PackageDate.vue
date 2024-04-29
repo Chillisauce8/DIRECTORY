@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDateHelper } from "~/services/helpers/date-helper.factory";
+import { useDateHelper } from "~/service/helpers/date-helper.factory";
 import type { CSDatepickerProps } from "~/components/forms/CSDatepicker.vue";
 
 export interface SelectProps {

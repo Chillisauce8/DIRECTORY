@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
 import {useVuelidate} from '@vuelidate/core';
 import {required} from '@vuelidate/validators';
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
-import {useCsLodash} from '~/services/cs-lodash.factory';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
+import {useCsLodash} from '~/service/cs-lodash.factory';
 import {getValidationErrorMessage} from '~/utils/cs-form-validation-helpers';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 const POSSIBLE_TRANSACTION_STATUSES = ['Aborted', 'Chargeback'];

@@ -23,8 +23,8 @@
 </template>
 
 <script setup lang="ts">
-  import {useCurrentSection} from '~/services/helpers/current-section.factory';
-  import { useLocationService } from '~/services/helpers/location.service.factory';
+  import {useCurrentSection} from '~/service/helpers/current-section.factory';
+  import { useLocationService } from '~/service/helpers/location.service.factory';
 
 
   interface LocationSectionListProps {

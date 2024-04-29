@@ -48,14 +48,14 @@
 </template>
 
 <script>
-import {useCurrentSection} from "~/services/helpers/current-section.factory";
-import {useProductCache} from "~/services/helpers/product/product-cache.factory";
-import {useRoutingHelper} from "~/services/helpers/routing-helper.fabric";
+import {useCurrentSection} from "~/service/helpers/current-section.factory";
+import {useProductCache} from "~/service/helpers/product/product-cache.factory";
+import {useRoutingHelper} from "~/service/helpers/routing-helper.fabric";
 import {
   useCurrentProductSelectStrategy
-} from "~/services/helpers/package-builder/current-product-select-strategy.factory";
-import {useCurrentLocationService} from "~/services/helpers/current-location.service.factory";
-import {useLocationService} from "~/services/helpers/location.service.factory";
+} from "~/service/helpers/package-builder/current-product-select-strategy.factory";
+import {useCurrentLocationService} from "~/service/helpers/current-location.service.factory";
+import {useLocationService} from "~/service/helpers/location.service.factory";
 
 export default {
   async setup() {

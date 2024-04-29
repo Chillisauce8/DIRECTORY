@@ -37,7 +37,7 @@
           </template>
 
           <template v-slot:main-buttons>
-        
+
             <button-main class="black add-more button-compact" @click.native="addMoreClicked()"
                          text="Add More" icon="arrow-left"
                          :disabled="vm.savePackageInProgress"
@@ -52,7 +52,7 @@
 
           </template>
         </LazyAPackage>
-        
+
         <SaveBasketMessage/>
       </div>
     </div>
@@ -61,29 +61,29 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import {PackageQueryParams} from "~/services/helpers/package-builder/package-url-query-params";
-import {useEventPackageBuilder} from "~/services/helpers/package-builder/package-builder.service.factory";
-import {useLocationService} from "~/services/helpers/location.service.factory";
-import {usePackageSaver} from "~/services/helpers/package-builder/package-saver.service.factory";
-import {useCustomerEvents} from "~/services/helpers/event/customer-events.service.factory";
-import {useCurrentEvent} from "~/services/helpers/event/current-event.service.factory";
-import {useGlobalElementsTemplateService} from "~/services/helpers/data-templates/global-elements-template.factory";
+import {PackageQueryParams} from "~/service/helpers/package-builder/package-url-query-params";
+import {useEventPackageBuilder} from "~/service/helpers/package-builder/package-builder.service.factory";
+import {useLocationService} from "~/service/helpers/location.service.factory";
+import {usePackageSaver} from "~/service/helpers/package-builder/package-saver.service.factory";
+import {useCustomerEvents} from "~/service/helpers/event/customer-events.service.factory";
+import {useCurrentEvent} from "~/service/helpers/event/current-event.service.factory";
+import {useGlobalElementsTemplateService} from "~/service/helpers/data-templates/global-elements-template.factory";
 import {useBasketStore} from '~/store/basket';
 import { useCurrentCustomerIdStore } from "~/store/currentCustomerId";
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
-import { useSettingsTemplateService } from "~/services/helpers/data-templates/settings-template.factory";
-import { useMessageService } from "~/services/helpers/message.factory";
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
+import { useSettingsTemplateService } from "~/service/helpers/data-templates/settings-template.factory";
+import { useMessageService } from "~/service/helpers/message.factory";
 import {useDataTemplatesStore} from "~/store/dataTemplates";
-import {useUiLockerService} from "~/services/helpers/ui-locker.service.factory";
-import {useConfirmDialogShowService} from "~/services/dialog/confirm-dialog-show.service";
-import {PACKAGE_STRATEGY_TYPE_ACTIONS} from "~/services/helpers/package/package-strategy-type-actions";
+import {useUiLockerService} from "~/service/helpers/ui-locker.service.factory";
+import {useConfirmDialogShowService} from "~/service/dialog/confirm-dialog-show.service";
+import {PACKAGE_STRATEGY_TYPE_ACTIONS} from "~/service/helpers/package/package-strategy-type-actions";
 import {useCurrentSavePackageStrategyStore} from "~/store/currentSavePackageStrategy";
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useWebPackagesService} from "~/services/helpers/package/web-packages.service.factory";
-import {useCurrentSection} from "~/services/helpers/current-section.factory";
-import {useInputNameDialogShowService} from "~/services/dialog/input-name-dialog-show.service";
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useWebPackagesService} from "~/service/helpers/package/web-packages.service.factory";
+import {useCurrentSection} from "~/service/helpers/current-section.factory";
+import {useInputNameDialogShowService} from "~/service/dialog/input-name-dialog-show.service";
 import {useCurrentWebPackageStore} from "~/store/currentWebPackage";
-import {useYesNoDialogShowService} from "~/services/dialog/yes-no-dialog-show.service";
+import {useYesNoDialogShowService} from "~/service/dialog/yes-no-dialog-show.service";
 
 
 const packageBuilder = useEventPackageBuilder();

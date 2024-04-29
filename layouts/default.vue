@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppLayout from './AppLayout.vue';
 /*
 const route = useRoute();
 const appConfig = useAppConfig();
@@ -83,14 +84,20 @@ onBeforeUnmount(() => {
 });
 </script>
 
+
 <template>
-  <TopNav />
-  <div class="main-page">
-    <SideNav />
-    <main><slot /></main>
-  </div>
-  <MainFooter />
+<!--  <TopNav />-->
+<!--  <div class="main-page">-->
+<!--    <SideNav />-->
+<!--    <main><slot /></main>-->
+<!--  </div>-->
+<!--  <MainFooter />-->
+
+  <AppLayout></AppLayout>
+
 </template>
+
+
 <style lang="scss">
 .main-page {
   display: flex;

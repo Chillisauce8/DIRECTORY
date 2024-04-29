@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import {useLocationService} from "~/services/helpers/location.service.factory";
-import {useCurrentSection} from "~/services/helpers/current-section.factory";
-import {useRoutingHelper} from "~/services/helpers/routing-helper.fabric";
+import {useLocationService} from "~/service/helpers/location.service.factory";
+import {useCurrentSection} from "~/service/helpers/current-section.factory";
+import {useRoutingHelper} from "~/service/helpers/routing-helper.fabric";
 
 export default {
   props: ['country', 'name', 'images', 'section', 'searchTerms', 'searchHide', 'routePrefix'],

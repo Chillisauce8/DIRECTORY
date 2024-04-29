@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import type {EmailFormValidationData} from '~/components/auth/UserEmail.vue';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useCustomerService} from '~/services/helpers/customer/customer.service';
-import {useGlobalElementsTemplateService} from '~/services/helpers/data-templates/global-elements-template.factory';
-import {useNotificationMessageService} from '~/services/helpers/notification-message.factory';
-import {useInviteService} from '~/services/helpers/event/invite.service.factory';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
-import {useAuthErrorsHelperService} from '~/services/helpers/auth/auth-errors-helper.service.factory';
-import {useGmailHelperService} from '~/services/helpers/gmail-helper.service.factory';
-import {useUserAccountService} from '~/services/helpers/user-common/user-accout.service.factory';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useCustomerService} from '~/service/helpers/customer/customer.service';
+import {useGlobalElementsTemplateService} from '~/service/helpers/data-templates/global-elements-template.factory';
+import {useNotificationMessageService} from '~/service/helpers/notification-message.factory';
+import {useInviteService} from '~/service/helpers/event/invite.service.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
+import {useAuthErrorsHelperService} from '~/service/helpers/auth/auth-errors-helper.service.factory';
+import {useGmailHelperService} from '~/service/helpers/gmail-helper.service.factory';
+import {useUserAccountService} from '~/service/helpers/user-common/user-accout.service.factory';
 import type {WatchStopHandle} from 'vue';
 import {useVuelidate} from '@vuelidate/core';
-import {useCsLodash} from '~/services/cs-lodash.factory';
+import {useCsLodash} from '~/service/cs-lodash.factory';
 import type {ExternalResultMessageData} from '~/utils/cs-form-validation-helpers';
-import {getDocumentSafe} from '~/services/helpers/browser/browser.helpers';
+import {getDocumentSafe} from '~/service/helpers/browser/browser.helpers';
 import {email, helpers, required} from '@vuelidate/validators';
 import {vRestrictPattern} from '~/utils/directives/restrict-pattern.directive';
-import {useCurrentCustomer} from '~/services/helpers/user-common/current-customer-service.factory';
+import {useCurrentCustomer} from '~/service/helpers/user-common/current-customer-service.factory';
 
 
 export interface IAccountDialogConfig {
@@ -486,7 +486,7 @@ onUnmounted(() => destroy());
               Erase My Account
             </ButtonMain>
 
-            <ButtonMain 
+            <ButtonMain
                         type="submit"
                         :disabled="!canSaveAccountData() || vm.disabled">
               Save

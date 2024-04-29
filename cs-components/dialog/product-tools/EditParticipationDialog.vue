@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {PackageProduct} from '~/services/models/packageProduct';
+import {PackageProduct} from '~/service/models/packageProduct';
 import {useCurrentEventStore} from '~/store/currentEvent';
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
 import type {YesNoValue} from '~/utils/common.types';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface EditParticipationDialogData {

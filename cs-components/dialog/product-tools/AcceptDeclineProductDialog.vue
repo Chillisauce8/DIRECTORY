@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import type {IVenue} from '~/services/models/venue.interface';
-import {VENUE_TO_BE_CONFIRMED_ID} from '~/services/models/venue.interface';
-import type {IConfirmation} from '~/services/models/packageProduct';
-import {PackageProduct, ProductNoteShowToEnum} from '~/services/models/packageProduct';
-import {useEventPackageBuilder} from '~/services/helpers/package-builder/package-builder.service.factory';
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
-import {useCurrentSupplier} from '~/services/helpers/supplier-common/current-supplier.factory';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useDataTemplateFabricService} from '~/services/helpers/data-templates/data-template-fabric.factory';
-import {useVenueService} from '~/services/helpers/product/venue.service.factory';
-import {usePackageTimesHelperService} from '~/services/helpers/package-builder/package-times-helper.service.factory';
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
-import {DataTemplate} from '~/services/models/dataTemplate';
-import {useCsLodash} from '~/services/cs-lodash.factory';
+import type {IVenue} from '~/service/models/venue.interface';
+import {VENUE_TO_BE_CONFIRMED_ID} from '~/service/models/venue.interface';
+import type {IConfirmation} from '~/service/models/packageProduct';
+import {PackageProduct, ProductNoteShowToEnum} from '~/service/models/packageProduct';
+import {useEventPackageBuilder} from '~/service/helpers/package-builder/package-builder.service.factory';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
+import {useCurrentSupplier} from '~/service/helpers/supplier-common/current-supplier.factory';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useDataTemplateFabricService} from '~/service/helpers/data-templates/data-template-fabric.factory';
+import {useVenueService} from '~/service/helpers/product/venue.service.factory';
+import {usePackageTimesHelperService} from '~/service/helpers/package-builder/package-times-helper.service.factory';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
+import {DataTemplate} from '~/service/models/dataTemplate';
+import {useCsLodash} from '~/service/cs-lodash.factory';
 import {
   usePackageConfirmationHelperService
-} from '~/services/helpers/package-builder/package-confirmation-helper.service.factory';
+} from '~/service/helpers/package-builder/package-confirmation-helper.service.factory';
 import type {ValidationRule} from '@vuelidate/core';
 import {useVuelidate} from '@vuelidate/core';
 import {required} from '@vuelidate/validators';
-import {useAcceptProductDialogShowService} from '~/services/dialog/product-tools/accept-product-dialog-show.service';
-import {useDeclineProductDialogShowService} from '~/services/dialog/product-tools/decline-product-dialog-show.service';
-import {eventEmitterTap} from '~/services/models/event-emitter-observable-helpers';
+import {useAcceptProductDialogShowService} from '~/service/dialog/product-tools/accept-product-dialog-show.service';
+import {useDeclineProductDialogShowService} from '~/service/dialog/product-tools/decline-product-dialog-show.service';
+import {eventEmitterTap} from '~/service/models/event-emitter-observable-helpers';
 import {getValidationErrorMessage} from '~/utils/cs-form-validation-helpers';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface AcceptDeclineProductDialogData {

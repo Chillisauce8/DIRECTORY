@@ -51,9 +51,9 @@
 import { reactive } from 'vue';
 import type {Validation} from '@vuelidate/core';
 import {useVuelidate} from '@vuelidate/core';
-import { useDateHelper } from "~/services/helpers/date-helper.factory";
+import { useDateHelper } from "~/service/helpers/date-helper.factory";
 import {getValidationErrorMessage} from '~/utils/cs-form-validation-helpers';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 import {required} from '@vuelidate/validators';
 import {vAutofocus} from '~/utils/directives/autofocus';
 

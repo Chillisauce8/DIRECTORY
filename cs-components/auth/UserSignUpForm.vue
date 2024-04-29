@@ -2,15 +2,15 @@
 import {
   provideSignUpStrategy,
   useDefaultSignUpStrategy
-} from '~/services/helpers/auth/sign-up-strategy';
-import type {SignUpError} from '~/services/helpers/auth/sign-up-strategy';
+} from '~/service/helpers/auth/sign-up-strategy';
+import type {SignUpError} from '~/service/helpers/auth/sign-up-strategy';
 import {email, helpers, required} from '@vuelidate/validators';
-import type {AuthFormDescription} from '~/services/helpers/auth/sign-up-or-login-description-helper.service';
+import type {AuthFormDescription} from '~/service/helpers/auth/sign-up-or-login-description-helper.service';
 import type {SignUpFormValidationRules} from '~/components/auth/SignUpForm.vue';
-import {useAuthErrorsHelperService} from '~/services/helpers/auth/auth-errors-helper.service.factory';
-import type {AuthErrorWithLink} from '~/services/helpers/auth/auth-errors-helper.service';
+import {useAuthErrorsHelperService} from '~/service/helpers/auth/auth-errors-helper.service.factory';
+import type {AuthErrorWithLink} from '~/service/helpers/auth/auth-errors-helper.service';
 import type {ValidationRule} from '@vuelidate/core';
-import {useGlobalElementsTemplateService} from '~/services/helpers/data-templates/global-elements-template.factory';
+import {useGlobalElementsTemplateService} from '~/service/helpers/data-templates/global-elements-template.factory';
 
 
 interface UserSignUpFormProps {

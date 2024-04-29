@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import {useCurrentSection} from "~/services/helpers/current-section.factory";
+import {useCurrentSection} from "~/service/helpers/current-section.factory";
 import {useSectionStore} from "~/store/section";
 
 export default {

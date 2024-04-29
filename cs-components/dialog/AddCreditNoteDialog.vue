@@ -2,8 +2,8 @@
 import type {YesNoValue} from '~/utils/common.types';
 import {useVuelidate} from '@vuelidate/core';
 import {required} from '@vuelidate/validators';
-import {useCsLodash} from '~/services/cs-lodash.factory';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useCsLodash} from '~/service/cs-lodash.factory';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 enum OverrideOptionTypes {

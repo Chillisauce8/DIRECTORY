@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import SignUpCustomerForm from '~/components/auth/SignUpCustomerForm.vue';
-import {useRoutingHelper} from '~/services/helpers/routing-helper.fabric';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
-import {eventEmitterTake, eventEmitterTap} from '~/services/models/event-emitter-observable-helpers';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import type {SignUpResult} from '~/services/helpers/auth/sign-up-strategy';
+import {useRoutingHelper} from '~/service/helpers/routing-helper.fabric';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
+import {eventEmitterTake, eventEmitterTap} from '~/service/models/event-emitter-observable-helpers';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import type {SignUpResult} from '~/service/helpers/auth/sign-up-strategy';
 
 
 export type SignUpCustomerDialogData = void;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type {AuthFormDescription} from '~/services/helpers/auth/sign-up-or-login-description-helper.service';
-import {useEnquiryFormHelperService} from '~/services/helpers/enquiry/enquiry-form-helper.service.factory';
-import {EnquiryFormHelperService} from '~/services/helpers/enquiry/enquiry-form-helper.service';
+import type {AuthFormDescription} from '~/service/helpers/auth/sign-up-or-login-description-helper.service';
+import {useEnquiryFormHelperService} from '~/service/helpers/enquiry/enquiry-form-helper.service.factory';
+import {EnquiryFormHelperService} from '~/service/helpers/enquiry/enquiry-form-helper.service';
 
 
 interface EnquiryUserSignUpFormProps {

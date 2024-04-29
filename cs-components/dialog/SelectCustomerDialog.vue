@@ -18,12 +18,12 @@
 
 <script lang="ts">
 import {reactive} from 'vue';
-import {useCurrentCustomer} from '~/services/helpers/user-common/current-customer-service.factory';
-import { useCustomerEvents } from "~/services/helpers/event/customer-events.service.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useCurrentCustomer} from '~/service/helpers/user-common/current-customer-service.factory';
+import { useCustomerEvents } from "~/service/helpers/event/customer-events.service.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 import {useCustomerEventsStore} from '~/store/customerEvents';
-import {useSignUpCustomerDialogShowService} from '~/services/dialog/auth/sign-up-customer-dialog-show.service';
+import {useSignUpCustomerDialogShowService} from '~/service/dialog/auth/sign-up-customer-dialog-show.service';
 
 
 export interface SelectCustomerDialogData {

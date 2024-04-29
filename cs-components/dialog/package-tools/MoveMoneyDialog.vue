@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type {
   IMoveMoney, IMoveMoneyCustomer, MoveMoneyData,
-} from '~/services/helpers/package-builder/moveMoney/move-money.interface';
-import {MoveMoneyDirection} from '~/services/helpers/package-builder/moveMoney/move-money.interface';
-import {useMoveMoneyFactory} from '~/services/helpers/package-builder/moveMoney/move-money-factory.factory';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {useCsLodash} from '~/services/cs-lodash.factory';
+} from '~/service/helpers/package-builder/moveMoney/move-money.interface';
+import {MoveMoneyDirection} from '~/service/helpers/package-builder/moveMoney/move-money.interface';
+import {useMoveMoneyFactory} from '~/service/helpers/package-builder/moveMoney/move-money-factory.factory';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {useCsLodash} from '~/service/cs-lodash.factory';
 
 
 export type MoveMoneyDialogData = void;

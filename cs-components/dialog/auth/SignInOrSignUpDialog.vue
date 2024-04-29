@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useSignInOrSignUpDialog} from '~/services/helpers/auth/sign-in-or-sign-up-dialog.composable';
+import {useSignInOrSignUpDialog} from '~/service/helpers/auth/sign-in-or-sign-up-dialog.composable';
 
 
 const {

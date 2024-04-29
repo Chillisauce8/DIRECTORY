@@ -10,10 +10,10 @@
 </template>
 
 <script setup lang="ts">
-import { usePackageEventCalendarNotesHelperService } from "~/services/helpers/package-builder/package-event-calendar-notes-helper.service.factory";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
-import { SITE_AREAS } from "~/services/siteAreas.const";
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
+import { usePackageEventCalendarNotesHelperService } from "~/service/helpers/package-builder/package-event-calendar-notes-helper.service.factory";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
+import { SITE_AREAS } from "~/service/siteAreas.const";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
 
 const packageEventCalendarNotesHelperService =
   usePackageEventCalendarNotesHelperService();

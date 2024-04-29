@@ -15,8 +15,8 @@
 <script setup lang="ts">
 import SelectSupplier from '~/components/supplier/SelectSupplier.vue';
 import type {SupplierItemValue} from '~/components/supplier/SelectSupplier.vue';
-import {DialogInstance} from '~/services/dialog/core/dialog-instance';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {DialogInstance} from '~/service/dialog/core/dialog-instance';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface SwapProductSupplierDialogData {

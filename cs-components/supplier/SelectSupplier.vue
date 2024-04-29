@@ -9,8 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import {useSupplierService} from '~/services/helpers/supplier-common/supplier-service.factory';
-import type {SupplierDbNode} from '~/services/helpers/supplier-common/supplier.service';
+import {useSupplierService} from '~/service/helpers/supplier-common/supplier-service.factory';
+import type {SupplierDbNode} from '~/service/helpers/supplier-common/supplier.service';
 
 
 export interface SupplierItemValue {

@@ -51,22 +51,22 @@
 </template>
 
 <script setup lang="ts">
-import {useSignInDialogShowService} from '~/services/dialog/auth/sign-in-dialog-show.service';
+import {useSignInDialogShowService} from '~/service/dialog/auth/sign-in-dialog-show.service';
 import {onUnmounted, reactive} from 'vue';
-import { useCurrentUser } from '~/services/helpers/user-common/current-user.factory';
-import { useMessageService } from '~/services/helpers/message.factory';
-import { useGlobalElementsTemplateService } from '~/services/helpers/data-templates/global-elements-template.factory';
-import { useCurrentEvent } from '~/services/helpers/event/current-event.service.factory';
+import { useCurrentUser } from '~/service/helpers/user-common/current-user.factory';
+import { useMessageService } from '~/service/helpers/message.factory';
+import { useGlobalElementsTemplateService } from '~/service/helpers/data-templates/global-elements-template.factory';
+import { useCurrentEvent } from '~/service/helpers/event/current-event.service.factory';
 import {useCurrentUserStore} from '~/store/currentUser';
 import {useCustomerEventsStore} from '~/store/customerEvents';
-import { eventEmitterFilter, eventEmitterObsFirstValueFrom } from "~/services/models/event-emitter-observable-helpers";
-import {getWindowSafe} from '~/services/helpers/browser/browser.helpers';
-import {useDataTemplateFabricService} from '~/services/helpers/data-templates/data-template-fabric.factory';
+import { eventEmitterFilter, eventEmitterObsFirstValueFrom } from "~/service/models/event-emitter-observable-helpers";
+import {getWindowSafe} from '~/service/helpers/browser/browser.helpers';
+import {useDataTemplateFabricService} from '~/service/helpers/data-templates/data-template-fabric.factory';
 import {useDataTemplatesStore} from '~/store/dataTemplates';
-import {useDefaultPageUrlGetterService} from '~/services/helpers/default-page-url-getter.factory';
-import { useRelCanonicalHelperService } from '~/services/helpers/browser/rel-canonical-helper.service.factory';
-import { CurrentEventInitStates } from '~/services/helpers/event/current-event.service';
-import { useCurrentPageHeadService } from '~/services/helpers/current-page-head.service.factory';
+import {useDefaultPageUrlGetterService} from '~/service/helpers/default-page-url-getter.factory';
+import { useRelCanonicalHelperService } from '~/service/helpers/browser/rel-canonical-helper.service.factory';
+import { CurrentEventInitStates } from '~/service/helpers/event/current-event.service';
+import { useCurrentPageHeadService } from '~/service/helpers/current-page-head.service.factory';
 
 
 interface SplashPageProps {
@@ -204,7 +204,7 @@ $title-size-mobile: 38vw;
       margin: 20px 0 30px 0;
       //       text-transform: uppercase;
     }
-  
+
   }
 
   & .sections {
@@ -258,20 +258,20 @@ $title-size-mobile: 38vw;
 
       &.stag{
         background-image: linear-gradient(to top,  rgba(0,255,205,.8) 0%,  rgba(2,161,124,1) 100%);
-       
+
       }
       &.hen{
         background-image: linear-gradient( to right,  rgba(226,24,24,.8) 0%, rgba(160,6,6,1) 90% );
-       
+
       }
       &.activity{
         background: linear-gradient(to top, rgba(4,171,191,0.8) 0%, rgba(0,74,83,1) 100%);
-       
-       
+
+
       }
       &.corporate{
 
-       
+
         background-image: linear-gradient(90deg, rgba(189,195,199,1) 0%, rgba(44,62,80,1) 100%);
       }
 

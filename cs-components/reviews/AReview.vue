@@ -19,7 +19,7 @@
 <script>
 
 
-import {useDateHelper} from "~/services/helpers/date-helper.factory";
+import {useDateHelper} from "~/service/helpers/date-helper.factory";
 
 export default {
   props: ['review', 'trustpilot'],

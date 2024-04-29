@@ -44,17 +44,17 @@
 </template>
 
 <script lang="ts">
-import { useCurrentUser } from '~/services/helpers/user-common/current-user.factory';
-import { useCurrentEvent } from '~/services/helpers/event/current-event.service.factory';
-import { useUserService } from '~/services/helpers/user-common/user-service.factory';
-import { useEventPermissionsService } from '~/services/helpers/event/event-permissions.service.factory';
+import { useCurrentUser } from '~/service/helpers/user-common/current-user.factory';
+import { useCurrentEvent } from '~/service/helpers/event/current-event.service.factory';
+import { useUserService } from '~/service/helpers/user-common/user-service.factory';
+import { useEventPermissionsService } from '~/service/helpers/event/event-permissions.service.factory';
 import { computed } from 'vue';
 import type { Validation } from "@vuelidate/core";
 import { useVuelidate} from "@vuelidate/core";
-import { usePackageSaver } from "~/services/helpers/package-builder/package-saver.service.factory";
-import { useCustomerEvents } from "~/services/helpers/event/customer-events.service.factory";
-import { useCurrentCustomer } from "~/services/helpers/user-common/current-customer-service.factory";
-import { useMessageService } from "~/services/helpers/message.factory";
+import { usePackageSaver } from "~/service/helpers/package-builder/package-saver.service.factory";
+import { useCustomerEvents } from "~/service/helpers/event/customer-events.service.factory";
+import { useCurrentCustomer } from "~/service/helpers/user-common/current-customer-service.factory";
+import { useMessageService } from "~/service/helpers/message.factory";
 import { nameUniqValidator, csUserNameValidator } from "~/utils/cs-form-validators";
 import { minLength } from "@vuelidate/validators";
 import { useCurrentUserStore } from "~/store/currentUser";

@@ -10,7 +10,7 @@
 
 <script>
 
-import {useCurrentSection} from "~/services/helpers/current-section.factory";
+import {useCurrentSection} from "~/service/helpers/current-section.factory";
 
 export default {
   setup() {

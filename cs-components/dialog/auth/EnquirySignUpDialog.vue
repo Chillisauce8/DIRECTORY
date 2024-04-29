@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
   useEnquirySignInOrSignUpDialog, useEnquirySignUpDialog,
-} from '~/services/helpers/auth/sign-in-or-sign-up-dialog.composable';
-import {provideSignUpStrategy, useSignUpOrganiserStrategy} from '~/services/helpers/auth/sign-up-strategy';
+} from '~/service/helpers/auth/sign-in-or-sign-up-dialog.composable';
+import {provideSignUpStrategy, useSignUpOrganiserStrategy} from '~/service/helpers/auth/sign-up-strategy';
 
 
 const {

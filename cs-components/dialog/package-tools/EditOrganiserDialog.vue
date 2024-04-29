@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 interface EditOrganiser {
   id: string;

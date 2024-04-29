@@ -2,9 +2,9 @@
 import {vTextMask} from '~/utils/directives/text-mask';
 import {helpers, maxValue, minValue} from '@vuelidate/validators';
 import {useVuelidate} from '@vuelidate/core';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {useStaffService} from '~/services/helpers/staff-common/staff.factory';
-import {useGlobalElementsTemplateService} from '~/services/helpers/data-templates/global-elements-template.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {useStaffService} from '~/service/helpers/staff-common/staff.factory';
+import {useGlobalElementsTemplateService} from '~/service/helpers/data-templates/global-elements-template.factory';
 
 
 interface CommissionItem {

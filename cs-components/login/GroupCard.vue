@@ -13,9 +13,9 @@
 </template>
 
 <script>
-import {EVENT_STATUS_STAGES} from "~/services/models/event";
-import {useCsLodash} from "~/services/cs-lodash.factory";
-import {useDateHelper} from "~/services/helpers/date-helper.factory";
+import {EVENT_STATUS_STAGES} from "~/service/models/event";
+import {useCsLodash} from "~/service/cs-lodash.factory";
+import {useDateHelper} from "~/service/helpers/date-helper.factory";
 
 export default {
   props: ['event', 'dataTemplate'],

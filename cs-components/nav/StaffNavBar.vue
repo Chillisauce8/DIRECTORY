@@ -24,7 +24,7 @@
              @click.native="showSelectCustomerDialog"
     />
     <div class="toggle-wrapper" v-if="dataState.staffToggle.needToShow && !isSupplierMode()">
-      <Toggle class="customer-view-toggle" 
+      <Toggle class="customer-view-toggle"
               v-model="dataState.staffToggle.value"
               @update:modelValue="handleStaffToggleValueChange">
       </Toggle>
@@ -45,20 +45,20 @@
 <script setup lang="ts">
 
 import { onUnmounted, reactive } from "vue";
-import { useCurrentSupplier } from "~/services/helpers/supplier-common/current-supplier.factory";
-import { useToggleStaffService } from "~/services/helpers/user-common/toggle-staff.factory";
-import { useToggleStaffToSupplierService } from "~/services/helpers/user-common/toggle-staff-to-supplier.factory";
-import { useSelectCustomerDialogShowService } from "~/services/dialog/select-customer-dialog-show.service";
+import { useCurrentSupplier } from "~/service/helpers/supplier-common/current-supplier.factory";
+import { useToggleStaffService } from "~/service/helpers/user-common/toggle-staff.factory";
+import { useToggleStaffToSupplierService } from "~/service/helpers/user-common/toggle-staff-to-supplier.factory";
+import { useSelectCustomerDialogShowService } from "~/service/dialog/select-customer-dialog-show.service";
 import { useIsStaffToggledStore } from "~/store/isStaffToggled";
 import { useCurrentUserStore } from "~/store/currentUser";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import { useCurrentCustomer } from "~/services/helpers/user-common/current-customer-service.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import { useCurrentCustomer } from "~/service/helpers/user-common/current-customer-service.factory";
 import Toggle from "@vueform/toggle";
 import { useCustomerEventsStore } from "~/store/customerEvents";
 import { useCurrentCustomerIdStore } from "~/store/currentCustomerId";
-import { useEventListDialogShowService } from "~/services/dialog/event-list-dialog-show.service";
-import { useCurrentSection } from "~/services/helpers/current-section.factory";
-import { useUserAccountDialogShowService } from "~/services/dialog/user-account-dialog-show.service";
+import { useEventListDialogShowService } from "~/service/dialog/event-list-dialog-show.service";
+import { useCurrentSection } from "~/service/helpers/current-section.factory";
+import { useUserAccountDialogShowService } from "~/service/dialog/user-account-dialog-show.service";
 
 
 interface NavBarUserData {
@@ -277,7 +277,7 @@ onUnmounted(() => {
       padding: 3px;
     }
   }
-  
+
 
   //display:none;
 }

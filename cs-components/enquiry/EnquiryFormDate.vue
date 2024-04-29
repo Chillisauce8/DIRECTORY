@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {vZukoAttrsPreparer} from '~/utils/directives/zuko-attrs-preparer.directive';
-import type {FormTrackingParams} from '~/services/helpers/forms-tracking/form-tracking-params';
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
+import type {FormTrackingParams} from '~/service/helpers/forms-tracking/form-tracking-params';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
 import type {Validation} from '@vuelidate/core';
 
 

@@ -2,26 +2,26 @@
 import {vRestrictPattern} from '~/utils/directives/restrict-pattern.directive';
 import {testName} from '~/utils/test-name-helper';
 import {vZukoAttrsPreparer} from '~/utils/directives/zuko-attrs-preparer.directive';
-import type {AuthFormDescription} from '~/services/helpers/auth/sign-up-or-login-description-helper.service';
-import type {FormTrackingParams} from '~/services/helpers/forms-tracking/form-tracking-params';
-import {useLoginOrSignUpFormHelperService} from '~/services/helpers/auth/login-or-sign-up-form-helper.service.factory';
+import type {AuthFormDescription} from '~/service/helpers/auth/sign-up-or-login-description-helper.service';
+import type {FormTrackingParams} from '~/service/helpers/forms-tracking/form-tracking-params';
+import {useLoginOrSignUpFormHelperService} from '~/service/helpers/auth/login-or-sign-up-form-helper.service.factory';
 import type {EmailFormValidationData} from '~/components/auth/UserEmail.vue';
-import {eventEmitterTap} from '~/services/models/event-emitter-observable-helpers';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
-import {EventEmitterSubscription} from '~/services/models/event-emitter-observable';
+import {eventEmitterTap} from '~/service/models/event-emitter-observable-helpers';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
+import {EventEmitterSubscription} from '~/service/models/event-emitter-observable';
 import type {ValidationRule} from '@vuelidate/core';
 import {useVuelidate} from '@vuelidate/core';
 import type {
   SignUpError,
   SignUpFormModelValue,
   SignUpResult,
-} from '~/services/helpers/auth/sign-up-strategy';
+} from '~/service/helpers/auth/sign-up-strategy';
 import {helpers, required} from '@vuelidate/validators';
-import {getDocumentSafe} from '~/services/helpers/browser/browser.helpers';
+import {getDocumentSafe} from '~/service/helpers/browser/browser.helpers';
 import type {ExternalResultMessageData} from '~/utils/cs-form-validation-helpers';
-import {DEFAULT_SIGN_UP_FORM} from '~/services/helpers/auth/auth-form.types';
+import {DEFAULT_SIGN_UP_FORM} from '~/service/helpers/auth/auth-form.types';
 import {vAutofocus} from '~/utils/directives/autofocus';
-import {useDefaultSignUpStrategy, useSignUpStrategy} from '~/services/helpers/auth/sign-up-strategy';
+import {useDefaultSignUpStrategy, useSignUpStrategy} from '~/service/helpers/auth/sign-up-strategy';
 
 
 export interface SignUpFormTrackingParams {

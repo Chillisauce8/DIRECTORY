@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import {useEventPermissionsService} from '~/services/helpers/event/event-permissions.service.factory';
-import {PackageProduct} from '~/services/models/packageProduct';
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
+import {useEventPermissionsService} from '~/service/helpers/event/event-permissions.service.factory';
+import {PackageProduct} from '~/service/models/packageProduct';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
 import {useCurrentEventStore} from '~/store/currentEvent';
-import {usePackageSaver} from '~/services/helpers/package-builder/package-saver.service.factory';
+import {usePackageSaver} from '~/service/helpers/package-builder/package-saver.service.factory';
 import {
   usePackageConfirmationHelperService
-} from '~/services/helpers/package-builder/package-confirmation-helper.service.factory';
-import {useDataTemplateFabricService} from '~/services/helpers/data-templates/data-template-fabric.factory';
-import {useEventPackageBuilder} from '~/services/helpers/package-builder/package-builder.service.factory';
+} from '~/service/helpers/package-builder/package-confirmation-helper.service.factory';
+import {useDataTemplateFabricService} from '~/service/helpers/data-templates/data-template-fabric.factory';
+import {useEventPackageBuilder} from '~/service/helpers/package-builder/package-builder.service.factory';
 import {
   useProductsToSelectDialogShowService
-} from '~/services/dialog/package-tools/products-to-select-dialog-show.service';
-import {useCurrentSupplier} from '~/services/helpers/supplier-common/current-supplier.factory';
-import {useConfirmDialogShowService} from '~/services/dialog/confirm-dialog-show.service';
+} from '~/service/dialog/package-tools/products-to-select-dialog-show.service';
+import {useCurrentSupplier} from '~/service/helpers/supplier-common/current-supplier.factory';
+import {useConfirmDialogShowService} from '~/service/dialog/confirm-dialog-show.service';
 import {
   useAcceptDeclineProductDialogShowService
-} from '~/services/dialog/product-tools/accept-decline-product-dialog-show.service';
-import { useEventBookedHistoryService } from '~/services/helpers/event/event-booked-history.service.factory';
-import {useGlobalElementsTemplateService} from '~/services/helpers/data-templates/global-elements-template.factory';
+} from '~/service/dialog/product-tools/accept-decline-product-dialog-show.service';
+import { useEventBookedHistoryService } from '~/service/helpers/event/event-booked-history.service.factory';
+import {useGlobalElementsTemplateService} from '~/service/helpers/data-templates/global-elements-template.factory';
 
 
 const currentEvent = useCurrentEvent();

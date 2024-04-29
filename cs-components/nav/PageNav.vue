@@ -36,7 +36,7 @@
           </nuxt-link>
         </div>
       </div>
-  
+
       <filter-select
         v-if="filterSelectTitle"
         class="category-select function-view-product-none function-edit-package-none function-swap-product-none page-product-none"
@@ -78,7 +78,7 @@
             @click.native="getSectionDoHelp()"
           >
            Quick <span v-if="getLocationName()" class="button-location-nav">{{ getLocationName() }}<br/></span> {{ currentSection.getName() }} Enquiry
-      
+
           </button-main>
 
           <button-main
@@ -99,20 +99,20 @@
 </template>
 
 <script lang="ts">
-import { useCurrentSection } from "~/services/helpers/current-section.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
-import { usePackageSaver } from "~/services/helpers/package-builder/package-saver.service.factory";
-import { useEnquiryFormDialogShowService } from "~/services/dialog/enquiry-form-dialog-show.service";
-import { useGlobalElementsTemplateService } from "~/services/helpers/data-templates/global-elements-template.factory";
+import { useCurrentSection } from "~/service/helpers/current-section.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
+import { usePackageSaver } from "~/service/helpers/package-builder/package-saver.service.factory";
+import { useEnquiryFormDialogShowService } from "~/service/dialog/enquiry-form-dialog-show.service";
+import { useGlobalElementsTemplateService } from "~/service/helpers/data-templates/global-elements-template.factory";
 import { useCurrentUserStore } from "~/store/currentUser";
-import { useEventBookedHistoryService } from "~/services/helpers/event/event-booked-history.service.factory";
+import { useEventBookedHistoryService } from "~/service/helpers/event/event-booked-history.service.factory";
 import { useCurrentEventStore } from "~/store/currentEvent";
 import {
   useSavePackageChangesHelperService
-} from "~/services/helpers/package-builder/save-package-changes-helper.service.factory";
-import { useCurrentSupplier } from "~/services/helpers/supplier-common/current-supplier.factory";
+} from "~/service/helpers/package-builder/save-package-changes-helper.service.factory";
+import { useCurrentSupplier } from "~/service/helpers/supplier-common/current-supplier.factory";
 import { useCurrentLocationStore } from '~/store/currentLocation';
 
 export default {

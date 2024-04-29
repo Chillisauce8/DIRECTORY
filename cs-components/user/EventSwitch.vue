@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import type {EventDbNode} from '~/services/helpers/event/event.typings';
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
-import { useCurrentEvent } from '~/services/helpers/event/current-event.service.factory';
-import { useCurrentCustomer } from '~/services/helpers/user-common/current-customer-service.factory';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
+import type {EventDbNode} from '~/service/helpers/event/event.typings';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
+import { useCurrentEvent } from '~/service/helpers/event/current-event.service.factory';
+import { useCurrentCustomer } from '~/service/helpers/user-common/current-customer-service.factory';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
 import {useCustomerEventsStore} from '~/store/customerEvents';
-import {usePackageSaver} from '~/services/helpers/package-builder/package-saver.service.factory';
+import {usePackageSaver} from '~/service/helpers/package-builder/package-saver.service.factory';
 import {
   useSavePackageChangesHelperService
-} from '~/services/helpers/package-builder/save-package-changes-helper.service.factory';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {useUiLockerService} from '~/services/helpers/ui-locker.service.factory';
+} from '~/service/helpers/package-builder/save-package-changes-helper.service.factory';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {useUiLockerService} from '~/service/helpers/ui-locker.service.factory';
 
 export type SwitchEventListItem = Pick<EventDbNode, '_doc' | 'eventSummary | packageOption'>;
 

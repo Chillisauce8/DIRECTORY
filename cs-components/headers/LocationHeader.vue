@@ -6,7 +6,7 @@
       dpr="1"
       :grayscale="true"
       :width="1000"
-     
+
       :tint="true"
       class="random-tint"
     >
@@ -76,12 +76,12 @@
 </template>
 
 <script>
-import { useSelectMediaHelper } from "~/services/helpers/select-media-helper.factory";
-import { useEnquiryFormDialogShowService } from "~/services/dialog/enquiry-form-dialog-show.service";
+import { useSelectMediaHelper } from "~/service/helpers/select-media-helper.factory";
+import { useEnquiryFormDialogShowService } from "~/service/dialog/enquiry-form-dialog-show.service";
 import { usePackageCommonSettingsStore } from "~/store/packageCommonSettings";
-import { useDateHelper } from "~/services/helpers/date-helper.factory";
-import { useSettingsTemplateService } from "~/services/helpers/data-templates/settings-template.factory";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
+import { useDateHelper } from "~/service/helpers/date-helper.factory";
+import { useSettingsTemplateService } from "~/service/helpers/data-templates/settings-template.factory";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
 
 export default {
   props: ["section", "location"],

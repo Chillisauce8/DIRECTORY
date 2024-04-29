@@ -160,26 +160,26 @@
 </template>
 
 <script setup lang="ts">
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useCurrentCustomer } from "~/services/helpers/user-common/current-customer-service.factory";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
-import { usePackageSaver } from "~/services/helpers/package-builder/package-saver.service.factory";
-import { usePackageBookingNotifyService } from "~/services/helpers/package/package-booking-notify.service.factory";
-import { usePackageViewDataPreparer } from "~/services/helpers/package-builder/package-view-data-preparer.service.factory";
-import { usePackageAllocationInfoHelperService } from "~/services/helpers/package/package-allocation-info-helper.service.factory";
-import { useProductPriceViewService } from "~/services/helpers/pricing/product-price-view-service.factory";
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
-import { useEventBookedHistoryService } from "~/services/helpers/event/event-booked-history.service.factory";
-import { useSettingsTemplateService } from "~/services/helpers/data-templates/settings-template.factory";
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useCurrentCustomer } from "~/service/helpers/user-common/current-customer-service.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
+import { usePackageSaver } from "~/service/helpers/package-builder/package-saver.service.factory";
+import { usePackageBookingNotifyService } from "~/service/helpers/package/package-booking-notify.service.factory";
+import { usePackageViewDataPreparer } from "~/service/helpers/package-builder/package-view-data-preparer.service.factory";
+import { usePackageAllocationInfoHelperService } from "~/service/helpers/package/package-allocation-info-helper.service.factory";
+import { useProductPriceViewService } from "~/service/helpers/pricing/product-price-view-service.factory";
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
+import { useEventBookedHistoryService } from "~/service/helpers/event/event-booked-history.service.factory";
+import { useSettingsTemplateService } from "~/service/helpers/data-templates/settings-template.factory";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
 import { useCurrentEventStore } from "~/store/currentEvent";
-import { useCustomerEvents } from "~/services/helpers/event/customer-events.service.factory";
-import { useCurrentSiteArea } from "~/services/helpers/current-site-area.factory";
-import { useCsLodash } from "~/services/cs-lodash.factory";
-import type { IPackageProductViewModel } from "~/services/helpers/package-builder/package-view-day.interface";
-import type { PackageProduct } from "~/services/models/packageProduct";
-import type { IProductOption } from "~/services/models/productOption";
+import { useCustomerEvents } from "~/service/helpers/event/customer-events.service.factory";
+import { useCurrentSiteArea } from "~/service/helpers/current-site-area.factory";
+import { useCsLodash } from "~/service/cs-lodash.factory";
+import type { IPackageProductViewModel } from "~/service/helpers/package-builder/package-view-day.interface";
+import type { PackageProduct } from "~/service/models/packageProduct";
+import type { IProductOption } from "~/service/models/productOption";
 
 
 interface APackageProps {

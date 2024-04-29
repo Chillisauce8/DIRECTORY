@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import {useCurrentSection} from '~/services/helpers/current-section.factory';
+import {useCurrentSection} from '~/service/helpers/current-section.factory';
 
 interface SplitBoxContentImage {
   id: string;

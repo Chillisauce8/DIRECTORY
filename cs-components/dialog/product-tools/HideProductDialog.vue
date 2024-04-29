@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import {inject, reactive} from 'vue';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 enum ShowHideSelectLabel {

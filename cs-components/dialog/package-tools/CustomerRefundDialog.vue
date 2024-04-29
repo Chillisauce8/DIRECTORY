@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
 import {helpers, maxValue, minValue, required} from '@vuelidate/validators';
 import {useVuelidate} from '@vuelidate/core';
-import {useCsLodash} from '~/services/cs-lodash.factory';
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
-import {SECURE_TRADING_PAYMENT_SYSTEM_NAME} from '~/services/helpers/payment/payment.service';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useCsLodash} from '~/service/cs-lodash.factory';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
+import {SECURE_TRADING_PAYMENT_SYSTEM_NAME} from '~/service/helpers/payment/payment.service';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export type CustomerRefundDialogData = void;

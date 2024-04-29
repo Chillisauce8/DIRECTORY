@@ -19,19 +19,19 @@
 
 
 <script lang="ts">
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
-import { useGlobalElementsTemplateService } from "~/services/helpers/data-templates/global-elements-template.factory";
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
-import { getPriceMarkUpString } from "~/services/models/pricing";
-import { EventPackage } from "~/services/models/package";
-import { usePackageSaver } from "~/services/helpers/package-builder/package-saver.service.factory";
-import { useCurrentCustomer } from "~/services/helpers/user-common/current-customer-service.factory";
-import { usePackageBookingNotifyService } from "~/services/helpers/package/package-booking-notify.service.factory";
-import { usePaymentDialogShowService } from "~/services/dialog/payment/payment-dialog-show.service";
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
-import { useEventBookedHistoryService } from '~/services/helpers/event/event-booked-history.service.factory';
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
+import { useGlobalElementsTemplateService } from "~/service/helpers/data-templates/global-elements-template.factory";
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
+import { getPriceMarkUpString } from "~/service/models/pricing";
+import { EventPackage } from "~/service/models/package";
+import { usePackageSaver } from "~/service/helpers/package-builder/package-saver.service.factory";
+import { useCurrentCustomer } from "~/service/helpers/user-common/current-customer-service.factory";
+import { usePackageBookingNotifyService } from "~/service/helpers/package/package-booking-notify.service.factory";
+import { usePaymentDialogShowService } from "~/service/dialog/payment/payment-dialog-show.service";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
+import { useEventBookedHistoryService } from '~/service/helpers/event/event-booked-history.service.factory';
 
 
 export default {

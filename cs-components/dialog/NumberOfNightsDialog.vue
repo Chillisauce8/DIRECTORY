@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {useSettingsTemplateService} from '~/services/helpers/data-templates/settings-template.factory';
-import {useCurrentSection} from '~/services/helpers/current-section.factory';
+import {useSettingsTemplateService} from '~/service/helpers/data-templates/settings-template.factory';
+import {useCurrentSection} from '~/service/helpers/current-section.factory';
 import {usePackageCommonSettingsStore} from '~/store/packageCommonSettings';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 

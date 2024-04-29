@@ -50,11 +50,11 @@
 </template>
 
 <script lang="ts">
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
 import {useCurrentUserStore} from '~/store/currentUser';
-import {useCurrentCustomer} from '~/services/helpers/user-common/current-customer-service.factory';
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
+import {useCurrentCustomer} from '~/service/helpers/user-common/current-customer-service.factory';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
 
 
 interface ViewedCustomerNavEventDetails {
@@ -175,7 +175,7 @@ color: white;
 
   background: black;
   span{
-    white-space: nowrap; 
+    white-space: nowrap;
     padding: 5px;
     &.key{
        // font-weight: 700;

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {PackageProduct} from '~/services/models/packageProduct';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import type {IProductAddon} from '~/services/models/productAddon';
-import type {IProductOption} from '~/services/models/productOption';
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
+import {PackageProduct} from '~/service/models/packageProduct';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import type {IProductAddon} from '~/service/models/productAddon';
+import type {IProductOption} from '~/service/models/productOption';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
 
 
 export interface ProductsToSelectDialogData {

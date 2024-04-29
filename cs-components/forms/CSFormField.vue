@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {CSFormFieldControlInjToken, CSFromFieldControl} from '~/utils/cs-form-field-contol';
-import {eventEmitterTap} from '~/services/models/event-emitter-observable-helpers';
+import {eventEmitterTap} from '~/service/models/event-emitter-observable-helpers';
 
 const currentInstance = getCurrentInstance();
 
@@ -104,7 +104,7 @@ $floating-elements-position: calc(0px - ($fc-placeholder-floating-text-size * $f
   flex-grow: 1;
 
   width: 100%;
- // margin: calc($fc-placeholder-floating-text-size) 0; 
+ // margin: calc($fc-placeholder-floating-text-size) 0;
   padding-top: 0.8em; // Makes input fields a bit more space to breath.
   position: relative;
 

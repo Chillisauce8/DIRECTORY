@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {useSettingsTemplateService} from '~/services/helpers/data-templates/settings-template.factory';
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useSettingsTemplateService} from '~/service/helpers/data-templates/settings-template.factory';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export type AddEventDateDialogData = void;
@@ -40,7 +40,7 @@ function onDateModelUpdated(date: Date): void {
 
 <template>
   <TheDialog class="dialog-with-form" title="Event Date?" subTitle="Do you have an event date yet? If so, please select the START DATE of your event:">
- 
+
     <form name="add-event-date">
       <CSFormField>
         <LazyCSDatepicker :model-value="vm.value"

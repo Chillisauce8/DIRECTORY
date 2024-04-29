@@ -21,14 +21,14 @@
 
 <script>
 import {useBasketStore} from "~/store/basket";
-import {useCurrentSection} from '~/services/helpers/current-section.factory';
+import {useCurrentSection} from '~/service/helpers/current-section.factory';
 
 export default {
   setup() {
     const currentSection = useCurrentSection();
     return {
       basketStore: useBasketStore(),
-      currentSection, 
+      currentSection,
     }
   },
   data() {

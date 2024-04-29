@@ -10,8 +10,8 @@
 
 
 <script setup lang="ts">
-import type { IProductContextMenuItem } from "~/services/helpers/product/product-context-menu.service";
-import type { IOpenContextMenuParams } from "~/services/helpers/context-menu-helper.service";
+import type { IProductContextMenuItem } from "~/service/helpers/product/product-context-menu.service";
+import type { IOpenContextMenuParams } from "~/service/helpers/context-menu-helper.service";
 import type { MenuOptions } from "~/components/context-menu/ContextMenuDefine";
 import ContextMenu from "~/components/context-menu/ContextMenu.vue";
 import ContextMenuItem from "~/components/context-menu/ContextMenuItem.vue";

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {useEnquiryFormHelperService} from '~/services/helpers/enquiry/enquiry-form-helper.service.factory';
-import {useLoginOrSignUpFormHelperService} from '~/services/helpers/auth/login-or-sign-up-form-helper.service.factory';
-import type {AuthFormDescription} from '~/services/helpers/auth/sign-up-or-login-description-helper.service';
+import {useEnquiryFormHelperService} from '~/service/helpers/enquiry/enquiry-form-helper.service.factory';
+import {useLoginOrSignUpFormHelperService} from '~/service/helpers/auth/login-or-sign-up-form-helper.service.factory';
+import type {AuthFormDescription} from '~/service/helpers/auth/sign-up-or-login-description-helper.service';
 import {useVuelidate} from '@vuelidate/core';
-import type {IEnquiryFormData} from '~/services/helpers/enquiry/enquiry-form-helper.service';
-import {EnquiryFormHelperService} from '~/services/helpers/enquiry/enquiry-form-helper.service';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {EventEmitterSubscription} from '~/services/models/event-emitter-observable';
+import type {IEnquiryFormData} from '~/service/helpers/enquiry/enquiry-form-helper.service';
+import {EnquiryFormHelperService} from '~/service/helpers/enquiry/enquiry-form-helper.service';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {EventEmitterSubscription} from '~/service/models/event-emitter-observable';
 
 
 export interface EnquiryFormDialogData {

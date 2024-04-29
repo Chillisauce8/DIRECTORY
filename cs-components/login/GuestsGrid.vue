@@ -169,18 +169,18 @@
 </template>
 
 <script>
-import { useEventPermissionsService } from "~/services/helpers/event/event-permissions.service.factory";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
-import { usePackageSaver } from "~/services/helpers/package-builder/package-saver.service.factory";
-import { useEventService } from "~/services/helpers/event/event.service.factory";
-import { useCsLodash } from "~/services/cs-lodash.factory";
-import { useSelectCustomerDialogShowService } from "~/services/dialog/select-customer-dialog-show.service";
-import { useGuestTransactionListService } from "~/services/helpers/event/guest-transaction-list.service.factory";
-import { useItineraryWithGuestAttendingListPreparer } from "~/services/helpers/event/itinerary-with-guest-attending-list-preparer.service.factory";
-import { useCurrentCustomer } from "~/services/helpers/user-common/current-customer-service.factory";
-import { useEventPackageBuilder } from "~/services/helpers/package-builder/package-builder.service.factory";
+import { useEventPermissionsService } from "~/service/helpers/event/event-permissions.service.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
+import { usePackageSaver } from "~/service/helpers/package-builder/package-saver.service.factory";
+import { useEventService } from "~/service/helpers/event/event.service.factory";
+import { useCsLodash } from "~/service/cs-lodash.factory";
+import { useSelectCustomerDialogShowService } from "~/service/dialog/select-customer-dialog-show.service";
+import { useGuestTransactionListService } from "~/service/helpers/event/guest-transaction-list.service.factory";
+import { useItineraryWithGuestAttendingListPreparer } from "~/service/helpers/event/itinerary-with-guest-attending-list-preparer.service.factory";
+import { useCurrentCustomer } from "~/service/helpers/user-common/current-customer-service.factory";
+import { useEventPackageBuilder } from "~/service/helpers/package-builder/package-builder.service.factory";
 import Toggle from "@vueform/toggle";
 
 export default {

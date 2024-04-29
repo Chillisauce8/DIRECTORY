@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import {reactive} from 'vue';
-import {AuthProvider} from '~/services/helpers/auth/auth-form.types';
+import {AuthProvider} from '~/service/helpers/auth/auth-form.types';
 
 
 interface AuthFormProps {

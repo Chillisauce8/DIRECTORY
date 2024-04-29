@@ -78,7 +78,7 @@ import {
 } from '~/utils/cs-form-validators';
 import type {Validation} from '@vuelidate/core';
 import {useVuelidate} from '@vuelidate/core';
-import {extractNamePartsFromFullName} from '~/services/helpers/user-common/user-form-helpers';
+import {extractNamePartsFromFullName} from '~/service/helpers/user-common/user-form-helpers';
 import CSFormField from '~/components/forms/CSFormField.vue';
 import CSError from '~/components/forms/CSError.vue';
 import {getValidationErrorMessage} from '~/utils/cs-form-validation-helpers';

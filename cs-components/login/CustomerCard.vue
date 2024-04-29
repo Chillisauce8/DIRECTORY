@@ -7,7 +7,7 @@
         <li class="Row Between">
           <span v-if="item.value !== undefined">
             {{ item.title }} </span> <span :class="{'pound': ['Price Total', 'Paid Total'].includes(item.title)}">{{ item.value }}</span>
-      
+
         </li>
       </template>
     </ul>
@@ -32,19 +32,19 @@
 </template>
 
 <script>
-import {useEventPermissionsService} from "~/services/helpers/event/event-permissions.service.factory";
-import {useCurrentUser} from "~/services/helpers/user-common/current-user.factory";
-import {useCurrentEvent} from "~/services/helpers/event/current-event.service.factory";
-import {useCurrentCustomer} from "~/services/helpers/user-common/current-customer-service.factory";
-import {useDateHelper} from "~/services/helpers/date-helper.factory";
-import {useEventService} from "~/services/helpers/event/event.service.factory";
-import {useEventPackageBuilder} from "~/services/helpers/package-builder/package-builder.service.factory";
-import {useCsLodash} from "~/services/cs-lodash.factory";
+import {useEventPermissionsService} from "~/service/helpers/event/event-permissions.service.factory";
+import {useCurrentUser} from "~/service/helpers/user-common/current-user.factory";
+import {useCurrentEvent} from "~/service/helpers/event/current-event.service.factory";
+import {useCurrentCustomer} from "~/service/helpers/user-common/current-customer-service.factory";
+import {useDateHelper} from "~/service/helpers/date-helper.factory";
+import {useEventService} from "~/service/helpers/event/event.service.factory";
+import {useEventPackageBuilder} from "~/service/helpers/package-builder/package-builder.service.factory";
+import {useCsLodash} from "~/service/cs-lodash.factory";
 import {
   usePackageBuilderAlertsService
-} from "~/services/helpers/package-builder/package-builder-alerts.service.factory";
+} from "~/service/helpers/package-builder/package-builder-alerts.service.factory";
 import { useCurrentUserStore } from "~/store/currentUser";
-import {useChangeCardDialogShowService} from "~/services/dialog/payment/change-card-dialog-show.service";
+import {useChangeCardDialogShowService} from "~/service/dialog/payment/change-card-dialog-show.service";
 
 export default {
   props: ['event', 'dataTemplate'],

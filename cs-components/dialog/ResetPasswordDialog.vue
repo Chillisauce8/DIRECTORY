@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {email, required} from '@vuelidate/validators';
 import {useVuelidate} from '@vuelidate/core';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
-import {useGlobalElementsTemplateService} from '~/services/helpers/data-templates/global-elements-template.factory';
-import {useRoutingHelper} from '~/services/helpers/routing-helper.fabric';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
+import {useGlobalElementsTemplateService} from '~/service/helpers/data-templates/global-elements-template.factory';
+import {useRoutingHelper} from '~/service/helpers/routing-helper.fabric';
 
 
 export interface ResetPasswordDialogData {

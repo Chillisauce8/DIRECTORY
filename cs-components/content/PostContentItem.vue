@@ -46,8 +46,8 @@
 </template>
 
 <script setup lang="ts">
-  import { useCurrentSection } from '~/services/helpers/current-section.factory';
-  import { useContentHelper } from '~/services/helpers/content/content-helper.service.factory';
+  import { useCurrentSection } from '~/service/helpers/current-section.factory';
+  import { useContentHelper } from '~/service/helpers/content/content-helper.service.factory';
 
   interface PostContentItemProps {
     item: any;

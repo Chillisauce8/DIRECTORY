@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {useCustomerService} from '~/services/helpers/customer/customer.service';
-import {useRoutingHelper} from '~/services/helpers/routing-helper.fabric';
-import {useUserService} from '~/services/helpers/user-common/user-service.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {useCustomerService} from '~/service/helpers/customer/customer.service';
+import {useRoutingHelper} from '~/service/helpers/routing-helper.fabric';
+import {useUserService} from '~/service/helpers/user-common/user-service.factory';
 import {vRestrictPattern} from '~/utils/directives/restrict-pattern.directive';
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useZukoTrackerService} from '~/services/helpers/zuko/zuko-tracker.service.factory';
-import {cs6ZukoSlug} from '~/services/helpers/zuko/cs6-zuko.const';
-import {ZukoTrackEventType} from '~/services/helpers/zuko/zuko-tracker.service';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useZukoTrackerService} from '~/service/helpers/zuko/zuko-tracker.service.factory';
+import {cs6ZukoSlug} from '~/service/helpers/zuko/cs6-zuko.const';
+import {ZukoTrackEventType} from '~/service/helpers/zuko/zuko-tracker.service';
 import {useEventPageDeferredParamsStore} from '~/store/eventPageDeferredParam';
 
 export interface MagicLinkPromptDialogData {
@@ -120,7 +120,7 @@ init();
     <p class="dialog-text">
       We have sent a <strong>Magic Link & 4 Digit Pin Code</strong>
       to <strong>{{vm.email}}</strong> <span v-if="vm.last4PhoneDigits"> and a mobile number ending ****<strong>{{vm.last4PhoneDigits}}</strong></span>.
-      
+
     </p>
 <p class="dialog-text">To continue, please click the link or enter the pin below.</p>
     <CSFormField>

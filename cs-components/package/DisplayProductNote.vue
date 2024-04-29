@@ -16,11 +16,11 @@
 </template>
 
 <script lang="ts">
-import * as _ from "~/services/cs-lodash";
-import { useDateHelper } from "~/services/helpers/date-helper.factory";
-import { useUserService } from "~/services/helpers/user-common/user-service.factory";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import type { ProductNote } from "~/services/models/packageProduct";
+import * as _ from "~/service/cs-lodash";
+import { useDateHelper } from "~/service/helpers/date-helper.factory";
+import { useUserService } from "~/service/helpers/user-common/user-service.factory";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import type { ProductNote } from "~/service/models/packageProduct";
 
 export default {
   props: ['productNote'],

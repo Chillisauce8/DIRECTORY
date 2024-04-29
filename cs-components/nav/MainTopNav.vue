@@ -66,24 +66,24 @@
 
 <script setup lang="ts">
 import { getCurrentInstance, onMounted, onUnmounted, reactive } from "vue";
-import { useLocationsDialogShowService } from "~/services/dialog/locations-dialog-show.service";
-import { useSignInDialogShowService } from "~/services/dialog/auth/sign-in-dialog-show.service";
-import { useCurrentUser } from "~/services/helpers/user-common/current-user.factory";
-import { useCurrentCustomer } from "~/services/helpers/user-common/current-customer-service.factory";
+import { useLocationsDialogShowService } from "~/service/dialog/locations-dialog-show.service";
+import { useSignInDialogShowService } from "~/service/dialog/auth/sign-in-dialog-show.service";
+import { useCurrentUser } from "~/service/helpers/user-common/current-user.factory";
+import { useCurrentCustomer } from "~/service/helpers/user-common/current-customer-service.factory";
 import { useCurrentUserStore } from "~/store/currentUser";
 import { useCurrentCustomerIdStore } from "~/store/currentCustomerId";
 import { useIsStaffToggledStore } from "~/store/isStaffToggled";
 import { useSectionStore } from "~/store/section";
-import { useCurrentSupplier } from "~/services/helpers/supplier-common/current-supplier.factory";
-import { useUserAccountDialogShowService } from "~/services/dialog/user-account-dialog-show.service";
-import { useContactDialogShowService } from "~/services/dialog/contact-dialog-show.service";
-import { useCurrentSection } from "~/services/helpers/current-section.factory";
+import { useCurrentSupplier } from "~/service/helpers/supplier-common/current-supplier.factory";
+import { useUserAccountDialogShowService } from "~/service/dialog/user-account-dialog-show.service";
+import { useContactDialogShowService } from "~/service/dialog/contact-dialog-show.service";
+import { useCurrentSection } from "~/service/helpers/current-section.factory";
 import { useCustomerEventsStore } from "~/store/customerEvents";
-import { useEventListDialogShowService } from "~/services/dialog/event-list-dialog-show.service";
-import { usePackageSaver } from "~/services/helpers/package-builder/package-saver.service.factory";
-import { useSavePackageChangesHelperService } from "~/services/helpers/package-builder/save-package-changes-helper.service.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { useRoutingHelper } from '~/services/helpers/routing-helper.fabric';
+import { useEventListDialogShowService } from "~/service/dialog/event-list-dialog-show.service";
+import { usePackageSaver } from "~/service/helpers/package-builder/package-saver.service.factory";
+import { useSavePackageChangesHelperService } from "~/service/helpers/package-builder/save-package-changes-helper.service.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { useRoutingHelper } from '~/service/helpers/routing-helper.fabric';
 
 interface NavBarUserData {
   isSignedIn: boolean;

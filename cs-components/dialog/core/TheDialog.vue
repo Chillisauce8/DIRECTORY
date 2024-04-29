@@ -13,7 +13,7 @@
                    v-if="!hideCloseButton"
                    :style="{opacity: dataState.config.hideCloseButton ? 0 : 1}"
                    @click="cancelModal()" />
- 
+
     </div>
 
     <div class="content" :class="classes">
@@ -25,11 +25,11 @@
 
 <script setup lang="ts">
 import { inject, reactive, watch } from 'vue';
-import {DialogInstance, DialogInstanceInjToken} from '~/services/dialog/core/dialog-instance';
-import type {CoreDialogConfig} from '~/services/dialog/core/dialog.typings';
-import {DialogConfigInjToken} from '~/services/dialog/core/dialog.typings';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {defaultCloseButtonClickHandlerFactory} from '~/services/dialog/core/dialog.helpers';
+import {DialogInstance, DialogInstanceInjToken} from '~/service/dialog/core/dialog-instance';
+import type {CoreDialogConfig} from '~/service/dialog/core/dialog.typings';
+import {DialogConfigInjToken} from '~/service/dialog/core/dialog.typings';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {defaultCloseButtonClickHandlerFactory} from '~/service/dialog/core/dialog.helpers';
 
 
 export interface DialogProps {

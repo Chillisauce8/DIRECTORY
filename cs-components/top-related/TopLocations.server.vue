@@ -10,9 +10,9 @@
 </template>
 
 <script lang="ts" setup>
-import {useDataTemplateFabricService} from "~/services/helpers/data-templates/data-template-fabric.factory";
+import {useDataTemplateFabricService} from "~/service/helpers/data-templates/data-template-fabric.factory";
 import { useDataTemplatesStore } from '~/store/dataTemplates';
-import { useLocationService } from '~/services/helpers/location.service.factory';
+import { useLocationService } from '~/service/helpers/location.service.factory';
 import {usePageDataLoadedStore} from '~/store/pageDataLoaded';
 
 

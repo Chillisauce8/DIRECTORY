@@ -11,16 +11,16 @@
 <script setup lang="ts">
 
 import { reactive } from "vue";
-import { useGlobalElementsTemplateService } from "~/services/helpers/data-templates/global-elements-template.factory";
-import { useDataTemplateFabricService } from "~/services/helpers/data-templates/data-template-fabric.factory";
-import { useCurrentEvent } from "~/services/helpers/event/current-event.service.factory";
-import { DataTemplate } from "~/services/models/dataTemplate";
+import { useGlobalElementsTemplateService } from "~/service/helpers/data-templates/global-elements-template.factory";
+import { useDataTemplateFabricService } from "~/service/helpers/data-templates/data-template-fabric.factory";
+import { useCurrentEvent } from "~/service/helpers/event/current-event.service.factory";
+import { DataTemplate } from "~/service/models/dataTemplate";
 import { useDataTemplatesStore } from "~/store/dataTemplates";
-import { eventEmitterFilter, eventEmitterObsFirstValueFrom } from "~/services/models/event-emitter-observable-helpers";
-import {useDialogConfig, useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import { CurrentEventInitStates } from '~/services/helpers/event/current-event.service';
-import { useEventPackageBuilder } from '~/services/helpers/package-builder/package-builder.service.factory';
-import { useCustomerEvents } from '~/services/helpers/event/customer-events.service.factory';
+import { eventEmitterFilter, eventEmitterObsFirstValueFrom } from "~/service/models/event-emitter-observable-helpers";
+import {useDialogConfig, useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import { CurrentEventInitStates } from '~/service/helpers/event/current-event.service';
+import { useEventPackageBuilder } from '~/service/helpers/package-builder/package-builder.service.factory';
+import { useCustomerEvents } from '~/service/helpers/event/customer-events.service.factory';
 
 
 export interface PaymentResultDialogData {

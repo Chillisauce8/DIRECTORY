@@ -19,58 +19,58 @@
 </template>
 
 <script lang="ts">
-import {usePermissionFunctionsService} from "~/services/helpers/event/permission-functions.service.factory";
-import {useEventService} from "~/services/helpers/event/event.service.factory";
-import {useCurrentEvent} from "~/services/helpers/event/current-event.service.factory";
-import {useEventPermissionsService} from "~/services/helpers/event/event-permissions.service.factory";
-import {usePackageSaver} from "~/services/helpers/package-builder/package-saver.service.factory";
-import {useGlobalElementsTemplateService} from "~/services/helpers/data-templates/global-elements-template.factory";
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useCurrentCustomer} from "~/services/helpers/user-common/current-customer-service.factory";
-import {useEventPackageBuilder} from "~/services/helpers/package-builder/package-builder.service.factory";
-import {useMessageService} from "~/services/helpers/message.factory";
-import {useCsLodash} from "~/services/cs-lodash.factory";
-import {useToolsDialogShowService} from "~/services/dialog/tools-dialog-show.service";
+import {usePermissionFunctionsService} from "~/service/helpers/event/permission-functions.service.factory";
+import {useEventService} from "~/service/helpers/event/event.service.factory";
+import {useCurrentEvent} from "~/service/helpers/event/current-event.service.factory";
+import {useEventPermissionsService} from "~/service/helpers/event/event-permissions.service.factory";
+import {usePackageSaver} from "~/service/helpers/package-builder/package-saver.service.factory";
+import {useGlobalElementsTemplateService} from "~/service/helpers/data-templates/global-elements-template.factory";
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useCurrentCustomer} from "~/service/helpers/user-common/current-customer-service.factory";
+import {useEventPackageBuilder} from "~/service/helpers/package-builder/package-builder.service.factory";
+import {useMessageService} from "~/service/helpers/message.factory";
+import {useCsLodash} from "~/service/cs-lodash.factory";
+import {useToolsDialogShowService} from "~/service/dialog/tools-dialog-show.service";
 import { useCurrentEventStore } from "~/store/currentEvent";
-import {useEditManagerDialogShowService} from '~/services/dialog/package-tools/edit-manager-dialog-show.service';
+import {useEditManagerDialogShowService} from '~/service/dialog/package-tools/edit-manager-dialog-show.service';
 import type {EditManagerDialogResult} from '~/components/dialog/package-tools/EditManagerDialog.vue';
-import type {DialogResult} from '~/services/dialog/core/dialog.typings';
-import {useEditOrganiserDialogShowService} from '~/services/dialog/package-tools/edit-organiser-dialog-show.service';
+import type {DialogResult} from '~/service/dialog/core/dialog.typings';
+import {useEditOrganiserDialogShowService} from '~/service/dialog/package-tools/edit-organiser-dialog-show.service';
 import {
   useEditDiscountMarginDialogShowService
-} from '~/services/dialog/package-tools/edit-discount-margin-dialog-show.service';
-import {useSwapLocationDialogShowService} from '~/services/dialog/package-tools/swap-location-dialog-show.service';
-import {useSwapEventTypeDialogShowService} from '~/services/dialog/package-tools/swap-event-type-dialog-show.service';
-import {useAddBookingFormDialogShowService} from '~/services/dialog/package-tools/add-booking-form-dialog-show.service';
-import {usePackageBookingNotifyService} from '~/services/helpers/package/package-booking-notify.service.factory';
+} from '~/service/dialog/package-tools/edit-discount-margin-dialog-show.service';
+import {useSwapLocationDialogShowService} from '~/service/dialog/package-tools/swap-location-dialog-show.service';
+import {useSwapEventTypeDialogShowService} from '~/service/dialog/package-tools/swap-event-type-dialog-show.service';
+import {useAddBookingFormDialogShowService} from '~/service/dialog/package-tools/add-booking-form-dialog-show.service';
+import {usePackageBookingNotifyService} from '~/service/helpers/package/package-booking-notify.service.factory';
 import {
   eventEmitterObsFirstValueFrom
-} from '~/services/models/event-emitter-observable-helpers';
-import {useAdminAreaUrlBuilderService} from '~/services/helpers/admin-area-url-builder.service.factory';
-import {getWindowSafe} from '~/services/helpers/browser/browser.helpers';
+} from '~/service/models/event-emitter-observable-helpers';
+import {useAdminAreaUrlBuilderService} from '~/service/helpers/admin-area-url-builder.service.factory';
+import {getWindowSafe} from '~/service/helpers/browser/browser.helpers';
 import {
   useEditPaymentDatesDialogShowService
-} from '~/services/dialog/package-tools/edit-payment-dates-dialog-show.service';
-import {useCustomerRefundDialogShowService} from '~/services/dialog/package-tools/customer-refund-dialog-show.service';
+} from '~/service/dialog/package-tools/edit-payment-dates-dialog-show.service';
+import {useCustomerRefundDialogShowService} from '~/service/dialog/package-tools/customer-refund-dialog-show.service';
 import {
   useAbortTransactionDialogShowService
-} from '~/services/dialog/package-tools/abort-transaction-dialog-show.service';
+} from '~/service/dialog/package-tools/abort-transaction-dialog-show.service';
 import {
   useEditCustomerNotesDialogShowService
-} from '~/services/dialog/package-tools/edit-customer-notes-dialog-show.service';
-import {useEditStaffNotesDialogShowService} from '~/services/dialog/package-tools/edit-staff-notes-dialog-show.service';
-import {useAddCreditNoteDialogShowService} from '~/services/dialog/package-tools/add-credit-note-dialog-show.service';
-import {useEditFixedCustomerPriceDialogShowService} from '~/services/dialog/package-tools/edit-fixed-customer-price-dialog-show.service';
-import {useEditDisplayPricesDialogShowService} from '~/services/dialog/package-tools/edit-display-prices-dialog-show.service';
-import {useEditAutoTransactionsDialogShowService} from '~/services/dialog/package-tools/edit-auto-transactions-dialog-show.service';
-import {PackageProduct} from '~/services/models/packageProduct';
-import {useCancelBookingDialogShowService} from '~/services/dialog/package-tools/cancel-booking-dialog-show.service';
-import {useEditCommissionDialogShowService} from '~/services/dialog/package-tools/edit-commission-dialog-show.service';
-import {useMoveMoneyDialogShowService} from '~/services/dialog/package-tools/move-money-dialog-show.service';
-import {useAddBankPaymentDialogShowService} from "~/services/dialog/payment/bank-payment-dialog-show.service";
+} from '~/service/dialog/package-tools/edit-customer-notes-dialog-show.service';
+import {useEditStaffNotesDialogShowService} from '~/service/dialog/package-tools/edit-staff-notes-dialog-show.service';
+import {useAddCreditNoteDialogShowService} from '~/service/dialog/package-tools/add-credit-note-dialog-show.service';
+import {useEditFixedCustomerPriceDialogShowService} from '~/service/dialog/package-tools/edit-fixed-customer-price-dialog-show.service';
+import {useEditDisplayPricesDialogShowService} from '~/service/dialog/package-tools/edit-display-prices-dialog-show.service';
+import {useEditAutoTransactionsDialogShowService} from '~/service/dialog/package-tools/edit-auto-transactions-dialog-show.service';
+import {PackageProduct} from '~/service/models/packageProduct';
+import {useCancelBookingDialogShowService} from '~/service/dialog/package-tools/cancel-booking-dialog-show.service';
+import {useEditCommissionDialogShowService} from '~/service/dialog/package-tools/edit-commission-dialog-show.service';
+import {useMoveMoneyDialogShowService} from '~/service/dialog/package-tools/move-money-dialog-show.service';
+import {useAddBankPaymentDialogShowService} from "~/service/dialog/payment/bank-payment-dialog-show.service";
 import { useCurrentCustomerIdStore } from "~/store/currentCustomerId";
-import {useConfirmDialogShowService} from '~/services/dialog/confirm-dialog-show.service';
-import {useCustomerEvents} from '~/services/helpers/event/customer-events.service.factory';
+import {useConfirmDialogShowService} from '~/service/dialog/confirm-dialog-show.service';
+import {useCustomerEvents} from '~/service/helpers/event/customer-events.service.factory';
 
 
 interface EventFunctionEditManager {

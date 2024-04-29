@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
 import type {YesNoValue} from '~/utils/common.types';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
-import {roundNumberAtLeastDecimalPoints} from '~/services/models/pricing';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
+import {roundNumberAtLeastDecimalPoints} from '~/service/models/pricing';
 import {helpers, minValue, required} from '@vuelidate/validators';
 import {useVuelidate} from '@vuelidate/core';
 

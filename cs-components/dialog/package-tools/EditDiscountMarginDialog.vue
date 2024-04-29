@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
 import {minValue, required} from '@vuelidate/validators';
 import {useVuelidate} from '@vuelidate/core';
 import CSFormField from '~/components/forms/CSFormField.vue';
-import {useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import {useDialogInstance} from '~/service/dialog/core/dialog.composables';
 import {vAutofocus} from '~/utils/directives/autofocus';
 
 export type EditDiscountMarginDialogData = never;

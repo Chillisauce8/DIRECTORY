@@ -34,9 +34,9 @@
 </template>
 
 <script lang="ts">
-import * as _ from "~/services/cs-lodash";
-import {useDateHelper} from '~/services/helpers/date-helper.factory';
-import {useDialogData, useDialogInstance} from '~/services/dialog/core/dialog.composables';
+import * as _ from "~/service/cs-lodash";
+import {useDateHelper} from '~/service/helpers/date-helper.factory';
+import {useDialogData, useDialogInstance} from '~/service/dialog/core/dialog.composables';
 
 
 export interface PreferredStartTimeDialogData {

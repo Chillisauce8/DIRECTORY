@@ -38,13 +38,13 @@
 
 <script lang="ts" setup>
 
-import { useHidingPriceService } from '~/services/helpers/pricing/hiding-price-service.factory';
-import { useProductPagePriceHelperService } from '~/services/helpers/pricing/product-page-price-helper-service.factory';
-import { useCsLodash } from '~/services/cs-lodash.factory';
-import { usePricingService } from '~/services/helpers/pricing/pricing-service.factory';
-import { useEventPermissionsService } from '~/services/helpers/event/event-permissions.service.factory';
-import { Product } from '~/services/models/product';
-import { ProductOption } from '~/services/models/productOption';
+import { useHidingPriceService } from '~/service/helpers/pricing/hiding-price-service.factory';
+import { useProductPagePriceHelperService } from '~/service/helpers/pricing/product-page-price-helper-service.factory';
+import { useCsLodash } from '~/service/cs-lodash.factory';
+import { usePricingService } from '~/service/helpers/pricing/pricing-service.factory';
+import { useEventPermissionsService } from '~/service/helpers/event/event-permissions.service.factory';
+import { Product } from '~/service/models/product';
+import { ProductOption } from '~/service/models/productOption';
 
 
 interface ProductOptionsProps {

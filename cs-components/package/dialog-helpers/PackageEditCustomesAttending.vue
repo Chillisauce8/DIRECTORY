@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useCsLodash} from '~/services/cs-lodash.factory';
+import {useCsLodash} from '~/service/cs-lodash.factory';
 
 interface PackageEditCustomerAttendingProps {
   eventCustomerSummary: any[];

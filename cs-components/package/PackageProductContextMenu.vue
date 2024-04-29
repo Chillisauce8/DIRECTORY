@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import {useCurrentUser} from '~/services/helpers/user-common/current-user.factory';
-import {useCurrentEvent} from '~/services/helpers/event/current-event.service.factory';
-import {getDocumentSafe, getWindowSafe} from '~/services/helpers/browser/browser.helpers';
-import {useEventPackageBuilder} from '~/services/helpers/package-builder/package-builder.service.factory';
-import {usePackageSaver} from '~/services/helpers/package-builder/package-saver.service.factory';
+import {useCurrentUser} from '~/service/helpers/user-common/current-user.factory';
+import {useCurrentEvent} from '~/service/helpers/event/current-event.service.factory';
+import {getDocumentSafe, getWindowSafe} from '~/service/helpers/browser/browser.helpers';
+import {useEventPackageBuilder} from '~/service/helpers/package-builder/package-builder.service.factory';
+import {usePackageSaver} from '~/service/helpers/package-builder/package-saver.service.factory';
 import {
   useAcceptDeclineProductDialogShowService
-} from '~/services/dialog/product-tools/accept-decline-product-dialog-show.service';
+} from '~/service/dialog/product-tools/accept-decline-product-dialog-show.service';
 import {
   useAcceptProductCancellationDialogShowService
-} from '~/services/dialog/product-tools/accept-product-cancellation-dialog-show.service';
-import chilliLocalStorageService from '~/services/helpers/storage/chilli-local-storage.service';
-import type {IPackageProductViewModel} from '~/services/helpers/package-builder/package-view-day.interface';
-import type {IOpenContextMenuParams} from '~/services/helpers/context-menu-helper.service';
+} from '~/service/dialog/product-tools/accept-product-cancellation-dialog-show.service';
+import chilliLocalStorageService from '~/service/helpers/storage/chilli-local-storage.service';
+import type {IPackageProductViewModel} from '~/service/helpers/package-builder/package-view-day.interface';
+import type {IOpenContextMenuParams} from '~/service/helpers/context-menu-helper.service';
 import type {
   IPackageProductContextMenuConfig
-} from '~/services/helpers/package-builder/package-product-context-menu.service';
+} from '~/service/helpers/package-builder/package-product-context-menu.service';
 import {
   usePackageProductContextMenuService
-} from '~/services/helpers/package-builder/package-product-context-menu.service.factory';
-import {useContextMenuHelper} from '~/services/helpers/context-menu-helper.service.factory';
-import {useLocationService} from '~/services/helpers/location.service.factory';
-import {useCurrentSection} from '~/services/helpers/current-section.factory';
-import {useCurrentSupplier} from '~/services/helpers/supplier-common/current-supplier.factory';
+} from '~/service/helpers/package-builder/package-product-context-menu.service.factory';
+import {useContextMenuHelper} from '~/service/helpers/context-menu-helper.service.factory';
+import {useLocationService} from '~/service/helpers/location.service.factory';
+import {useCurrentSection} from '~/service/helpers/current-section.factory';
+import {useCurrentSupplier} from '~/service/helpers/supplier-common/current-supplier.factory';
 import {useCurrentUserStore} from '~/store/currentUser';
-import {useRoutingHelper} from '~/services/helpers/routing-helper.fabric';
+import {useRoutingHelper} from '~/service/helpers/routing-helper.fabric';
 import ContextMenu from '~/components/context-menu/ContextMenu.vue';
 import ContextMenuGroup from '~/components/context-menu/ContextMenuGroup.vue';
 import ContextMenuItem from '~/components/context-menu/ContextMenuItem.vue';
