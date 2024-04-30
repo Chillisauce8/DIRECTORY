@@ -51,7 +51,7 @@ const model = ref([
                 to: '/apps/calendar'
             },
             {
-                label: 'Chat',
+                label: 'Messages',
                 icon: 'pi pi-fw pi-comments',
                 to: '/apps/chat'
             },

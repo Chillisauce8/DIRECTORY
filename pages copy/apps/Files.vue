@@ -102,7 +102,6 @@ const onRemoveFile = (removeFile) => {
 
 <template>
     <div class="grid">
-        <!--
         <div v-for="(metric, i) in metrics" :key="i" class="col-12 md:col-6 lg:col-3">
             <div class="card h-full">
                 <div class="flex align-items-center justify-content-between mb-3">
@@ -123,10 +122,8 @@ const onRemoveFile = (removeFile) => {
                 </div>
             </div>
         </div>
-    -->
-        <!--
+
         <div class="col-12 md:col-5 xl:col-3">
-      
             <div class="card">
                 <div class="text-900 text-xl font-semibold mb-3">Account Storage</div>
                 <div class="flex flex-row justify-content-center" style="height: 200px">
@@ -137,7 +134,7 @@ const onRemoveFile = (removeFile) => {
                     <Button icon="pi pi-upload" class="flex-1" label="Upgrade"></Button>
                 </div>
             </div>
-        
+
             <div class="card">
                 <div class="text-900 text-xl font-semibold mb-3">Categories</div>
                 <ul class="list-none p-0 m-0">
@@ -215,43 +212,8 @@ const onRemoveFile = (removeFile) => {
                 </div>
             </div>
         </div>
-    -->
-        <div class="card col-12">
-            <div class="text-900 text-xl font-semibold mb-3">Categories</div>
-            <ul class="list-none p-0 m-0">
-                <li class="p-3 mb-3 flex align-items-center justify-content-between cursor-pointer border-round bg-indigo-50 text-indigo-900">
-                    <div class="flex align-items-center">
-                        <i class="pi pi-image text-2xl mr-3"></i>
-                        <span class="ext-lg font-medium">Images</span>
-                    </div>
-                    <span class="text-lg font-bold">85</span>
-                </li>
-                <li class="p-3 mb-3 flex align-items-center justify-content-between cursor-pointer border-round bg-purple-50 text-purple-900">
-                    <div class="flex align-items-center">
-                        <i class="pi pi-file text-2xl mr-3"></i>
-                        <span class="ext-lg font-medium">Documents</span>
-                    </div>
-                    <span class="text-lg font-bold">231</span>
-                </li>
-                <li class="p-3 flex align-items-center justify-content-between cursor-pointer border-round bg-teal-50 text-teal-900">
-                    <div class="flex align-items-center">
-                        <i class="pi pi-video text-2xl mr-3"></i>
-                        <span class="ext-lg font-medium">Videos</span>
-                    </div>
-                    <span class="text-lg font-bold">40</span>
-                </li>
-            </ul>
-        </div>
-        <div class="col-12 field">
-            <label for="demo[]" class="text-900 font-semibold">Add Files</label>
-            <FileUpload name="demo[]" url="/api/upload" @upload="onAdvancedUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
-                <template #empty>
-                    <p>Drag and drop files to here to upload.</p>
-                </template>
-            </FileUpload>
-        </div>
-        <div class="col-12">
-            <!--   <div class="card">
+        <div class="col-12 md:col-7 xl:col-9">
+            <div class="card">
                 <div class="text-900 text-xl font-semibold mb-3">Folders</div>
                 <div class="grid">
                     <div v-for="(folder, i) in folders" :key="i" class="col-12 md:col-6 xl:col-4">
@@ -264,7 +226,7 @@ const onRemoveFile = (removeFile) => {
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
             <div class="card">
                 <div class="text-900 text-xl font-semibold mb-3">Recent Uploads</div>
                 <DataTable :value="files" dataKey="id" paginator :rows="8">

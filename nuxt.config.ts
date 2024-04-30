@@ -41,7 +41,7 @@ export default defineNuxtConfig({
       link: [
         {
           rel: 'stylesheet',
-          href: '/layout/styles/theme/theme-light/indigo/theme.css',
+          href: '/layout/styles/theme/theme-light/cyan/theme.css',
           id: 'theme-link'
         },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

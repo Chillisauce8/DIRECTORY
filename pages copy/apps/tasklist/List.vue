@@ -51,11 +51,9 @@ const toggleMenu = (event, i, task) => {
             </div>
             <div class="flex flex-1 gap-3 flex-column sm:flex-row sm:justify-content-between">
                 <div class="flex align-items-center">
-                    <!--      <span v-if="task.comments" class="flex align-items-center font-semibold mr-3"><i class="pi pi-comment mr-2"></i>{{ task.comments }}</span>
+                    <span v-if="task.comments" class="flex align-items-center font-semibold mr-3"><i class="pi pi-comment mr-2"></i>{{ task.comments }}</span>
                     <span v-if="task.attachments" class="flex align-items-center font-semibold mr-3"><i class="pi pi-paperclip mr-2"></i>{{ task.attachments }}</span>
                     <span class="flex align-items-center font-semibold white-space-nowrap" v-if="task.startDate"><i class="pi pi-clock mr-2"></i>{{ parseDate(task.startDate) }}</span>
-             -->
-                    <span class="flex align-items-center font-semibold white-space-nowrap" v-if="task.startDate"><i class="pi pi-clock mr-2"></i>{{ task.startDate }}</span>
                 </div>
                 <div class="flex align-items-center sm:justify-content-end">
                     <div class="mr-3">
