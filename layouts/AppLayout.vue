@@ -77,6 +77,7 @@ const isOutsideClicked = (event) => {
 };
 </script>
 
+<!-- MODIFIED added MAIN INSTEAD OF DIV-->
 <template>
     <div :class="['layout-container', { ...containerClass }]">
         <AppSidebar ref="sidebarRef" />
@@ -84,9 +85,9 @@ const isOutsideClicked = (event) => {
         <div class="layout-content-wrapper">
             <AppTopbar ref="topbarRef" />
             <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb>
-            <div class="layout-content">
+            <main class="layout-content">
                 <router-view></router-view>
-            </div>
+            </main>
         </div>
 
         <AppProfileSidebar />

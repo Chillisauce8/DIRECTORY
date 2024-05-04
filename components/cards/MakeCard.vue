@@ -1,26 +1,19 @@
 <template>
-  <card-wrapper class="make-card card">
-    <image-wrapper
-      v-if="images"
-      :images="images"
-      :max="1"
-      :width="290"
-      :height="145"
-      loading="lazy"
-    >
-      <!--
+    <card-wrapper class="make-card standard-card">
+        <image-wrapper v-if="images" :images="images" :max="1" :width="290" :height="145" loading="lazy">
+            <!--
       <SvgIcon svg="heart" class="heart" />
       <div class="location">
         <span class="fi fi-gb flag"></span>
         <span class="address"> Yeovil, UK </span>
       </div>
     -->
-    </image-wrapper>
-    <card-text-wrapper>
-      <!--     <div class="sale-type">{{ saleType }}</div> -->
-      <h1 class="name">{{ name }}</h1>
+        </image-wrapper>
+        <card-text-wrapper>
+            <!--     <div class="sale-type">{{ saleType }}</div> -->
+            <h1 class="name">{{ name }}</h1>
 
-      <!--  <div class="price">{{ price }}</div>
+            <!--  <div class="price">{{ price }}</div>
 
       <div class="specs">
         <span v-if="engine" class="engine">{{ engine }}</span>
@@ -31,64 +24,64 @@
         }}</span>
       </div>
     -->
-    </card-text-wrapper>
-  </card-wrapper>
+        </card-text-wrapper>
+    </card-wrapper>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(["images", "name"]);
+const props = defineProps(['images', 'name']);
 </script>
 
 <style lang="scss">
 .make-card {
-  width: 300px;
-  figure {
-    @include aspect-ratio(3, 2);
-  }
-  header {
-    @include aspect-ratio(3, 1);
-    //     min-height: 150px;
-  }
-  .name {
-    font-family: $ff2;
-    font-size: 18px;
-    font-weight: 600;
-  }
-  .sale-type {
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-  .year {
-    font-size: 12px;
-  }
-  .price {
-    font-size: 14px;
-    font-weight: 400;
-  }
-  .heart {
-    width: 24px;
-    height: 24px;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    & svg {
-      fill: rgba(150, 150, 150, 0.5);
+    width: 300px;
+    figure {
+        @include aspect-ratio(3, 2);
     }
-    &:hover svg {
-      fill: red;
-      stroke: grey;
+    header {
+        @include aspect-ratio(3, 1);
+        //     min-height: 150px;
     }
-  }
-  .specs span:not(:last-child):after {
-    content: " · ";
-  }
-  .location {
-    padding: 0 5px 0;
-    background: rgba(0, 0, 0, 0.5);
-    position: absolute;
-    bottom: 0px;
-    left: 0px;
-  }
+    .name {
+        font-family: $ff2;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .sale-type {
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .year {
+        font-size: 12px;
+    }
+    .price {
+        font-size: 14px;
+        font-weight: 400;
+    }
+    .heart {
+        width: 24px;
+        height: 24px;
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        & svg {
+            fill: rgba(150, 150, 150, 0.5);
+        }
+        &:hover svg {
+            fill: red;
+            stroke: grey;
+        }
+    }
+    .specs span:not(:last-child):after {
+        content: ' · ';
+    }
+    .location {
+        padding: 0 5px 0;
+        background: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+    }
 }
 </style>

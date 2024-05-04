@@ -46,6 +46,27 @@ const model = ref([
                 ]
             },
             {
+                label: 'Vehicles',
+                icon: 'pi pi-fw pi-comment',
+                items: [
+                    {
+                        label: 'List',
+                        icon: 'pi pi-fw pi-image',
+                        to: '/apps/vehicles/list'
+                    },
+                    {
+                        label: 'Detail',
+                        icon: 'pi pi-fw pi-list',
+                        to: '/apps/vehicles/detail'
+                    },
+                    {
+                        label: 'Edit',
+                        icon: 'pi pi-fw pi-pencil',
+                        to: '/apps/vehicles/edit'
+                    }
+                ]
+            },
+            {
                 label: 'Calendar',
                 icon: 'pi pi-fw pi-calendar',
                 to: '/apps/calendar'
@@ -85,6 +106,11 @@ const model = ref([
                 label: 'Task List',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/apps/tasklist'
+            },
+            {
+                label: 'Car Listings',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/car'
             }
         ]
     },

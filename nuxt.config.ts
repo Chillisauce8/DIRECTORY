@@ -11,12 +11,13 @@ export default defineNuxtConfig({
     'nuxt-primevue',
   ],
   primevue: {
+    cssLayerOrder: 'reset, primevue',
     options: { ripple: true },
     components: {
       exclude: []
     }
     // importTheme: { from: '@/themes/mytheme.js' },
-    // cssLayerOrder: 'primevue',
+   
     // components: {
     //   prefix: 'Prime',
     //   include: ['Button', ],

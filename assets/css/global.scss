@@ -1,17 +1,20 @@
 @charset "UTF-8";
-:root {
-  --global-file: blue;
+
+main {
+  container-type: inline-size;
+  container-name: main;
 }
 
 @import 'transitions';
-//@import 'default';
-@import 'helpers';
+@import 'reset';
+//@import 'helpers';
 @import 'layout';
-@import 'body';
+//@import 'body';
 
 // @import 'common';
 
 @import 'font-family';
+
 
 /*
 @import "button-wrapper";
