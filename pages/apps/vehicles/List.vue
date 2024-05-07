@@ -8,6 +8,129 @@ const sortOptions = [
     { label: 'Nickname', value: 'nickname' }
 ];
 
+const cors = ref([
+    {
+        images: [
+            {
+                cloudinaryId: '6636566a01ec8110073b9bfb',
+                alt: 'BMW 1'
+            },
+            {
+                cloudinaryId: '663657aa01ec8110073b9c27',
+                alt: 'BMW 2'
+            },
+            {
+                cloudinaryId: '663657cd87fa1f24532a355e',
+                alt: 'BMW 3'
+            },
+            {
+                cloudinaryId: '663657eb87fa1f24532a3568',
+                alt: 'BMW 4'
+            }
+        ],
+        make: 'BMW',
+        name: 'M3 E30',
+        year: '2001',
+        nickname: 'Red Baron'
+    },
+    {
+        images: [
+            {
+                cloudinaryId: '66365818e70ac51006d4d762',
+                alt: 'Cobra 1'
+            },
+            {
+                cloudinaryId: '6636584c44688d10012094ee',
+                alt: 'Cobra 2'
+            },
+            {
+                cloudinaryId: '6636586de70ac51006d4d787',
+                alt: 'Cobra 3'
+            },
+            {
+                cloudinaryId: '6636589087fa1f24532a3582',
+                alt: 'Cobra 4'
+            }
+        ],
+        make: 'Shelby',
+        name: '427 Sehlby Cobra',
+        year: '1992'
+        // nickname: 'Red Baron'
+    },
+    {
+        images: [
+            {
+                cloudinaryId: '6636591d44688d10012094fd',
+                alt: 'Merc 1'
+            },
+            {
+                cloudinaryId: '6636595944688d1001209505',
+                alt: 'Merc 2'
+            },
+            {
+                cloudinaryId: '6636597ae70ac51006d4d7dd',
+                alt: 'Merc 3'
+            },
+            {
+                cloudinaryId: '66365998e70ac51006d4d7e6',
+                alt: 'Merc 4'
+            }
+        ],
+        make: 'Mercedes',
+        name: 'SL 300 Gullwing',
+        year: '1955',
+        nickname: 'Bullet'
+    },
+    {
+        images: [
+            {
+                cloudinaryId: '66365a43e70ac51006d4d811',
+                alt: 'Rolls 1'
+            },
+            {
+                cloudinaryId: '66365a61e70ac51006d4d814',
+                alt: 'Rolls 2'
+            },
+            {
+                cloudinaryId: '66365a9b87fa1f24532a35d0',
+                alt: 'Rolls 3'
+            },
+            {
+                cloudinaryId: '66365abb87fa1f24532a35d3',
+                alt: 'Rolls 4'
+            }
+        ],
+        make: 'Rolls-Royce',
+        name: 'Phantom',
+        year: '2010',
+        nickname: 'Daisy'
+    },
+    {
+        images: [
+            {
+                cloudinaryId: '66365b5ee70ac51006d4d845',
+                alt: 'Lambo 1'
+            },
+            {
+                cloudinaryId: '66365ba693a20f781cf46dd5',
+                alt: 'Lambo 2'
+            },
+            {
+                cloudinaryId: '66365bc7e70ac51006d4d857',
+                alt: 'Lambo 3'
+            },
+            {
+                cloudinaryId: '66365be9e70ac51006d4d862',
+                alt: 'Lambo 4'
+            }
+        ],
+        make: 'Lamborghini',
+        name: 'Murcielago Roadster',
+        year: '2001'
+        // nickname: 'Bullet'
+    }
+]);
+
 const vehicles = ref([
     {
         images: [
@@ -70,59 +193,6 @@ const vehicles = ref([
     }
 ]);
 
-const posts = ref([
-    {
-        coverImage: '/demo/images/blog/blog-1.png',
-        profile: '/demo/images/avatar/circle/avatar-f-1.png',
-        title: 'Car 1',
-        description: 'Ornare egestas pellentesque facilisis in a ultrices erat diam metus integer sed',
-        comment: 2,
-        share: 7,
-        day: '15',
-        month: 'October'
-    },
-    {
-        coverImage: '/demo/images/blog/blog-2.png',
-        profile: '/demo/images/avatar/circle/avatar-f-2.png',
-        title: 'Magazine',
-        description: 'Magna iaculis sagittis, amet faucibus scelerisque non ornare non in penatibus ',
-        comment: 5,
-        share: 1,
-        day: '20',
-        month: 'Nov'
-    },
-    {
-        coverImage: '/demo/images/blog/blog-3.png',
-        profile: '/demo/images/avatar/circle/avatar-m-1.png',
-        title: 'Science',
-        description: 'Purus mattis mi, libero maecenas volutpat quis a morbi arcu pharetra, mollis',
-        comment: 2,
-        share: 6,
-        day: '23',
-        month: 'Oct'
-    },
-    {
-        coverImage: '/demo/images/blog/blog-4.png',
-        profile: '/demo/images/avatar/circle/avatar-m-1.png',
-        title: 'Blog',
-        description: 'Curabitur vitae sit justo facilisi nec, sodales proin aliquet libero volutpat nunc',
-        comment: 5,
-        share: 5,
-        day: '14',
-        month: 'Dec'
-    },
-    {
-        coverImage: '/demo/images/blog/blog-5.png',
-        profile: '/demo/images/avatar/circle/avatar-f-3.png',
-        title: 'Magazine',
-        description: 'Id eget arcu suspendisse ullamcorper dolor lobortis dui et morbi penatibus quam',
-        comment: 4,
-        share: 1,
-        day: '05',
-        month: 'Apr'
-    }
-]);
-
 const sortField = ref(null);
 const sortKey = ref(null);
 
@@ -144,51 +214,6 @@ const onSortChange = (event) => {
 
 <template>
     <div class="card">
-        <DataView :value="posts" paginator :rows="7" layout="grid" :sortOrder="sortOrder" :sortField="sortField">
-            <template #header>
-                <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
-                    <span class="text-xl text-900 font-semibold">Posts</span>
-                    <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
-                </div>
-            </template>
-            <template #grid="slotProps">
-                <div class="grid grid-nogutter">
-                    <div v-for="(item, index) in slotProps.items" :key="index" class="col-12 md:col-4">
-                        <div class="p-3">
-                            <div class="surface-100 cursor-pointer z-index border-round">
-                                <div class="relative">
-                                    <img :src="item.coverImage" class="w-full" :alt="item.description.split(' ', 1)" />
-                                    <img :src="item.profile" class="flex absolute w-4rem h-4rem" :style="{ bottom: '-1.5rem', right: '1.5rem' }" :alt="item.description.split(' ', 1)" />
-                                </div>
-                                <div class="p-3">
-                                    <div class="text-900 font-semibold text-xl mb-3">{{ item.title }}</div>
-                                    <p class="text-700 text-lg mt-0 mb-5">{{ item.description }}</p>
-
-                                    <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-                                        <span class="flex align-items-center text-900">
-                                            <i class="pi pi-comment mr-2"></i>
-                                            <span class="font-semibold">{{ item.comment }}</span>
-                                        </span>
-                                        <span class="flex align-items-center text-900">
-                                            <i class="pi pi-share-alt mr-2"></i>
-                                            <span class="font-semibold">{{ item.share }}</span>
-                                        </span>
-                                        <span class="flex align-items-center text-900">
-                                            <i class="pi pi-clock mr-2"></i>
-                                            <span class="font-semibold mr-1">{{ item.day }}</span>
-                                            <span class="font-semibold">{{ item.month }}</span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </template>
-        </DataView>
-    </div>
-
-    <div class="card">
         <DataView :value="vehicles" paginator :rows="7" layout="grid" :sortOrder="sortOrder" :sortField="sortField">
             <template #header>
                 <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
@@ -197,9 +222,9 @@ const onSortChange = (event) => {
                 </div>
             </template>
             <template #grid="slotProps">
-                <div class="grid grid-nogutter">
+                <layout-grid>
                     <VehicleCard v-for="(item, index) in slotProps.items" :key="index" :name="item.name" :make="item.make" :year="item.year" :images="item.images" :nickname="item.nickname" />
-                </div>
+                </layout-grid>
             </template>
         </DataView>
     </div>

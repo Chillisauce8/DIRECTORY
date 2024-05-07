@@ -1,5 +1,15 @@
 @charset "UTF-8";
 /* Form components variables */
+@keyframes parallax {
+  to {
+    transform: translateY(calc(var(--parallax-speed) * 100px));
+  }
+}
+@keyframes grow {
+  to {
+    transform: scale(var(--grow-size));
+  }
+}
 /* https://flagicons.lipis.dev/ */
 .fib, .fi {
   background-size: contain;

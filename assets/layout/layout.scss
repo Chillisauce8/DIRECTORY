@@ -1,5 +1,6 @@
 $breakpoint: 992px !default;
-$scale: 14px !default;
+//$scale: 14px !default; 
+$scale: 16px !default; // MODIFIED
 
 @import './_fonts';
 @import './_layout_light';

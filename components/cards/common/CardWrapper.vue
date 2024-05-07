@@ -79,7 +79,7 @@ $card-border: 5px;
     padding: $card-border;
     font-size: 12px;
     transition: all 1s ease;
-    margin: 0 auto;
+    // margin: 0 auto;
     &.searchhide {
         animation: search-hide 3s ease 0.4s forwards;
     }

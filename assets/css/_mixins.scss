@@ -30,6 +30,31 @@
   box-shadow: 1px 1px 2px $CB-4;
 }
 
+@mixin parallax($speed) {
+  animation: parallax linear both;
+  animation-timeline: view();
+  animation-range: entry 100% cover 100%;
+  --parallax-speed:#{$speed};
+}
+@keyframes parallax {
+  to {
+      transform: translateY(calc(var(--parallax-speed) * 100px));
+  }
+}
+@mixin grow($size) {
+  animation: grow linear both;
+  animation-timeline: view();
+  animation-range: entry 100% cover 100%;
+  --grow-size:#{$size};
+
+}
+@keyframes grow{
+  to {
+    transform: scale(var(--grow-size));
+  }
+}
+
+
 @mixin shadow-low {
   box-shadow: 3px 3px 5px $CB-1;
 }

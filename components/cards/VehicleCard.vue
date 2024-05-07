@@ -13,30 +13,7 @@ const props = defineProps(['images', 'name', 'nickname', 'make', 'year']);
 </script>
 
 <style lang="scss">
-@container main(min-width: 800px ) {
-    .vehicle-card {
-        width: 300px;
-        background-color: red;
-    }
-}
-@container main(max-width: 800px ) {
-    .vehicle-card {
-        width: 500px;
-        background-color: blue;
-    }
-}
-
 .vehicle-card {
-    @container main (min-width: 800px ) {
-        width: clamp(300px, 50%, 500px);
-        background-color: red;
-    }
-    @container main (max-width: 800px ) {
-        width: clamp(300px, 100%, 400px);
-        background-color: blue;
-    }
-
-    //   width: clamp(300px, 25%, 500px);
     figure {
         @include aspect-ratio(3, 2);
     }
