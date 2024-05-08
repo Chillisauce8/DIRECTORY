@@ -57,17 +57,17 @@ const layoutClass = getLayoutClass(imageCount);
     width: 100%;
     padding-top: clamp(10vw, 10vw, 200px);
     .content {
+        display: flex;
         margin: 0 auto;
         width: clamp(300px, 95%, 1600px);
-        display: flex;
         @include mobile {
             flex-direction: column;
             .left {
                 margin-bottom: 4rem;
             }
         }
-        &.layout-row {
-            @include desktop {
+        @include desktop {
+            &.layout-row {
                 .left,
                 .right {
                     width: 50%;
@@ -78,10 +78,8 @@ const layoutClass = getLayoutClass(imageCount);
                     justify-content: center;
                 }
             }
-        }
-        &.layout-column {
-            flex-direction: column;
-            @include desktop {
+            &.layout-column {
+                flex-direction: column;
                 align-items: flex-end;
                 .left,
                 .right {
@@ -92,7 +90,9 @@ const layoutClass = getLayoutClass(imageCount);
                 }
                 .left {
                     margin-bottom: 4rem;
-                    display: flex;
+                }
+                h2 {
+                    font-size: 2.5rem;
                 }
             }
         }
@@ -115,13 +115,18 @@ const layoutClass = getLayoutClass(imageCount);
             }
         }
         .images-2 {
+            width: 100%;
+            display: flex;
+            overflow-x: visible;
+
             .image-1 {
-                width: 60%;
-                @include aspect-ratio(5, 6);
+                width: 55%;
+                @include aspect-ratio(3, 4);
+                margin-right: 2%;
             }
             .image-2 {
-                width: 70%;
-                @include aspect-ratio(6, 4);
+                width: 63%;
+                @include aspect-ratio(3, 2);
             }
         }
     }
