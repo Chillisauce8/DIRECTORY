@@ -62,6 +62,10 @@ const content1 = {
         {
             cloudinaryId: '66365a61e70ac51006d4d814',
             alt: 'Car Alt Text'
+        },
+        {
+            cloudinaryId: '65466bfcafa7da0f964a000e',
+            alt: 'Car Alt Text'
         }
     ]
 };

@@ -1,6 +1,6 @@
 <template>
     <div class="images">
-        <figure v-for="image in imageArray" :key="image.src">
+        <figure v-for="(image, index) in imageArray" :key="index" :class="'image-' + (index + 1)">
             <SWPImage :loading="loading" :src="image.src" :alt="image.alt" :width="width" :height="height" :transformToElementSize="transformToElementSize" :preloadRandom="preloadRandom"></SWPImage>
         </figure>
 
