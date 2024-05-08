@@ -111,6 +111,11 @@ const model = ref([
                 label: 'Car Listings',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/car'
+            },
+            {
+                label: 'Image Gallery',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/gallery'
             }
         ]
     },
