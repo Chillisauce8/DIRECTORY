@@ -39,7 +39,7 @@ interface InnerModel {
 }
 
 
-export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmits, refs: ComponentRefs) {
+export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmits, refs: ComponentRefs): any {
 
   const im: InnerModel = {
     _innerModel: null,
@@ -547,18 +547,18 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       if (Array.isArray(props.model)) {
         for (let i = 0; i < props.model.length; ++i) {
           if (props.model[i]) {
-            props.model[i] = _findRelatorProperty(props.model[i], props.description.values);
+            props.model[i] = findRelatorProperty(props.model[i], props.description.values);
           }
         }
 
         props.model = props.model.filter((item: any) => item !== null);
       } else {
-        props.model = _findRelatorProperty(props.model, props.description.values);
+        props.model = findRelatorProperty(props.model, props.description.values);
       }
     }
   }
 
-  function _findRelatorProperty(modelValue: any, relatorChoices: any) {
+  function findRelatorProperty(modelValue: any, relatorChoices: any) {
     if (isUndefined(modelValue)) {
       return
     }
@@ -681,5 +681,6 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     doOnDeactivated,
     isValid,
     touch,
+    findRelatorProperty,
   }
 }

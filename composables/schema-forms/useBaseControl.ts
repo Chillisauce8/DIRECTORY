@@ -1,5 +1,4 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service';
-import {xFeaturesHelper} from '~/service/schema-forms/xFeaturesHelper';
 import { BaseFieldEmits, BaseFieldProps, ComponentRefs } from '~/composables/schema-forms/useBaseField';
 import { isUndefined, isEqual } from '~/service/utils';
 import useBaseField from '~/composables/schema-forms/useBaseField';
@@ -10,7 +9,7 @@ export interface BaseControlProps extends BaseFieldProps {
 }
 
 
-export default function useBaseControl(props: BaseControlProps, emits: BaseFieldEmits, refs: ComponentRefs) {
+export default function useBaseControl(props: BaseControlProps, emits: BaseFieldEmits, refs: ComponentRefs): any {
 
   // @ViewChild('controlModel') public controlModel: NgModel;
 
@@ -331,7 +330,9 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
     initField,
     possibleOldXPropertyNames,
     possibleXPropertyNames,
+    processXOptionsForModelChanges,
     processXFeatures,
     doOnMounted,
+    im,
   }
 }

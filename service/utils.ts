@@ -91,6 +91,29 @@ export function cloneDeep(entity: any, cache = new WeakMap): any {
   return Object.assign(c, ...Object.keys(entity).map((prop) => ({ [prop]: cloneDeep(entity[prop], cache) })));
 }
 
+
+export function differenceBy(array1: any[], array2: any[], key: string) {
+  return array1.filter(a => !array2.some(b => b[key] === a[key]))
+}
+
+export function difference(array1: any[], array2: any[]) {
+  return array1.filter(a => !array2.some(b => b === a))
+}
+
+export function differenceWith(array1: any[], array2: any[], comparator: (a1: any, a2: any) => boolean) {
+  return array1.filter(a1 => !array2.some(a2 => comparator(a1, a2)))
+}
+
+export function uniq(array: any[]): any[] {
+  return [...new Set(array)];
+}
+
+export function uniqBy(array: any[], key: string): any[] {
+  const keysArray = array.map(item => item[key]);
+  return array.filter((value, index, array) => keysArray.indexOf(value[key]) === index);
+}
+
+
 export function debounce(func: Function, wait: number, immediate?: boolean) {
   // 'private' variable for instance
   // The returned function will be able to reference this due to closure.
