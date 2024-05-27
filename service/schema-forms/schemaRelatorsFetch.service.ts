@@ -1,4 +1,4 @@
-import { HttpService } from '../http/http.service';
+import { httpService, HttpService } from '../http/http.service';
 
 
 export class SchemaRelatorsFetchService {
@@ -37,5 +37,7 @@ export class SchemaRelatorsFetchService {
       return 0;
     });
   }
-
 }
+
+
+export const schemaRelatorsFetchService = new SchemaRelatorsFetchService(httpService);

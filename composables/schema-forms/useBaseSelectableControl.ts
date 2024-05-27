@@ -1,58 +1,59 @@
 import { schemaFormsProcessingHelper } from '~/service/schema-forms/schemaFormsProcessing.service';
 import useBaseControl, { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import { BaseFieldEmits, ComponentRefs } from '~/composables/schema-forms/useBaseField';
+import type { BaseFieldEmits, ComponentRefs } from '~/composables/schema-forms/useBaseField';
 import { isEqual, isObject, isUndefined, difference, differenceWith, uniqBy, uniq } from '~/service/utils';
+// @ts-ignore
+import { extend } from 'vue-extend-reactive';
 
 
 export default function useBaseSelectableControl(props: BaseControlProps, emits: BaseFieldEmits, refs: ComponentRefs): any {
 
   // @ViewChild('controlModel') public controlModel: NgModel;
 
-  const baseFieldExport = useBaseControl(props, emits, refs);
+  const baseFieldExport = useBaseControl(props, emits);
 
-  const {
-    initField: initFieldBase,
-    possibleOldXPropertyNames: possibleOldXPropertyNamesBase,
-    possibleXPropertyNames: possibleXPropertyNamesBase,
-    processXFeatures: processXFeaturesBase,
-    setModel: setModelBase,
-    getModel: getModelBase,
-    getDefaultValue: getDefaultValueBase,
-    fillEmptyModel: fillEmptyModelBase,
-    processXOptionsForModelChanges: processXOptionsForModelChangesBase,
-    afterFieldInit,
-    findRelatorProperty,
+  let {
+    vm,
     im,
+    sharedFunctions,
   } = baseFieldExport;
 
-  let filteredSelectValues = ref([]);
-  let cachedPossibleValues: Array<any>;
+  const initFieldBase = sharedFunctions.initField;
+  const possibleOldXPropertyNamesBase = sharedFunctions.possibleOldXPropertyNames;
+  const possibleXPropertyNamesBase = sharedFunctions.possibleXPropertyNames;
+  const processXFeaturesBase = sharedFunctions.processXFeatures;
+  const setModelBase = sharedFunctions.setModel;
+  const getModelBase = sharedFunctions.getModel;
+  const getDefaultValueBase = sharedFunctions.getDefaultValue;
+  const fillEmptyModelBase = sharedFunctions.fillEmptyModel;
+  const processXOptionsForModelChangesBase = sharedFunctions.processXOptionsForModelChanges;
+
+
+  vm = extend(vm, {
+    filteredSelectValues: []
+  });
+
+  im = extend(im, {
+    cachedPossibleValues: []
+  });
 
 
   function initField() {
     initFieldBase();
 
-    cachedPossibleValues = _filterPossibleValues();
+    im.cachedPossibleValues = filterPossibleValues();
     _prepareSelectValues();
   }
 
-  // TODO:
-  // ngOnChanges(changes: SimpleChanges) {
-  //   if (!!cachedPossibleValues) {
-  //     this._prepareSelectValues();
-  //   }
-  // }
+  // TODO: test it
+  watch(() => props, (value: any) => {
+    _prepareSelectValues();
+  });
 
-  function doOnMounted() {
-    initField();
-
-    // call this if description was set after model was set!
-    afterFieldInit();
-  }
 
   function querySearch(query: string, _possibleValues?: any[]): Array<any>  {
-    const possibleValues = _possibleValues || _filterPossibleValues();
-    cachedPossibleValues = possibleValues;
+    const possibleValues = _possibleValues || filterPossibleValues();
+    im.cachedPossibleValues = possibleValues;
 
     const notSelectedValues = differenceWith(possibleValues, props.model, function(arrVal: any, othVal: any) {
       if (arrVal.id) {
@@ -94,7 +95,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
     if (props.description.filter || props.description.xFilter || props.description.rawData?.filter) {
       _prepareSelectValues();
 
-      if (im._needCorrectExistingValues) {
+      if (im.needCorrectExistingValues) {
         correctExistingRelatorsValue();
       }
     }
@@ -117,9 +118,9 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
   }
 
   function _prepareSelectValues() {
-    cachedPossibleValues = _filterPossibleValues();
+    im.cachedPossibleValues = filterPossibleValues();
 
-    let parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context,
+    let parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context,
       props.description.path, true);
 
     if (parentModel && Array.isArray(parentModel)) {
@@ -132,9 +133,9 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
     }
 
     if (parentModel.length) {
-      filteredSelectValues.values = difference(cachedPossibleValues, parentModel);
+      vm.filteredSelectValues = difference(im.cachedPossibleValues, parentModel);
     } else {
-      filteredSelectValues.values = cachedPossibleValues;
+      vm.filteredSelectValues = im.cachedPossibleValues;
     }
   }
 
@@ -152,10 +153,10 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
       return undefined;
     }
 
-    let possibleValues = cachedPossibleValues;
+    let possibleValues = im.cachedPossibleValues;
 
     if (possibleValues && possibleValues[0] && isObject(possibleValues[0])) {
-      possibleValues = possibleValues.map(item => item.value || item.id);
+      possibleValues = possibleValues.map((item: any) => item.value || item.id);
     }
 
     if (possibleValues) {
@@ -173,15 +174,15 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
     return defaultValue;
   }
 
-  function _filterPossibleValues(): Array<any> {
+  function filterPossibleValues(): Array<any> {
     let possibleValues;
 
     if (props.description.xFilter) {
       possibleValues = schemaFormsProcessingHelper.filterFieldValues(props.description.xFilter,
-        props.description.values, props.context);
+        props.description.values, vm.context);
     } else if (props.description.rawData?.filter) {
       possibleValues = schemaFormsProcessingHelper.filterFieldValues2(props.description,
-        props.description.values, props.context);
+        props.description.values, vm.context);
     } else if (props.description.xEnumValues) {
       possibleValues = props.description.xEnumValues;
     } else if (props.description.xOptionsValues) {
@@ -190,7 +191,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
       possibleValues = props.description.values || [];
     }
 
-    if (!im._needCorrectExistingValues && props.model) {
+    if (!im.needCorrectExistingValues && props.model) {
       if (Array.isArray(props.model)) {
         possibleValues = possibleValues.concat(props.model);
       } else if (possibleValues) {
@@ -225,7 +226,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
 
   function processXEnumForModelChanges(value?: boolean) {
     if (!value) {
-      value = schemaFormsProcessingHelper.getXEnumValues(props.description.xEnum, props.context);
+      value = schemaFormsProcessingHelper.getXEnumValues(props.description.xEnum, vm.context);
     }
 
     if (!isEqual(value, props.description.xEnumValues)) {
@@ -255,9 +256,10 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
         return item && values.indexOf(item.value || item) !== -1;
       });
 
-      // if (props.model.length === 0 && !props.context.resultModel._doc) {
-      //   props.model = null;
+      // if (vm.model.length === 0 && !vm.context.resultModel._doc) {
+      //   vm.model = null;
       // }
+
     } else {
       if (props.model && values.indexOf(props.model.value || props.model) === -1) {
         props.model = null;
@@ -270,22 +272,22 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
       return;
     }
 
-    const possibleValues = cachedPossibleValues;
+    const possibleValues = im.cachedPossibleValues;
 
-    if (props.description.isJoin && possibleValues && im._needCorrectExistingValues) {
+    if (props.description.isJoin && possibleValues && im.needCorrectExistingValues) {
       if (Array.isArray(props.model)) {
         props.model.filter((item: any) => {
-          return !!item && !!findRelatorProperty(item, possibleValues);
+          return !!item && !!sharedFunctions.findRelatorProperty(item, possibleValues);
         });
 
         props.model.forEach((modelItem: any) => {
-          const possibleRelator = findRelatorProperty(modelItem, possibleValues);
+          const possibleRelator = sharedFunctions.findRelatorProperty(modelItem, possibleValues);
           if (possibleRelator) {
             modelItem.title = possibleRelator.title;
           }
         });
       } else if (props.model) {
-        const possibleRelator = findRelatorProperty(props.model, possibleValues);
+        const possibleRelator = sharedFunctions.findRelatorProperty(props.model, possibleValues);
 
         if (!possibleRelator) {
           props.model = undefined;
@@ -316,8 +318,22 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
     };
   }
 
+
+  sharedFunctions.initField = initField;
+  sharedFunctions.possibleOldXPropertyNames = possibleOldXPropertyNames;
+  sharedFunctions.possibleXPropertyNames = possibleXPropertyNames;
+  sharedFunctions.processXFeatures = processXFeatures;
+  sharedFunctions.setModel = setModel;
+  sharedFunctions.getModel = getModel;
+  sharedFunctions.getDefaultValue = getDefaultValue;
+  sharedFunctions.fillEmptyModel = fillEmptyModel;
+  sharedFunctions.processXOptionsForModelChanges = processXOptionsForModelChanges;
+  sharedFunctions.filterPossibleValues = filterPossibleValues;
+  sharedFunctions.querySearch = querySearch;
+
   return {
-    ...baseFieldExport,
-    doOnMounted,
+    vm,
+    im,
+    sharedFunctions,
   }
 }

@@ -1,12 +1,15 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service'
 import { isUndefined, intersection, isObject, isString, isEqual, cloneDeep } from '~/service/utils';
 import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
+// @ts-ignore
+import { onMounted } from 'vue';
 
 
 export interface BaseFieldProps {
   model: any;
   description: any;
-  context: any;
+  context?: any;
+  noPlaceholder?: boolean;
 }
 
 
@@ -36,23 +39,434 @@ interface InnerModel {
   __id: number,
   _previousValue: any,
   registered: boolean,
+  refs?: ComponentRefs,
+  needCorrectExistingValues: boolean,
 }
 
 
-export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmits, refs: ComponentRefs): any {
+export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmits): any {
 
-  const im: InnerModel = {
+  const im: InnerModel = reactive({
     _innerModel: null,
     innerContexts: {},
     __id: Math.floor(Math.random() * 10000),
     _previousValue: null,
     registered: false,
-  };
+    refs: null,
+    needCorrectExistingValues: false,
+  });
 
-  watch(() => props?.model, (value: any) => {
-    value = correctModelBeforeSet(value);
+  const vm = reactive({
+    model: props.model,
+    context: props.context,
+    placeholderValue: props.noPlaceholder,
+  });
 
-    if (isStructureTag() && props.context) {
+  const initDone = ref(false);
+
+  const sharedFunctions = {
+
+    setRefs(refsValue: ComponentRefs) {
+      im.refs = refsValue;
+      im.needCorrectExistingValues = refsValue?.form?.needCorrectExistingValues || false;
+    },
+
+    getTitle: () => {
+      if (props.description.xTitleValue) {
+        return props.description.xTitleValue;
+      }
+
+      if (props.description.header) {
+        return props.description.header.title;
+      }
+
+      return props.description.title;
+    },
+
+    getModel: () => {
+      if (sharedFunctions.shouldSetValueForRealModelValue()) {
+        const parentPath = sharedFunctions.getParentPath();
+        const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+        return parentModel[sharedFunctions.getDescription().name];
+      }
+
+      return im._innerModel;
+    },
+
+    setModel: (value: any, updated?: boolean) => {
+      value = sharedFunctions.correctModelBeforeSet(value);
+
+      if (isStructureTag() && vm.context) {
+        setModelValueForStructureTagDescription(value);
+      } else {
+        im._previousValue = im._innerModel;
+
+        const valuesDifferent = valueAndPreviousAreDifferent(value);
+
+        if (!updated && !valuesDifferent) {
+          return;
+        }
+
+        if (updated || valuesDifferent || !isEqual(im._innerModel, value)) {
+          im._innerModel = value;
+          sharedFunctions.processInnerModelChanged();
+        }
+      }
+    },
+
+    initField: () => {
+      registerField();
+    },
+
+    afterFieldInit: () => {
+      if (isStructureTag() && im._innerModel) {
+        setModelValueForStructureTagDescription(im._innerModel);
+      }
+
+      if (needXProcessTheField()) {
+        sharedFunctions.processXFeatures();
+      }
+
+      initDone.value = true;
+    },
+
+    doOnMounted: () => {
+      sharedFunctions.initField();
+
+      // call this if description was set after model was set!
+      sharedFunctions.afterFieldInit();
+    },
+
+    fillEmptyModel: () => {
+      if (vm.model === undefined) {
+        const defaultValue = sharedFunctions.getDefaultValue();
+
+        if (defaultValue !== undefined) {
+          vm.model = defaultValue;
+        }
+      }
+    },
+
+    getDefaultValue: () => {
+      return props.description.xDefaultValue || props.description.default;
+    },
+
+    correctExistingRelatorsValue: () => {
+      if (!vm.model) {
+        return;
+      }
+
+      if (props.description.isJoin && props.description.values) {
+        if (Array.isArray(vm.model)) {
+          for (let i = 0; i < vm.model.length; ++i) {
+            if (vm.model[i]) {
+              vm.model[i] = sharedFunctions.findRelatorProperty(vm.model[i], props.description.values);
+            }
+          }
+
+          vm.model = vm.model.filter((item: any) => item !== null);
+        } else {
+          vm.model = sharedFunctions.findRelatorProperty(vm.model, props.description.values);
+        }
+      }
+    },
+
+    possibleOldXPropertyNames: () => {
+      return ['xHide', 'xTitle', 'xDefault', 'xSet', 'xMinItems', 'xMaxItems'];
+    },
+
+    possibleXPropertyNames: () => {
+      return ['hide', 'title', 'if', 'switch'];
+    },
+
+    processXFeatures: () => {
+      vm.context = {
+        ...vm.context,
+        // ...vm.context.resultModel,
+        resultModel: vm.context.resultModel,
+        indexes: vm.context.indexes,
+        _cachedFunction: vm.context._cachedFunction,
+      }
+
+      if (_getPropertyDescription('xHide')) {
+        processXHidedForModelChanges();
+      }
+
+      let fieldDescription;
+
+      const descriptionDescription = props.description?.description;
+
+      if (descriptionDescription && isObject(descriptionDescription)) {
+        fieldDescription = descriptionDescription;
+      } else {
+        fieldDescription = props.description?.header || props.description;
+      }
+
+      if (fieldDescription.xTitle) {
+        processXTitleForModelChanges();
+      }
+
+      if (props.description.xDefault) {
+        processXDefaultForModelChanges();
+      }
+
+      if (props.description.xSet) {
+        const value = schemaFormsProcessingHelper.getXSetValue(props.description.xSet,
+          vm.context, props.description);
+        processXSetForModelChanges(value);
+      }
+
+      const features = xFeaturesHelper.getControlFeatures(fieldDescription, vm.context);
+
+      if ('hide' in features) {
+        processXHidedForModelChanges(features['hide']);
+      }
+
+      if ('writeOnly' in features) {
+        processXHidedForModelChanges(features['writeOnly']);
+      }
+
+      if ('depreciated' in features) {
+        processXHidedForModelChanges(features['depreciated']);
+      }
+
+      if ('title' in features) {
+        processXTitleForModelChanges(features['title']);
+      }
+
+      if ('description' in features) {
+        processXDescriptionForModelChanges(features['description']);
+      }
+
+      if ('default' in features) {
+        processXDefaultForModelChanges(features['default']);
+      }
+
+      if ('set' in features) {
+        processXSetForModelChanges(features['set']);
+      }
+
+      return features;
+    },
+
+    shouldBeRequired: (description: any): boolean => {
+      return !!schemaFormsProcessingHelper.shouldFieldBeRequired(description.xRequired, vm.context);
+    },
+
+    shouldBeConstructed: (description: any, context: any = null, prevValue: any = null,
+                        updateModel: boolean = true): boolean => {
+
+      const shouldBeInited = () => {
+        const isArrayDirective = im?.refs?.self && 'canAddMore' in im?.refs?.self;
+
+        if (description.persist || (description.xHide && description.xHide.persist)) {
+          return false;
+        }
+
+        if ((description?.rawData?.hide || description.xHide) && vm.model === undefined &&
+          (isArrayDirective || ['email', 'url', 'number', 'text', 'textarea', 'time', 'time24',
+            'checkbox'].indexOf(description.formType) === -1)) {
+          return true;
+        }
+
+        return false;
+      };
+
+      context = context || vm.context;
+
+      let shouldBeConstructedResult = true;
+
+      const features = xFeaturesHelper.getControlFeatures(description, context);
+
+      const hide = features['hide'];
+      const writeOnly = (features['writeOnly'] || features['depreciated']);
+
+      const shouldHide = isUndefined(hide) ?
+        schemaFormsProcessingHelper.shouldFieldBeHidden(description, description.xHide, context) : hide;
+
+      description.xHideValue = shouldHide;
+
+      if (writeOnly) {
+        shouldBeConstructedResult = true;
+      } else if (shouldHide) {
+        const shouldFieldBePersistedResult = schemaFormsProcessingHelper.shouldFieldBePersisted(description, context)
+        if (!shouldFieldBePersistedResult) {
+          shouldBeConstructedResult = false;
+        }
+      }
+
+      if (updateModel) {
+        if (shouldBeConstructedResult && !prevValue) {
+          registerField();
+
+          if (shouldBeInited()) {
+            sharedFunctions.initField();
+          }
+        } else if (!shouldBeConstructedResult && (prevValue || prevValue === null)) {
+          const isRemoved = schemaFormsProcessingHelper.deepRemoveValueInContext(context, description.path);
+
+          if (isRemoved) {
+            schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
+          }
+        }
+      }
+
+      if (description.xHide && !isEqual(!shouldBeConstructedResult, description.xRemoveValue)) {
+        description.xRemoveValue = !shouldBeConstructedResult;
+      }
+
+      return shouldBeConstructedResult;
+    },
+
+    doOnDeactivated: () => {
+      unregister();
+    },
+
+    isValid: (): boolean => {
+      return true;
+    },
+
+    touch: () => {
+      //
+    },
+
+    findRelatorProperty: (modelValue: any, relatorChoices: any) => {
+      if (isUndefined(modelValue)) {
+        return
+      }
+
+      for (const i in relatorChoices) {
+        if (modelValue.id === relatorChoices[i].id) {
+          // we need to extend current selected relator variant with actual ngModel mapping
+          // but we need to save original title
+          const relatorTitle = relatorChoices[i]['title'];
+          const result = {...relatorChoices[i], ...modelValue};
+          result['title'] = relatorTitle;
+
+          return result;
+        }
+      }
+
+      return undefined;
+    },
+
+    processInnerModelChanged: (value?: any) => {
+      emits('modelChange', value || sharedFunctions.getModel());
+    },
+
+    createInnerFieldContext: (filedName: string, fieldPathIndex: number) => {
+      if (im.innerContexts[fieldPathIndex]) {
+        return im.innerContexts[fieldPathIndex];
+      }
+
+      const innerContext: any = {
+        ...vm.context,
+        indexes: cloneDeep(vm.context.indexes)
+      };
+
+      innerContext.indexes[filedName] = fieldPathIndex;
+
+      // @ts-ignore
+      im.innerContexts[fieldPathIndex] = innerContext;
+
+      return innerContext;
+    },
+
+    getParentPath: (): string => {
+      return sharedFunctions.getDescription().path.split('.').slice(0, -1).join('.');
+    },
+
+    getDescription: () => {
+      if (!props.description) {
+        return null;
+      }
+
+      if (props.description.header) {
+        if (props.description.header.path) {
+          return props.description.header;
+        }
+
+        return props.description.header.description;
+      } else if (props.description.description && !props.description.path) {
+        return props.description.description;
+      }
+
+      return props.description;
+    },
+
+    getFormName: (): string => {
+      if (im.refs?.form) {
+        return im.refs.form.formName;
+      }
+
+      return '';
+    },
+
+    getDescriptionText: () => (item?: any) => {
+      const description = item ? item.description : props.description;
+
+      if (!description) {
+        return null;
+      }
+
+      if (description.xDescriptionValue) {
+        return description.xDescriptionValue;
+      }
+
+      if (description.header) {
+        return description.header.description;
+      } else if (description.description) {
+        return description.description;
+      }
+
+      return null;
+    },
+
+    correctModelBeforeSet: (value: any) => {
+      return value;
+    },
+
+    shouldSetValueForRealModelValue: (): boolean => {
+      return isStructureTag() && vm.context;
+    },
+
+    isReadonly: (): boolean => {
+      if (props.description.readonly) {
+        return true;
+      }
+
+      if (schemaFormsProcessingHelper.isReadOnlyMode()) {
+        return true;
+      }
+
+      if (props.description.xSetValue !== undefined) {
+        return true;
+      }
+
+      return false;
+    },
+
+    getPlaceholder: () => {
+    if (props.noPlaceholder) {
+      return ' ';
+    }
+
+    return sharedFunctions.getTitle();
+  }
+  }
+
+  updateInnerModel(props.model);
+
+  onMounted(() => {
+    sharedFunctions.doOnMounted();
+  });
+
+  function updateInnerModel(value: any) {
+    vm.model = value;
+
+    value = sharedFunctions.correctModelBeforeSet(value);
+
+    if (isStructureTag() && vm.context) {
       setModelValueForStructureTagDescription(value);
     } else {
       im._previousValue = im._innerModel;
@@ -65,222 +479,51 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
       if (valuesDifferent || !isEqual(im._innerModel, value)) {
         im._innerModel = value;
-        _processInnerModelChanged();
+        sharedFunctions.processInnerModelChanged();
       }
     }
+  }
+
+  watch(() => props?.model, (value: any) => {
+    updateInnerModel(value);
   });
 
-  function doOnMounted() {
-    initField();
-
-    // call this if description was set after model was set!
-    afterFieldInit();
-  }
-
-  function doOnDeactivated() {
-    unregister();
-  }
-
   function unregister() {
-    if (schemaFormsProcessingHelper.isFormRegistered(getFormName())) {
-      schemaFormsProcessingHelper.unRegisterField(refs.self);
+    if (schemaFormsProcessingHelper.isFormRegistered(sharedFunctions.getFormName())) {
+      schemaFormsProcessingHelper.unRegisterField(im.refs?.self);
       im.registered = false;
     }
   }
 
   function registerField() {
-    if (schemaFormsProcessingHelper.isFormRegistered(getFormName()) &&
+    if (schemaFormsProcessingHelper.isFormRegistered(sharedFunctions.getFormName()) &&
       !im.registered) {
-      schemaFormsProcessingHelper.registerField(refs.self,
-        refs.parentObjectField || refs.parentGroupField);
+      schemaFormsProcessingHelper.registerField(im.refs?.self,
+        im.refs?.parentObjectField || im.refs?.parentGroupField);
       im.registered = true;
     }
   }
 
-  function initField() {
-    registerField();
-  }
-
-  function afterFieldInit() {
-    if (isStructureTag() && im._innerModel) {
-      setModelValueForStructureTagDescription(im._innerModel);
-    }
-
-    if (needXProcessTheField()) {
-      processXFeatures();
-    }
-  }
-
-  function getFormName(): string {
-    if (refs.form) {
-      return refs.form.formName;
-    }
-
-    return '';
-  }
-
-  function isValid(): boolean {
-    return true;
-  }
-
-  function touch() {
-    //
-  }
-
-  function shouldBeRequired(description: any): boolean {
-    return !!schemaFormsProcessingHelper.shouldFieldBeRequired(description.xRequired, props.context);
-  }
-
-  function shouldBeConstructed(description: any, context: any = null, prevValue: any = null,
-    updateModel: boolean = true): boolean {
-    const shouldBeInited = () => {
-      const isArrayDirective = 'canAddMore' in refs.self;
-
-      if (description.persist || (description.xHide && description.xHide.persist)) {
-        return false;
-      }
-
-      if ((description?.rawData?.hide || description.xHide) && props.model === undefined &&
-        (isArrayDirective || ['email', 'url', 'number', 'text', 'textarea', 'time', 'time24',
-          'checkbox'].indexOf(description.formType) === -1)) {
-        return true;
-      }
-
-      return false;
-    };
-
-    context = context || props.context;
-
-    let shouldBeConstructedResult = true;
-
-    const features = xFeaturesHelper.getControlFeatures(description, context);
-
-    const hide = features['hide'];
-    const writeOnly = (features['writeOnly'] || features['depreciated']);
-
-    const shouldHide = isUndefined(hide) ?
-      schemaFormsProcessingHelper.shouldFieldBeHidden(description, description.xHide, context) : hide;
-
-    description.xHideValue = shouldHide;
-
-    if (writeOnly) {
-      shouldBeConstructedResult = true;
-    } else if (shouldHide) {
-      const shouldFieldBePersistedResult = schemaFormsProcessingHelper.shouldFieldBePersisted(description, context)
-      if (!shouldFieldBePersistedResult) {
-        shouldBeConstructedResult = false;
-      }
-    }
-
-    if (updateModel) {
-      if (shouldBeConstructedResult && !prevValue) {
-        registerField();
-
-        if (shouldBeInited()) {
-          initField();
-        }
-      } else if (!shouldBeConstructedResult && (prevValue || prevValue === null)) {
-        const isRemoved = schemaFormsProcessingHelper.deepRemoveValueInContext(context, description.path);
-
-        if (isRemoved) {
-          schemaFormsProcessingHelper.processFormChanges(getFormName());
-        }
-      }
-    }
-
-    if (description.xHide && !isEqual(!shouldBeConstructedResult, description.xRemoveValue)) {
-      description.xRemoveValue = !shouldBeConstructedResult;
-    }
-
-    return shouldBeConstructedResult;
-  }
-
   function createModel() {
-    props.model = {};
+    vm.model = {};
   }
 
   function deleteModel() {
-    props.model = undefined;
-  }
-
-  function isReadonly(): boolean {
-    if (props.description.readonly) {
-      return true;
-    }
-
-    if (schemaFormsProcessingHelper.isReadOnlyMode()) {
-      return true;
-    }
-
-    if (props.description.xSetValue !== undefined) {
-      return true;
-    }
-
-    return false;
-  }
-
-  function getTitle() {
-    if (props.description.xTitleValue) {
-      return props.description.xTitleValue;
-    }
-
-    if (props.description.header) {
-      return props.description.header.title;
-    }
-
-    return props.description.title;
-  }
-
-  function getDescription() {
-    if (!props.description) {
-      return null;
-    }
-
-    if (props.description.header) {
-      if (props.description.header.path) {
-        return props.description.header;
-      }
-
-      return props.description.header.description;
-    } else if (props.description.description && !props.description.path) {
-      return props.description.description;
-    }
-
-    return props.description;
-  }
-
-  function getDescriptionText(item?: any) {
-    const description = item ? item.description : props.description;
-
-    if (!description) {
-      return null;
-    }
-
-    if (description.xDescriptionValue) {
-      return description.xDescriptionValue;
-    }
-
-    if (description.header) {
-      return description.header.description;
-    } else if (description.description) {
-      return description.description;
-    }
-
-    return null;
+    vm.model = undefined;
   }
 
   function processXFeaturesWrapped() {
-    processXFeatures();
+    sharedFunctions.processXFeatures();
   }
 
   function needXProcessTheField(): boolean {
-    for (const propertyName of possibleOldXPropertyNames()) {
+    for (const propertyName of sharedFunctions.possibleOldXPropertyNames()) {
       if (_getPropertyDescription(propertyName)) {
         return true;
       }
     }
 
-    for (const propertyName of possibleXPropertyNames()) {
+    for (const propertyName of sharedFunctions.possibleXPropertyNames()) {
       const propertyDescription = _getPropertyDescription('rawData.' + propertyName);
 
       if (propertyDescription) {
@@ -301,49 +544,12 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     return false;
   }
 
-
   function getCustomValidationErrorMessage(): string {
     return props.description?.rawData?.errorMessage;
   }
 
   function isStructureTag(): boolean {
-    return getDescription() && getDescription().structureTagDescription;
-  }
-
-  function getParentPath(): string {
-    return getDescription().path.split('.').slice(0, -1).join('.');
-  }
-
-  function getModel() {
-    if (shouldSetValueForRealModelValue()) {
-      const parentPath = getParentPath();
-      const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
-      return parentModel[getDescription().name];
-    }
-
-    return im._innerModel;
-  }
-
-  function createInnerFieldContext(filedName: string, fieldPathIndex: number) {
-    if (im.innerContexts[fieldPathIndex]) {
-      return im.innerContexts[fieldPathIndex];
-    }
-
-    const innerContext: any = {
-      ...props.context,
-      indexes: cloneDeep(props.context.indexes)
-    };
-
-    innerContext.indexes[filedName] = fieldPathIndex;
-
-    // @ts-ignore
-    im.innerContexts[fieldPathIndex] = innerContext;
-
-    return innerContext;
-  }
-
-  function correctModelBeforeSet(value: any) {
-    return value;
+    return sharedFunctions.getDescription() && sharedFunctions.getDescription().structureTagDescription;
   }
 
   function _checkAnyChildHasXHide(): boolean {
@@ -383,106 +589,24 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     return result;
   }
 
-  function _processInnerModelChanged(value?: any) {
-    emits('modelChange', value || getModel());
-  }
-
-  function possibleOldXPropertyNames() {
-    return ['xHide', 'xTitle', 'xDefault', 'xSet', 'xMinItems', 'xMaxItems'];
-  }
-
-  function possibleXPropertyNames() {
-    return ['hide', 'title', 'if', 'switch'];
-  }
-
-  function processXFeatures() {
-    props.context = {
-      ...props.context,
-      // ...props.context.resultModel,
-      resultModel: props.context.resultModel,
-      indexes: props.context.indexes,
-      _cachedFunction: props.context._cachedFunction,
-    }
-
-    if (_getPropertyDescription('xHide')) {
-      processXHidedForModelChanges();
-    }
-
-    let fieldDescription;
-
-    const descriptionDescription = props.description?.description;
-
-    if (descriptionDescription && isObject(descriptionDescription)) {
-      fieldDescription = descriptionDescription;
-    } else {
-      fieldDescription = props.description?.header || props.description;
-    }
-
-    if (fieldDescription.xTitle) {
-      processXTitleForModelChanges();
-    }
-
-    if (props.description.xDefault) {
-      processXDefaultForModelChanges();
-    }
-
-    if (props.description.xSet) {
-      const value = schemaFormsProcessingHelper.getXSetValue(props.description.xSet,
-        props.context, props.description);
-      processXSetForModelChanges(value);
-    }
-
-    const features = xFeaturesHelper.getControlFeatures(fieldDescription, props.context);
-
-    if ('hide' in features) {
-      processXHidedForModelChanges(features['hide']);
-    }
-
-    if ('writeOnly' in features) {
-      processXHidedForModelChanges(features['writeOnly']);
-    }
-
-    if ('depreciated' in features) {
-      processXHidedForModelChanges(features['depreciated']);
-    }
-
-    if ('title' in features) {
-      processXTitleForModelChanges(features['title']);
-    }
-
-    if ('description' in features) {
-      processXDescriptionForModelChanges(features['description']);
-    }
-
-    if ('default' in features) {
-      processXDefaultForModelChanges(features['default']);
-    }
-
-    if ('set' in features) {
-      processXSetForModelChanges(features['set']);
-    }
-
-    return features;
-  }
-
   function processXHidedForModelChanges(value?: boolean) {
     if (isUndefined(value)) {
       value = schemaFormsProcessingHelper.shouldFieldBeHidden(props.description,
-        _getPropertyDescription('xHide'), props.context);
+        _getPropertyDescription('xHide'), vm.context);
     }
 
     if (!isEqual(value, props.description.xHideValue)) {
       props.description.xHideValue = value;
 
-      if (refs.parentObjectField && refs.parentObjectField.processInnerElementVisibilityChanged) {
-        refs.parentObjectField.processInnerElementVisibilityChanged();
+      if (im.refs?.parentObjectField && im.refs.parentObjectField.processInnerElementVisibilityChanged) {
+        im.refs.parentObjectField.processInnerElementVisibilityChanged();
       }
     }
   }
 
   function processXTitleForModelChanges(value?: string) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXTitleValue(props.description.xTitle, props.context,
+      value = schemaFormsProcessingHelper.getXTitleValue(props.description.xTitle, vm.context,
         props.description);
     }
 
@@ -492,14 +616,14 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
   }
 
   function processXDescriptionForModelChanges(value: string) {
-    getDescription().xDescriptionValue = value;
+    sharedFunctions.getDescription().xDescriptionValue = value;
   }
 
   function processXDefaultForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXDefaultValue(props.description.xDefault, props.context, props.description);
+      value = schemaFormsProcessingHelper.getXDefaultValue(props.description.xDefault, vm.context, props.description);
     } else {
-      value = schemaFormsProcessingHelper.resolveSpecialValue(value, props.description, props.context, false);
+      value = schemaFormsProcessingHelper.resolveSpecialValue(value, props.description, vm.context, false);
     }
 
     if (!isEqual(value, props.description.xDefaultValue)) {
@@ -507,89 +631,35 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
       props.description.xDefaultValue = value;
 
-      if (props.model === props.description.default || props.model === previousXDefaultValue) {
-        props.model = undefined;
+      if (vm.model === props.description.default || vm.model === previousXDefaultValue) {
+        vm.model = undefined;
       }
 
       if (props.description.isJoin) {
-        correctExistingRelatorsValue();
+        sharedFunctions.correctExistingRelatorsValue();
       }
 
-      // if (Array.isArray(props.model)) {
-      //   if (props.model.length === 0 && !props.context.resultModel._doc) {
-      //     props.model = undefined;
+      // if (Array.isArray(vm.model)) {
+      //   if (vm.model.length === 0 && !vm.context.resultModel._doc) {
+      //     vm.model = undefined;
       //   }
       // }
 
-      fillEmptyModel();
+      sharedFunctions.fillEmptyModel();
     }
   }
 
   function processXSetForModelChanges(value: any) {
     props.description.xSetValue = value;
 
-    if (!isEqual(value, props.model) && value !== undefined) {
-      const parentPath = getParentPath();
-      const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
+    if (!isEqual(value, vm.model) && value !== undefined) {
+      const parentPath = sharedFunctions.getParentPath();
+      const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
 
       if (parentModel) {
-        parentModel[getDescription().name] = value;
+        parentModel[sharedFunctions.getDescription().name] = value;
       }
     }
-  }
-
-  function correctExistingRelatorsValue() {
-    if (!props.model) {
-      return;
-    }
-
-    if (props.description.isJoin && props.description.values) {
-      if (Array.isArray(props.model)) {
-        for (let i = 0; i < props.model.length; ++i) {
-          if (props.model[i]) {
-            props.model[i] = findRelatorProperty(props.model[i], props.description.values);
-          }
-        }
-
-        props.model = props.model.filter((item: any) => item !== null);
-      } else {
-        props.model = findRelatorProperty(props.model, props.description.values);
-      }
-    }
-  }
-
-  function findRelatorProperty(modelValue: any, relatorChoices: any) {
-    if (isUndefined(modelValue)) {
-      return
-    }
-
-    for (const i in relatorChoices) {
-      if (modelValue.id === relatorChoices[i].id) {
-        // we need to extend current selected relator variant with actual ngModel mapping
-        // but we need to save original title
-        const relatorTitle = relatorChoices[i]['title'];
-        const result = {...relatorChoices[i], ...modelValue};
-        result['title'] = relatorTitle;
-
-        return result;
-      }
-    }
-
-    return undefined;
-  }
-
-  function fillEmptyModel() {
-    if (props.model === undefined) {
-      const defaultValue = _getDefaultValue();
-
-      if (defaultValue !== undefined) {
-        props.model = defaultValue;
-      }
-    }
-  }
-
-  function _getDefaultValue(): any {
-    return props.description.xDefaultValue || props.description.default;
   }
 
   function _getPropertyDescription(name: string) {
@@ -603,13 +673,13 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       fieldDescription = props.description;
     }
 
-    let propertyDescription = fieldDescription.header?.name;
+    let propertyDescription = fieldDescription.header?.[name];
 
     if (propertyDescription) {
       return propertyDescription;
     }
 
-    propertyDescription = fieldDescription?.name;
+    propertyDescription = fieldDescription?.[name];
 
     if (propertyDescription) {
       return propertyDescription;
@@ -619,14 +689,14 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
   }
 
   function setModelValueForStructureTagDescription(value: any) {
-    const parentPath = getParentPath();
-    const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
+    const parentPath = sharedFunctions.getParentPath();
+    const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
 
     if (isUndefined(im._previousValue) && isUndefined(value)) {
       return;
     }
 
-    const name = getDescription().name;
+    const name = sharedFunctions.getDescription().name;
 
     im._previousValue = parentModel[name];
 
@@ -638,14 +708,9 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
     im._innerModel = undefined;
 
-    _processInnerModelChanged();
-    schemaFormsProcessingHelper.processFormChanges(getFormName());
+    sharedFunctions.processInnerModelChanged();
+    schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
   }
-
-  function shouldSetValueForRealModelValue(): boolean {
-    return isStructureTag() && props.context;
-  }
-
 
   function valueAndPreviousAreDifferent(value: any): boolean {
     if (im._previousValue !== value) {
@@ -666,21 +731,9 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
   }
 
   return {
-    getTitle,
-    getModel,
-    initField,
-    afterFieldInit,
-    fillEmptyModel,
-    correctExistingRelatorsValue,
-    possibleOldXPropertyNames,
-    possibleXPropertyNames,
-    processXFeatures,
-    shouldBeRequired,
-    shouldBeConstructed,
-    doOnMounted,
-    doOnDeactivated,
-    isValid,
-    touch,
-    findRelatorProperty,
+    im,
+    vm,
+    initDone,
+    sharedFunctions
   }
 }

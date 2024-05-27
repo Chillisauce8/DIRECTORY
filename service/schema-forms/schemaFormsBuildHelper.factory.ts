@@ -1,5 +1,5 @@
-import {SchemaRelatorsFetchService} from './schemaRelatorsFetch.service';
-import {SchemaParser, SchemaParserFactory} from './schemaParser.factory';
+import { schemaRelatorsFetchService, SchemaRelatorsFetchService } from './schemaRelatorsFetch.service';
+import { SchemaParser, schemaParserFactory, SchemaParserFactory } from './schemaParser.factory';
 import {SchemaFormElementTypes} from './schemaFormElementTypes';
 import { groupBy, isUndefined } from '../utils';
 
@@ -512,3 +512,7 @@ export class SchemaFormsBuildHelperFactory {
       this.schemaRelatorsFetchService);
   }
 }
+
+
+export const schemaFormsBuildHelperFactory = new SchemaFormsBuildHelperFactory(schemaParserFactory,
+  schemaRelatorsFetchService);

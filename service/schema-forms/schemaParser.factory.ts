@@ -607,3 +607,6 @@ export class SchemaParserFactory {
     return new SchemaParser(schemaJson);
   }
 }
+
+
+export const schemaParserFactory = new SchemaParserFactory();

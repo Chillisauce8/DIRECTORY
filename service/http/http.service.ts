@@ -4,8 +4,9 @@ import {AppConfig} from '@nuxt/schema';
 import {getHttpInterceptorListByType, HttpInterceptorType, HttpInterceptorFetchOptions}
   from './interceptor.composibles';
 import {getWindowSafe} from '../browser/browser.helpers';
-import {CurrentUser} from '../user-common/current-user.service';
+// import {CurrentUser} from '../user-common/current-user.service';
 import { isUndefined } from '../utils';
+import { serverURL } from '~/environment';
 
 
 
@@ -91,8 +92,8 @@ export class HttpService {
   }
 
   constructor(private ofetch: typeof $fetch,
-              private currentUser: CurrentUser,
-              private appConfig: AppConfig) {
+              // private currentUser: CurrentUser,
+              ) {
 
   }
 
@@ -248,7 +249,7 @@ export class HttpService {
 
     return {
       ...options,
-      baseURL: this.appConfig.http.serverBaseURL,
+      baseURL: serverURL,
     }
   }
 
@@ -267,6 +268,7 @@ export class HttpService {
           updatedOptions = interceptor.intercept(updatedOptions as any);
         }
 
+        // @ts-ignore
         delete updatedOptions.path;
 
         Object.assign(options, updatedOptions);
@@ -324,38 +326,42 @@ export class HttpService {
     const response = error.response;
     const url: string = response.url;
 
-    if (url?.includes('/api/') && response.status === 403 && this.currentUser.isLoggedIn()) {
-      this.get('/api/user')
-        .then(data => {
-          const window = getWindowSafe();
+    const parsedError = HttpService._parseErrorResponse(response);
+    throw parsedError;
 
-          if (!window) {
-            return;
-          }
-
-          const queryParams = [`noPermissionsMessage=true`];
-
-          if (data.user) {
-            queryParams.push(`redirectToArea=true`);
-          }
-
-          window.open('/?' + queryParams.join('&'), '_self');
-        });
-
-      throw HttpService._parseErrorResponse(response);
-    } else if (url?.includes('/api/') && response.status === 403 && !this.currentUser.isLoggedIn()) {
-      if (url.includes('/api/login')) {
-        const parsedError = HttpService._parseErrorResponse(response);
-        throw parsedError;
-      }
-
-      throw 'Access error - anon user';
-    } else if (response.status === -1) {
-      throw 'Timeout error';
-    } else {
-      const parsedError = HttpService._parseErrorResponse(response);
-      throw parsedError;
-    }
+    // TODO:
+    // if (url?.includes('/api/') && response.status === 403 && this.currentUser.isLoggedIn()) {
+    //   this.get('/api/user')
+    //     .then(data => {
+    //       const window = getWindowSafe();
+    //
+    //       if (!window) {
+    //         return;
+    //       }
+    //
+    //       const queryParams = [`noPermissionsMessage=true`];
+    //
+    //       if (data.user) {
+    //         queryParams.push(`redirectToArea=true`);
+    //       }
+    //
+    //       window.open('/?' + queryParams.join('&'), '_self');
+    //     });
+    //
+    //   throw HttpService._parseErrorResponse(response);
+    // } else if (url?.includes('/api/') && response.status === 403 && !this.currentUser.isLoggedIn()) {
+    //   if (url.includes('/api/login')) {
+    //     const parsedError = HttpService._parseErrorResponse(response);
+    //     throw parsedError;
+    //   }
+    //
+    //   throw 'Access error - anon user';
+    // } else if (response.status === -1) {
+    //   throw 'Timeout error';
+    // } else {
+    //   const parsedError = HttpService._parseErrorResponse(response);
+    //   throw parsedError;
+    // }
   }
 
   private isResponseFromAnotherHost(response: AsyncData<any, any>) {
@@ -367,3 +373,6 @@ export class HttpService {
     // return parts[2].indexOf(window.location.hostname) !== 0;
   }
 }
+
+
+export const httpService = new HttpService($fetch);

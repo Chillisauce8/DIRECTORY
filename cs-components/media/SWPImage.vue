@@ -8,7 +8,7 @@ import {
   getTransformationPartFromCloudinaryURL,
   isSrcToCloudinary,
   parseTransformationUrl, prepareTransformationsUrl
-} from '~/service/helpers/media/cloudinary';
+} from '~/service/media/cloudinary';
 
 interface SWPImageProps {
   src: string;

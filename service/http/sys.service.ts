@@ -1,4 +1,4 @@
-import { HttpService } from './http.service';
+import { httpService, HttpService } from './http.service';
 
 
 export interface ITouchConfig {
@@ -31,8 +31,7 @@ export class SysService {
       });
   }
 
-
-  private _sortAlphanumeric(relatorData: Array<any>) {
+  private _sortAlphanumeric(relatorData: any[]): any[] {
     return relatorData.sort(function sortFunction(item1: any, item2: any) {
       let name1 = item1.title ? item1.title.toLowerCase() : item1.title;
       let name2 = item2.title ? item2.title.toLowerCase() : item2.title;
@@ -43,3 +42,6 @@ export class SysService {
     });
   }
 }
+
+
+export const sysService = new SysService(httpService);

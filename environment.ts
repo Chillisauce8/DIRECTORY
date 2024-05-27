@@ -1,9 +1,9 @@
 import type {EnvironmentConfiguration} from '~/environment.example';
 
 
-// const serverURL = 'http://localhost:2999';
-const serverURL = 'https://testorigin.chillisauce.com';
-// const serverURL = 'https://chillisauce.com';
+// export const serverURL = 'http://localhost:2999';
+export const serverURL = 'https://testorigin.chillisauce.com';
+// export const serverURL = 'https://chillisauce.com';
 
 
 const pageCacheRule = {

@@ -1,5 +1,5 @@
-import {SysService} from '../http/sys.service';
-import {SchemaParser, SchemaParserFactory} from './schemaParser.factory';
+import { sysService, SysService } from '../http/sys.service';
+import { SchemaParser, schemaParserFactory, SchemaParserFactory } from './schemaParser.factory';
 
 
 export class SchemaPaths {
@@ -70,3 +70,6 @@ export class SchemaPaths {
     return `${schemaName}_${fields ? fields.join('_') : ''}_${showBrackets.toString()}`;
   }
 }
+
+
+export const schemaPaths = new SchemaPaths(sysService, schemaParserFactory);

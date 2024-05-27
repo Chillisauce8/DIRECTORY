@@ -1,75 +1,52 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service';
-import { BaseFieldEmits, BaseFieldProps, ComponentRefs } from '~/composables/schema-forms/useBaseField';
+import type { BaseFieldEmits, BaseFieldProps, ComponentRefs } from '~/composables/schema-forms/useBaseField';
 import { isUndefined, isEqual } from '~/service/utils';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 
 
 export interface BaseControlProps extends BaseFieldProps {
-  noPlaceholder: boolean;
+
 }
 
 
-export default function useBaseControl(props: BaseControlProps, emits: BaseFieldEmits, refs: ComponentRefs): any {
+export default function useBaseControl(props: BaseControlProps, emits: BaseFieldEmits): any {
 
   // @ViewChild('controlModel') public controlModel: NgModel;
 
-  const baseFieldExport = useBaseField(props, emits, refs);
+  const baseFieldExport = useBaseField(props, emits);
 
   const {
-    getTitle,
-    initField: initFieldBase,
-    possibleOldXPropertyNames: possibleOldXPropertyNamesBase,
-    possibleXPropertyNames: possibleXPropertyNamesBase,
-    processXFeatures: processXFeaturesBase,
-    fillEmptyModel,
-    correctExistingRelatorsValue,
-    shouldBeRequired,
-    afterFieldInit,
+    vm,
+    im,
+    sharedFunctions,
+    initDone,
   } = baseFieldExport;
 
-  const im = {
-    _needCorrectExistingValues: refs.form?.needCorrectExistingValues || false,
-    placeholderValue: undefined,
-  }
 
+  const initFieldBase = sharedFunctions.initField;
+  const possibleOldXPropertyNamesBase = sharedFunctions.possibleOldXPropertyNames;
+  const possibleXPropertyNamesBase = sharedFunctions.possibleXPropertyNames;
+  const processXFeaturesBase = sharedFunctions.processXFeatures;
 
   function initField() {
     initFieldBase();
 
     refreshPlaceholder();
 
-    if (props.model) {
+    if (vm.model) {
       correctExistingValue();
     }
 
     fillDescriptionPattern();
 
-    if (props.model === undefined || props.model === null) {
-      fillEmptyModel();
+    if (vm.model === undefined || vm.model === null) {
+      sharedFunctions.fillEmptyModel();
     }
   }
 
-  function doOnMounted() {
-    initField();
-
-    // call this if description was set after model was set!
-    afterFieldInit();
-  }
-
-  function trackByIndexFn(index: number, item: any) {
-    return index;
-  }
-
-  function getPlaceholder() {
-    if (props.noPlaceholder) {
-      return ' ';
-    }
-
-    return getTitle();
-  }
 
   function refreshPlaceholder() {
-    im.placeholderValue = getPlaceholder();
+    im.placeholderValue = sharedFunctions.getPlaceholder();
   }
 
   // TODO: ***
@@ -80,7 +57,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
     //
     // return controlModel.valid;
 
-    return false;
+    throw 'Not implemented'
   }
 
   // TODO: ***
@@ -93,23 +70,27 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
     throw 'Not implemented'
   }
 
+  function trackByIndexFn(index: number, item: any) {
+    return index;
+  }
+
   function correctExistingValue() {
     if (props.description.isJoin) {
-      correctExistingRelatorsValue();
+      sharedFunctions.correctExistingRelatorsValue();
       return;
     }
 
-    if (props.model && props.description.values) {
-      if (Array.isArray(props.model)) {
-        for (const item of props.model) {
+    if (vm.model && props.description.values) {
+      if (Array.isArray(vm.model)) {
+        for (const item of vm.model) {
           if (props.description.values.indexOf(item) === -1) {
-            props.model = [];
+            vm.model = [];
             break;
           }
         }
       } else {
-        if (props.description.values.indexOf(props.model) === -1) {
-          props.model = null;
+        if (props.description.values.indexOf(vm.model) === -1) {
+          vm.model = null;
         }
       }
     }
@@ -215,7 +196,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
   function processXMinimumForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXNumberValue(props.description.xMinimum, props.context, props.description);
+      value = schemaFormsProcessingHelper.getXNumberValue(props.description.xMinimum, vm.context, props.description);
     }
 
     if (!isEqual(value, props.description.xMinimumValue)) {
@@ -229,7 +210,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
   function processXMaximumForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXNumberValue(props.description.xMaximum, props.context, props.description);
+      value = schemaFormsProcessingHelper.getXNumberValue(props.description.xMaximum, vm.context, props.description);
     }
 
     if (!isEqual(value, props.description.xMaximumValue)) {
@@ -243,7 +224,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
   function processXRequiredForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = shouldBeRequired(props.description);
+      value = sharedFunctions.shouldBeRequired(props.description);
     }
 
     if (!isEqual(value, props.description.xRequiredValue)) {
@@ -257,35 +238,35 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
   function processXConcatenateForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXConcatenateValue(props.description.xConcatenate, props.context);
+      value = schemaFormsProcessingHelper.getXConcatenateValue(props.description.xConcatenate, vm.context);
     }
 
     if (!isEqual(value, props.description.xConcatenateValue)) {
       props.description.xConcatenateValue = value;
 
       if (value !== undefined) {
-        props.model = value.replace(/undefined/g, '').trim();
+        vm.model = value.replace(/undefined/g, '').trim();
       }
     }
   }
 
   function processXCalculateForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXCalculatedValues(props.description, props.context);
+      value = schemaFormsProcessingHelper.getXCalculatedValues(props.description, vm.context);
     }
 
     if (!isEqual(value, props.description.xCalculateValue)) {
       props.description.xCalculateValue = value;
 
       if (value !== undefined) {
-        props.model = value;
+        vm.model = value;
       }
     }
   }
 
   function processXReadOnlyForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXReadOnlyValue(props.description.xReadonly, props.context);
+      value = schemaFormsProcessingHelper.getXReadOnlyValue(props.description.xReadonly, vm.context);
     }
 
     if (!isEqual(value, props.description.xReadOnlyValue)) {
@@ -300,39 +281,45 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
   function processXEnumForModelChanges(value?: any) {
     if (isUndefined(value) || value['enum']) {
-      value = schemaFormsProcessingHelper.getXEnumValues(props.description.xEnum, props.context);
+      value = schemaFormsProcessingHelper.getXEnumValues(props.description.xEnum, vm.context);
     }
 
     if (!isEqual(value, props.description.xEnumValues)) {
       props.description.xEnumValues = value;
-      refs.parentDynamicControl.processControlTypeChanges();
+      im.refs?.parentDynamicControl.processControlTypeChanges();
     }
   }
 
   function processXOptionsForModelChanges(value: any, plusMode: boolean = false) {
     if (!Array.isArray(value) && value.path) {
-      const arrayValues = schemaFormsProcessingHelper.deepFindValueInContext(props.context, value.path);
+      const arrayValues = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, value.path);
       value = schemaFormsProcessingHelper.prepareEnumValues(arrayValues, value.titlePath, value.valuePath);
     }
 
     if (!isEqual(value, props.description.xOptionsValues)) {
       props.description.xOptionsValues = value;
       props.description.xOptionsPlus = plusMode;
-      refs.parentDynamicControl.processControlTypeChanges();
+      im.refs?.parentDynamicControl.processControlTypeChanges();
     }
   }
 
 
+  sharedFunctions.initField = initField;
+  sharedFunctions.trackByIndexFn = trackByIndexFn;
+  sharedFunctions.possibleOldXPropertyNames = possibleOldXPropertyNames;
+  sharedFunctions.possibleXPropertyNames = possibleXPropertyNames;
+  sharedFunctions.processXOptionsForModelChanges = processXOptionsForModelChanges;
+  sharedFunctions.processXFeatures = processXFeatures;
+  sharedFunctions.isValid = isValid;
+  sharedFunctions.touch = touch;
+  sharedFunctions.correctExistingValue = correctExistingValue;
+  sharedFunctions.fillDescriptionPattern = fillDescriptionPattern;
+
+
   return {
-    ...baseFieldExport,
-    trackByIndexFn,
-    getPlaceholder,
-    initField,
-    possibleOldXPropertyNames,
-    possibleXPropertyNames,
-    processXOptionsForModelChanges,
-    processXFeatures,
-    doOnMounted,
+    vm,
     im,
+    sharedFunctions,
+    initDone,
   }
 }
