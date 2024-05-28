@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
-import { getTransformationPartFromCloudinaryURL, isSrcToCloudinary, parseTransformationUrl, prepareTransformationsUrl } from '~/service/helpers/media/cloudinary';
+import { getTransformationPartFromCloudinaryURL, isSrcToCloudinary, parseTransformationUrl, prepareTransformationsUrl } from '~/service/media/cloudinary';
 
 interface SWPImageProps {
     src: string;

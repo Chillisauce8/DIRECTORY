@@ -15,9 +15,12 @@ export default defineNuxtConfig({
     options: { ripple: true },
     components: {
       exclude: []
+    },
+    directives: {
+      include: ['Tooltip']
     }
     // importTheme: { from: '@/themes/mytheme.js' },
-   
+
     // components: {
     //   prefix: 'Prime',
     //   include: ['Button', ],

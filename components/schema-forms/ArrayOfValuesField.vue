@@ -7,8 +7,10 @@
         <p class="label flex-none" v-if="props.description.title && index === 0">
           {{ sharedFunctions.getTitle() }}
 
-          <i class="pi pi-question padding_-5" v-if="sharedFunctions.getDescriptionText()"
-             v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
+          <span v-if="sharedFunctions.getDescriptionText()"
+                v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+            <i class="pi pi-question padding_-5" ></i>
+          </span>
         </p>
 
         <p class="label flex-none" v-if="props.description.title && index !== 0"></p>
@@ -30,15 +32,16 @@
         <p class="label flex">
           {{ sharedFunctions.getTitle() }}
 
-          <i class="pi pi-question padding_-5" v-if="sharedFunctions.getDescriptionText()"
-             v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
+          <span v-if="sharedFunctions.getDescriptionText()"
+                v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+            <i class="pi pi-question padding_-5"></i>
+          </span>
         </p>
 
-        <button aria-label="Add First Row"
+        <Button icon="pi pi-add" aria-label="Add First Row"
                 v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore()"
                 @click="sharedFunctions.addFirstRow()">
-          <i class="pi pi-plus"></i>
-        </button>
+        </Button>
       </div>
 
       <div v-if="!sharedFunctions.isValidMaxItems()" class="text-color_red field_wrap">
@@ -59,6 +62,7 @@
 <script setup lang="ts">
 import useBaseArrayFieldControl from '~/composables/schema-forms/useBaseArrayFieldControl';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
+
 
 // @ts-ignore
 const props = defineProps<BaseFieldProps>();
@@ -91,8 +95,6 @@ onMounted(() => {
   vm = baseFieldExport.vm;
   sharedFunctions = baseFieldExport.sharedFunctions;
 
-  sharedFunctions._createModelRow = _createModelRow;
-
   sharedFunctions.doOnMounted();
 });
 
@@ -119,9 +121,12 @@ function createSpeedDialItems(index: number) {
   }];
 }
 
-function _createModelRow() {
+function createModelRow() {
   return null;
 }
+
+
+sharedFunctions.createModelRow = createModelRow;
 
 
 </script>

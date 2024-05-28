@@ -4,7 +4,7 @@
               @update:modelValue="onModelChangeDebounced($event)"
               :name="props.description.name" :class="{'p-invalid': $v.$error}"
               :invalid="$v.$error"/>
-    <label :for="props.description.name">{{props.placeholderValue}}</label>
+    <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </FloatLabel>
   <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
 </template>

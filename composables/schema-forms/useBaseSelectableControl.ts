@@ -1,5 +1,6 @@
 import { schemaFormsProcessingHelper } from '~/service/schema-forms/schemaFormsProcessing.service';
-import useBaseControl, { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
+import useBaseControl from '~/composables/schema-forms/useBaseControl';
+import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits, ComponentRefs } from '~/composables/schema-forms/useBaseField';
 import { isEqual, isObject, isUndefined, difference, differenceWith, uniqBy, uniq } from '~/service/utils';
 // @ts-ignore

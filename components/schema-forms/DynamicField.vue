@@ -2,7 +2,7 @@
   <div ref="selfRef" class="schema-form-dynamic-field">
 
     <template v-if="initDone">
-      {{props.description.formDirective}}
+
       <ValueField v-if="props.description.formDirective === 'valueField'"
                  :model="fakeModel" @modelChange="onModelChange($event)"
                  :context="vm.context"

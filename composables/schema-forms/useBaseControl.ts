@@ -46,7 +46,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
 
   function refreshPlaceholder() {
-    im.placeholderValue = sharedFunctions.getPlaceholder();
+    vm.placeholderValue = sharedFunctions.getPlaceholder();
   }
 
   // TODO: ***

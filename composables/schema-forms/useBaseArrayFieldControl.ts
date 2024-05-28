@@ -1,7 +1,7 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service';
 import type { BaseFieldEmits, BaseFieldProps, ComponentRefs } from '~/composables/schema-forms/useBaseField';
 import { isUndefined, isEqual, isNumber, cloneDeep, uniq } from '~/service/utils';
-import { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
+import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { extend } from 'vue-extend-reactive';
@@ -16,6 +16,7 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
   let {
     vm,
     sharedFunctions,
+    initDone,
   } = baseFieldExport;
 
   vm = extend(vm, {
@@ -43,7 +44,7 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
 
     if (isRequired()) {
       if (!vm.model.length) {
-        vm.model.push(_createModelRow());
+        vm.model.push(sharedFunctions.createModelRow());
       }
     }
 
@@ -59,7 +60,7 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
   }
 
   function isValid(): boolean {
-    return isValidMaxItems() && isValidMinItems() && ifValidUniqueItems();
+    return sharedFunctions.isValidMaxItems() && sharedFunctions.isValidMinItems() && sharedFunctions.ifValidUniqueItems();
   }
 
   function isRequired(): boolean {
@@ -70,10 +71,10 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
     // @ts-ignore
     vm.model.forEach(() => vm.rowDescriptions.push(_createModelDescription()));
 
-    onRowsDescriptionChanged();
+    sharedFunctions.onRowsDescriptionChanged();
   }
 
-  function _createModelRow() {
+  function createModelRow() {
     return {};
   }
 
@@ -106,33 +107,33 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
   }
 
   function addFirstRow() {
-    if (!canAddMore()) {
+    if (!sharedFunctions.canAddMore()) {
       return;
     }
 
-    vm.model.push(_createModelRow());
+    vm.model.push(sharedFunctions.createModelRow());
 
     // @ts-ignore
     vm.rowDescriptions.push(_createModelDescription());
 
-    onRowsDescriptionChanged();
+    sharedFunctions.onRowsDescriptionChanged();
   }
 
   function addRowAfter(index: number) {
-    if (!canAddMore()) {
+    if (!sharedFunctions.canAddMore()) {
       return;
     }
 
-    vm.model.splice(index + 1, 0, _createModelRow());
+    vm.model.splice(index + 1, 0, sharedFunctions.createModelRow());
 
     // @ts-ignore
     vm.rowDescriptions.splice(index + 1, 0, _createModelDescription());
 
-    onRowsDescriptionChanged();
+    sharedFunctions.onRowsDescriptionChanged();
   }
 
   function copyRow(index: number) {
-    if (!canAddMore()) {
+    if (!sharedFunctions.canAddMore()) {
       return;
     }
 
@@ -141,11 +142,11 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
     // @ts-ignore
     vm.rowDescriptions.splice(index + 1, 0, cloneDeep(vm.rowDescriptions[index]));
 
-    onRowsDescriptionChanged();
+    sharedFunctions.onRowsDescriptionChanged();
   }
 
   function deleteRow(index: number) {
-    if (!canRemoveMore()) {
+    if (!sharedFunctions.canRemoveMore()) {
       return;
     }
 
@@ -184,14 +185,14 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
     vm.model.splice(index - 1, 0, vm.model.splice(index, 1)[0]);
     vm.rowDescriptions.splice(index - 1, 0, vm.rowDescriptions.splice(index, 1)[0]);
 
-    onRowsDescriptionChanged();
+    sharedFunctions.onRowsDescriptionChanged();
   }
 
   function moveRowDown(index: number) {
     vm.model.splice(index + 1, 0, vm.model.splice(index, 1)[0]);
     vm.rowDescriptions.splice(index + 1, 0, vm.rowDescriptions.splice(index, 1)[0]);
 
-    onRowsDescriptionChanged();
+    sharedFunctions.onRowsDescriptionChanged();
   }
 
   function onRowsDescriptionChanged() {
@@ -307,7 +308,7 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
   function deleteArrayItems(start: number, deleteCount?: number) {
     vm.model.splice(start, deleteCount);
     vm.rowDescriptions.splice(start, deleteCount);
-    onRowsDescriptionChanged();
+    sharedFunctions.onRowsDescriptionChanged();
   }
 
 
@@ -329,10 +330,12 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
   sharedFunctions.isValidMaxItems = isValidMaxItems;
   sharedFunctions.isValidMinItems = isValidMinItems;
   sharedFunctions.ifValidUniqueItems = ifValidUniqueItems;
+  sharedFunctions.createModelRow = createModelRow;
 
 
   return {
     vm,
     sharedFunctions,
+    initDone,
   };
 }

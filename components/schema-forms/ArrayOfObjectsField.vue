@@ -1,6 +1,6 @@
 <template>
   <div ref="selfRef" class="schema-form-array-of-objects-field">
-     <div v-if="sharedFunctions?.shouldBeConstructed(props.description.header)"
+     <div v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
        v-show="!props.description.xHideValue"
        class="array-wrap">
 
@@ -10,8 +10,10 @@
         <p class="label flex-none" v-if="rowIndex === 0 && props.description.header.title">
           {{ sharedFunctions.getTitle() }}
 
-          <i class="pi pi-question padding_-5" v-if="sharedFunctions.getDescriptionText()"
-             v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
+          <span v-if="sharedFunctions.getDescriptionText()"
+                v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+            <i class="pi pi-question padding_-5"></i>
+          </span>
 
   <!--        <i class="pi pi-table padding_-5" v-if="props.description.xGrid"-->
   <!--           v-tooltip.bottom="'Grid view'" style="cursor: pointer"-->
@@ -26,22 +28,23 @@
               <div class="flex" :style="{width: item.description.xFlex + '%'}"
                    v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)"
                    v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
-                <schema-form-dynamic-control
+
+                <DynamicControl
                   v-if="item.formDirective === 'valueField'"
                   :description="item.description"
                   :model="vm.model[rowIndex][item.description.name]"
                   :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
                   @modelChange="onModelChange(rowIndex, item.description.name, $event)">
-                </schema-form-dynamic-control>
+                </DynamicControl>
 
-                <schema-form-dynamic-field
+                <DynamicField
                   class="inner-dynamic-field"
                   v-if="item.formDirective !== 'valueField'"
                   :description="item"
                   :model="vm.model[rowIndex]"
                   :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
                   @modelChange="onModelChange(rowIndex, null, $event)">
-                </schema-form-dynamic-field>
+                </DynamicField>
 
               </div>
             </template>
@@ -52,27 +55,24 @@
                    direction="left" :style="{ top: 'calc(50% - 2rem)', right: 0 }" />
       </div>
 
-      <div class="empty row start-center"
-           v-if="!vm.model?.length">
+      <div class="empty row start-center" v-if="!vm.model?.length">
         <p class="label flex">
           {{ sharedFunctions.getTitle() }}
 
-          <i class="icon icon-question-mark padding_-5" v-if="sharedFunctions.getDescriptionText()"
-             v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
+          <span v-if="sharedFunctions.getDescriptionText()"
+                v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+            <i class="icon icon-question-mark padding_-5"></i>
+          </span>
         </p>
 
-        <button aria-label="Add First Row"
-                v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode"
-        >
+        <Button icon="pi pi-plus" aria-label="Add First Row"
+                v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode">
           <!--              #contextMenuTrigger [matMenuTriggerFor]="contextMenu"-->
-          <i class="pi pi-add"></i>
-        </button>
+        </Button>
 
-        <button aria-label="Add First Row"
+        <Button icon="pi pi-plus" aria-label="Add First Row"
                 v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode"
-                @click="addFirstRow()">
-          <i class="pi pi-add"></i>
-        </button>
+                @click="addFirstRow()"/>
       </div>
 
       <ContextMenu ref="menu" :model="getContextMenuItems(vm.selectionValues)"/>
@@ -111,7 +111,7 @@ const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
 
 
-let {vm, sharedFunctions} = useBaseArrayFieldControl(props, emits);
+let {vm, sharedFunctions, initDone} = useBaseArrayFieldControl(props, emits);
 
 
 const initFieldBase = sharedFunctions.initField;
@@ -176,27 +176,27 @@ function getContextMenuItems(selectionValues: string[]) {
 
 function createSpeedDialItems(index: number) {
   return [{
-    icon: 'pi-plus',
+    icon: 'pi pi-plus',
     command: () => openContextMenu(index),
     visible: () => sharedFunctions.canAddMore() && vm.isSelectionMode,
   }, {
-    icon: 'pi-plus',
+    icon: 'pi pi-plus',
     command: () => addRowAfter(index),
     visible: () => sharedFunctions.canAddMore() && !vm.isSelectionMode,
   }, {
-    icon: 'pi-times',
+    icon: 'pi pi-times',
     command: () => sharedFunctions.deleteRow(index),
     visible: () => sharedFunctions.canRemoveMore() && !(props.description.header.required && index === 0 && vm.model.length === 1),
   }, {
-    icon: 'pi-chevron-up',
+    icon: 'pi pi-chevron-up',
     command: () => sharedFunctions.moveRowUp(index),
     visible: () => index !== 0,
   }, {
-    icon: 'pi-chevron-down',
+    icon: 'pi pi-chevron-down',
     command: () => sharedFunctions.moveRowDown(index),
     visible: () => index !== vm.model.length - 1,
   }, {
-    icon: 'pi-clone',
+    icon: 'pi pi-clone',
     command: () => sharedFunctions.opyRow(index),
     visible: () => sharedFunctions.canAddMore(),
   }];
@@ -296,7 +296,7 @@ function _getLineNumber(description: any): number {
   return lineNumber;
 }
 
-function _createModelRow() {
+function createModelRow() {
   const row: any = {};
   props.description.content.forEach((item: any) => {
     let initValue = undefined;
@@ -380,6 +380,7 @@ sharedFunctions.initField = initField;
 sharedFunctions.addRowAfter = addRowAfter;
 sharedFunctions.addFirstRow = addFirstRow;
 sharedFunctions.onRowsDescriptionChanged = onRowsDescriptionChanged;
+sharedFunctions.createModelRow = createModelRow;
 
 </script>
 

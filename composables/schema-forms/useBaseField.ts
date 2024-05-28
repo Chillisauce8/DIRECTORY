@@ -80,7 +80,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         return props.description.header.title;
       }
 
-      return props.description.title;
+      return props.description.title || props.description.name;
     },
 
     getModel: () => {
@@ -402,11 +402,11 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       return '';
     },
 
-    getDescriptionText: () => (item?: any) => {
+    getDescriptionText: (item?: any) => {
       const description = item ? item.description : props.description;
 
       if (!description) {
-        return null;
+        return '';
       }
 
       if (description.xDescriptionValue) {
@@ -419,7 +419,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         return description.description;
       }
 
-      return null;
+      return '';
     },
 
     correctModelBeforeSet: (value: any) => {

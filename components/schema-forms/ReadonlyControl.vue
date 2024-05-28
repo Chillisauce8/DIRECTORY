@@ -1,12 +1,12 @@
 <template>
   <div class="flex align-items-center">
-    <Checkbox v-if="props.description.formType === 'checkbox'" v-model="vm.model" :binary="true"
+    <Checkbox v-if="props.description.formType === 'checkbox'" v-model="vm.model"
               :name="props.description.name" :readonly="true"/>
     <InputNumber v-else-if="props.description.formType === 'number'" v-model="vm.model"
                  :name="props.description.name" :readonly="true"/>
-    <InputText v-else type="text" v-model="getValueForReadonlyInput()"
+    <InputText v-else type="text" v-model="valueForReadonlyInput"
                :name="props.description.name" :readonly="true"/>
-    <label :for="props.description.name" class="ml-2"> {{ getPlaceholder() }} </label>
+    <label :for="props.description.name" class="ml-2"> {{ sharedFunctions.getPlaceholder() }} </label>
   </div>
 
 </template>
@@ -14,6 +14,8 @@
 <script setup lang="ts">
 import { isObject } from '~/service/utils';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
+import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 
 
 // @ts-ignore
@@ -49,7 +51,7 @@ let {
 } = baseFieldExport;
 
 
-function getValueForReadonlyInput() {
+const valueForReadonlyInput = computed(() => {
   if (Array.isArray(vm.model)) {
     return vm.model.map((item: any) => {
       if (isObject(item)) {
@@ -65,7 +67,8 @@ function getValueForReadonlyInput() {
   }
 
   return vm.model || '';
-}
+})
+
 
 </script>
 

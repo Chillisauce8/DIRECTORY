@@ -4,10 +4,6 @@
 
     <template v-if="initDone">
 
-      initDone: {{initDone}}
-
-      latestControlType: {{latestControlType}}
-
       <ReadonlyControl v-if="latestControlType === 'readonly'"
                       :model="vm.model" @modelChange="onModelChange($event)"
                       :description="props.description" :context="vm.context"
