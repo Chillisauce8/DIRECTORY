@@ -1,36 +1,6 @@
 <template>
-    <div class="card flex justify-content-center">
-        <Galleria
-            v-model:activeIndex="activeIndex"
-            v-model:visible="displayCustom"
-            :value="images"
-            :responsiveOptions="responsiveOptions"
-            containerStyle="max-width: 600px"
-            :circular="true"
-            :fullScreen="true"
-            :showItemNavigators="true"
-            :showThumbnails="true"
-        >
-            <template #item="slotProps">
-                <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt" style="width: 100%; display: block" />
-            </template>
-            <template #caption="slotProps">
-                <div class="title">{{ slotProps.item.title }}</div>
-                <p class="description">{{ slotProps.item.alt }}</p>
-                <div>Edit Me</div>
-            </template>
-
-            <template #thumbnail="slotProps">
-                <img :src="slotProps.item.thumbnailImageSrc" :alt="slotProps.item.alt" style="display: block" />
-            </template>
-        </Galleria>
-        <vue-horizontal>
-            <div v-if="images" class="grid" style="max-width: 800px">
-                <div v-for="(image, index) of images" :key="index" class="col-4">
-                    <img :src="image.thumbnailImageSrc" :alt="image.alt" style="cursor: pointer" @click="imageClick(index)" />
-                </div>
-            </div>
-        </vue-horizontal>
+    <div class="card">
+        <MediaGallery />
     </div>
 </template>
 
