@@ -12,8 +12,8 @@
 <script setup lang="ts">
 import FieldError from "~/components/schema-forms/FieldError.vue";
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
-import { required } from '@vuelidate/validators/dist/index';
-import { useVuelidate } from '@vuelidate/core/dist/index';
+import { required } from '@vuelidate/validators';
+import { useVuelidate } from '@vuelidate/core';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
 
@@ -29,18 +29,6 @@ const selfRef = ref(null);
 const parentObjectFieldRef = ref(null);
 const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
-
-
-const refs = {
-  self: selfRef,
-  form: {
-    formName: formRef.value?.name,
-    needCorrectExistingValues: true,
-  },
-  parentObjectField: parentObjectFieldRef,
-  parentGroupField: parentGroupFieldRef,
-  parentDynamicControl: parentDynamicControlRef,
-};
 
 
 const baseFieldExport = useBaseControl(props, emits);
@@ -70,6 +58,23 @@ const validateRules = computed(() => {
 
 const $v = useVuelidate(validateRules, { [props.description.name]: vm.model });
 
+
+onMounted(() => {
+  const refs = {
+    self: selfRef,
+    form: {
+      formName: formRef.value?.name,
+      needCorrectExistingValues: true,
+    },
+    parentObjectField: parentObjectFieldRef,
+    parentGroupField: parentGroupFieldRef,
+    parentDynamicControl: parentDynamicControlRef,
+  };
+
+  sharedFunctions.setRefs(refs);
+
+  sharedFunctions.doOnMounted();
+});
 
 function getDefaultValue(): any {
   const defaultValue = getDefaultValueBase();

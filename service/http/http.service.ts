@@ -1,6 +1,5 @@
 import {AsyncData} from '#app';
 import {AppConfig} from '@nuxt/schema';
-// import type {NitroFetchOptions} from 'nitropack';
 import {getHttpInterceptorListByType, HttpInterceptorType, HttpInterceptorFetchOptions}
   from './interceptor.composibles';
 import {getWindowSafe} from '../browser/browser.helpers';

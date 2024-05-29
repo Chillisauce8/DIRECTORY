@@ -60,28 +60,9 @@ const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
 
 
-const refs = {
-  self: selfRef,
-  form: {
-    formName: formRef.value?.name,
-    needCorrectExistingValues: true,
-  },
-  parentObjectField: parentObjectFieldRef,
-  parentGroupField: parentGroupFieldRef,
-  parentDynamicControl: parentDynamicControlRef,
-};
+const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits, refs);
 
 
-const baseFieldExport = useBaseSelectableControl(props, emits, refs);
-
-let {
-  vm,
-  im,
-  sharedFunctions,
-} = baseFieldExport;
-
-
-const correctExistingValueBase = sharedFunctions.correctExistingValue;
 const initFieldBase = sharedFunctions.initField;
 
 
@@ -100,11 +81,27 @@ const validateRules = computed(() => {
 const $v = useVuelidate(validateRules, { [props.description.name]: vm.model });
 
 
+onMounted(() => {
+  const refs = {
+    self: selfRef,
+    form: {
+      formName: formRef.value?.name,
+      needCorrectExistingValues: true,
+    },
+    parentObjectField: parentObjectFieldRef,
+    parentGroupField: parentGroupFieldRef,
+    parentDynamicControl: parentDynamicControlRef,
+  };
+
+  sharedFunctions.setRefs(refs);
+
+  sharedFunctions.doOnMounted();
+});
+
 function onModelChange(value: any) {
   vm.model = value;
   $v.value.$validate();
 }
-
 
 function initField() {
   initFieldBase();

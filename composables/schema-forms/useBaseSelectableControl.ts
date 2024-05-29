@@ -7,7 +7,7 @@ import { isEqual, isObject, isUndefined, difference, differenceWith, uniqBy, uni
 import { extend } from 'vue-extend-reactive';
 
 
-export default function useBaseSelectableControl(props: BaseControlProps, emits: BaseFieldEmits, refs: ComponentRefs): any {
+export default function useBaseSelectableControl(props: BaseControlProps, emits: BaseFieldEmits): any {
 
   // @ViewChild('controlModel') public controlModel: NgModel;
 

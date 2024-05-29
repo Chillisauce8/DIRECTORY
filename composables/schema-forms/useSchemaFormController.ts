@@ -13,6 +13,7 @@ import { schemaFormsBuildHelperFactory } from '~/service/schema-forms/schemaForm
 import { schemaPaths } from '~/service/schema-forms/schemaPaths.service';
 // @ts-ignore
 import { useToast } from 'primevue/usetoast';
+import { sysService } from '~/service/http/sys.service';
 
 
 export default function useSchemaFormController(): any {
@@ -81,118 +82,118 @@ export default function useSchemaFormController(): any {
 
     getSchema: async (): Promise<any> => {
       const schemaName = sharedFunctions.getSchemaName();
-      // return sysService.getSchema(schemaName)
-      //   .then((schema: any) => {
-      const schema = {
-        "name": "events",
-        "description": "",
-        "properties": {
-          "name": {
-            "type": "string",
-            "title": "Name"
-          },
-          "description": {
-            "type": "string",
-            "title": "Description"
-          },
-          "startDate": {
-            "type": "string",
-            "title": "Date"
-          },
-          "endDate": {
-            "type": "string",
-            "title": "End Date"
-          },
-          "alerts": {
-            "type": "array",
-            "title": "Alerts",
-            "items": {
-              "type": "object",
-              "properties": {
-                "dateTime": {
-                  "type": "string"
-                },
-                "relativeTime": {
-                  "type": "string",
-                  "enum": [
-                    "At time of event",
-                    "5 minutes before",
-                    "10 minutes before",
-                    "15 minutes before",
-                    "30 minutes before",
-                    "1 hour before",
-                    "2 hours before",
-                    "1 day before",
-                    "2 days before",
-                    "1 week before"
-                  ]
-                }
-              }
-            }
-          },
-          "files": {
-            "type": "array",
-            "title": "Files",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "status": {
-            "type": "array",
-            "title": "Status",
-            "items": {
-              "type": "object",
-              "properties": {
-                "state": {
-                  "type": "string",
-                  "enum": [
-                    "Outstanding",
-                    "Completed",
-                    "Deleted"
-                  ]
-                },
-                "user": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "dateTime": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "vehicles": {
-            "type": "array",
-            "title": "Vehicles",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "title": "events",
-        "_doc": "6630c1aead18f5f1de44dfc2"
-      }
-
-      vm.schemaFormsBuildHelper = schemaFormsBuildHelperFactory.getInstance(schemaName, schema);
-      //});
+      return sysService.getSchema(schemaName)
+        .then((schema: any) => {
+            vm.schemaFormsBuildHelper = schemaFormsBuildHelperFactory.getInstance(schemaName, schema);
+        });
     },
+
+    // const schema = {
+    //   "name": "events",
+    //   "description": "",
+    //   "properties": {
+    //     "name": {
+    //       "type": "string",
+    //       "title": "Name"
+    //     },
+    //     "description": {
+    //       "type": "string",
+    //       "title": "Description"
+    //     },
+    //     "startDate": {
+    //       "type": "string",
+    //       "title": "Date"
+    //     },
+    //     "endDate": {
+    //       "type": "string",
+    //       "title": "End Date"
+    //     },
+    //     "alerts": {
+    //       "type": "array",
+    //       "title": "Alerts",
+    //       "items": {
+    //         "type": "object",
+    //         "properties": {
+    //           "dateTime": {
+    //             "type": "string"
+    //           },
+    //           "relativeTime": {
+    //             "type": "string",
+    //             "enum": [
+    //               "At time of event",
+    //               "5 minutes before",
+    //               "10 minutes before",
+    //               "15 minutes before",
+    //               "30 minutes before",
+    //               "1 hour before",
+    //               "2 hours before",
+    //               "1 day before",
+    //               "2 days before",
+    //               "1 week before"
+    //             ]
+    //           }
+    //         }
+    //       }
+    //     },
+    //     "files": {
+    //       "type": "array",
+    //       "title": "Files",
+    //       "items": {
+    //         "type": "object",
+    //         "properties": {
+    //           "id": {
+    //             "type": "string"
+    //           }
+    //         }
+    //       }
+    //     },
+    //     "status": {
+    //       "type": "array",
+    //       "title": "Status",
+    //       "items": {
+    //         "type": "object",
+    //         "properties": {
+    //           "state": {
+    //             "type": "string",
+    //             "enum": [
+    //               "Outstanding",
+    //               "Completed",
+    //               "Deleted"
+    //             ]
+    //           },
+    //           "user": {
+    //             "type": "object",
+    //             "properties": {
+    //               "id": {
+    //                 "type": "string"
+    //               },
+    //               "name": {
+    //                 "type": "string"
+    //               }
+    //             }
+    //           },
+    //           "dateTime": {
+    //             "type": "string"
+    //           }
+    //         }
+    //       }
+    //     },
+    //     "vehicles": {
+    //       "type": "array",
+    //       "title": "Vehicles",
+    //       "items": {
+    //         "type": "object",
+    //         "properties": {
+    //           "id": {
+    //             "type": "string"
+    //           }
+    //         }
+    //       }
+    //     }
+    //   },
+    //   "title": "events",
+    //   "_doc": "6630c1aead18f5f1de44dfc2"
+    // }
 
     buildGroupsDescription: async (): Promise<any> => {
       return null;
@@ -380,9 +381,9 @@ export default function useSchemaFormController(): any {
   }
 
   async function getAllSettings(): Promise<any> {
-      const promises = [sharedFunctions.getSchema()];
+    const promises = [sharedFunctions.getSchema()];
 
-      if (vm.editMode) {
+    if (vm.editMode) {
       const getTargetPromise = sharedFunctions.getTarget()
         .then((data: any) => {
           vm.initialModel = cloneDeep(data);
@@ -396,7 +397,7 @@ export default function useSchemaFormController(): any {
           return null;
         });
 
-        promises.push(getTargetPromise);
+      promises.push(getTargetPromise);
     }
 
     return Promise.all(promises);

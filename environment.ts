@@ -2,8 +2,7 @@ import type {EnvironmentConfiguration} from '~/environment.example';
 
 
 // export const serverURL = 'http://localhost:2999';
-export const serverURL = 'https://testorigin.chillisauce.com';
-// export const serverURL = 'https://chillisauce.com';
+export const serverURL = 'https://test.skunkworksproject.com';
 
 
 const pageCacheRule = {
@@ -21,30 +20,25 @@ const noSsrRule = {
   headers: {'cache-control': `private, no-cache, no-store, must-revalidate`}
 }
 
+const appId = 'car';
+const environment = 'development';
+
 const env: EnvironmentConfiguration =  {
+  appId,
+  environment,
   ssr: false,
   http: {
-    serverBaseURL: serverURL
+    serverBaseURL: serverURL,
+    headers: {
+      'x-app-id': appId,
+      'x-app-environment': environment,
+    },
   },
   routeRules: {
-    // '/my-events/**': noSsrRule,
-    // '/supplier/**': noSsrRule,
-    // '/inv/**': noSsrRule,
-    // '/product-preview': noSsrRule,
-    // '/': pageCacheRule,
-    // '/stag/**': pageCacheRule,
-    // '/hen/**': pageCacheRule,
-    // '/groups/**': pageCacheRule,
-    // '/events/**': pageCacheRule,
-    // '/blog/**': pageCacheRule,
-    // '/about-**': pageCacheRule,
-    // '/_nuxt/**': staticCacheRule,
+    '/api/**': { proxy: serverURL + '/api/**' },
   },
   devProxy: {
     '/api/': serverURL,
-    // '/login': serverURL,
-    // '/logout': serverURL,
-    // '/register': serverURL,
   },
   IS_LOCAL: true,
   IS_LIVE: false,

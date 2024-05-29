@@ -10,10 +10,11 @@ export interface EnvironmentHttpConfiguration {
 
 
 export interface EnvironmentConfiguration {
+  appId: string,
+  environment: string,
   IS_LOCAL: boolean,
   IS_LIVE?: boolean,
   IS_STAGING?: boolean,
-  ST_SITE_REFERENCE: string,
 
   ssr?: boolean;
   http?: EnvironmentHttpConfiguration;
@@ -32,10 +33,20 @@ export interface EnvironmentConfiguration {
 }
 
 
+const appId = 'car';
+const environment = 'development';
+
+
 const env: EnvironmentConfiguration = {
+  appId,
+  environment,
   ssr: true,
   http: {
     serverBaseURL: serverURL,
+    headers: {
+      'x-app-id': appId,
+      'x-app-environment': environment,
+    },
   },
   devProxy: {
     '/api/': serverURL,
@@ -43,7 +54,6 @@ const env: EnvironmentConfiguration = {
   IS_LOCAL: true,
   IS_LIVE: false,
   IS_STAGING: false,
-  ST_SITE_REFERENCE: 'test_chillisaucelimited97423',
   enableLogRocket: false,
   leaveDebuggers: false,
   navigationDebug: false,

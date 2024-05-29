@@ -40,18 +40,6 @@ const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
 
 
-const refs = {
-  self: selfRef,
-  form: {
-    formName: formRef.value?.name,
-    needCorrectExistingValues: true,
-  },
-  parentObjectField: parentObjectFieldRef,
-  parentGroupField: parentGroupFieldRef,
-  parentDynamicControl: parentDynamicControlRef,
-};
-
-
 const baseFieldExport = useBaseControl(props, emits);
 
 let {
@@ -88,6 +76,23 @@ const validateRules = computed(() => {
 const $v = useVuelidate(validateRules, { [props.description.name]: vm.originalModel });
 
 
+onMounted(() => {
+  const refs = {
+    self: selfRef,
+    form: {
+      formName: formRef.value?.name,
+      needCorrectExistingValues: true,
+    },
+    parentObjectField: parentObjectFieldRef,
+    parentGroupField: parentGroupFieldRef,
+    parentDynamicControl: parentDynamicControlRef,
+  };
+
+  sharedFunctions.setRefs(refs);
+
+  sharedFunctions.doOnMounted();
+});
+
 function initField() {
   initFieldBase();
 
@@ -110,7 +115,6 @@ function onModelChange(value: any) {
   $v.value.$validate();
 }
 
-
 function correctExistingValue() {
   if (!isNumber(vm.model)) {
     vm.model = null;
@@ -118,7 +122,6 @@ function correctExistingValue() {
     correctExistingValueBase();
   }
 }
-
 
 function fillDescriptionPattern() {
   fillDescriptionPatternBase();

@@ -34,7 +34,9 @@ vm = extend(vm, {
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
-
+onMounted(() => {
+  sharedFunctions.doOnMounted();
+});
 
 function isValid(): boolean {
   return true;

@@ -33,18 +33,6 @@ const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
 
 
-const refs = {
-  self: selfRef,
-  form: {
-    formName: formRef.value?.name,
-    needCorrectExistingValues: true,
-  },
-  parentObjectField: parentObjectFieldRef,
-  parentGroupField: parentGroupFieldRef,
-  parentDynamicControl: parentDynamicControlRef,
-};
-
-
 const baseFieldExport = useBaseSelectableControl(props, emits, refs);
 
 let {
@@ -98,6 +86,24 @@ function doOnMounted() {
     onSearchStringChange(autocompleteInitValue);
   }
 }
+
+
+onMounted(() => {
+  const refs = {
+    self: selfRef,
+    form: {
+      formName: formRef.value?.name,
+      needCorrectExistingValues: true,
+    },
+    parentObjectField: parentObjectFieldRef,
+    parentGroupField: parentGroupFieldRef,
+    parentDynamicControl: parentDynamicControlRef,
+  };
+
+  sharedFunctions.setRefs(refs);
+
+  sharedFunctions.doOnMounted();
+});
 
 // function ngOnChanges(changes: SimpleChanges) {
 //   if (this.formControl && changes.model) {

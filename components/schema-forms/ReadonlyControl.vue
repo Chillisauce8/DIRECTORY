@@ -31,24 +31,7 @@ const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
 
 
-const refs = {
-  self: selfRef,
-  form: {
-    formName: formRef.value?.name,
-    needCorrectExistingValues: true,
-  },
-  parentObjectField: parentObjectFieldRef,
-  parentGroupField: parentGroupFieldRef,
-  parentDynamicControl: parentDynamicControlRef,
-};
-
-
-const baseFieldExport = useBaseControl(props, emits);
-
-let {
-  vm,
-  sharedFunctions,
-} = baseFieldExport;
+const {vm, sharedFunctions} = useBaseControl(props, emits);
 
 
 const valueForReadonlyInput = computed(() => {
@@ -69,6 +52,23 @@ const valueForReadonlyInput = computed(() => {
   return vm.model || '';
 })
 
+
+onMounted(() => {
+  const refs = {
+    self: selfRef,
+    form: {
+      formName: formRef.value?.name,
+      needCorrectExistingValues: true,
+    },
+    parentObjectField: parentObjectFieldRef,
+    parentGroupField: parentGroupFieldRef,
+    parentDynamicControl: parentDynamicControlRef,
+  };
+
+  sharedFunctions.setRefs(refs);
+
+  sharedFunctions.doOnMounted();
+});
 
 </script>
 

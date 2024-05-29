@@ -1,6 +1,27 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import environment from './environment';
 
+
+function prepareNitroRouteRules(): Record<string, any> {
+  const proxyConfig = Object.entries(environment?.devProxy ?? {})
+    .reduce((config, [suffix, target]) => {
+      const wildcardUrl = '**'
+      if (!suffix?.endsWith(wildcardUrl)) {
+        suffix = suffix.endsWith('/') ? suffix + wildcardUrl : suffix + '/' + wildcardUrl;
+      }
+
+      config[suffix] = {proxy: target + suffix};
+
+      return config;
+    }, {});
+
+  return {
+    ...(proxyConfig ?? {}),
+    ...(environment?.routeRules ?? {}),
+  };
+}
+
+
 export default defineNuxtConfig({
 //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
   modules: [
@@ -142,6 +163,7 @@ export default defineNuxtConfig({
   plugins: [
     // {src: '~/plugins/clear-path-from-app-payload.ts', mode: 'server'},
     {src: '~/plugins/app.js'},
+    {src: '~/plugins/default-http-interceptors.ts'},
   ],
   components: [
     {
@@ -150,7 +172,7 @@ export default defineNuxtConfig({
     },
   ],
   hooks: {
-    'pages:extend'(pages) {
+    'pages:extend'(pages: any[]) {
       pages.push({
         name: 'e-commerce',
         path: '/',
@@ -525,5 +547,8 @@ export default defineNuxtConfig({
   },
   alias: {
     quill: process.dev ? 'quill/dist/quill.js' : 'quill'
+  },
+  nitro: {
+    routeRules: prepareNitroRouteRules(),
   },
 })

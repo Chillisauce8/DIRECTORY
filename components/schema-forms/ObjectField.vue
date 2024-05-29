@@ -75,7 +75,15 @@ const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
 
 
-let vm: any, sharedFunctions: any, initFieldBase: any;
+let {vm, sharedFunctions} = useBaseField(props, emits);
+
+const initFieldBase = sharedFunctions.initField;
+
+vm = extend(vm, {
+  lines: [],
+});
+
+sharedFunctions.initField = initField;
 
 
 function initField(): void {
@@ -130,19 +138,7 @@ onMounted(() => {
     parentDynamicControl: parentDynamicControlRef,
   };
 
-  const baseFieldExport = useBaseField(props, emits);
-
-  vm = baseFieldExport.vm;
-  sharedFunctions = baseFieldExport.sharedFunctions;
-
-
-  initFieldBase = sharedFunctions.initField;
-
-  vm = extend(vm, {
-    lines: [],
-  });
-
-  sharedFunctions.initField = initField;
+  sharedFunctions.setRefs(refs);
 
   sharedFunctions.doOnMounted();
 });

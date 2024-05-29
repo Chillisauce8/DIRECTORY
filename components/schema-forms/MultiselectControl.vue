@@ -22,7 +22,6 @@ import { isObject, isEqual } from '~/service/utils';
 import useBaseSelectableControl from '~/composables/schema-forms/useBaseSelectableControl';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
-import { email, maxLength } from '@vuelidate/validators/dist';
 
 
 // @ts-ignore
@@ -38,19 +37,7 @@ const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
 
 
-const refs = {
-  self: selfRef,
-  form: {
-    formName: formRef.value?.name,
-    needCorrectExistingValues: true,
-  },
-  parentObjectField: parentObjectFieldRef,
-  parentGroupField: parentGroupFieldRef,
-  parentDynamicControl: parentDynamicControlRef,
-};
-
-
-const baseFieldExport = useBaseSelectableControl(props, emits, refs);
+const baseFieldExport = useBaseSelectableControl(props, emits);
 
 let {
   vm,
@@ -87,6 +74,23 @@ let _isObjects = false;
 
 let _prevXFeatures: any;
 
+
+onMounted(() => {
+  const refs = {
+    self: selfRef,
+    form: {
+      formName: formRef.value?.name,
+      needCorrectExistingValues: true,
+    },
+    parentObjectField: parentObjectFieldRef,
+    parentGroupField: parentGroupFieldRef,
+    parentDynamicControl: parentDynamicControlRef,
+  };
+
+  sharedFunctions.setRefs(refs);
+
+  sharedFunctions.doOnMounted();
+});
 
 function onModelChange(value: any) {
   _fakeModel.value = value;
