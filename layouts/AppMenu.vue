@@ -121,7 +121,12 @@ const model = ref([
                 label: 'Image Gallery',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/gallery'
-            }
+            },
+            {
+              label: 'Test From',
+              icon: 'pi pi-fw pi-check-square',
+              to: '/apps/testSchemaForms'
+            },
         ]
     },
     {

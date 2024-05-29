@@ -548,6 +548,11 @@ export default defineNuxtConfig({
         path: '/apps/mail/trash',
         file: '@/pages/apps/mail/MailTypes.vue'
       });
+      pages.push({
+        name: 'Test Schema Forms',
+        path: '/apps/testSchemaForms',
+        file: '@/pages/apps/TestForm.vue'
+      });
     }
   },
   alias: {
