@@ -246,6 +246,11 @@ export default defineNuxtConfig({
         file: '@/pages/apps/tasklist/Index.vue'
       });
       pages.push({
+        name: 'Task List Test',
+        path: '/apps/tasklistTest',
+        file: '@/pages/apps/tasklist/IndexTest.vue'
+      });
+      pages.push({
         name: 'freeblocks',
         path: '/blocks',
         name: 'blocks',

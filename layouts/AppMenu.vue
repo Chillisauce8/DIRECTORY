@@ -108,6 +108,11 @@ const model = ref([
                 to: '/apps/tasklist'
             },
             {
+              label: 'Task List Test',
+              icon: 'pi pi-fw pi-check-square',
+              to: '/apps/tasklistTest'
+            },
+            {
                 label: 'Car Listings',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/car'
