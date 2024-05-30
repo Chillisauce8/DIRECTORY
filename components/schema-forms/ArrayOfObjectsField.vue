@@ -72,7 +72,8 @@
 
         <Button icon="pi pi-plus" aria-label="Add First Row"
                 v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode"
-                @click="addFirstRow()"/>
+                @click="addFirstRow()">
+        </Button>
       </div>
 
       <ContextMenu ref="menu" :model="getContextMenuItems(vm.selectionValues)"/>

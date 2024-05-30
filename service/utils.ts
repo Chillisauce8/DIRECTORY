@@ -56,7 +56,7 @@ export function groupBy(list: any[], keyGetter: Function) {
     }
   });
 
-  return map;
+  return Object.fromEntries(map);
 }
 
 
@@ -106,12 +106,16 @@ export function differenceBy(array1: any[], array2: any[], key: string) {
 
 
 export function difference(array1: any[], array2: any[]) {
-  return array1.filter(a => !array2.some(b => b === a))
+  return array1.filter(a => !array2.some(b => b === a));
 }
 
 
 export function differenceWith(array1: any[], array2: any[], comparator: (a1: any, a2: any) => boolean) {
-  return array1.filter(a1 => !array2.some(a2 => comparator(a1, a2)))
+  if (!array2) {
+    return [...array1];
+  }
+
+  return array1.filter(a1 => !array2.some(a2 => comparator(a1, a2)));
 }
 
 

@@ -2,6 +2,7 @@
   <AutoComplete v-model="vm.model"
                 dropdown
                 :suggestions="suggestions"
+                :optionLabel="suggestions?.[0]?.title ? 'title' : undefined"
                 @complete="onSearchStringChange" />
 
   <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
@@ -26,20 +27,10 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const formRef = ref(null);
 const selfRef = ref(null);
-const parentObjectFieldRef = ref(null);
-const parentGroupFieldRef = ref(null);
-const parentDynamicControlRef = ref(null);
 
 
-const baseFieldExport = useBaseSelectableControl(props, emits, refs);
-
-let {
-  vm,
-  im,
-  sharedFunctions,
-} = baseFieldExport;
+const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);
 
 
 let autocompleteInitValue: any;
@@ -89,18 +80,18 @@ function doOnMounted() {
 
 
 onMounted(() => {
-  const refs = {
-    self: selfRef,
-    form: {
-      formName: formRef.value?.name,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectFieldRef,
-    parentGroupField: parentGroupFieldRef,
-    parentDynamicControl: parentDynamicControlRef,
-  };
-
-  sharedFunctions.setRefs(refs);
+  // const refs = {
+  //   self: selfRef,
+  //   form: {
+  //     formName: formRef.value?.name,
+  //     needCorrectExistingValues: true,
+  //   },
+  //   parentObjectField: parentObjectFieldRef,
+  //   parentGroupField: parentGroupFieldRef,
+  //   parentDynamicControl: parentDynamicControlRef,
+  // };
+  //
+  // sharedFunctions.setRefs(refs);
 
   sharedFunctions.doOnMounted();
 });
@@ -142,10 +133,10 @@ function autocompleteItemTextGetter(item: any): string {
     (typeof item === 'string' ? item : '');
 }
 
-function onSearchStringChange(str: string) {
-  suggestions.value = sharedFunctions.querySearch(str);
+function onSearchStringChange(request: any) {
+  suggestions.value = sharedFunctions.querySearch(request.query);
 
-  if (!str) {
+  if (!request.query) {
     vm.model = undefined;
   }
 }

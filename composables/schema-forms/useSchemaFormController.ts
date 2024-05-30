@@ -36,6 +36,8 @@ export default function useSchemaFormController(): any {
     schemaFormsBuildHelper: undefined,
   });
 
+  const initDone = ref(false);
+
   const formDescription = ref(null);
 
 
@@ -347,6 +349,7 @@ export default function useSchemaFormController(): any {
       })
       .finally(() => {
         vm.inProgress = false;
+        initDone.value = true;
       });
 
     schemaFormsProcessingHelper.onFormUpdated(
@@ -463,5 +466,6 @@ export default function useSchemaFormController(): any {
     vm,
     formDescription,
     sharedFunctions,
+    initDone,
   };
 }

@@ -70,7 +70,7 @@ export class SchemaFormsBuildHelper {
     this.relatorsBulkRequestParams.push({'schema': this.schemaName, 'path': path, 'resultObj': resultObj});
   }
 
-  _fetchRelatorChoicesInBulk(): Promise<any> {
+  async _fetchRelatorChoicesInBulk(): Promise<any> {
     const groupedRelatorsBulkRequestParams = this._groupRelatorsBulkRequestParams();
 
     // const currentSupplierId = this.currentSupplier.getId();
@@ -138,7 +138,11 @@ export class SchemaFormsBuildHelper {
       }
     }
 
-    return {...result, showTitle: showTitle};
+    result['showTitle'] = showTitle;
+
+    return result;
+
+    // return {...result, showTitle: showTitle};
   }
 
   _needAddToRelatorsBulkRequest(description: any): boolean {

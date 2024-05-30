@@ -164,6 +164,7 @@ export default defineNuxtConfig({
     // {src: '~/plugins/clear-path-from-app-payload.ts', mode: 'server'},
     {src: '~/plugins/app.js'},
     {src: '~/plugins/default-http-interceptors.ts'},
+    {src: '~/plugins/js-extend.ts'},
   ],
   components: [
     {

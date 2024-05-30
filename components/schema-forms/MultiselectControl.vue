@@ -2,7 +2,7 @@
   <MultiSelect v-model="_fakeModel"
                @update:modelValue="onModelChange($event)"
                :options="autocompleteItems"
-               :optionLabel="(data) => data?.name || data?.title || data"
+               :optionLabel="autocompleteItems?.[0]?.title ? 'title' : autocompleteItems?.[0]?.name ? 'name' : undefined"
                :placeholder="vm.placeholderValue"
                :showClear="!props.description.required"
                :maxSelectedLabels="getLimitTo()"
