@@ -18,7 +18,7 @@ import FieldError from '~/components/schema-forms/FieldError.vue';
 import useBaseSelectableControl from '~/composables/schema-forms/useBaseSelectableControl';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
-import { maxLength } from '@vuelidate/validators/dist';
+import { getCurrentInstance } from 'vue';
 
 
 // @ts-ignore
@@ -80,18 +80,25 @@ function doOnMounted() {
 
 
 onMounted(() => {
-  // const refs = {
-  //   self: selfRef,
-  //   form: {
-  //     formName: formRef.value?.name,
-  //     needCorrectExistingValues: true,
-  //   },
-  //   parentObjectField: parentObjectFieldRef,
-  //   parentGroupField: parentGroupFieldRef,
-  //   parentDynamicControl: parentDynamicControlRef,
-  // };
-  //
-  // sharedFunctions.setRefs(refs);
+  const instance = getCurrentInstance();
+
+  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
+  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
+  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
+  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
+
+  const refs = {
+    self: selfRef,
+    form: {
+      formName: schemaForm?.props.formName,
+      needCorrectExistingValues: true,
+    },
+    parentObjectField: parentObjectField?.refs.selfRef,
+    parentGroupField: parentGroupField?.refs.selfRef,
+    parentDynamicControl: parentDynamicControl?.refs.selfRef,
+  };
+
+  sharedFunctions.setRefs(refs);
 
   sharedFunctions.doOnMounted();
 });

@@ -133,7 +133,6 @@ onMounted(() => {
       formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
     },
-    // TODO: test and fix this line
     parentObjectField: parentObjectField?.refs.selfRef,
     parentGroupField: parentGroupField?.refs.selfRef,
     parentDynamicControl: parentDynamicControl?.refs.selfRef,

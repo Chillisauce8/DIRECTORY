@@ -41,6 +41,7 @@ import { isEqual, isObject } from '~/service/utils';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
+import { getCurrentInstance } from 'vue';
 
 
 const im = reactive({
@@ -56,8 +57,6 @@ const emits = defineEmits<BaseFieldEmits>();
 
 
 const selfRef = ref(null);
-const formRef = ref(null);
-const parentGroupFieldRef = ref(null);
 
 
 const {vm, sharedFunctions} = useBaseField(props, emits);
@@ -80,15 +79,18 @@ watch(() => props?.model, (value: any) => {
 
 
 onMounted(() => {
+  const instance = getCurrentInstance();
+
+  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
+  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
+
   const refs = {
     self: selfRef,
     form: {
-      formName: formRef.value?.name,
+      formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
     },
-    parentObjectField: null,
-    parentGroupField: parentGroupFieldRef,
-    parentDynamicControl: null,
+    parentObjectField: parentObjectField?.refs.selfRef,
   };
 
   sharedFunctions.setRefs(refs);

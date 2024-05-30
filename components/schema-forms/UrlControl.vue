@@ -20,6 +20,7 @@ import FieldError from '~/components/schema-forms/FieldError.vue';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
 import { minLength } from '@vuelidate/validators/dist';
+import { getCurrentInstance } from 'vue';
 
 
 // @ts-ignore
@@ -28,11 +29,7 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const formRef = ref(null);
 const selfRef = ref(null);
-const parentObjectFieldRef = ref(null);
-const parentGroupFieldRef = ref(null);
-const parentDynamicControlRef = ref(null);
 
 
 const {vm, sharedFunctions} = useBaseControl(props, emits);
@@ -61,15 +58,22 @@ const $v = useVuelidate(validateRules, { [props.description.name]: vm.model });
 
 
 onMounted(() => {
+  const instance = getCurrentInstance();
+
+  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
+  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
+  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
+  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
+
   const refs = {
     self: selfRef,
     form: {
-      formName: formRef.value?.name,
+      formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
     },
-    parentObjectField: parentObjectFieldRef,
-    parentGroupField: parentGroupFieldRef,
-    parentDynamicControl: parentDynamicControlRef,
+    parentObjectField: parentObjectField?.refs.selfRef,
+    parentGroupField: parentGroupField?.refs.selfRef,
+    parentDynamicControl: parentDynamicControl?.refs.selfRef,
   };
 
   sharedFunctions.setRefs(refs);

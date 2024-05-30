@@ -23,6 +23,7 @@ import FieldError from '~/components/schema-forms/FieldError.vue';
 import { debounce } from '~/service/utils';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import { getCurrentInstance } from 'vue';
 
 
 
@@ -31,31 +32,11 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const formRef = ref(null);
 const selfRef = ref(null);
-const parentObjectFieldRef = ref(null);
-const parentGroupFieldRef = ref(null);
-const parentDynamicControlRef = ref(null);
 
 
-const refs = {
-  self: selfRef,
-  form: {
-    formName: formRef.value?.name,
-    needCorrectExistingValues: true,
-  },
-  parentObjectField: parentObjectFieldRef,
-  parentGroupField: parentGroupFieldRef,
-  parentDynamicControl: parentDynamicControlRef,
-};
 
-
-const baseFieldExport = useBaseControl(props, emits);
-
-let {
-  vm,
-  sharedFunctions,
-} = baseFieldExport;
+let {vm, sharedFunctions} = useBaseControl(props, emits);
 
 
 vm = extend(vm, {
@@ -88,6 +69,30 @@ const validateRules = computed(() => {
 
 const $v = useVuelidate(validateRules, { [props.description.name]: vm.originalModel });
 
+
+onMounted(() => {
+  const instance = getCurrentInstance();
+
+  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
+  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
+  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
+  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
+
+  const refs = {
+    self: selfRef,
+    form: {
+      formName: schemaForm?.props.formName,
+      needCorrectExistingValues: true,
+    },
+    parentObjectField: parentObjectField?.refs.selfRef,
+    parentGroupField: parentGroupField?.refs.selfRef,
+    parentDynamicControl: parentDynamicControl?.refs.selfRef,
+  };
+
+  sharedFunctions.setRefs(refs);
+
+  sharedFunctions.doOnMounted();
+});
 
 function initField() {
   initFieldBase();

@@ -13,6 +13,7 @@ import { extend } from 'vue-extend-reactive';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import { getCurrentInstance } from 'vue';
 
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
@@ -35,6 +36,26 @@ vm = extend(vm, {
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
 onMounted(() => {
+  const instance = getCurrentInstance();
+
+  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
+  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
+  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
+  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
+
+  const refs = {
+    self: selfRef,
+    form: {
+      formName: schemaForm?.props.formName,
+      needCorrectExistingValues: true,
+    },
+    parentObjectField: parentObjectField?.refs.selfRef,
+    parentGroupField: parentGroupField?.refs.selfRef,
+    parentDynamicControl: parentDynamicControl?.refs.selfRef,
+  };
+
+  sharedFunctions.setRefs(refs);
+
   sharedFunctions.doOnMounted();
 });
 

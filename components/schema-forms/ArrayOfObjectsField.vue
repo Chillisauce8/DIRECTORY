@@ -99,18 +99,14 @@ import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/
 import { uniqBy, uniqWith } from '~/service/utils';
 // @ts-ignore
 import { extend } from 'vue-extend-reactive';
+import { getCurrentInstance } from 'vue';
 
 // @ts-ignore
 const props = defineProps<BaseFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const formRef = ref(null);
 const selfRef = ref(null);
-const parentObjectFieldRef = ref(null);
-const parentGroupFieldRef = ref(null);
-const parentDynamicControlRef = ref(null);
-
 
 let {vm, sharedFunctions, initDone} = useBaseArrayFieldControl(props, emits);
 
@@ -145,15 +141,22 @@ function initField() {
 
 
 onMounted(() => {
+  const instance = getCurrentInstance();
+
+  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
+  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
+  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
+  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
+
   const refs = {
     self: selfRef,
     form: {
-      formName: formRef.value?.name,
+      formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
     },
-    parentObjectField: parentObjectFieldRef,
-    parentGroupField: parentGroupFieldRef,
-    parentDynamicControl: parentDynamicControlRef,
+    parentObjectField: parentObjectField?.refs.selfRef,
+    parentGroupField: parentGroupField?.refs.selfRef,
+    parentDynamicControl: parentDynamicControl?.refs.selfRef,
   };
 
   sharedFunctions.setRefs(refs);

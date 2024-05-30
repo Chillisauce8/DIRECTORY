@@ -65,6 +65,7 @@ import ArrayOfObjectsField from '~/components/schema-forms/ArrayOfObjectsField.v
 import ArrayOfValuesField from '~/components/schema-forms/ArrayOfValuesField.vue';
 import ObjectField from '~/components/schema-forms/ObjectField.vue';
 import ValueField from '~/components/schema-forms/ValueField.vue';
+import { getCurrentInstance } from 'vue';
 
 
 // @ts-ignore
@@ -72,11 +73,7 @@ const props = defineProps<BaseFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const formRef = ref(null);
 const selfRef = ref(null);
-const parentObjectFieldRef = ref(null);
-const parentGroupFieldRef = ref(null);
-const parentDynamicControlRef = ref(null);
 
 
 const {im, vm, sharedFunctions} = useBaseField(props, emits);
@@ -127,15 +124,22 @@ function doOnMounted() {
 
 
 onMounted(() => {
+  const instance = getCurrentInstance();
+
+  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
+  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
+  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
+  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
+
   const refs = {
     self: selfRef,
     form: {
-      formName: formRef.value?.name,
+      formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
     },
-    parentObjectField: parentObjectFieldRef,
-    parentGroupField: parentGroupFieldRef,
-    parentDynamicControl: parentDynamicControlRef,
+    parentObjectField: parentObjectField?.refs.selfRef,
+    parentGroupField: parentGroupField?.refs.selfRef,
+    parentDynamicControl: parentDynamicControl?.refs.selfRef,
   };
 
   sharedFunctions.setRefs(refs);

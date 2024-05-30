@@ -75,7 +75,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
   }
 
   function autocompleteItemChange(item: any) {
-    props.model = item;
+    vm.model = item;
   }
 
   function getModel() {
@@ -112,7 +112,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
 
       if (defaultValue === undefined) {
         if (props.description.values && !props.description.required) {
-          props.model = undefined;
+          vm.model = undefined;
         }
       }
     }
@@ -253,7 +253,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
     }
 
     if (Array.isArray(props.model)) {
-      props.model = props.model.filter((item: any) => {
+      vm.model = vm.model.filter((item: any) => {
         return item && values.indexOf(item.value || item) !== -1;
       });
 
@@ -263,7 +263,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
 
     } else {
       if (props.model && values.indexOf(props.model.value || props.model) === -1) {
-        props.model = null;
+        vm.model = null;
       }
     }
   }
@@ -291,9 +291,9 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
         const possibleRelator = sharedFunctions.findRelatorProperty(props.model, possibleValues);
 
         if (!possibleRelator) {
-          props.model = undefined;
+          vm.model = undefined;
         } else {
-          props.model.title = possibleRelator.title;
+          vm.model.title = possibleRelator.title;
         }
       }
     }
