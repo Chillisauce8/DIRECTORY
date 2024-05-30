@@ -175,7 +175,7 @@ function initializeModel() {
     const parentPath = sharedFunctions.getParentPath();
     parentModelToInit = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
   } else {
-    props.model = props.model || {};
+    vm.model = props.model || {};
     parentModelToInit = props.model;
   }
 

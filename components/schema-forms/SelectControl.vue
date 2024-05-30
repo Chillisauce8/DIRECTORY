@@ -7,7 +7,7 @@
                   v-model="vm.model"
                   @update:modelValue="onModelChange($event)"
                   :options="vm.filteredSelectValues"
-                  :optionLabel="vm.filteredSelectValues?.[0].title ? 'title' : undefined"
+                  :optionLabel="vm.filteredSelectValues?.[0]?.title ? 'title' : undefined"
                   :placeholder="vm.placeholderValue"
                   class="w-full md:w-14rem">
 

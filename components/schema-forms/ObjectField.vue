@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-
+import { onMounted, getCurrentInstance } from 'vue';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import { isObject } from '~/service/utils';
@@ -67,13 +67,7 @@ const props = defineProps<BaseFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-
-const formRef = ref(null);
 const selfRef = ref(null);
-const parentObjectFieldRef = ref(null);
-const parentGroupFieldRef = ref(null);
-const parentDynamicControlRef = ref(null);
-
 
 let {vm, sharedFunctions} = useBaseField(props, emits);
 
@@ -126,22 +120,30 @@ function initField(): void {
 
 
 onMounted(() => {
+  const instance = getCurrentInstance();
+
+  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
+  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
+  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
+  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
+
   const refs = {
     self: selfRef,
     form: {
-      formName: formRef.value?.name,
+      formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
     },
     // TODO: test and fix this line
-    parentObjectField: parentDynamicControlRef ? parentDynamicControlRef.value.parentObjectFieldRef : null,
-    parentGroupField: parentGroupFieldRef,
-    parentDynamicControl: parentDynamicControlRef,
+    parentObjectField: parentObjectField?.refs.selfRef,
+    parentGroupField: parentGroupField?.refs.selfRef,
+    parentDynamicControl: parentDynamicControl?.refs.selfRef,
   };
 
   sharedFunctions.setRefs(refs);
 
   sharedFunctions.doOnMounted();
 });
+
 
 onDeactivated(() => {
   sharedFunctions.onDeactivated();

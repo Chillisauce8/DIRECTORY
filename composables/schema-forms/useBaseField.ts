@@ -447,19 +447,35 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     getPlaceholder: () => {
-    if (props.noPlaceholder) {
-      return ' ';
-    }
+      if (props.noPlaceholder) {
+        return ' ';
+      }
 
-    return sharedFunctions.getTitle();
-  }
+      return sharedFunctions.getTitle();
+    },
+
+    getParentByName: (instance: any, name: string) => {
+      while (true) {
+        const parent = instance.parent;
+
+        if (!parent) {
+          return null;
+        }
+
+        if (parent.type.__name === name) {
+          return parent;
+        }
+
+        if (parent.type.__name === 'SchemaForm') {
+          return null;
+        }
+
+        instance = parent;
+      }
+    }
   }
 
   updateInnerModel(props.model);
-
-  onMounted(() => {
-    sharedFunctions.doOnMounted();
-  });
 
   function updateInnerModel(value: any) {
     vm.model = value;

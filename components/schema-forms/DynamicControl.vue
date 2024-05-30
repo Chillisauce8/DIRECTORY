@@ -173,6 +173,7 @@ const {vm, sharedFunctions, initDone} = useBaseControl(props, emits);
 function doOnMounted() {
   latestControlType.value = calculateControlType();
   sharedFunctions.initField();
+  initDone.value = true;
 }
 
 
