@@ -7,21 +7,10 @@
                   v-model="vm.model"
                   @update:modelValue="onModelChange($event)"
                   :options="vm.filteredSelectValues"
-                  :optionLabel="(data) => data?.title || data"
-                  :placeholder="vm.placeholderValue" class="w-full md:w-14rem">
-          <template #value="slotProps">
-            <div v-if="slotProps.value" class="flex align-items-center">
-              <div>{{ getValueForItem(slotProps.value).title ? getValueForItem(slotProps.value).title : getValueForItem(slotProps.value) }}</div>
-            </div>
-            <span v-else>
-              {{ slotProps.placeholder }}
-            </span>
-          </template>
-          <template #option="slotProps">
-            <div class="flex align-items-center">
-              <div>{{ slotProps.option.name }}</div>
-            </div>
-          </template>
+                  :optionLabel="vm.filteredSelectValues?.[0].title ? 'title' : undefined"
+                  :placeholder="vm.placeholderValue"
+                  class="w-full md:w-14rem">
+
         </Dropdown>
 
         <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
@@ -60,7 +49,7 @@ const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
 
 
-const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits, refs);
+const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);
 
 
 const initFieldBase = sharedFunctions.initField;
@@ -102,6 +91,12 @@ function onModelChange(value: any) {
   vm.model = value;
   $v.value.$validate();
 }
+
+
+function getOptionLabel(data: any) {
+  return data?.title ? 'title' : undefined;
+}
+
 
 function initField() {
   initFieldBase();

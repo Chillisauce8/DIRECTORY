@@ -26,7 +26,7 @@ sharedFunctions.updateTarget = async (dataToSave: any): Promise<any> => {
 }
 
 sharedFunctions.getTargetName = (): string => {
-  return 'events';
+  return 'test';
 }
 
 sharedFunctions.getTarget = async (): Promise<any> => {

@@ -44,7 +44,8 @@
     "vue": "^3.4.21",
     "vue-extend-reactive": "^1.1.4",
     "vue-router": "4.1.6",
-    "vue-horizontal": "^1.0.2"
+    "vue-horizontal": "^1.0.2",
+    "date-fns": "^3.6.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.9",

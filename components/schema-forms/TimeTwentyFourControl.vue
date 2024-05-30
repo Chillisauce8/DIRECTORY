@@ -1,28 +1,31 @@
 <template>
   <FloatLabel>
-    <InputText type="email" v-model="vm.model"
-               @update:modelValue="onModelChange($event)"
-               :name="props.description.name" :class="{'p-invalid': $v.$error}"
-               :invalid="$v.$error"/>
+    <Calendar id="calendar-timeonly" v-model="vm.model"
+              @update:modelValue="onModelChange($event)"
+              timeOnly hourFormat="24"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </FloatLabel>
   <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
 </template>
 
 <script setup lang="ts">
-
 import { isString } from '~/service/utils';
+// @ts-ignore
+import { extend } from 'vue-extend-reactive';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
-import { required, maxLength, email } from '@vuelidate/validators'
+import { required, minLength, maxLength } from '@vuelidate/validators'
+import { patternValidator } from '~/service/forms-validators';
 import FieldError from '~/components/schema-forms/FieldError.vue';
+import { debounce } from '~/service/utils';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import { DateHelper } from '~/service/date-helper';
 
 
-// @ts-ignore
+
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
@@ -35,16 +38,44 @@ const parentGroupFieldRef = ref(null);
 const parentDynamicControlRef = ref(null);
 
 
-const {vm, sharedFunctions} = useBaseControl(props, emits);
+const refs = {
+  self: selfRef,
+  form: {
+    formName: formRef.value?.name,
+    needCorrectExistingValues: true,
+  },
+  parentObjectField: parentObjectFieldRef,
+  parentGroupField: parentGroupFieldRef,
+  parentDynamicControl: parentDynamicControlRef,
+};
+
+
+const dateHelper = new DateHelper();
+
+const baseFieldExport = useBaseControl(props, emits);
+
+let {
+  vm,
+  sharedFunctions,
+} = baseFieldExport;
+
+
+vm = extend(vm, {
+  originalModel: undefined,
+});
 
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
 
+
 const validateRules = computed(() => {
   const result: any = {
-    maxLength: maxLength(props.description.maxLength || 100),
-    email: email,
+    [props.description.name]: {
+      minLength: minLength(props.description.minLength || 0),
+      maxLength: maxLength(props.description.maxLength || 100),
+      pattern: patternValidator(new RegExp(props.description.pattern, 'gi')),
+    },
   };
 
   if (props.description.required) {
@@ -55,7 +86,16 @@ const validateRules = computed(() => {
 });
 
 
-const $v = useVuelidate(validateRules, { [props.description.name]: vm.model });
+
+const $v = useVuelidate(validateRules, { [props.description.name]: vm.originalModel });
+
+
+
+function onModelChange(value: any) {
+  vm.originalModel = value;
+
+  $v.value.$validate();
+}
 
 
 onMounted(() => {
@@ -75,27 +115,19 @@ onMounted(() => {
   sharedFunctions.doOnMounted();
 });
 
-function onModelChange(value: any) {
-  vm.model = value;
-  $v.value.$validate();
-}
-
 function correctExistingValue() {
   if (!isString(vm.model)) {
     vm.model = null;
   } else {
-    vm.model = vm.model ? vm.model.toLowerCase() : '';
-    correctExistingValueBase();
+    const timeValue = dateHelper.parseTime(vm.model);
+    if (timeValue) {
+      vm.model = dateHelper.inputTimeFormat(timeValue);
+    }
   }
-}
-
-function correctModelBeforeSet(value: any) {
-  return value ? value.toLowerCase() : '';
 }
 
 
 sharedFunctions.correctExistingValue = correctExistingValue;
-sharedFunctions.correctModelBeforeSet = correctModelBeforeSet;
 
 </script>
 

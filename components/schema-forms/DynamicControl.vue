@@ -5,28 +5,28 @@
     <template v-if="initDone">
 
       <ReadonlyControl v-if="latestControlType === 'readonly'"
-                      :model="vm.model" @modelChange="onModelChange($event)"
+                      :model="vm.model"
                       :description="props.description" :context="vm.context"
                       :noPlaceholder="props.noPlaceholder">
       </ReadonlyControl>
 
-  <!--    <DateControl  v-else-if="latestControlType === 'date'"-->
-  <!--                  :model="vm.model" @modelChange="onModelChange($event)"-->
-  <!--                  :description="props.description" :context="vm.context"-->
-  <!--                  :noPlaceholder="props.noPlaceholder">-->
-  <!--    </DateControl>-->
+      <DateControl v-else-if="latestControlType === 'date'"
+                   :model="vm.model" @modelChange="onModelChange($event)"
+                   :description="props.description" :context="vm.context"
+                   :noPlaceholder="props.noPlaceholder">
+      </DateControl>
 
-  <!--    <Time24Control v-else-if="latestControlType === 'time'"-->
-  <!--                  :model="vm.model" @modelChange="onModelChange($event)"-->
-  <!--                  :description="props.description" :context="vm.context"-->
-  <!--                  :noPlaceholder="props.noPlaceholder">-->
-  <!--    </Time24Control>-->
+      <TimeTwentyFourControl v-else-if="latestControlType === 'time'"
+                    :model="vm.model" @modelChange="onModelChange($event)"
+                    :description="props.description" :context="vm.context"
+                    :noPlaceholder="props.noPlaceholder">
+      </TimeTwentyFourControl>
 
-  <!--    <Time24Control v-else-if="latestControlType === 'time24'"-->
-  <!--                  :model="vm.model" @modelChange="onModelChange($event)"-->
-  <!--                  :description="props.description" :context="vm.context"-->
-  <!--                  :noPlaceholder="props.noPlaceholder">-->
-  <!--    </Time24Control>-->
+      <TimeTwentyFourControl v-else-if="latestControlType === 'time24'"
+                    :model="vm.model" @modelChange="onModelChange($event)"
+                    :description="props.description" :context="vm.context"
+                    :noPlaceholder="props.noPlaceholder">
+      </TimeTwentyFourControl>
 
       <TextControl v-else-if="latestControlType === 'text'"
                   :model="vm.model" @modelChange="onModelChange($event)"
@@ -150,6 +150,8 @@ import MultiselectControl from '~/components/schema-forms/MultiselectControl.vue
 import NumberChipsControl from '~/components/schema-forms/NumberChipsControl.vue';
 import AutocompleteControl from '~/components/schema-forms/AutocompleteControl.vue';
 import ReadonlyControl from '~/components/schema-forms/ReadonlyControl.vue';
+import DateControl from '~/components/schema-forms/DateControl.vue';
+import TimeTwentyFourControl from '~/components/schema-forms/TimeTwentyFourControl.vue';
 
 // @ts-ignore
 const props = defineProps<BaseControlProps>();

@@ -20,6 +20,10 @@ export function isUndefined(value: any): boolean {
 }
 
 
+export function isDate(value: any): boolean {
+  return Object.prototype.toString.call(value) === '[object Date]'
+}
+
 export function pullFromArray(arr: any[], values: any[]) {
   return arr.filter(function (item) {
     return values.indexOf(item) < 0;
