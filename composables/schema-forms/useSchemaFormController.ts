@@ -16,12 +16,12 @@ import { useToast } from 'primevue/usetoast';
 import { sysService } from '~/service/http/sys.service';
 
 
-export default function useSchemaFormController(): any {
+export default function useSchemaFormController(formName: string): any {
 
   const toast = useToast();
 
   const vm = reactive({
-    name: 'form',
+    name: formName,
     inProgress: true,
     saveError: '',
     model: undefined,

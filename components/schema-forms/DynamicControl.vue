@@ -183,7 +183,7 @@ onMounted(() => {
   const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
 
   const refs = {
-    self: selfRef,
+    self: instance,
     form: {
       formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
@@ -204,6 +204,7 @@ function processControlTypeChanges() {
 
 function onModelChange($event: any) {
   vm.model = $event;
+  emits('modelChange', $event);
 }
 
 function needXProcessTheField(): boolean {

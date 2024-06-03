@@ -2,6 +2,7 @@ import { xFeaturesHelper, XFeaturesHelper } from './xFeaturesHelper';
 import { debounce, isNumber, isObject, isString, isUndefined, pullFromArray } from '../utils';
 import { EventEmitter, EventEmitterHandler } from '../event-emitter/event-emitter';
 import { EventEmitterSubscription } from '../event-emitter/event-emitter-observable';
+import { ComponentInternalInstance } from 'vue';
 
 
 export interface IFieldRef {
@@ -15,8 +16,8 @@ export interface IFieldRef {
 }
 
 interface IFieldRegistration {
-  ref: IFieldRef;
-  parentRef?: IFieldRef;
+  ref: ComponentInternalInstance;
+  parentRef?: ComponentInternalInstance;
   changesSubscription: EventEmitterSubscription|null;
   needWatch: boolean;
 }
@@ -465,19 +466,23 @@ export class SchemaFormsProcessingHelper {
     return formName in this.registeredForms;
   }
 
-  registerField(fieldComponentRef: IFieldRef, parentObjectField?: IFieldRef) {
+  registerField(fieldComponentInstance: ComponentInternalInstance, parentObjectFieldInstance?: ComponentInternalInstance) {
+    if (!fieldComponentInstance) {
+      return;
+    }
+
     const fieldRegistration: IFieldRegistration = {
-      ref: fieldComponentRef,
-      parentRef: parentObjectField,
+      ref: fieldComponentInstance,
+      parentRef: parentObjectFieldInstance,
       changesSubscription: null,
-      needWatch: fieldComponentRef.needXProcessTheField()
+      needWatch: fieldComponentInstance.setupState.sharedFunctions.needXProcessTheField()
     };
 
-    this.registeredForms[fieldComponentRef.getFormName()]['fields'].push(fieldRegistration);
+    this.registeredForms[fieldComponentInstance.setupState.sharedFunctions.getFormName()]['fields'].push(fieldRegistration);
   }
 
-  unRegisterField(fieldComponentRef: IFieldRef) {
-    const fieldRegistration = this.registeredForms[fieldComponentRef.getFormName()]['fields']
+  unRegisterField(fieldComponentRef: ComponentInternalInstance) {
+    const fieldRegistration = this.registeredForms[fieldComponentRef.setupState.sharedFunctions.getFormName()]['fields']
       .filter((value: IFieldRegistration) => value.ref === fieldComponentRef)[0];
 
     if (fieldRegistration) {
@@ -485,11 +490,11 @@ export class SchemaFormsProcessingHelper {
         fieldRegistration.changesSubscription.unsubscribe();
       }
 
-      this.registeredForms[fieldComponentRef.getFormName()]['fields'] =
-        pullFromArray(this.registeredForms[fieldComponentRef.getFormName()]['fields'], fieldRegistration);
+      this.registeredForms[fieldComponentRef.setupState.sharedFunctions.getFormName()]['fields'] =
+        pullFromArray(this.registeredForms[fieldComponentRef.setupState.sharedFunctions.getFormName()]['fields'], fieldRegistration);
     }
 
-    for (const field of this.registeredForms[fieldComponentRef.getFormName()]['fields']) {
+    for (const field of this.registeredForms[fieldComponentRef.setupState.sharedFunctions.setupState.sharedFunctions.getFormName()]['fields']) {
       if (field.parentRef === fieldComponentRef) {
         this.unRegisterField(field.ref);
       }
@@ -503,8 +508,8 @@ export class SchemaFormsProcessingHelper {
 
     // TODO: update validation code ***
     for (const field of this.registeredForms[formName]['fields']) {
-      if (!field.ref.isValid() &&
-        (!field.ref.description.xHideValue || !field.ref.description.xHide?.persist)) {
+      if (!field.ref.setupState.sharedFunctions.isValid() &&
+        (!field.ref.props.description.xHideValue || !field.ref.props.description.xHide?.persist)) {
         return false;
       }
     }
@@ -518,7 +523,7 @@ export class SchemaFormsProcessingHelper {
     }
 
     this.registeredForms[formName]['fields'].forEach((c: any) => {
-      c.ref.touch();
+      c.ref.setupState.sharedFunctions.touch();
     });
   }
 
@@ -533,7 +538,7 @@ export class SchemaFormsProcessingHelper {
 
     this.registeredForms[formName]['fields'].forEach((c: any) => {
       if (c.needWatch) {
-        c.ref.processXFeaturesWrapped();
+        c.ref.setupState.sharedFunctions.processXFeaturesWrapped();
       }
     });
 

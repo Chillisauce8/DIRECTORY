@@ -148,6 +148,8 @@ function processInnerModelChanged(value?: any) {
 
 function onModelChange(value: any) {
   vm.model = value;
+
+  emits('modelChange', vm.model);
 }
 
 

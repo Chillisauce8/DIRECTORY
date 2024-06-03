@@ -1,5 +1,5 @@
 <template>
-  <div :ref="el => {selfRef = el; parentObjectFieldRef = el;}"
+  <div ref="selfRef"
        class="schema-form-object-field">
     <div v-if="sharedFunctions?.shouldBeConstructed(props.description.header)"
        v-show="!props.description.xHideValue">
@@ -128,7 +128,7 @@ onMounted(() => {
   const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
 
   const refs = {
-    self: selfRef,
+    self: instance,
     form: {
       formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
@@ -168,6 +168,8 @@ function onModelChange(descriptionName: string, $event: any) {
   } else {
     vm.model = $event;
   }
+
+  emits('modelChange', vm.model);
 }
 
 function shouldItemBeConstructed(item: any): boolean {

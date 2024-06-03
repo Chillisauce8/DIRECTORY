@@ -77,7 +77,7 @@ onMounted(() => {
   const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
 
   const refs = {
-    self: selfRef,
+    self: instance,
     form: {
       formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
@@ -116,6 +116,8 @@ function onModelChange(value: any) {
   } else {
     vm.model = undefined;
   }
+
+  emits('modelChange', vm.model);
 }
 
 function getDefaultValue(): any {

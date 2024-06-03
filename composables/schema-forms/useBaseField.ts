@@ -123,7 +123,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         setModelValueForStructureTagDescription(im._innerModel);
       }
 
-      if (needXProcessTheField()) {
+      if (sharedFunctions.needXProcessTheField()) {
         sharedFunctions.processXFeatures();
       }
 
@@ -472,6 +472,38 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
         instance = parent;
       }
+    },
+
+    needXProcessTheField: (): boolean => {
+      for (const propertyName of sharedFunctions.possibleOldXPropertyNames()) {
+        if (_getPropertyDescription(propertyName)) {
+          return true;
+        }
+      }
+
+      for (const propertyName of sharedFunctions.possibleXPropertyNames()) {
+        const propertyDescription = _getPropertyDescription('rawData.' + propertyName);
+
+        if (propertyDescription) {
+          if (intersection(['value', 'if', 'switch'], Object.keys(propertyDescription))) {
+            return true;
+          }
+
+          if (xFeaturesHelper.isExecutableValue(propertyDescription)) {
+            return true;
+          }
+        }
+      }
+
+      if (_checkAnyChildHasXHide()) {
+        return true;
+      }
+
+      return false;
+    },
+
+    processXFeaturesWrapped: () => {
+      sharedFunctions.processXFeatures();
     }
   }
 
@@ -526,38 +558,6 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
   function deleteModel() {
     vm.model = undefined;
-  }
-
-  function processXFeaturesWrapped() {
-    sharedFunctions.processXFeatures();
-  }
-
-  function needXProcessTheField(): boolean {
-    for (const propertyName of sharedFunctions.possibleOldXPropertyNames()) {
-      if (_getPropertyDescription(propertyName)) {
-        return true;
-      }
-    }
-
-    for (const propertyName of sharedFunctions.possibleXPropertyNames()) {
-      const propertyDescription = _getPropertyDescription('rawData.' + propertyName);
-
-      if (propertyDescription) {
-        if (intersection(['value', 'if', 'switch'], Object.keys(propertyDescription))) {
-          return true;
-        }
-
-        if (xFeaturesHelper.isExecutableValue(propertyDescription)) {
-          return true;
-        }
-      }
-    }
-
-    if (_checkAnyChildHasXHide()) {
-      return true;
-    }
-
-    return false;
   }
 
   function getCustomValidationErrorMessage(): string {

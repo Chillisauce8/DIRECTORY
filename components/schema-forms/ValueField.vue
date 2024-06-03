@@ -1,5 +1,5 @@
 <template>
-  <div ref="selfRef">
+  <div ref="selfRef" class="schema-form-value-field">
     <div class="field_wrap row start-baseline gap-horizontal_15"
          v-if="shouldFieldBeConstructed" v-show="!props.description.xHideValue">
 
@@ -96,7 +96,7 @@ onMounted(() => {
   const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
 
   const refs = {
-    self: selfRef,
+    self: instance,
     form: {
       formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
@@ -118,6 +118,8 @@ onDeactivated(() => {
 
 function onModelChange($event: any) {
   vm.model = $event;
+
+  emits('modelChange', $event);
 }
 
 function _createModel(): any {
