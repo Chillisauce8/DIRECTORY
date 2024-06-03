@@ -1,12 +1,12 @@
 <template>
   <FloatLabel>
-    <InputText type="url" v-model="vm.originalModel"
+    <InputText type="url" v-model="vm.model"
                @update:modelValue="onModelChange($event)"
                :name="props.description.name" :class="{'p-invalid': $v.$error}"
                :invalid="$v.$error"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
+  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
 </template>
 
 <script setup lang="ts">
@@ -19,7 +19,6 @@ import { required, maxLength, url } from '@vuelidate/validators'
 import FieldError from '~/components/schema-forms/FieldError.vue';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
-import { minLength } from '@vuelidate/validators/dist';
 import { getCurrentInstance } from 'vue';
 
 
@@ -40,21 +39,21 @@ const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
 const validateRules = computed(() => {
   const result: any = {
-    [props.description.name]: {
+    model: {
       maxLength: maxLength(props.description.maxLength || 100),
       url
     },
   };
 
   if (props.description.required) {
-    result[props.description.name]['required'] = required;
+    result['model']['required'] = required;
   }
 
   return result;
 });
 
 
-const $v = useVuelidate(validateRules, { [props.description.name]: vm.model });
+const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 
 onMounted(() => {

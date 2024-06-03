@@ -4,7 +4,7 @@
       <Chips id="chips" v-model="vm.model" @update:modelValue="onModelChange($event)"/>
       <label for="chips"></label>
     </FloatLabel>
-    <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
+    <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
   </div>
 </template>
 
@@ -47,14 +47,14 @@ const validateRules = computed(() => {
   };
 
   if (props.description.required) {
-    result[props.description.name]['required'] = required;
+    result['model']['required'] = required;
   }
 
   return result;
 });
 
 
-const $v = useVuelidate(validateRules, { [props.description.name]: vm.model });
+const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 
 onMounted(() => {

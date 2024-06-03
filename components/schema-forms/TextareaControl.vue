@@ -6,7 +6,7 @@
               :invalid="$v.$error"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
+  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
 </template>
 
 <script setup lang="ts">
@@ -49,7 +49,7 @@ const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
 const validateRules = computed(() => {
   const result: any = {
-    [props.description.name]: {
+    model: {
       minLength: minLength(props.description.minLength || 0),
       maxLength: maxLength(props.description.maxLength || 100),
       pattern: patternValidator(new RegExp(props.description.pattern, 'gi')),
@@ -57,14 +57,14 @@ const validateRules = computed(() => {
   };
 
   if (props.description.required) {
-    result[props.description.name]['required'] = required;
+    result['model']['required'] = required;
   }
 
   return result;
 });
 
 
-const $v = useVuelidate(validateRules, { [props.description.name]: vm.originalModel });
+const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 
 onMounted(() => {

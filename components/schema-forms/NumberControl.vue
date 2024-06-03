@@ -8,7 +8,7 @@
                  :class="{'p-invalid': $v.$error}"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
+  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
 </template>
 
 <script setup lang="ts">
@@ -57,20 +57,22 @@ const fillDescriptionPatternBase = sharedFunctions.fillDescriptionPattern;
 
 const validateRules = computed(() => {
   const result: any = {
-    minValue: minValue(props.description.minimum),
-    maxValue: maxValue(props.description.maximum),
-    pattern: patternValidator(new RegExp(props.description.pattern, 'gi')),
+    model: {
+      minValue: minValue(props.description.minimum),
+      maxValue: maxValue(props.description.maximum),
+      pattern: patternValidator(new RegExp(props.description.pattern, 'gi')),
+    }
   };
 
   if (props.description.required) {
-    result[props.description.name]['required'] = required;
+    result['model']['required'] = required;
   }
 
   return result;
 });
 
 
-const $v = useVuelidate(validateRules, { [props.description.name]: vm.originalModel });
+const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 
 onMounted(() => {

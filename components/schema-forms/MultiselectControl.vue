@@ -9,7 +9,7 @@
                display="chip" class="w-full md:w-20rem">
   </MultiSelect>
 
-  <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
+  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
 </template>
 
 <script setup lang="ts">
@@ -54,14 +54,14 @@ const validateRules = computed(() => {
   };
 
   if (props.description.required) {
-    result[props.description.name]['required'] = required;
+    result['model']['required'] = required;
   }
 
   return result;
 });
 
 
-const $v = useVuelidate(validateRules, { [props.description.name]: vm.model });
+const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 const autocompleteItems = ref();
 

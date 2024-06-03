@@ -13,7 +13,7 @@
 
         </Dropdown>
 
-        <FieldError class="form-text-error" :vuelidate-field="$v[props.description.name]"></FieldError>
+        <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
     </div>
 
 <!--    <div class="flex-10 column center-center" v-if="props.description.isRelator">-->
@@ -57,14 +57,14 @@ const validateRules = computed(() => {
   };
 
   if (props.description.required) {
-    result[props.description.name]['required'] = required;
+    result['model']['required'] = required;
   }
 
   return result;
 });
 
 
-const $v = useVuelidate(validateRules, { [props.description.name]: vm.model });
+const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 
 onMounted(() => {
