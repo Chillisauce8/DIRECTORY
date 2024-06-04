@@ -1,6 +1,7 @@
 <template>
-  <div :class="{ 'undefined-select': vm.model == null }" class="row flex">
+  <div :class="{ 'undefined-select': vm.model == null }" class="row flex schema-forms-select-control">
     <div class="flex column">
+      <FloatLabel>
         <Dropdown v-if="vm.filteredSelectValues"
                   :name="props.description.name"
                   :showClear="!props.description.required"
@@ -10,10 +11,10 @@
                   :optionLabel="vm.filteredSelectValues?.[0]?.title ? 'title' : undefined"
                   :placeholder="vm.placeholderValue"
                   class="w-full md:w-14rem">
-
         </Dropdown>
-
-        <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+        <label :for="props.description.name">{{vm.placeholderValue}}</label>
+      </FloatLabel>
+      <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
     </div>
 
 <!--    <div class="flex-10 column center-center" v-if="props.description.isRelator">-->
