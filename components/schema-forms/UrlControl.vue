@@ -70,9 +70,9 @@ onMounted(() => {
       formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
     },
-    parentObjectField: parentObjectField?.refs.selfRef,
-    parentGroupField: parentGroupField?.refs.selfRef,
-    parentDynamicControl: parentDynamicControl?.refs.selfRef,
+    parentObjectField: parentObjectField,
+    parentGroupField: parentGroupField,
+    parentDynamicControl: parentDynamicControl,
   };
 
   sharedFunctions.setRefs(refs);

@@ -90,7 +90,7 @@ onMounted(() => {
       formName: schemaForm?.props.formName,
       needCorrectExistingValues: true,
     },
-    parentObjectField: parentObjectField?.refs.selfRef,
+    parentObjectField: parentObjectField,
   };
 
   sharedFunctions.setRefs(refs);

@@ -286,7 +286,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
     if (!isEqual(value, props.description.xEnumValues)) {
       props.description.xEnumValues = value;
-      im.refs?.parentDynamicControl.processControlTypeChanges();
+      im.refs?.parentDynamicControl.setupState.sharedFunctions.processControlTypeChanges();
     }
   }
 
@@ -299,7 +299,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
     if (!isEqual(value, props.description.xOptionsValues)) {
       props.description.xOptionsValues = value;
       props.description.xOptionsPlus = plusMode;
-      im.refs?.parentDynamicControl.processControlTypeChanges();
+      im.refs?.parentDynamicControl.setupState.sharedFunctions.processControlTypeChanges();
     }
   }
 
