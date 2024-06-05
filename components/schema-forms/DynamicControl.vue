@@ -236,10 +236,22 @@ function calculateControlType(): string {
   return props.description.formType;
 }
 
+function isValid(): boolean {
+  return true;
+}
+
+
+function touch() {
+  //
+}
+
 
 sharedFunctions.processXFeatures = processXFeatures;
 sharedFunctions.needXProcessTheField = needXProcessTheField;
 sharedFunctions.processControlTypeChanges = processControlTypeChanges;
+sharedFunctions.isValid = isValid;
+sharedFunctions.touch = touch;
+
 
 </script>
 

@@ -10,7 +10,7 @@
 import useSchemaFormController from '~/composables/schema-forms/useSchemaFormController';
 
 
-const {vm, formDescription, sharedFunctions} = useSchemaFormController();
+const {vm, formDescription, sharedFunctions} = useSchemaFormController('test');
 
 
 sharedFunctions.getSchemaName = () => {

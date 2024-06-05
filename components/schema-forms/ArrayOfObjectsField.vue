@@ -169,6 +169,16 @@ onDeactivated(() => {
   sharedFunctions.onDeactivated();
 });
 
+
+function isValid(): boolean {
+  return sharedFunctions.isValidMaxItems() && sharedFunctions.isValidMinItems() && sharedFunctions.ifValidUniqueItems();
+}
+
+
+function touch() {
+  //
+}
+
 function getContextMenuItems(selectionValues: string[]) {
   return selectionValues.map((item: string) => {
     return {
@@ -387,6 +397,8 @@ sharedFunctions.addRowAfter = addRowAfter;
 sharedFunctions.addFirstRow = addFirstRow;
 sharedFunctions.onRowsDescriptionChanged = onRowsDescriptionChanged;
 sharedFunctions.createModelRow = createModelRow;
+sharedFunctions.isValid = isValid;
+sharedFunctions.touch = touch;
 
 </script>
 

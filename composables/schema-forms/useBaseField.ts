@@ -40,6 +40,7 @@ interface InnerModel {
   _previousValue: any,
   registered: boolean,
   refs?: ComponentRefs,
+  $v?: any,
   needCorrectExistingValues: boolean,
 }
 
@@ -69,6 +70,10 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     setRefs(refsValue: ComponentRefs) {
       im.refs = refsValue;
       im.needCorrectExistingValues = refsValue?.form?.needCorrectExistingValues || false;
+    },
+
+    setValidation(v: any) {
+      im.$v = v;
     },
 
     getTitle: () => {
@@ -323,11 +328,11 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     isValid: (): boolean => {
-      return true;
+      return true
     },
 
     touch: () => {
-      //
+
     },
 
     findRelatorProperty: (modelValue: any, relatorChoices: any) => {

@@ -76,6 +76,7 @@ onMounted(() => {
   };
 
   sharedFunctions.setRefs(refs);
+  sharedFunctions.setValidation($v);
 
   sharedFunctions.doOnMounted();
 });

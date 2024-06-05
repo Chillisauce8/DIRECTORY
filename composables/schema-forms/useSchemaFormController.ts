@@ -199,57 +199,57 @@ export default function useSchemaFormController(formName: string): any {
 
     buildGroupsDescription: async (): Promise<any> => {
       return null;
+    },
+
+    save: (): void => {
+      vm.saveError = '';
+      vm.isFormNotValid = false;
+
+      if (!schemaFormsProcessingHelper.isFormValid(vm.name)) {
+        schemaFormsProcessingHelper.touchAllControlsForForm(vm.name);
+        vm.saveError = 'Form validation error';
+        vm.isFormNotValid = true;
+        return;
+      }
+
+      clearObsoleteFields();
+
+      vm.inProgress = true;
+      const dataToSave = getDataToSave();
+
+      let savePromise;
+      if (vm.editMode) {
+        savePromise = sharedFunctions.updateTarget(dataToSave);
+      } else {
+        savePromise = sharedFunctions.createTarget(dataToSave);
+      }
+
+      savePromise
+        .then((result: any) => {
+          vm.savedModelResult = result;
+          const data = result['data'] || result;
+          vm.initialModel = cloneDeep(data);
+          vm.model = data;
+          vm.formIsChanged = false;
+          vm.dataSaved = true;
+
+          toast.add({ severity: 'success', summary: 'Success Message', detail: 'Saved Successfully', life: 3000 });
+
+          if (!sharedFunctions.isEditMode()) {
+            sharedFunctions.onCreated(data?._doc ?? data?.id ?? data?.public_id);
+          } else if (sharedFunctions.needPageReload()) {
+            setTimeout(() => window.location.reload(), 100);
+          }
+        })
+        .catch((result: any) => {
+          saveErrorHandler(result);
+          return null;
+        })
+        .finally(() => {
+          vm.inProgress = false;
+        });
     }
   };
-
-  function save(): void {
-    vm.saveError = '';
-    vm.isFormNotValid = false;
-
-    if (!schemaFormsProcessingHelper.isFormValid(vm.name)) {
-      schemaFormsProcessingHelper.touchAllControlsForForm(vm.name);
-      vm.saveError = 'Form validation error';
-      vm.isFormNotValid = true;
-      return;
-    }
-
-    clearObsoleteFields();
-
-    vm.inProgress = true;
-    const dataToSave = getDataToSave();
-
-    let savePromise;
-    if (vm.editMode) {
-      savePromise = sharedFunctions.updateTarget(dataToSave);
-    } else {
-      savePromise = sharedFunctions.createTarget(dataToSave);
-    }
-
-    savePromise
-      .then((result: any) => {
-        vm.savedModelResult = result;
-        const data = result['data'] || result;
-        vm.initialModel = cloneDeep(data);
-        vm.model = data;
-        vm.formIsChanged = false;
-        vm.dataSaved = true;
-
-        toast.add({ severity: 'success', summary: 'Success Message', detail: 'Saved Successfully', life: 3000 });
-
-        if (!sharedFunctions.isEditMode()) {
-          sharedFunctions.onCreated(data?._doc ?? data?.id ?? data?.public_id);
-        } else if (sharedFunctions.needPageReload()) {
-          setTimeout(() => window.location.reload(), 100);
-        }
-      })
-      .catch((result: any) => {
-        saveErrorHandler(result);
-        return null;
-      })
-      .finally(() => {
-        vm.inProgress = false;
-      });
-  }
 
   function getDataToSave() {
     const dataToSave = cloneDeep(vm.model);

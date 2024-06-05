@@ -134,7 +134,18 @@ function onModelChange($event: any) {
 }
 
 
+function isValid(): boolean {
+  return sharedFunctions.isValidMaxItems() && sharedFunctions.isValidMinItems() && sharedFunctions.ifValidUniqueItems();
+}
+
+
+function touch() {
+  //
+}
+
 sharedFunctions.createModelRow = createModelRow;
+sharedFunctions.isValid = isValid;
+sharedFunctions.touch = touch;
 
 
 </script>

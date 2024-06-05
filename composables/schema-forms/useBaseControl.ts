@@ -49,25 +49,18 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
     vm.placeholderValue = sharedFunctions.getPlaceholder();
   }
 
-  // TODO: ***
   function isValid(): boolean {
-    // if (!controlModel) {
-    //   return true;
-    // }
-    //
-    // return controlModel.valid;
+    if (im.$v) {
+      return !!im.$v.$error;
+    }
 
-    throw 'Not implemented'
+    return true;
   }
 
-  // TODO: ***
   function touch() {
-    // if (controlModel) {
-    //   controlModel.control.markAsTouched();
-    //   changeDetectorRef.markForCheck();
-    // }
-
-    throw 'Not implemented'
+    if (im.$v) {
+      im.$v.$touch();
+    }
   }
 
   function trackByIndexFn(index: number, item: any) {

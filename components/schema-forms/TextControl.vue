@@ -23,10 +23,11 @@ import FieldError from '~/components/schema-forms/FieldError.vue';
 import { debounce } from '~/service/utils';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+// @ts-ignore
 import { getCurrentInstance } from 'vue';
 
 
-
+// @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
@@ -89,6 +90,7 @@ onMounted(() => {
   };
 
   sharedFunctions.setRefs(refs);
+  sharedFunctions.setValidation($v);
 
   sharedFunctions.doOnMounted();
 });
