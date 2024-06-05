@@ -25,6 +25,7 @@ import FieldError from '~/components/schema-forms/FieldError.vue';
 import { isUndefined } from '~/service/utils';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+// @ts-ignore
 import { getCurrentInstance } from 'vue';
 
 

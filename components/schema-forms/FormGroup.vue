@@ -1,14 +1,12 @@
 <template>
-  <div :ref="el => {selfRef = el; parentGroupFieldRef = el;}"
-       class="schema-form-group" :id="'pf-' + props.description.header.name">
-
-    <div class="form_header row start-center"
-         v-show="!props.description.noHeaderDisplay">
+  <div ref="selfRef" class="schema-form-group" :id="'pf-' + props.description.header.name">
+    <div class="form_header row start-center" v-show="!props.description.noHeaderDisplay">
       <h4>{{ props.description.header.title }}</h4>
     </div>
 
-    <div class="schema-wrapper bg-color_white" v-if="im">
+    <div class="schema-wrapper bg-color_white">
       <template v-for="(contentDescription, contentIndex) in props.description.content">
+
         <div v-if="im.shouldContentBeConstructed[contentIndex]">
           <template v-if="im.shouldAddHeaderNameToModelPathValues[contentIndex]">
             <DynamicField
@@ -41,6 +39,7 @@ import { isEqual, isObject } from '~/service/utils';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
+// @ts-ignore
 import { getCurrentInstance } from 'vue';
 
 

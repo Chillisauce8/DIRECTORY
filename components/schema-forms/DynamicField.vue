@@ -65,6 +65,7 @@ import ArrayOfObjectsField from '~/components/schema-forms/ArrayOfObjectsField.v
 import ArrayOfValuesField from '~/components/schema-forms/ArrayOfValuesField.vue';
 import ObjectField from '~/components/schema-forms/ObjectField.vue';
 import ValueField from '~/components/schema-forms/ValueField.vue';
+// @ts-ignore
 import { getCurrentInstance } from 'vue';
 
 

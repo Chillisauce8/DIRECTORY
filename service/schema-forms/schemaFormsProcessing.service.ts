@@ -2,6 +2,7 @@ import { xFeaturesHelper, XFeaturesHelper } from './xFeaturesHelper';
 import { debounce, isNumber, isObject, isString, isUndefined, pullFromArray } from '../utils';
 import { EventEmitter, EventEmitterHandler } from '../event-emitter/event-emitter';
 import { EventEmitterSubscription } from '../event-emitter/event-emitter-observable';
+// @ts-ignore
 import { ComponentInternalInstance } from 'vue';
 
 

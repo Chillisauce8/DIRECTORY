@@ -101,11 +101,11 @@
                           :noPlaceholder="props.noPlaceholder">
       </AutocompleteControl>
 
-  <!--    <UploadControl v-else-if="latestControlType === 'upload'"-->
-  <!--                  :model="vm.model" @modelChange="onModelChange($event)"-->
-  <!--                  :description="props.description" :context="vm.context"-->
-  <!--                  :noPlaceholder="props.noPlaceholder">-->
-  <!--    </UploadControl>-->
+      <UploadControl v-else-if="latestControlType === 'upload'"
+                    :model="vm.model" @modelChange="onModelChange($event)"
+                    :description="props.description" :context="vm.context"
+                    :noPlaceholder="props.noPlaceholder">
+      </UploadControl>
 
   <!--    <ConditionControl v-else-if="latestControlType === 'condition'"-->
   <!--                     :model="vm.model" @modelChange="onModelChange($event)"-->
@@ -152,6 +152,7 @@ import AutocompleteControl from '~/components/schema-forms/AutocompleteControl.v
 import ReadonlyControl from '~/components/schema-forms/ReadonlyControl.vue';
 import DateControl from '~/components/schema-forms/DateControl.vue';
 import TimeTwentyFourControl from '~/components/schema-forms/TimeTwentyFourControl.vue';
+// @ts-ignore
 import { getCurrentInstance } from 'vue';
 
 // @ts-ignore
