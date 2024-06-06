@@ -123,6 +123,8 @@ function onFileChanged(event: {files: File[]}) {
         size: file.size,
         value: value.split(',')[1],
       };
+
+      emits('modelChange', vm.model);
     }
   }
 }

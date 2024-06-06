@@ -51,7 +51,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
   function isValid(): boolean {
     if (im.$v) {
-      return !!im.$v.$error;
+      return !im.$v.$error;
     }
 
     return true;

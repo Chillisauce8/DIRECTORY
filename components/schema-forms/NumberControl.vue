@@ -3,7 +3,10 @@
     <InputNumber v-model="vm.model" @update:modelValue="onModelChange($event)"
                  :min="props.description.minimum" :max="props.description.maximum"
                  :name="props.description.name"
-                 :mode="vm.allowDecimals ? null : 'decimal'" showButtons
+                 :mode="getMode()"
+                 :currency="props.description.currency"
+                 :locale="props.description.locale"
+                 showButtons
                  :step="props.description.xStep || 1"
                  :class="{'p-invalid': $v.$error}"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
@@ -59,9 +62,9 @@ const fillDescriptionPatternBase = sharedFunctions.fillDescriptionPattern;
 const validateRules = computed(() => {
   const result: any = {
     model: {
-      minValue: minValue(props.description.minimum),
-      maxValue: maxValue(props.description.maximum),
-      pattern: patternValidator(new RegExp(props.description.pattern, 'gi')),
+      minValue: props.description.minimum ? [minValue(props.description.minimum)] : [],
+      maxValue: props.description.maximum ? [maxValue(props.description.maximum)] : [],
+      pattern: props.description.pattern ? [patternValidator(new RegExp(props.description.pattern, 'gi'))] : [],
     }
   };
 
@@ -104,7 +107,7 @@ onMounted(() => {
 function initField() {
   initFieldBase();
 
-  vm.allowDecimals = props.description.pattern?.indexOf('\.') !== -1;
+  vm.allowDecimals = props.description.pattern && props.description.pattern.indexOf('\.') !== -1;
 
   if (isFinite(vm.model)) {
     sharedFunctions.touch();
@@ -136,6 +139,16 @@ function fillDescriptionPattern() {
   fillDescriptionPatternBase();
   _fillDescriptionPatternForNumber();
 }
+
+
+function getMode(): string|null {
+  if (props.description.mode) {
+    return props.description.mode as string;
+  }
+
+  return vm.allowDecimals ? null : 'decimal';
+}
+
 
 function _fillDescriptionPatternForNumber() {
   if (props.description.xStep) {

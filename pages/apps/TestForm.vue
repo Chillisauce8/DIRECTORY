@@ -8,22 +8,30 @@
 
 
 import useSchemaFormController from '~/composables/schema-forms/useSchemaFormController';
+import { httpService } from '~/service/http/http.service';
 
 
 const {vm, formDescription, sharedFunctions, initDone} = useSchemaFormController('tasks');
 
 let dataToSave: any;
+const collectionName = 'test';
 
 sharedFunctions.getSchemaName = () => {
-  return 'test';
+  return collectionName;
 }
 
 sharedFunctions.createTarget = async (dataToSave: any): Promise<any> => {
-  return null;
+  return httpService.post(`/api/create/${collectionName}`, dataToSave)
+    .then((response: any) => {
+      return response.data;
+    });
 }
 
 sharedFunctions.updateTarget = async (dataToSave: any): Promise<any> => {
-  return null;
+  return httpService.post(`/api/update/${collectionName}`, dataToSave)
+    .then((response: any) => {
+      return response.data;
+    });
 }
 
 sharedFunctions.getTargetName = (): string => {
@@ -55,7 +63,7 @@ function onModelChange(value: any) {
 function saveModel() {
   console.log(JSON.stringify(dataToSave));
 
-  sharedFunctions.save();
+  sharedFunctions.save(dataToSave);
 }
 
 </script>

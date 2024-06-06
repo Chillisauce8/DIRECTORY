@@ -201,7 +201,7 @@ export default function useSchemaFormController(formName: string): any {
       return null;
     },
 
-    save: (): void => {
+    save: (dataToSave: any): void => {
       vm.saveError = '';
       vm.isFormNotValid = false;
 
@@ -212,16 +212,17 @@ export default function useSchemaFormController(formName: string): any {
         return;
       }
 
-      clearObsoleteFields();
-
       vm.inProgress = true;
-      const dataToSave = getDataToSave();
+      const _dataToSave = filterDataToSave(dataToSave);
+
+      clearObsoleteFields(_dataToSave);
+
 
       let savePromise;
       if (vm.editMode) {
-        savePromise = sharedFunctions.updateTarget(dataToSave);
+        savePromise = sharedFunctions.updateTarget(_dataToSave);
       } else {
-        savePromise = sharedFunctions.createTarget(dataToSave);
+        savePromise = sharedFunctions.createTarget(_dataToSave);
       }
 
       savePromise
@@ -251,12 +252,12 @@ export default function useSchemaFormController(formName: string): any {
     }
   };
 
-  function getDataToSave() {
-    const dataToSave = cloneDeep(vm.model);
-    deleteNullProperties(dataToSave, true);
-    stripProperties(dataToSave, true);
-    deleteStructureProperties(dataToSave);
-    return dataToSave;
+  function filterDataToSave(dataToSave: any) {
+    const _dataToSave = cloneDeep(dataToSave);
+    deleteNullProperties(_dataToSave, true);
+    stripProperties(_dataToSave, true);
+    deleteStructureProperties(_dataToSave);
+    return _dataToSave;
   }
 
   function deleteStructureProperties(data: any) {
@@ -280,7 +281,7 @@ export default function useSchemaFormController(formName: string): any {
     toast.add({ severity: 'error', summary: 'Error Message', detail: `Failed ${errorMessage}`, life: 3000 });
   }
 
-  function clearObsoleteFields() {
+  function clearObsoleteFields(dataToSave: any) {
     let knownFields = vm.schemaFormsBuildHelper.schemaParser.getAllPaths();
 
     knownFields.push('title');
@@ -300,7 +301,7 @@ export default function useSchemaFormController(formName: string): any {
       return item.search(/^\d/) === -1;
     });
 
-    const keys: Array<string> = _recListModelFields(vm.model);
+    const keys: Array<string> = _recListModelFields(dataToSave);
 
     keys.forEach((key: string) => {
       let keyToCheck = key.replace( /\.[0-9]+\./g, '.' );
@@ -323,7 +324,7 @@ export default function useSchemaFormController(formName: string): any {
           return;
         }
 
-        setObjectPropertyByString(vm.model, key, undefined);
+        setObjectPropertyByString(dataToSave, key, undefined);
       }
     });
   }
@@ -356,29 +357,31 @@ export default function useSchemaFormController(formName: string): any {
       () => {
         const formIsChangedPrevValue = vm.formIsChanged;
 
-        if (vm.initialModel) {
-          const preparedModel = getDataToSave();
+        // TODO:
 
-          vm.formIsChanged = !isEqual(JSON.stringify(vm.initialModel),
-            JSON.stringify(preparedModel));
-        } else {
-          vm.formIsChanged = true;
-        }
-
-        if (formIsChangedPrevValue !== vm.formIsChanged) {
-          //
-        }
-
-        if (vm.isFormNotValid) {
-          if (schemaFormsProcessingHelper.isFormValid(vm.name)) {
-            vm.saveError = '';
-            vm.isFormNotValid = false;
-          }
-        }
-
-        if (!vm.modelCopyToRestoreHistoryState) {
-          vm.modelCopyToRestoreHistoryState = cloneDeep(vm.model);
-        }
+        // if (vm.initialModel) {
+        //   const preparedModel = filterDataToSave();
+        //
+        //   vm.formIsChanged = !isEqual(JSON.stringify(vm.initialModel),
+        //     JSON.stringify(preparedModel));
+        // } else {
+        //   vm.formIsChanged = true;
+        // }
+        //
+        // if (formIsChangedPrevValue !== vm.formIsChanged) {
+        //   //
+        // }
+        //
+        // if (vm.isFormNotValid) {
+        //   if (schemaFormsProcessingHelper.isFormValid(vm.name)) {
+        //     vm.saveError = '';
+        //     vm.isFormNotValid = false;
+        //   }
+        // }
+        //
+        // if (!vm.modelCopyToRestoreHistoryState) {
+        //   vm.modelCopyToRestoreHistoryState = cloneDeep(vm.model);
+        // }
       }
     );
   }
@@ -446,7 +449,9 @@ export default function useSchemaFormController(formName: string): any {
   function _recListModelFields(data: any) {
     const fields: any[] = [];
 
-    data.forEach((value: any, key: string) => {
+    for (const key in data) {
+      const value = data[key];
+
       fields.push(key);
 
       if (isObject(value)) {  // && (!_.isArray(value))) {
@@ -456,7 +461,7 @@ export default function useSchemaFormController(formName: string): any {
           fields.push(key + '.' + field);
         });
       }
-    });
+    }
 
     return fields;
   }

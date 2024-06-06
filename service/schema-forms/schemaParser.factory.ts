@@ -1,3 +1,5 @@
+import { isString } from '~/service/utils';
+
 export const X_KEYS = ['hide', 'required', 'default', 'readOnly', 'writeOnly', 'title', 'description', 'default',
   'enum', 'x-enum', 'options', 'optionsPlus', 'set', 'dependencies', 'depreciated', 'concatenate', 'calculate'];
 
@@ -33,13 +35,19 @@ export class SchemaParser {
   }
 
   parseItem(path: string): Object {
-    const result: any = {};
-
     const item = this.getItem(path);
 
-    result['formType'] = this.parseItemFormType(item);
-
     const properties = this.getItemProperties(item);
+
+    const result: any = Object.keys(properties)
+      .filter((key) => isString(properties[key]))
+      .reduce((object, key) => {
+        return Object.assign(object, {
+          [key]: properties[key]
+        });
+      }, {});
+
+    result['formType'] = this.parseItemFormType(item);
 
     result['title'] = properties.title || item.title;
     result['required'] = properties.required || item.required;
@@ -117,6 +125,10 @@ export class SchemaParser {
 
     if ('enum' in properties) {
       result['values'] = properties.enum;
+    }
+
+    if ('options' in properties) {
+      result['values'] = properties.options;
     }
 
     if (properties.description) {
@@ -300,6 +312,10 @@ export class SchemaParser {
         return 'select';
       }
 
+      if ('options' in item) {
+        return 'select';
+      }
+
       return 'text';
     }
 
@@ -459,8 +475,8 @@ export class SchemaParser {
         result.push(newPrefixPath + '.typeQName');
         result.push(newPrefixPath + '.qname');
 
-        const mappings = value?.['_relator']['mappings'] ||
-                         value?.['join']['mappings'];
+        const mappings = value?.['_relator']?.['mappings'] ||
+                         value?.['join']?.['mappings'];
 
         if (mappings) {
           mappings.forEach((mapping: any) => {
