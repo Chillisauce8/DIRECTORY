@@ -43,6 +43,8 @@ export class SchemaParser {
 
     result['formType'] = this.parseItemFormType(item);
 
+    result['component'] = properties.component;
+
     result['title'] = properties.title || item.title;
     result['required'] = properties.required || item.required;
     result['readonly'] = properties.readonly || item.readonly;

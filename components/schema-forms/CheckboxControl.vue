@@ -1,7 +1,12 @@
 <template>
   <FloatLabel>
-    <Checkbox v-model="vm.model" @update:modelValue="onModelChange($event)"
-              :binary="true" :name="props.description.name"/>
+    <component :is="componentName"
+               v-model="vm.model" @update:modelValue="onModelChange($event)"
+               :name="props.description.name"
+               :binary="true"
+               v-bind="props.description.props">
+
+    </component>
     <label :for="props.description.name" class="ml-2"> {{vm.placeholderValue}} </label>
   </FloatLabel>
 </template>
@@ -32,6 +37,8 @@ let {
 vm = extend(vm, {
   originalModel: undefined,
 });
+
+const componentName = props.description.component || 'Checkbox';
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
