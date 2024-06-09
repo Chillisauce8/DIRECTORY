@@ -39,13 +39,7 @@ export class SchemaParser {
 
     const properties = this.getItemProperties(item);
 
-    const result: any = Object.keys(properties)
-      .filter((key) => isString(properties[key]))
-      .reduce((object, key) => {
-        return Object.assign(object, {
-          [key]: properties[key]
-        });
-      }, {});
+    const result: any = item.props || {};
 
     result['formType'] = this.parseItemFormType(item);
 

@@ -10,14 +10,12 @@
            v-tooltip.bottom="vm.descriptionText"></i>
       </p>
 
-      <div class="flex">
-        <DynamicControl
-          :description="props.description"
-          :model="vm.model" @modelChange="onModelChange($event)"
-          :context="props.context"
-          :noPlaceholder="showTitle">
-        </DynamicControl>
-      </div>
+      <DynamicControl
+        :description="props.description"
+        :model="vm.model" @modelChange="onModelChange($event)"
+        :context="props.context"
+        :noPlaceholder="showTitle">
+      </DynamicControl>
     </div>
   </div>
 </template>

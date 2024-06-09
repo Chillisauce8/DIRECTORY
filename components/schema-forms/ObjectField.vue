@@ -18,10 +18,8 @@
           </span>
         </p>
 
-        <div class="row flex gap-horizontal_15 wrap">
-
-          <template v-for="item in line">
-            <div class="flex DDDD" :style="{width: item.description.xFlex + '%'}"
+        <template v-for="item in line">
+            <div class="flex" :style="{width: item.description.xFlex + '%'}"
                  v-if="shouldItemBeConstructed(item)"
                  v-tooltip.bottom="item.description.description">
 
@@ -44,8 +42,6 @@
 
             </div>
           </template>
-
-        </div>
       </div>
     </div>
   </div>

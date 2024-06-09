@@ -1,28 +1,23 @@
 <template>
-  <div :class="{ 'undefined-select': vm.model == null }" class="row flex schema-forms-select-control">
-    <div class="flex column">
-      <FloatLabel>
-        <Dropdown v-if="vm.filteredSelectValues"
-                  :name="props.description.name"
-                  :showClear="!props.description.required"
-                  v-model="vm.model"
-                  @update:modelValue="onModelChange($event)"
-                  :options="vm.filteredSelectValues"
-                  :optionLabel="vm.filteredSelectValues?.[0]?.title ? 'title' : undefined"
-                  :placeholder="vm.placeholderValue"
-                  class="w-full md:w-14rem">
-        </Dropdown>
-        <label :for="props.description.name">{{vm.placeholderValue}}</label>
-      </FloatLabel>
-      <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
-    </div>
+  <FloatLabel>
+    <Dropdown v-if="vm.filteredSelectValues"
+              :name="props.description.name"
+              :showClear="!props.description.required"
+              v-model="vm.model"
+              @update:modelValue="onModelChange($event)"
+              :options="vm.filteredSelectValues"
+              :optionLabel="vm.filteredSelectValues?.[0]?.title ? 'title' : undefined"
+              :placeholder="vm.placeholderValue"
+              class="w-full md:w-14rem">
+    </Dropdown>
+    <label :for="props.description.name">{{vm.placeholderValue}}</label>
+  </FloatLabel>
+  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
 
 <!--    <div class="flex-10 column center-center" v-if="props.description.isRelator">-->
 <!--      <schema-form-relator-context-menu [description]="description" [(model)]="model" [context]="context">-->
 <!--      </schema-form-relator-context-menu>-->
 <!--    </div>-->
-
-  </div>
 </template>
 
 <script setup lang="ts">

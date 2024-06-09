@@ -1,9 +1,9 @@
 <template>
-  <div class="flex align-items-center">
+  <FloatLabel>
     <Checkbox v-model="vm.model" @update:modelValue="onModelChange($event)"
               :binary="true" :name="props.description.name"/>
-    <label :for="props.description.name" class="ml-2"> {{ getPlaceholder() }} </label>
-  </div>
+    <label :for="props.description.name" class="ml-2"> {{vm.placeholderValue}} </label>
+  </FloatLabel>
 </template>
 
 <script setup lang="ts">

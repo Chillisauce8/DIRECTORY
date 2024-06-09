@@ -21,8 +21,7 @@
         </p>
         <p class="label flex-none" v-if="props.description.header.title && rowIndex !== 0"></p>
 
-        <div class="flex-grow">
-          <div class="row start-baseline gap-horizontal_15"
+        <div class="row start-baseline gap-horizontal_15"
                v-for="(line) in vm.linesForRows[rowIndex]" v-show="!isWholeLineHidden(line)">
             <template v-for="item in line">
               <div class="flex" :style="{width: item.description.xFlex + '%'}"
@@ -49,7 +48,6 @@
               </div>
             </template>
           </div>
-        </div>
 
         <SpeedDial :model="createSpeedDialItems(rowIndex)" v-if="!sharedFunctions.isReadonly()"
                    direction="left" :style="{ top: 'calc(50% - 2rem)', right: 0 }" />
