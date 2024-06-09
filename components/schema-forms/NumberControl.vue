@@ -1,14 +1,16 @@
 <template>
   <FloatLabel>
-    <InputNumber v-model="vm.model" @update:modelValue="onModelChange($event)"
-                 :min="props.description.minimum" :max="props.description.maximum"
-                 :name="props.description.name"
-                 :mode="getMode()"
-                 :currency="props.description.currency"
-                 :locale="props.description.locale"
-                 showButtons
-                 :step="props.description.xStep || 1"
-                 :class="{'p-invalid': $v.$error}"/>
+    <component :is="componentName"
+               v-model="vm.model" @update:modelValue="onModelChange($event)"
+               :min="props.description.minimum" :max="props.description.maximum"
+               :name="props.description.name"
+               :mode="getMode()"
+               :currency="props.description.currency"
+               :locale="props.description.locale"
+               showButtons
+               :step="props.description.xStep || 1"
+               :class="[props.description.class || '', $v.$error ? 'p-invalid' : '']">
+    </component>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </FloatLabel>
   <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
@@ -37,6 +39,8 @@ const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
+
+const componentName = props.description.component || 'InputNumber';
 
 const selfRef = ref(null);
 

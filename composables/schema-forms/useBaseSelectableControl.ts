@@ -178,7 +178,9 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
   function filterPossibleValues(): Array<any> {
     let possibleValues;
 
-    if (props.description.xFilter) {
+    if (props.description.options) {
+      possibleValues = props.description.options;
+    } else if (props.description.xFilter) {
       possibleValues = schemaFormsProcessingHelper.filterFieldValues(props.description.xFilter,
         props.description.values, vm.context);
     } else if (props.description.rawData?.filter) {

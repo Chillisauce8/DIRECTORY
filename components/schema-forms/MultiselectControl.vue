@@ -1,13 +1,17 @@
 <template>
-  <MultiSelect v-model="_fakeModel"
-               @update:modelValue="onModelChange($event)"
-               :options="autocompleteItems"
-               :optionLabel="autocompleteItems?.[0]?.title ? 'title' : autocompleteItems?.[0]?.name ? 'name' : undefined"
-               :placeholder="vm.placeholderValue"
-               :showClear="!props.description.required"
-               :maxSelectedLabels="getLimitTo()"
-               display="chip" class="w-full md:w-20rem">
-  </MultiSelect>
+  <component :is="componentName"
+             v-if="vm.filteredSelectValues"
+             :name="props.description.name"
+             v-model="_fakeModel"
+             @update:modelValue="onModelChange($event)"
+             :options="autocompleteItems"
+             :optionLabel="props.description.optionLabel || autocompleteItems?.[0]?.title ? 'title' : autocompleteItems?.[0]?.name ? 'name' : undefined"
+             :placeholder="vm.placeholderValue"
+             :showClear="!props.description.required"
+             :maxSelectedLabels="getLimitTo()"
+             v-bind="props.description"
+             :class="[props.description.class || '']">
+  </component>
 
   <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
 </template>
@@ -30,6 +34,8 @@ const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
+
+const componentName = props.description.component || 'MultiSelect';
 
 const selfRef = ref(null);
 
@@ -123,6 +129,10 @@ function initField() {
 }
 
 function getLimitTo() {
+  if (props.description.maxSelectedLabels) {
+    return props.description.maxSelectedLabels;
+  }
+
   if (props.description.xLimitTo === 'null') {
     return null;
   } else if (props.description.xLimitTo) {

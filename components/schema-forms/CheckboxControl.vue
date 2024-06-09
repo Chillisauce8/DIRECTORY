@@ -4,8 +4,8 @@
                v-model="vm.model" @update:modelValue="onModelChange($event)"
                :name="props.description.name"
                :binary="true"
-               v-bind="props.description.props">
-
+               v-bind="props.description"
+              :class="[props.description.class || '']">
     </component>
     <label :for="props.description.name" class="ml-2"> {{vm.placeholderValue}} </label>
   </FloatLabel>
@@ -25,6 +25,7 @@ const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
+const componentName = props.description.component || 'Checkbox';
 
 const baseFieldExport = useBaseControl(props, emits);
 
@@ -37,8 +38,6 @@ let {
 vm = extend(vm, {
   originalModel: undefined,
 });
-
-const componentName = props.description.component || 'Checkbox';
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 

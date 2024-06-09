@@ -1,15 +1,17 @@
 <template>
   <FloatLabel>
-    <Dropdown v-if="vm.filteredSelectValues"
-              :name="props.description.name"
-              :showClear="!props.description.required"
-              v-model="vm.model"
-              @update:modelValue="onModelChange($event)"
-              :options="vm.filteredSelectValues"
-              :optionLabel="vm.filteredSelectValues?.[0]?.title ? 'title' : undefined"
-              :placeholder="vm.placeholderValue"
-              class="w-full md:w-14rem">
-    </Dropdown>
+    <component :is="componentName"
+               v-if="vm.filteredSelectValues"
+               :name="props.description.name"
+               :showClear="!props.description.required"
+               v-model="vm.model"
+               @update:modelValue="onModelChange($event)"
+               :options="vm.filteredSelectValues"
+               :optionLabel="props.description.optionLabel || (vm.filteredSelectValues?.[0]?.title ? 'title' : undefined)"
+               :placeholder="vm.placeholderValue"
+               v-bind="props.description"
+               :class="[props.description.class || '']">
+    </component>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </FloatLabel>
   <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
@@ -38,6 +40,8 @@ const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
+
+const componentName = props.description.component || 'Dropdown';
 
 const selfRef = ref(null);
 

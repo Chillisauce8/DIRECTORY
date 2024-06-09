@@ -44,6 +44,7 @@ export class SchemaParser {
     result['formType'] = this.parseItemFormType(item);
 
     result['component'] = properties.component;
+    result['class'] = properties.class;
 
     result['title'] = properties.title || item.title;
     result['required'] = properties.required || item.required;
@@ -159,6 +160,7 @@ export class SchemaParser {
     result['title'] = itemItems && itemItems.title ? itemItems.title : item.title;
     result['type'] = item.type;
     result['description'] = item.description;
+    result['component'] = item.component;
     result['required'] = item.required;
     result['xHide'] = item['x-hide'];
     result['xClose'] = item['x-close'];
@@ -312,6 +314,10 @@ export class SchemaParser {
         return 'select';
       }
 
+      if (item.component === 'Dropdown') {
+        return 'select';
+      }
+
       return 'text';
     }
 
@@ -321,6 +327,14 @@ export class SchemaParser {
 
     if (item.type === 'array') {
       if (!!item.items && 'enum' in item.items) {
+        return 'multiselect';
+      }
+
+      if (item?.component === 'MultiSelect') {
+        return 'multiselect';
+      }
+
+      if (item?.component === 'Listbox') {
         return 'multiselect';
       }
 
@@ -337,6 +351,10 @@ export class SchemaParser {
 
     if (item.type === 'object') {
       if (('_relator' in item) || ('join' in item)) {
+        return 'select';
+      }
+
+      if (item.component === 'Dropdown') {
         return 'select';
       }
     }
@@ -450,9 +468,9 @@ export class SchemaParser {
   private getItemProperties(item: any) {
     let properties;
     if ('properties' in item) {
-      properties = item.properties;
+      properties = {...item, ...item.properties};
     } else if ('items' in item) {
-      properties = item.items;
+      properties = {...item, ...item.items};
     } else {
       properties = item;
     }

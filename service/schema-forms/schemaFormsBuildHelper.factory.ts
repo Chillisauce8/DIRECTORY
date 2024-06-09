@@ -223,11 +223,21 @@ export class SchemaFormsBuildHelper {
       return null;
     }
 
-    const fieldType = item['x-fieldtype'] || item['fieldType'];
+    let fieldType = item['x-fieldtype'] || item['fieldType'];
+
+    if (!fieldType && item.component) {
+      if (['MultiSelect', 'Listbox'].includes(item.component)) {
+        fieldType = 'multiselect';
+      }
+    }
 
     if (item.type === 'object') {
       if (fieldType === 'map') {
         return SchemaFormElementTypes.mapPlaceField;
+      }
+
+      if (item.component) {
+        return SchemaFormElementTypes.valueField;
       }
 
       if (item._relator || item.join) {
@@ -339,7 +349,7 @@ export class SchemaFormsBuildHelper {
 
     const fieldType = item['x-fieldtype'] || item['fieldType'];
 
-    if (result.header['type'] === 'object' && !fieldType && !isStructureTag) {
+    if (result.header['type'] === 'object' && !fieldType && !isStructureTag && !result.header['component']) {
       if (this._isAbsolutelyRemovedFromForm(item)) {
         return null;
       }
