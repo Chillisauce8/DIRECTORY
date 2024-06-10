@@ -108,8 +108,16 @@ function onModelChange(value: any) {
 
   if (value) {
     if (_isObjects) {
-      vm.model = value.map((item: any) => {
-        return autocompleteItems.value.find((item: any) => value.id === item.id);
+      vm.model = value.map((valueItem: any) => {
+        return autocompleteItems.value.find((optionsItem: any) => {
+          if ('id' in valueItem) {
+            return valueItem.id === optionsItem.id;
+          } else if ('code' in valueItem) {
+            return valueItem.code === optionsItem.code;
+          } else if ('value' in valueItem) {
+            return valueItem.value === optionsItem.value;
+          }
+        });
       });
     } else {
       vm.model = value;

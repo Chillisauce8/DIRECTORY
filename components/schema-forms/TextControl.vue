@@ -1,9 +1,12 @@
 <template>
   <FloatLabel>
-    <InputText type="text" v-model="vm.originalModel"
-               @update:modelValue="onModelChangeDebounced($event)"
-               :name="props.description.name" :class="{'p-invalid': $v.$error}"
-               :invalid="$v.$error"/>
+    <component :is="componentName"
+               v-model="vm.originalModel" @update:modelValue="onModelChangeDebounced($event)"
+               :name="props.description.name"
+               v-bind="props.description"
+               :class="[props.description.class || '', $v.$error ? 'p-invalid' : '']">
+    </component>
+
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </FloatLabel>
   <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
@@ -25,12 +28,19 @@ import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
+import { isDate } from '~/service/utils';
+import { DateHelper } from '~/service/date-helper';
+
+
+const dateHelper = new DateHelper();
 
 
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
+
+const componentName = props.description.component || 'InputText';
 
 
 const selfRef = ref(null);
@@ -46,7 +56,7 @@ vm = extend(vm, {
 const initFieldBase = sharedFunctions.initField;
 const setModelBase = sharedFunctions.setModel;
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
-
+const getDefaultValueBase = sharedFunctions.getDefaultValue;
 
 
 const validateRules = computed(() => {
@@ -64,7 +74,6 @@ const validateRules = computed(() => {
 
   return result;
 });
-
 
 
 const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
@@ -98,6 +107,8 @@ onMounted(() => {
 function initField() {
   initFieldBase();
   vm.originalModel = vm.model;
+
+  _prepareMinMaxValues();
 }
 
 function setModel(value: any, updated?: boolean) {
@@ -112,10 +123,14 @@ function onModelChange(value: any) {
   vm.originalModel = value;
 
   if (value) {
-    vm.model = value.trim();
+    if (isDate(value)) {
+      vm.model = dateHelper.saveDateFormat(value);
+    } else {
+      vm.model = value.trim();
 
-    if (vm.model.length === 0) {
-      vm.model = undefined;
+      if (vm.model.length === 0) {
+        vm.model = undefined;
+      }
     }
   } else {
     vm.model = undefined;
@@ -143,9 +158,44 @@ function correctExistingValue() {
 }
 
 
+function getDefaultValue(): any {
+  const defaultValue = getDefaultValueBase();
+  if (defaultValue && props.description.component === 'Calendar') {
+    if (isDate(defaultValue)) {
+      return defaultValue;
+    }
+
+    return _parseDateString(defaultValue);
+  }
+}
+
+function _prepareMinMaxValues() {
+  if (props.description.component === 'Calendar') {
+    if (props.description['minimumDate']) {
+      props.description.minimum = _parseDateString(props.description['minimumDate']);
+    }
+
+    if (props.description['maximumDate']) {
+      props.description.maximum = props._parseDateString(props.description['maximumDate']);
+    }
+  }
+}
+
+function _parseDateString(value: string): Date|undefined {
+  if (props.description.component === 'Calendar' && value === 'today') {
+    return new Date();
+  } else {
+    return dateHelper.parseSaveDateFormat(value);
+  }
+}
+
+
+
 sharedFunctions.initField = initField;
 sharedFunctions.setModel = setModel;
 sharedFunctions.correctExistingValue = correctExistingValue;
+sharedFunctions.getDefaultValue = getDefaultValue;
+
 
 </script>
 

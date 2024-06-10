@@ -330,11 +330,7 @@ export class SchemaParser {
         return 'multiselect';
       }
 
-      if (item?.component === 'MultiSelect') {
-        return 'multiselect';
-      }
-
-      if (item?.component === 'Listbox') {
+      if (['MultiSelect', 'Listbox', 'Chips'].includes(item?.component)) {
         return 'multiselect';
       }
 

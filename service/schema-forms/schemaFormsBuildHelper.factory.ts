@@ -226,7 +226,7 @@ export class SchemaFormsBuildHelper {
     let fieldType = item['x-fieldtype'] || item['fieldType'];
 
     if (!fieldType && item.component) {
-      if (['MultiSelect', 'Listbox'].includes(item.component)) {
+      if (['MultiSelect', 'Listbox', 'Chips'].includes(item.component)) {
         fieldType = 'multiselect';
       }
     }

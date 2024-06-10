@@ -99,11 +99,6 @@ function onModelChange(value: any) {
 }
 
 
-function getOptionLabel(data: any) {
-  return data?.title ? 'title' : undefined;
-}
-
-
 function initField() {
   initFieldBase();
 
@@ -112,17 +107,6 @@ function initField() {
   }
 }
 
-function getValueForItem(item: any): any {
-  if (!item) {
-    return item;
-  }
-
-  if (item.value) {
-    return item.value;
-  }
-
-  return item;
-}
 
 function getSelectTitle(): string {
   if (isObject(vm.model)) {

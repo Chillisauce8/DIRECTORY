@@ -9,6 +9,7 @@
                :locale="props.description.locale"
                showButtons
                :step="props.description.xStep || 1"
+               v-bind="props.description"
                :class="[props.description.class || '', $v.$error ? 'p-invalid' : '']">
     </component>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
