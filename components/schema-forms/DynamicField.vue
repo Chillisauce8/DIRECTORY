@@ -210,6 +210,6 @@ sharedFunctions.initField = initField;
 
 <style>
 .schema-form-dynamic-field {
-    margin: 2rem;
+    margin: 2rem 0;
 }
 </style>
