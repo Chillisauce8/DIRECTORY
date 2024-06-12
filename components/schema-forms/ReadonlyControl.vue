@@ -2,10 +2,8 @@
   <FloatLabel>
     <Checkbox v-if="props.description.formType === 'checkbox'" v-model="vm.model"
               :name="props.description.name" :readonly="true"/>
-    <InputNumber v-else-if="props.description.formType === 'number'" v-model="vm.model"
-                 :name="props.description.name" :readonly="true"/>
     <InputText v-else type="text" v-model="valueForReadonlyInput"
-               :name="props.description.name" :readonly="true"/>
+               :name="props.description.name" readonly="true"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </FloatLabel>
 

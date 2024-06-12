@@ -20,7 +20,7 @@
                 <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()" direction="left" :style="{ top: 'calc(50% - 2rem)', right: 0 }" />
             </div>
 
-            <div class="empty row start-center" v-if="!vm.model.length">
+            <div class="empty row start-center" v-if="!vm?.model?.length">
                 <p class="label flex">
                     {{ sharedFunctions.getTitle() }}
 

@@ -1,5 +1,6 @@
 <template>
   <AutoComplete v-model="vm.model"
+                @update:modelValue="onModelChange($event)"
                 dropdown
                 :suggestions="suggestions"
                 :optionLabel="suggestions?.[0]?.title ? 'title' : undefined"
@@ -18,6 +19,7 @@ import FieldError from '~/components/schema-forms/FieldError.vue';
 import useBaseSelectableControl from '~/composables/schema-forms/useBaseSelectableControl';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+// @ts-ignore
 import { getCurrentInstance } from 'vue';
 
 
@@ -120,6 +122,15 @@ onMounted(() => {
 
 function initField() {
   initFieldBase();
+}
+
+
+function onModelChange(value: any) {
+  // vm.model = value;
+
+  $v.value.$validate();
+
+  emits('modelChange', vm.model);
 }
 
 function getPlaceholder(): string {
