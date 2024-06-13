@@ -1,5 +1,5 @@
 <template>
-  <template v-if="['create', 'update'].includes(props.function)">
+  <template v-if="isCreateUpdate">
     <Button icon="pi pi-save" aria-label="Save Form" @click="saveModel()"></Button>
 
     <SchemaForm :formName="formName"
@@ -11,8 +11,8 @@
     </SchemaForm>
   </template>
   <template v-else-if="props.function === 'read'">
-    <template v-if="vm.model">
-      <slot :data="vm.model"></slot>
+    <template v-if="targetItem || targetItems">
+      <slot :item="targetItem" :items="targetItems"></slot>
     </template>
   </template>
 </template>
@@ -24,19 +24,29 @@ import { httpService } from '~/service/http/http.service';
 
 
 interface FieldProps {
-  collection: string
+  collection: string;
+  function: 'create'|'read'|'update';
+  find?: string;
+  fields?: string;
   id?: string;
-  function: 'create'|'read'|'update'
 }
 
 // @ts-ignore
 const props = defineProps<FieldProps>();
 
+const isCreateUpdate = ['create', 'update'].includes(props.function);
+const isReadSingle = props.function === 'read' && !!props.id;
+const isReadMulti = props.function === 'read' && !props.id;
+
+const collectionName = props.collection;
+
 const formName = props.collection + '-form';
 const {vm, formDescription, sharedFunctions} = useSchemaFormController(formName);
 
 let dataToSave: any;
-const collectionName = props.collection;
+
+const targetItem = ref(null);
+const targetItems = ref(null);
 
 sharedFunctions.getSchemaName = () => {
   return collectionName;
@@ -83,9 +93,26 @@ sharedFunctions.isEditMode = () => {
 }
 
 onMounted(() => {
-  sharedFunctions.doOnMounted();
+  if (isCreateUpdate) {
+    sharedFunctions.doOnMounted();
+  } else if (isReadSingle) {
+    httpService.get(`/api/get/${collectionName}/${props.id}`, {
+        h: {$fields: props.fields}
+      })
+      .then((response: any) => {
+        targetItem.value = response.data;
+      });
+  } else if (isReadMulti) {
+    httpService.get(`/api/query`, {
+        collection: collectionName,
+        q: props.find,
+        h: {$fields: props.fields},
+      })
+      .then((response: any) => {
+        targetItems.value = response.data;
+      });
+  }
 });
-
 
 onDeactivated(() => {
   sharedFunctions.onDeactivated();
