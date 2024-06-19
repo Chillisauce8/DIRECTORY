@@ -248,7 +248,7 @@ export default defineNuxtConfig({
       });
       pages.push({
         name: 'Task List Test',
-        path: '/apps/tasklistTest',
+        path: '/apps/tasklisttest',
         file: '@/pages/apps/tasklist/IndexTest.vue'
       });
       pages.push({

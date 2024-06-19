@@ -8,8 +8,10 @@ const props = defineProps({
         default: null
     }
 });
+
 const task = ref({});
 const filteredMembers = ref([]);
+
 onMounted(() => {
     if (props.selectedTask) {
         task.value = props.selectedTask;
@@ -69,7 +71,8 @@ const filterMembers = async (event) => {
             </div>
             <div class="col-12 field">
                 <label for="vehicles" class="text-900 font-semibold">Add Vehicles</label>
-                <AutoComplete inputId="vehicles" v-model="task.vehicles" :suggestions="filteredMembers" field="name" multiple @complete="filterMembers($event)" :inputStyle="{ height: '2.5rem' }">
+                <AutoComplete inputId="vehicles" v-model="task.vehicles" :suggestions="filteredMembers" field="name"
+                              multiple @complete="filterMembers($event)" :inputStyle="{ height: '2.5rem' }">
                     <template #chip="{ value }">
                         <div class="flex align-items-center">
                             <img :src="'/demo/images/avatar/' + value.image" :alt="value.name" class="h-2rem w-2rem mr-2" />

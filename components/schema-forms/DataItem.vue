@@ -1,6 +1,7 @@
 <template>
   <template v-if="isCreateUpdate">
-    <Button icon="pi pi-save" aria-label="Save Form" @click="saveModel()"></Button>
+    <Button v-if="props.saveButton" icon="pi pi-save" aria-label="Save Form" @click="saveModel()">
+    </Button>
 
     <SchemaForm :formName="formName"
                 v-if="formDescription"
@@ -26,13 +27,15 @@ import { httpService } from '~/service/http/http.service';
 interface FieldProps {
   collection: string;
   function: 'create'|'read'|'update';
-  find?: string;
-  fields?: string;
+  find?: Object;
+  fields?: Object;
   id?: string;
 }
 
 // @ts-ignore
 const props = defineProps<FieldProps>();
+// @ts-ignore
+const emits = defineEmits(['changed']);
 
 const isCreateUpdate = ['create', 'update'].includes(props.function);
 const isReadSingle = props.function === 'read' && !!props.id;
@@ -120,6 +123,7 @@ onDeactivated(() => {
 
 function onModelChange(value: any) {
   dataToSave = value;
+  emits('changed', dataToSave);
 }
 
 function saveModel() {

@@ -3,7 +3,7 @@
                 @update:modelValue="onModelChange($event)"
                 dropdown
                 :suggestions="suggestions"
-                :optionLabel="suggestions?.[0]?.title ? 'title' : undefined"
+                :optionLabel="(suggestions?.[0]?.title || vm.model?.title) ? 'title' : undefined"
                 @complete="onSearchStringChange" />
 
   <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
@@ -76,7 +76,7 @@ function doOnMounted() {
   if (!autocompleteInitValue) {
     suggestions.value = suggestions.value = sharedFunctions.querySearch('', im.cachedPossibleValues);
   } else {
-    onSearchStringChange(autocompleteInitValue);
+    onSearchStringChange({query: autocompleteInitValue});
   }
 }
 

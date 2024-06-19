@@ -1,5 +1,6 @@
 <template>
-    <div ref="selfRef" class="schema-form-value-field" v-if="shouldFieldBeConstructed" v-show="!props.description.xHideValue">
+    <div ref="selfRef" class="schema-form-value-field" v-if="shouldFieldBeConstructed"
+         v-show="!props.description.xHideValue">
         <!--   <div class="field_wrap row start-baseline gap-horizontal_15"
          v-if="shouldFieldBeConstructed" v-show="!props.description.xHideValue"> -->
 
@@ -9,7 +10,10 @@
             <i class="icon icon-question-mark padding_-5" v-if="vm.descriptionText" v-tooltip.bottom="vm.descriptionText"></i>
         </p>
 
-        <DynamicControl :description="props.description" :model="vm.model" @modelChange="onModelChange($event)" :context="props.context" :noPlaceholder="showTitle"> </DynamicControl>
+        <DynamicControl :description="props.description" :model="vm.model"
+                        @modelChange="onModelChange($event)"
+                        :context="props.context" :noPlaceholder="showTitle">
+        </DynamicControl>
         <!--   </div> -->
     </div>
 </template>

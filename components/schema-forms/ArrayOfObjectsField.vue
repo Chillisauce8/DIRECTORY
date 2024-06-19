@@ -1,6 +1,7 @@
 <template>
     <div ref="selfRef" class="schema-form-array-of-objects-field">
-        <div v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue" class="array-wrap">
+        <div v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
+             v-show="!props.description.xHideValue" class="array-wrap">
             <div v-for="(row, rowIndex) in vm.model" :key="rowIndex">
                 <p v-if="rowIndex === 0 && props.description.header.title">
                     {{ sharedFunctions.getTitle() }}

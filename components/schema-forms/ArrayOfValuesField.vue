@@ -1,6 +1,7 @@
 <template>
     <div ref="selfRef" class="schema-form-array-of-values-field">
-        <div v-if="sharedFunctions?.shouldBeConstructed(props.description)" v-show="!props.description.xHideValue">
+        <div v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)"
+             v-show="!props.description.xHideValue">
             <div v-for="(line, index) in vm.model" :key="index">
                 <p class="label flex-none" v-if="props.description.title && index === 0">
                     {{ sharedFunctions.getTitle() }}
@@ -13,11 +14,15 @@
                 <p class="label flex-none" v-if="props.description.title && index !== 0"></p>
 
                 <div class="flex" v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
-                    <DynamicControl :description="vm.rowDescriptions[index]" :model="vm.model[index]" @modelChange="onModelChange($event)" :context="sharedFunctions.createInnerFieldContext(props.description.name, index)" :noPlaceholder="true">
+                    <DynamicControl :description="vm.rowDescriptions[index]" :model="vm.model[index]"
+                                    @modelChange="onModelChange($event, index)"
+                                    :context="sharedFunctions.createInnerFieldContext(props.description.name, index)"
+                                    :noPlaceholder="true">
                     </DynamicControl>
                 </div>
 
-                <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()" direction="left" :style="{ top: 'calc(50% - 2rem)', right: 0 }" />
+                <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()"
+                           direction="left" :style="{ top: 'calc(50% - 2rem)', right: 0 }" />
             </div>
 
             <div class="empty row start-center" v-if="!vm?.model?.length">
@@ -53,7 +58,7 @@ const emits = defineEmits<BaseFieldEmits>();
 
 const selfRef = ref(null);
 
-const { vm, sharedFunctions } = useBaseArrayFieldControl(props, emits);
+const { vm, sharedFunctions, initDone } = useBaseArrayFieldControl(props, emits);
 
 onMounted(() => {
     const instance = getCurrentInstance();
@@ -110,8 +115,8 @@ function createModelRow() {
     return null;
 }
 
-function onModelChange($event: any) {
-    vm.model = $event;
+function onModelChange($event: any, index: number) {
+    vm.model[index] = $event;
     emits('modelChange', vm.model);
 }
 

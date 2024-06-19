@@ -56,13 +56,21 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
     const possibleValues = _possibleValues || filterPossibleValues();
     im.cachedPossibleValues = possibleValues;
 
-    const notSelectedValues = differenceWith(possibleValues, props.model, function(arrVal: any, othVal: any) {
-      if (arrVal.id) {
-        return arrVal.id === othVal.id;
-      }
+    let notSelectedValues;
 
-      return arrVal === othVal;
-    });
+    if (props.model) {
+      const valuesToExclude = Array.isArray(props.model) ? props.model : [props.model];
+
+      notSelectedValues = differenceWith(possibleValues, valuesToExclude, function (arrVal: any, othVal: any) {
+        if (arrVal.id) {
+          return arrVal.id === othVal.id;
+        }
+
+        return arrVal === othVal;
+      });
+    } else {
+      notSelectedValues = possibleValues;
+    }
 
     const result = query ? notSelectedValues.filter(_createFilterFor(query)) : notSelectedValues;
 

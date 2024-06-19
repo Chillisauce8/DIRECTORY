@@ -55,12 +55,15 @@ const toggleMenu = (event, i, task) => {
                     <span v-if="task.attachments" class="flex align-items-center font-semibold mr-3"><i class="pi pi-paperclip mr-2"></i>{{ task.attachments }}</span>
                     <span class="flex align-items-center font-semibold white-space-nowrap" v-if="task.startDate"><i class="pi pi-clock mr-2"></i>{{ parseDate(task.startDate) }}</span>
              -->
-                    <span class="flex align-items-center font-semibold white-space-nowrap" v-if="task.startDate"><i class="pi pi-clock mr-2"></i>{{ task.startDate }}</span>
+                    <span class="flex align-items-center font-semibold white-space-nowrap"
+                          v-if="task.startDate"><i class="pi pi-clock mr-2"></i>{{ task.startDate }}</span>
                 </div>
                 <div class="flex align-items-center sm:justify-content-end">
                     <div class="mr-3">
                         <AvatarGroup v-if="task.members?.length > 0">
-                            <Avatar v-for="member in task.members.slice(0, 4)" :key="member" :image="'/demo/images/avatar/' + member.image" size="large" shape="circle"></Avatar>
+                            <Avatar v-for="member in task.members.slice(0, 4)" :key="member"
+                                    :image="'/demo/images/avatar/' + member.image" size="large" shape="circle">
+                            </Avatar>
                             <Avatar
                                 v-if="task && task.members && task.members.length > 4"
                                 :label="`+${task.members.length - 4}`"
