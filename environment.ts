@@ -38,7 +38,7 @@ const env: EnvironmentConfiguration =  {
     '/_nuxt/**': staticCacheRule,
   },
   devProxy: {
-    '/api/': serverURL,
+    '/api': {target: `${serverURL}/api`, changeOrigin: true, secure: false},
   },
   IS_LOCAL: true,
   IS_LIVE: false,

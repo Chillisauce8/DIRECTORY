@@ -2,26 +2,6 @@
 import environment from './environment';
 
 
-function prepareNitroRouteRules(): Record<string, any> {
-  const proxyConfig = Object.entries(environment?.devProxy ?? {})
-    .reduce((config, [suffix, target]) => {
-      const wildcardUrl = '**'
-      if (!suffix?.endsWith(wildcardUrl)) {
-        suffix = suffix.endsWith('/') ? suffix + wildcardUrl : suffix + '/' + wildcardUrl;
-      }
-
-      config[suffix] = {proxy: target + suffix};
-
-      return config;
-    }, {});
-
-  return {
-    ...(proxyConfig ?? {}),
-    ...(environment?.routeRules ?? {}),
-  };
-}
-
-
 export default defineNuxtConfig({
 //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
   modules: [
@@ -560,6 +540,7 @@ export default defineNuxtConfig({
     quill: process.dev ? 'quill/dist/quill.js' : 'quill'
   },
   nitro: {
-    routeRules: prepareNitroRouteRules(),
+    devProxy: environment.devProxy ?? {},
+    routeRules: environment?.routeRules ?? {},
   },
 })

@@ -18,7 +18,7 @@ export interface EnvironmentConfiguration {
 
   ssr?: boolean;
   http?: EnvironmentHttpConfiguration;
-  devProxy?: Record<string, string>;
+  devProxy?: Record<string, any>;
   routeRules?: Record<string, any>;
   adminAreaDomain?: string;
   enableLogRocket?: boolean;
