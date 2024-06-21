@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
 const emit = defineEmits(['close', 'save']);
@@ -11,17 +11,23 @@ const props = defineProps({
 });
 
 const task = ref({});
-const filteredMembers = ref([]);
+let saveData: (data: any) => Promise<void>;
 
 onMounted(() => {
 
 });
 
+function dataChanged(result: {data: any, saveDataFunc: (data: any) => Promise<void>}) {
+  task.value = result.data;
+  saveData = result.saveDataFunc;
+}
+
 const onHide = () => {
     emit('close', task.value);
 };
 
-const onSave = () => {
+const onSave = async () => {
+    await saveData(task.value);
     emit('save', task.value);
 };
 
@@ -32,6 +38,7 @@ const onSave = () => {
         <div class="grid p-fluid formgrid">
           <DataItem collection="tasklisttest"
                     :function="props.selectedTaskId ? 'update' : 'create'"
+                    @changed="dataChanged($event)"
                     :id="props.selectedTaskId">
           </DataItem>
           <div class="col-12 flex justify-content-end mt-4">

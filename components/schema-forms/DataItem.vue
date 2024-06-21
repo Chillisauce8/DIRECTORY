@@ -35,7 +35,7 @@ interface FieldProps {
 // @ts-ignore
 const props = defineProps<FieldProps>();
 // @ts-ignore
-const emits = defineEmits(['changed']);
+const emits = defineEmits(['mounted', 'changed']);
 
 const isCreateUpdate = ['create', 'update'].includes(props.function);
 const isReadSingle = props.function === 'read' && !!props.id;
@@ -63,7 +63,7 @@ sharedFunctions.createTarget = async (dataToSave: any): Promise<any> => {
 }
 
 sharedFunctions.updateTarget = async (dataToSave: any): Promise<any> => {
-  return httpService.post(`/api/update/${collectionName}`, dataToSave)
+  return httpService.update(`/api/update/${collectionName}`, dataToSave)
     .then((response: any) => {
       return response.data;
     });
@@ -96,6 +96,8 @@ sharedFunctions.isEditMode = () => {
 }
 
 onMounted(() => {
+  emits('mounted', {hooks: {saveRawFunc: saveRaw}});
+
   if (isCreateUpdate) {
     sharedFunctions.doOnMounted();
   } else if (isReadSingle) {
@@ -123,11 +125,15 @@ onDeactivated(() => {
 
 function onModelChange(value: any) {
   dataToSave = value;
-  emits('changed', dataToSave);
+  emits('changed', {data: dataToSave, saveDataFunc: saveModel});
 }
 
-function saveModel() {
-  sharedFunctions.save(dataToSave);
+async function saveModel() {
+  return sharedFunctions.save(dataToSave);
+}
+
+async function saveRaw(dataToSave?: any) {
+  return sharedFunctions.saveRaw(dataToSave);
 }
 
 </script>

@@ -201,7 +201,25 @@ export default function useSchemaFormController(formName: string): any {
       return null;
     },
 
-    save: (dataToSave: any): void => {
+    saveRaw: async (dataToSave: any): Promise<void> => {
+      let savePromise;
+      if (dataToSave?._doc) {
+        savePromise = sharedFunctions.updateTarget(dataToSave);
+      } else {
+        savePromise = sharedFunctions.createTarget(dataToSave);
+      }
+
+      return savePromise
+        .then((result: any) => {
+          toast.add({ severity: 'success', summary: 'Success Message', detail: 'Saved Successfully', life: 3000 });
+          return result;
+        })
+        .catch((result: any) => {
+          saveErrorHandler(result);
+        });
+    },
+
+    save: async (dataToSave: any): Promise<void> => {
       vm.saveError = '';
       vm.isFormNotValid = false;
 
@@ -217,7 +235,6 @@ export default function useSchemaFormController(formName: string): any {
 
       clearObsoleteFields(_dataToSave);
 
-
       let savePromise;
       if (vm.editMode) {
         savePromise = sharedFunctions.updateTarget(_dataToSave);
@@ -225,7 +242,7 @@ export default function useSchemaFormController(formName: string): any {
         savePromise = sharedFunctions.createTarget(_dataToSave);
       }
 
-      savePromise
+      return savePromise
         .then((result: any) => {
           vm.savedModelResult = result;
           const data = result['data'] || result;
@@ -244,7 +261,6 @@ export default function useSchemaFormController(formName: string): any {
         })
         .catch((result: any) => {
           saveErrorHandler(result);
-          return null;
         })
         .finally(() => {
           vm.inProgress = false;
