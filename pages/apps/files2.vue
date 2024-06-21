@@ -62,8 +62,10 @@ const statuses = ref([
     { label: 'Out of Stock', value: 'OUTOFSTOCK' }
 ]);
 
+const productService = new ProductService();
+
 onMounted(() => {
-    ProductService.getProductsMini().then((data) => (products.value = data));
+    productService.getProductsMini().then((data) => (products.value = data));
 });
 
 const onRowEditSave = (event) => {
