@@ -108,9 +108,9 @@ const model = ref([
                 to: '/apps/tasklist'
             },
             {
-              label: 'Task List Test',
-              icon: 'pi pi-fw pi-check-square',
-              to: '/apps/tasklisttest'
+                label: 'Task List Test',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/apps/tasklisttest'
             },
             {
                 label: 'Car Listings',
@@ -123,10 +123,20 @@ const model = ref([
                 to: '/gallery'
             },
             {
-              label: 'Test From',
-              icon: 'pi pi-fw pi-check-square',
-              to: '/apps/testSchemaForms'
+                label: 'Test From',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/apps/testSchemaForms'
             },
+            {
+                label: 'files',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/apps/Crud'
+            },
+            {
+                label: 'files 2',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/apps/files2'
+            }
         ]
     },
     {
