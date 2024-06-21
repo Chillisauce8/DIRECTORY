@@ -69,6 +69,13 @@ sharedFunctions.updateTarget = async (dataToSave: any): Promise<any> => {
     });
 }
 
+sharedFunctions.deleteTarget = async (dataId: string): Promise<boolean> => {
+  return httpService.delete(`/api/delete/${collectionName}/${dataId}`)
+    .then((response: any) => {
+      return response.ok;
+    });
+}
+
 sharedFunctions.getTargetName = (): string => {
   return collectionName;
 }
@@ -92,11 +99,11 @@ sharedFunctions.buildGroupsDescription = async (): Promise<any> => {
 }
 
 sharedFunctions.isEditMode = () => {
-  return true;
+  return !!props.id;
 }
 
 onMounted(() => {
-  emits('mounted', {hooks: {saveRawFunc: saveRaw}});
+  emits('mounted', {hooks: {saveRawFunc: saveRaw, deleteRawFunc: deleteRaw}});
 
   if (isCreateUpdate) {
     sharedFunctions.doOnMounted();
@@ -132,8 +139,12 @@ async function saveModel() {
   return sharedFunctions.save(dataToSave);
 }
 
-async function saveRaw(dataToSave?: any) {
+async function saveRaw(dataToSave: any) {
   return sharedFunctions.saveRaw(dataToSave);
+}
+
+async function deleteRaw(dataId: string) {
+  return sharedFunctions.deleteRaw(dataId);
 }
 
 </script>

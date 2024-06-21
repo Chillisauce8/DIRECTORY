@@ -58,6 +58,10 @@ export default function useSchemaFormController(formName: string): any {
       return null;
     },
 
+    deleteTarget: async (dataId: string): Promise<any> => {
+      return null;
+    },
+
     getTargetName: (): string => {
       return '';
     },
@@ -199,6 +203,10 @@ export default function useSchemaFormController(formName: string): any {
 
     buildGroupsDescription: async (): Promise<any> => {
       return null;
+    },
+
+    deleteRaw: async (dataId: string): Promise<void> => {
+      return sharedFunctions.deleteTarget(dataId);
     },
 
     saveRaw: async (dataToSave: any): Promise<void> => {

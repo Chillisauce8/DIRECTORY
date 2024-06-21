@@ -27,9 +27,11 @@ onBeforeMount(async () => {
 
 
 let saveRawFunc: (data: any) => Promise<void>;
+let deleteRawFunc: (dataId: string) => Promise<void>;
 
 function onDataItemMounted(result: {hooks: any}) {
   saveRawFunc = result.hooks?.saveRawFunc;
+  deleteRawFunc = result.hooks?.deleteRawFunc;
 }
 
 const onCheckboxChange = async (updatedTask: ITask) => {
@@ -39,10 +41,9 @@ const onCheckboxChange = async (updatedTask: ITask) => {
 
   reloadData();
 };
-const onDeleteTask = (deletedTask: ITask) => {
-  // taskList.value = taskList.value.filter((task: ITask) => task._doc !== deletedTask._doc);
-  //
-  // categorize(taskList.value);
+const onDeleteTask = async (deletedTask: ITask) => {
+  await deleteRawFunc(deletedTask._doc);
+  reloadData();
 };
 
 const openEditDialog = (task: ITask) => {
@@ -118,7 +119,7 @@ function reloadData() {
   <Dialog :header="dialogConfig.header || ''" v-model:visible="dialogConfig.visible" modal
           class="mx-3 sm:mx-0 sm:w-full md:w-8 lg:w-6"
           contentClass="border-round-bottom border-top-1 surface-border p-0">
-    <CreateTaskDialogWithDb :selected-task-id="selectedTask._doc"
+    <CreateTaskDialogWithDb :selected-task-id="selectedTask?._doc"
                             @close="onCloseDialog()" @save="onSaveDialog">
     </CreateTaskDialogWithDb>
   </Dialog>
