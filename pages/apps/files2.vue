@@ -4,6 +4,9 @@
             v-model:editingRows="editingRows"
             :value="products"
             editMode="row"
+            v-model:filters="filters"
+            filterDisplay="menu"
+            :globalFilterFields="['code', 'name', 'price']"
             dataKey="id"
             @row-edit-save="onRowEditSave"
             :pt="{
