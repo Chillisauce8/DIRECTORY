@@ -34,14 +34,22 @@
                     </span>
                 </p>
 
-                <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore()" @click="sharedFunctions.addFirstRow()"> </Button>
+                <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() &&
+                  sharedFunctions.canAddMore()" @click="sharedFunctions.addFirstRow()">
+                </Button>
             </div>
 
-            <div v-if="!sharedFunctions.isValidMaxItems()" class="text-color_red field_wrap">Max items value is {{ props.description.xMaxItemsValue }}</div>
+            <div v-if="!sharedFunctions.isValidMaxItems()" class="text-color_red field_wrap">
+              Max items value is {{ props.description.xMaxItemsValue }}
+            </div>
 
-            <div v-if="!sharedFunctions.isValidMinItems()" class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
+            <div v-if="!sharedFunctions.isValidMinItems()" class="text-color_red field_wrap">
+              Min items value is {{ props.description.xMinItemsValue }}
+            </div>
 
-            <div v-if="!sharedFunctions.ifValidUniqueItems()" class="text-color_red field_wrap">Items are not unique</div>
+            <div v-if="!sharedFunctions.ifValidUniqueItems()" class="text-color_red field_wrap">
+              Items are not unique
+            </div>
         </div>
     </div>
 </template>
@@ -91,21 +99,21 @@ onDeactivated(() => {
 function createSpeedDialItems(index: number) {
     return [
         {
-            icon: 'pi-plus',
+            icon: 'pi pi-plus',
             command: () => sharedFunctions.addRowAfter(index),
             visible: () => sharedFunctions.canAddMore()
         },
         {
-            icon: 'pi-times',
+            icon: 'pi pi-times',
             command: () => sharedFunctions.deleteRow(index),
             visible: () => sharedFunctions.canRemoveMore()
         },
         {
-            icon: 'pi-chevron-up',
+            icon: 'pi pi-chevron-up',
             command: () => sharedFunctions.moveRowUp(index)
         },
         {
-            icon: 'pi-chevron-down',
+            icon: 'pi pi-chevron-down',
             command: () => sharedFunctions.moveRowDown(index)
         }
     ];
