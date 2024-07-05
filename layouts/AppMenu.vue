@@ -126,16 +126,6 @@ const model = ref([
                 label: 'Test From',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/apps/testSchemaForms'
-            },
-            {
-                label: 'files',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/apps/Crud'
-            },
-            {
-                label: 'files 2',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/apps/files2'
             }
         ]
     },
