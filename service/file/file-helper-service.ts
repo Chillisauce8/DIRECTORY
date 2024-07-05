@@ -5,6 +5,13 @@ interface IFileSizeConfig {
 }
 
 
+export enum FileType {
+  Image= 'Image',
+  Video = 'Video',
+  Document = 'Document',
+}
+
+
 export class FileHelperService {
   private _base64EncodingMultiplyer = 1.37;
   private _base64HeadersSize = 814;
@@ -101,6 +108,24 @@ export class FileHelperService {
 
     return null;
   }
+
+  isFileImage(file: File): boolean {
+    return file && file.type.split('/')[0] === 'image';
+  }
+
+  isFileVideo(file: File): boolean {
+    return file && file.type.split('/')[0] === 'video';
+  }
+
+  getFileType(file: File): FileType {
+    if (this.isFileImage(file)) {
+      return FileType.Image;
+    } else if (this.isFileVideo(file)) {
+      return FileType.Video;
+    }
+
+    return FileType.Document;
+   }
 
   canShowFile(fileName: string): boolean {
     const extension = this.getFileExtension(fileName);

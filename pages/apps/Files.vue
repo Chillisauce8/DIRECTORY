@@ -1,6 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { FileService } from '@/service/FileService';
+import { usePrimeVue } from 'primevue/config';
+import { FileService } from '~/service/FileService';
+import { fileHelperService } from '~/service/file/file-helper-service';
+import EXIF from '~/service/file/exif';
+import { fileUploaderService } from '~/service/file/file-uploader-service';
+
+
+const toast = useToast();
+const $primevue = usePrimeVue();
+
 
 const metrics = ref([]);
 const files = ref([]);
@@ -14,7 +23,6 @@ const menuItems = ref([
 ]);
 const menuRef = ref(null);
 const fileUploaderRef = ref(null);
-const uploadFiles = ref([]);
 
 onMounted(() => {
     const fileService = new FileService();
@@ -29,7 +37,7 @@ const initChart = () => {
     const textColor = documentStyle.getPropertyValue('--text-color');
     chartPlugins.value = [
         {
-            beforeDraw: function (chart) {
+            beforeDraw: function (chart: any) {
                 let ctx = chart.ctx;
                 let width = chart.width;
                 let height = chart.height;
@@ -85,19 +93,97 @@ const initChart = () => {
     };
 };
 
-const toggleMenuItem = (event, index) => {
+
+const customUploader = async (event: {files: File[]}) => {
+
+  for (const file of event.files) {
+
+    const data = await new Promise((resolve) => {
+      const type = fileHelperService.getFileType(file);
+      const originalType = file.type || fileHelperService.getFileExtension(file.name);
+
+      const exif = new EXIF();
+      exif.getData(file, function () {
+
+        const metadata = exif.getAllTags(this);
+
+        const data = {
+          model: {
+            name: file.name,
+            originalType,
+            type,
+            size: file.size,
+            data: metadata,
+          },
+          file: file,
+        };
+
+        resolve(data);
+      });
+    });
+
+    const config: any = {
+      url: '/api/files',
+      data: data,
+      method: 'POST',
+      // headers: { [headerName: string]: string; },
+      // withCredentials: true,
+    }
+
+    const result = await fileUploaderService.upload(config);
+
+    if (result) {
+      toast.add({severity: 'info', summary: 'Success', detail: `${data.model.name} Uploaded`, life: 3000});
+    } else {
+      toast.add({severity: 'error', summary: 'Error', detail: `${data.model.name} Upload Failed`, life: 3000});
+    }
+  }
+
+  toast.add({ severity: 'info', summary: 'Process finished', detail: 'Uploading finished', life: 3000 });
+};
+
+
+async function onFileChanged(event: {files: File[]}) {
+
+}
+
+const toggleMenuItem = (event: any, index: number) => {
     menuRef.value[index].toggle(event);
 };
 
 const onChooseUploadFiles = () => {
     fileUploaderRef.value.choose();
 };
-const onSelectedFiles = (event) => {
-    uploadFiles.value = event.files;
+
+// const onSelectedFiles = (event: any) => {
+//     uploadFiles.value = event.files;
+// };
+
+// const onRemoveFile = (removeFile) => {
+//     uploadFiles.value = uploadFiles.value.filter((file) => file.name !== removeFile.name);
+// };
+
+const formatSize = (bytes: number) => {
+  const k = 1024;
+  const dm = 3;
+  const sizes = $primevue.config.locale.fileSizeTypes;
+
+  if (bytes === 0) {
+    return `0 ${sizes[0]}`;
+  }
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+
+  return `${formattedSize} ${sizes[i]}`;
 };
-const onRemoveFile = (removeFile) => {
-    uploadFiles.value = uploadFiles.value.filter((file) => file.name !== removeFile.name);
-};
+
+// const onRemoveTemplatingFile = (file: File, removeFileCallback: Function, index: number) => {
+//   removeFileCallback(index);
+//   totalSize.value -= parseInt(formatSize(file.size));
+//   totalSizePercent.value = totalSize.value / 10;
+// };
+
 </script>
 
 <template>
@@ -126,7 +212,7 @@ const onRemoveFile = (removeFile) => {
     -->
         <!--
         <div class="col-12 md:col-5 xl:col-3">
-      
+
             <div class="card">
                 <div class="text-900 text-xl font-semibold mb-3">Account Storage</div>
                 <div class="flex flex-row justify-content-center" style="height: 200px">
@@ -137,7 +223,7 @@ const onRemoveFile = (removeFile) => {
                     <Button icon="pi pi-upload" class="flex-1" label="Upgrade"></Button>
                 </div>
             </div>
-        
+
             <div class="card">
                 <div class="text-900 text-xl font-semibold mb-3">Categories</div>
                 <ul class="list-none p-0 m-0">
@@ -244,7 +330,48 @@ const onRemoveFile = (removeFile) => {
         </div>
         <div class="col-12 field">
             <label for="demo[]" class="text-900 font-semibold">Add Files</label>
-            <FileUpload name="demo[]" url="/api/upload" @upload="onAdvancedUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
+            <FileUpload name="demo[]" customUpload @uploader="customUploader" :multiple="true"
+                        :maxFileSize="1000000"
+                        @select="onFileChanged($event)">
+                <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
+                  <div class="flex flex-col gap-8 pt-4">
+                    <div v-if="files.length > 0">
+                      <h5>Pending</h5>
+                      <div class="flex flex-wrap gap-4">
+                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size"
+                             class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                          <div>
+                            <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                          </div>
+                          <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">
+                            {{ file.name }}
+                          </span>
+                          <div>{{ formatSize(file.size) }}</div>
+                          <Badge value="Pending" severity="warn" />
+                          <Button icon="pi pi-times" @click="removeFileCallback" outlined rounded severity="danger" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div v-if="uploadedFiles.length > 0">
+                      <h5>Completed</h5>
+                      <div class="flex flex-wrap gap-4">
+                        <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size"
+                             class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                          <div>
+                            <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                          </div>
+                          <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">
+                            {{ file.name }}
+                          </span>
+                          <div>{{ formatSize(file.size) }}</div>
+                          <Badge value="Completed" class="mt-4" severity="success" />
+                          <Button icon="pi pi-times" @click="removeUploadedFileCallback(index)" outlined rounded severity="danger" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
                 <template #empty>
                     <p>Drag and drop files to here to upload.</p>
                 </template>

@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import FileUpload from 'primevue/fileupload';
-import { fileHelperService } from '~/service/file-helper-service';
+import { fileHelperService } from '~/service/file/file-helper-service';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { useVuelidate } from '@vuelidate/core';

@@ -6,6 +6,8 @@ import {getWindowSafe} from '../browser/browser.helpers';
 // import {CurrentUser} from '../user-common/current-user.service';
 import { isUndefined } from '../utils';
 import { serverURL } from '~/environment';
+// @ts-ignore
+import { NitroFetchOptions } from 'nitropack';
 
 
 
@@ -16,7 +18,7 @@ type HttpRequestData = Record<string, any> | any[];
 
 type AvailableHttpMethods = 'get' | 'post' | 'put' | 'delete';
 
-type OFetchOptions = any; // NitroFetchOptions<any, AvailableHttpMethods>;
+export type OFetchOptions = NitroFetchOptions<any, AvailableHttpMethods>;
 
 
 interface QueryCollectionParams {
@@ -96,7 +98,7 @@ export class HttpService {
 
   }
 
-  public rawGet(path: string,
+  public async rawGet(path: string,
                 params?: HttpRequestQueryParams): Promise<string> {
     const requestConfig = {
       method: 'get' as AvailableHttpMethods,
@@ -113,10 +115,15 @@ export class HttpService {
       .catch(e => this.processError(e));
   }
 
-  public get<Data = any>(path: string,
-                         params?: HttpRequestQueryParams,
-                         headers?: HttpRequestHeaders,
-                         options?: OFetchOptions): Promise<HttpResponseData<Data>> {
+  public async request<Data = any>(path: string,
+                                  options: OFetchOptions): Promise<HttpResponseData<Data>> {
+    return this.fetch(path, options);
+  }
+
+  public async get<Data = any>(path: string,
+                               params?: HttpRequestQueryParams,
+                               headers?: HttpRequestHeaders,
+                               options?: OFetchOptions): Promise<HttpResponseData<Data>> {
     const requestConfig = {
       ...options,
       method: 'get' as AvailableHttpMethods,
