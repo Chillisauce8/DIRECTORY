@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { FilterMatchMode } from 'primevue/api';
+import { ref, onMounted } from 'vue';
 import { usePrimeVue } from 'primevue/config';
-import { FileService } from '~/service/FileService';
+import { ProductService } from '~/service/ProductService';
+import { useToast } from 'primevue/usetoast';
 import { fileHelperService } from '~/service/file/file-helper-service';
 import EXIF from '~/service/file/exif';
 import { fileUploaderService } from '~/service/file/file-uploader-service';
@@ -9,7 +11,6 @@ import { fileUploaderService } from '~/service/file/file-uploader-service';
 
 const toast = useToast();
 const $primevue = usePrimeVue();
-
 
 const metrics = ref([]);
 const files = ref([]);
@@ -24,13 +25,47 @@ const menuItems = ref([
 const menuRef = ref(null);
 const fileUploaderRef = ref(null);
 
-onMounted(() => {
-    const fileService = new FileService();
-    fileService.getFiles().then((data) => (files.value = data));
-    fileService.getMetrics().then((data) => (metrics.value = data));
-    fileService.getFoldersLarge().then((data) => (folders.value = data));
-    initChart();
+const products = ref(null);
+const productDialog = ref(false);
+const deleteProductDialog = ref(false);
+const deleteProductsDialog = ref(false);
+const product = ref({});
+const selectedProducts = ref(null);
+const dt = ref(null);
+const filters = ref({});
+const submitted = ref(false);
+/*
+const statuses = ref([
+    { label: 'INSTOCK', value: 'instock' },
+    { label: 'LOWSTOCK', value: 'lowstock' },
+    { label: 'OUTOFSTOCK', value: 'outofstock' }
+]);
+*/
+const productService = new ProductService();
+/*
+const getBadgeSeverity = (inventoryStatus) => {
+    switch (inventoryStatus.toLowerCase()) {
+        case 'instock':
+            return 'success';
+        case 'lowstock':
+            return 'warning';
+        case 'outofstock':
+            return 'danger';
+        default:
+            return 'info';
+    }
+};
+*/
+onBeforeMount(() => {
+    initFilters();
 });
+onMounted(() => {
+    productService.getFiles().then((data) => (products.value = data));
+});
+/*
+const formatCurrency = (value) => {
+    return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+};
 
 const initChart = () => {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -43,54 +78,72 @@ const initChart = () => {
                 let height = chart.height;
                 let fontSize = 1.5;
                 let oldFill = ctx.fillStyle;
+const openNew = () => {
+    product.value = {};
+    submitted.value = false;
+    productDialog.value = true;
+};
+*/
+const hideDialog = () => {
+    productDialog.value = false;
+    submitted.value = false;
+};
 
-                ctx.restore();
-                ctx.font = fontSize + 'rem sans-serif';
-                ctx.textBaseline = 'middle';
-
-                let text = 'Free Space';
-                let text2 = 50 + 'GB / ' + 80 + 'GB';
-                let textX = Math.round((width - ctx.measureText(text).width) / 2);
-                let textY = (height + chart.chartArea.top) / 2.25;
-
-                let text2X = Math.round((width - ctx.measureText(text).width) / 2.1);
-                let text2Y = (height + chart.chartArea.top) / 1.75;
-
-                ctx.fillStyle = chart.config.data.datasets[0].backgroundColor[0];
-                ctx.fillText(text, textX, textY);
-                ctx.fillText(text2, text2X, text2Y);
-                ctx.fillStyle = oldFill;
-                ctx.save();
-            }
+const saveProduct = () => {
+    submitted.value = true;
+    if (product.value.name && product.value.name.trim() && product.value.price) {
+        if (product.value.id) {
+            product.value.inventoryStatus = product.value.inventoryStatus.value ? product.value.inventoryStatus.value : product.value.inventoryStatus;
+            products.value[findIndexById(product.value.id)] = product.value;
+            toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+        } else {
+            product.value.id = createId();
+            product.value.code = createId();
+            product.value.image = 'product-placeholder.svg';
+            product.value.inventoryStatus = product.value.inventoryStatus ? product.value.inventoryStatus.value : 'INSTOCK';
+            products.value.push(product.value);
+            toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
         }
-    ];
-    chartData.value = {
-        datasets: [
-            {
-                data: [300, 100],
-                backgroundColor: [documentStyle.getPropertyValue('--primary-600'), documentStyle.getPropertyValue('--primary-100')],
-                hoverBackgroundColor: [documentStyle.getPropertyValue('--primary-700'), documentStyle.getPropertyValue('--primary-200')],
-                borderColor: 'transparent',
-                fill: true
-            }
-        ]
-    };
+        productDialog.value = false;
+        product.value = {};
+    }
+};
 
-    chartOptions.value = {
-        animation: {
-            duration: 0
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '90%',
-        plugins: {
-            legend: {
-                labels: {
-                    color: textColor
-                }
-            }
+const editProduct = (editProduct) => {
+    product.value = { ...editProduct };
+    productDialog.value = true;
+};
+
+const confirmDeleteProduct = (editProduct) => {
+    product.value = editProduct;
+    deleteProductDialog.value = true;
+};
+
+const deleteProduct = () => {
+    products.value = products.value.filter((val) => val.id !== product.value.id);
+    deleteProductDialog.value = false;
+    product.value = {};
+    toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+};
+
+const findIndexById = (id) => {
+    let index = -1;
+    for (let i = 0; i < products.value.length; i++) {
+        if (products.value[i].id === id) {
+            index = i;
+            break;
         }
-    };
+    }
+    return index;
+};
+
+const createId = () => {
+    let id = '';
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 5; i++) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return id;
 };
 
 
@@ -149,10 +202,19 @@ async function onFileChanged(event: {files: File[]}) {
 
 const toggleMenuItem = (event: any, index: number) => {
     menuRef.value[index].toggle(event);
+/*
+const exportCSV = () => {
+    dt.value.exportCSV();
 };
-
-const onChooseUploadFiles = () => {
-    fileUploaderRef.value.choose();
+*/
+const confirmDeleteSelected = () => {
+    deleteProductsDialog.value = true;
+};
+const deleteSelectedProducts = () => {
+    products.value = products.value.filter((val) => !selectedProducts.value.includes(val));
+    deleteProductsDialog.value = false;
+    selectedProducts.value = null;
+    toast.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
 };
 
 // const onSelectedFiles = (event: any) => {
@@ -184,245 +246,223 @@ const formatSize = (bytes: number) => {
 //   totalSizePercent.value = totalSize.value / 10;
 // };
 
+
+const initFilters = () => {
+    filters.value = {
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+    };
+};
 </script>
 
 <template>
     <div class="grid">
-        <!--
-        <div v-for="(metric, i) in metrics" :key="i" class="col-12 md:col-6 lg:col-3">
-            <div class="card h-full">
-                <div class="flex align-items-center justify-content-between mb-3">
-                    <span class="text-900 text-xl font-semibold">{{ metric.title }}</span>
-                    <div>
-                        <Button @click="toggleMenuItem($event, i)" :icon="metric.icon" size="small" text rounded></Button>
-                        <Menu ref="menuRef" popup :model="menuItems"></Menu>
-                    </div>
-                </div>
-                <div>
-                    <div class="border-round" :class="metric.color" :style="{ height: '6px' }">
-                        <div class="h-full border-round" :class="metric.fieldColor" :style="{ width: '34%' }"></div>
-                    </div>
-                    <div class="flex align-item-center justify-content-between">
-                        <span class="text-900 mt-3 text-md font-medium">{{ metric.files }}</span>
-                        <span class="text-900 mt-3 text-md font-medium">{{ metric.fileSize }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    -->
-        <!--
-        <div class="col-12 md:col-5 xl:col-3">
-
-            <div class="card">
-                <div class="text-900 text-xl font-semibold mb-3">Account Storage</div>
-                <div class="flex flex-row justify-content-center" style="height: 200px">
-                    <Chart type="doughnut" :plugins="chartPlugins" :data="chartData" :options="chartOptions"></Chart>
-                </div>
-                <div class="mt-5 flex gap-3">
-                    <Button icon="pi pi-search" class="flex-1" label="Details" outlined></Button>
-                    <Button icon="pi pi-upload" class="flex-1" label="Upgrade"></Button>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="text-900 text-xl font-semibold mb-3">Categories</div>
-                <ul class="list-none p-0 m-0">
-                    <li class="p-3 mb-3 flex align-items-center justify-content-between cursor-pointer border-round bg-indigo-50 text-indigo-900">
-                        <div class="flex align-items-center">
-                            <i class="pi pi-image text-2xl mr-3"></i>
-                            <span class="ext-lg font-medium">Images</span>
-                        </div>
-                        <span class="text-lg font-bold">85</span>
-                    </li>
-                    <li class="p-3 mb-3 flex align-items-center justify-content-between cursor-pointer border-round bg-purple-50 text-purple-900">
-                        <div class="flex align-items-center">
-                            <i class="pi pi-file text-2xl mr-3"></i>
-                            <span class="ext-lg font-medium">Documents</span>
-                        </div>
-                        <span class="text-lg font-bold">231</span>
-                    </li>
-                    <li class="p-3 flex align-items-center justify-content-between cursor-pointer border-round bg-teal-50 text-teal-900">
-                        <div class="flex align-items-center">
-                            <i class="pi pi-video text-2xl mr-3"></i>
-                            <span class="ext-lg font-medium">Videos</span>
-                        </div>
-                        <span class="text-lg font-bold">40</span>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="card p-0">
-                <div class="card">
-                    <FileUpload
-                        ref="fileUploaderRef"
-                        id="files-fileupload"
-                        name="demo[]"
-                        url="./upload.php"
-                        accept="image/*"
-                        customUpload
-                        multiple
-                        auto
-                        class="upload-button-hidden w-full"
-                        invalidFileSizeMessage="Invalid File Size"
-                        invalidFileTypeMessage="Invalid File Type"
-                        :maxFileSize="1000000"
-                        @select="onSelectedFiles"
-                        :pt="{
-                            buttonbar: { class: 'hidden' },
-                            content: { class: 'border-none' }
-                        }"
-                    >
-                        <template #content>
-                            <div v-if="uploadFiles.length > 0" class="w-full py-3" :style="{ cursor: 'copy' }">
-                                <div v-for="file in uploadFiles" :key="file.name" class="flex flex-wrap gap-5">
-                                    <div class="remove-file-wrapper h-full relative w-7rem h-7rem border-3 border-transparent border-round hover:bg-primary transition-duration-100 cursor-auto" :style="{ padding: '1px' }">
-                                        <img :src="file.objectURL" :alt="file.name" class="w-full h-full border-round shadow-2" />
-                                        <Button
-                                            icon="pi pi-times"
-                                            class="remove-button text-sm absolute justify-content-center align-items-center cursor-pointer"
-                                            rounded
-                                            :style="{ top: '-10px', right: '-10px', display: 'none' }"
-                                            @click="onRemoveFile(file)"
-                                        ></Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
-                        <template #empty>
-                            <div v-if="uploadFiles.length < 1" @click="onChooseUploadFiles" class="w-full py-3" :style="{ cursor: 'copy' }">
-                                <div class="h-full flex flex-column justify-content-center align-items-center">
-                                    <i class="pi pi-upload text-900 text-2xl mb-3"></i>
-                                    <span class="font-bold text-900 text-xl mb-3">Upload Files</span>
-                                    <span class="font-medium text-600 text-md text-center">Drop or select files</span>
-                                </div>
-                            </div>
-                        </template>
-                    </FileUpload>
-                </div>
-            </div>
-        </div>
-    -->
-        <div class="card col-12">
-            <div class="text-900 text-xl font-semibold mb-3">Categories</div>
-            <ul class="list-none p-0 m-0">
-                <li class="p-3 mb-3 flex align-items-center justify-content-between cursor-pointer border-round bg-indigo-50 text-indigo-900">
-                    <div class="flex align-items-center">
-                        <i class="pi pi-image text-2xl mr-3"></i>
-                        <span class="ext-lg font-medium">Images</span>
-                    </div>
-                    <span class="text-lg font-bold">85</span>
-                </li>
-                <li class="p-3 mb-3 flex align-items-center justify-content-between cursor-pointer border-round bg-purple-50 text-purple-900">
-                    <div class="flex align-items-center">
-                        <i class="pi pi-file text-2xl mr-3"></i>
-                        <span class="ext-lg font-medium">Documents</span>
-                    </div>
-                    <span class="text-lg font-bold">231</span>
-                </li>
-                <li class="p-3 flex align-items-center justify-content-between cursor-pointer border-round bg-teal-50 text-teal-900">
-                    <div class="flex align-items-center">
-                        <i class="pi pi-video text-2xl mr-3"></i>
-                        <span class="ext-lg font-medium">Videos</span>
-                    </div>
-                    <span class="text-lg font-bold">40</span>
-                </li>
-            </ul>
-        </div>
-        <div class="col-12 field">
-            <label for="demo[]" class="text-900 font-semibold">Add Files</label>
-            <FileUpload name="demo[]" customUpload @uploader="customUploader" :multiple="true"
-                        :maxFileSize="1000000"
-                        @select="onFileChanged($event)">
-                <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
-                  <div class="flex flex-col gap-8 pt-4">
-                    <div v-if="files.length > 0">
-                      <h5>Pending</h5>
-                      <div class="flex flex-wrap gap-4">
-                        <div v-for="(file, index) of files" :key="file.name + file.type + file.size"
-                             class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
-                          <div>
-                            <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                          </div>
-                          <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">
-                            {{ file.name }}
-                          </span>
-                          <div>{{ formatSize(file.size) }}</div>
-                          <Badge value="Pending" severity="warn" />
-                          <Button icon="pi pi-times" @click="removeFileCallback" outlined rounded severity="danger" />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div v-if="uploadedFiles.length > 0">
-                      <h5>Completed</h5>
-                      <div class="flex flex-wrap gap-4">
-                        <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size"
-                             class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
-                          <div>
-                            <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                          </div>
-                          <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">
-                            {{ file.name }}
-                          </span>
-                          <div>{{ formatSize(file.size) }}</div>
-                          <Badge value="Completed" class="mt-4" severity="success" />
-                          <Button icon="pi pi-times" @click="removeUploadedFileCallback(index)" outlined rounded severity="danger" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </template>
-                <template #empty>
-                    <p>Drag and drop files to here to upload.</p>
-                </template>
-            </FileUpload>
-        </div>
         <div class="col-12">
-            <!--   <div class="card">
-                <div class="text-900 text-xl font-semibold mb-3">Folders</div>
-                <div class="grid">
-                    <div v-for="(folder, i) in folders" :key="i" class="col-12 md:col-6 xl:col-4">
-                        <div class="p-3 border-1 surface-border flex align-items-center justify-content-between hover:surface-100 cursor-pointer border-round">
-                            <div class="flex align-items-center">
-                                <i class="text-2xl mr-3" :class="folder.icon"></i>
-                                <span class="text-900 text-lg font-medium">{{ folder.name }}</span>
-                            </div>
-                            <span class="text-600 text-lg font-semibold">{{ folder.size }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
             <div class="card">
-                <div class="text-900 text-xl font-semibold mb-3">Recent Uploads</div>
-                <DataTable :value="files" dataKey="id" paginator :rows="8">
-                    <Column field="name" header="Name" sortable :headerStyle="{ minWidth: '12rem' }">
-                        <template #body="{ data }">
-                            <div class="flex align-items-center">
-                                <i class="text-xl text-primary mr-2" :class="data.icon"></i>
-                                <span>{{ data.name }}</span>
-                            </div>
+                <Toolbar class="mb-4">
+                    <template v-slot:start>
+                        <div class="my-2">
+                            <!--         <Button label="New" icon="pi pi-plus" class="mr-2" severity="success" @click="openNew" /> -->
+                            <Button label="Delete" icon="pi pi-trash" severity="danger" @click="confirmDeleteSelected" :disabled="!selectedProducts || !selectedProducts.length" />
+                            <Button label="Select" icon="pi pi-trash" severity="danger" @click="confirmDeleteSelected" :disabled="!selectedProducts || !selectedProducts.length" />
+                        </div>
+                    </template>
+
+                    <template v-slot:end>
+                        <FileUpload mode="advanced" :multiple="true" previewWidth="100" :maxFileSize="100000000" label="Import" chooseLabel="Import" class="mr-2 inline-block" />
+                        <!--    <Button label="Export" icon="pi pi-upload" severity="help" @click="exportCSV($event)" /> -->
+                    </template>
+                </Toolbar>
+
+                <DataTable
+                    ref="dt"
+                    :value="products"
+                    v-model:selection="selectedProducts"
+                    dataKey="id"
+                    :paginator="true"
+                    :rows="10"
+                    :filters="filters"
+                    paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                    :rowsPerPageOptions="[5, 10, 25]"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+                >
+                    <template #header>
+                        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                            <h5 class="m-0">Manage Files</h5>
+                            <IconField iconPosition="left" class="block mt-2 md:mt-0">
+                                <InputIcon class="pi pi-search" />
+                                <InputText class="w-full sm:w-auto" v-model="filters['global'].value" placeholder="Search..." />
+                            </IconField>
+                        </div>
+                    </template>
+
+                    <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
+                    <!-- <Column field="code" header="Code" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Code</span>
+                            {{ slotProps.data.code }}
                         </template>
                     </Column>
-                    <Column field="date" header="Date" headerClass="white-space-nowrap" :headerStyle="{ minWidth: '12rem' }"> </Column>
-                    <Column field="fileSize" header="File Size" sortable :headerStyle="{ minWidth: '12rem' }"></Column>
-                    <Column class="w-10rem">
-                        <template #body>
-                            <div class="text-center">
-                                <Button icon="pi pi-times" class="mr-2" severity="danger" text rounded></Button>
-                                <Button icon="pi pi-search" text rounded></Button>
-                            </div>
+                -->
+                    <Column header="Image" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Image</span>
+                            <img :src="'/demo/images/product/' + slotProps.data.image" :alt="slotProps.data.image" width="100" />
+                        </template>
+                    </Column>
+                    <Column field="name" header="Name" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Name</span>
+                            {{ slotProps.data.name }}
+                        </template>
+                    </Column>
+                    <Column field="descriptiom" header="Description" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Name</span>
+                            {{ slotProps.data.description }}
+                        </template>
+                    </Column>
+
+                    <!--
+                    <Column field="price" header="Price" :sortable="true" headerStyle="width:14%; min-width:8rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Price</span>
+                            {{ formatCurrency(slotProps.data.price) }}
+                        </template>
+                    </Column>
+                -->
+                    <Column field="type" header="Type" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Type</span>
+                            {{ slotProps.data.type }}
+                        </template>
+                    </Column>
+                    <Column field="extension" header="Extension" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Extension</span>
+                            {{ slotProps.data.extension }}
+                        </template>
+                    </Column>
+                    <Column field="dateAdded" header="Added" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Added</span>
+                            {{ slotProps.data.dateAdded }}
+                        </template>
+                    </Column>
+                    <Column field="rating" header="Rating" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Rating</span>
+                            <Rating :modelValue="slotProps.data.rating" :readonly="true" :cancel="false" />
+                        </template>
+                    </Column>
+                    <!--
+                    <Column field="inventoryStatus" header="Status" :sortable="true" headerStyle="width:14%; min-width:10rem;">
+                        <template #body="slotProps">
+                            <span class="p-column-title">Status</span>
+                            <Tag :severity="getBadgeSeverity(slotProps.data.inventoryStatus)">{{ slotProps.data.inventoryStatus }}</Tag>
+                        </template>
+                    </Column>
+                -->
+                    <Column headerStyle="min-width:10rem;">
+                        <template #body="slotProps">
+                            <Button icon="pi pi-pencil" class="mr-2" severity="success" rounded @click="editProduct(slotProps.data)" />
+                            <Button icon="pi pi-trash" class="mt-2" severity="warning" rounded @click="confirmDeleteProduct(slotProps.data)" />
                         </template>
                     </Column>
                 </DataTable>
+
+                <Dialog v-model:visible="productDialog" :style="{ width: '450px' }" header="Product Details" :modal="true" class="p-fluid">
+                    <img :src="'/demo/images/product/' + product.image" :alt="product.image" v-if="product.image" width="150" class="mt-0 mx-auto mb-5 block shadow-2" />
+                    <div class="field">
+                        <label for="name">Name</label>
+                        <InputText id="name" v-model.trim="product.name" required="true" autofocus :invalid="submitted && !product.name" />
+                        <small class="p-invalid" v-if="submitted && !product.name">Name is required.</small>
+                    </div>
+                    <div class="field">
+                        <label for="description">Description</label>
+                        <Textarea id="description" v-model="product.description" required="true" rows="3" cols="20" />
+                    </div>
+
+                    <div class="field">
+                        <label for="inventoryStatus" class="mb-3">Inventory Status</label>
+                        <Dropdown id="inventoryStatus" v-model="product.inventoryStatus" :options="statuses" optionLabel="label" placeholder="Select a Status">
+                            <template #value="slotProps">
+                                <div v-if="slotProps.value && slotProps.value.value">
+                                    <span :class="'product-badge status-' + slotProps.value.value">{{ slotProps.value.label }}</span>
+                                </div>
+                                <div v-else-if="slotProps.value && !slotProps.value.value">
+                                    <span :class="'product-badge status-' + slotProps.value.toLowerCase()">{{ slotProps.value }}</span>
+                                </div>
+                                <span v-else>
+                                    {{ slotProps.placeholder }}
+                                </span>
+                            </template>
+                        </Dropdown>
+                    </div>
+
+                    <div class="field">
+                        <label class="mb-3">Category</label>
+                        <div class="formgrid grid">
+                            <div class="field-radiobutton col-6">
+                                <RadioButton id="category1" name="category" value="Accessories" v-model="product.category" />
+                                <label for="category1">Accessories</label>
+                            </div>
+                            <div class="field-radiobutton col-6">
+                                <RadioButton id="category2" name="category" value="Clothing" v-model="product.category" />
+                                <label for="category2">Clothing</label>
+                            </div>
+                            <div class="field-radiobutton col-6">
+                                <RadioButton id="category3" name="category" value="Electronics" v-model="product.category" />
+                                <label for="category3">Electronics</label>
+                            </div>
+                            <div class="field-radiobutton col-6">
+                                <RadioButton id="category4" name="category" value="Fitness" v-model="product.category" />
+                                <label for="category4">Fitness</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="price">Price</label>
+                            <InputNumber id="price" v-model="product.price" mode="currency" currency="USD" locale="en-US" :invalid="submitted && !product.price" :required="true" />
+                            <small class="p-invalid" v-if="submitted && !product.price">Price is required.</small>
+                        </div>
+                        <div class="field col">
+                            <label for="quantity">Quantity</label>
+                            <InputNumber id="quantity" v-model="product.quantity" integeronly />
+                        </div>
+                    </div>
+                    <template #footer>
+                        <Button label="Cancel" icon="pi pi-times" text="" @click="hideDialog" />
+                        <Button label="Save" icon="pi pi-check" text="" @click="saveProduct" />
+                    </template>
+                </Dialog>
+
+                <Dialog v-model:visible="deleteProductDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
+                    <div class="flex align-items-center justify-content-center">
+                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+                        <span v-if="product"
+                            >Are you sure you want to delete <b>{{ product.name }}</b
+                            >?</span
+                        >
+                    </div>
+                    <template #footer>
+                        <Button label="No" icon="pi pi-times" text @click="deleteProductDialog = false" />
+                        <Button label="Yes" icon="pi pi-check" text @click="deleteProduct" />
+                    </template>
+                </Dialog>
+
+                <Dialog v-model:visible="deleteProductsDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
+                    <div class="flex align-items-center justify-content-center">
+                        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+                        <span v-if="product">Are you sure you want to delete the selected files?</span>
+                    </div>
+                    <template #footer>
+                        <Button label="No" icon="pi pi-times" text @click="deleteProductsDialog = false" />
+                        <Button label="Yes" icon="pi pi-check" text @click="deleteSelectedProducts" />
+                    </template>
+                </Dialog>
             </div>
         </div>
     </div>
 </template>
-
-<style scoped lang="scss">
-.remove-file-wrapper:hover {
-    .remove-button {
-        display: flex !important;
-    }
-}
-</style>
