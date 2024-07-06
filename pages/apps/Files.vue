@@ -120,13 +120,13 @@ const confirmDeleteProduct = (editProduct) => {
 };
 
 const deleteProduct = () => {
-    products.value = products.value.filter((val) => val.id !== product.value.id);
+    products.value = products.value.filter((val: any) => val.id !== product.value.id);
     deleteProductDialog.value = false;
     product.value = {};
     toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
 };
 
-const findIndexById = (id) => {
+const findIndexById = (id: number) => {
     let index = -1;
     for (let i = 0; i < products.value.length; i++) {
         if (products.value[i].id === id) {
@@ -151,7 +151,7 @@ const customUploader = async (event: {files: File[]}) => {
 
   for (const file of event.files) {
 
-    const data = await new Promise((resolve) => {
+    const data: any = await new Promise((resolve) => {
       const type = fileHelperService.getFileType(file);
       const originalType = file.type || fileHelperService.getFileExtension(file.name);
 
@@ -160,7 +160,7 @@ const customUploader = async (event: {files: File[]}) => {
 
         const metadata = exif.getAllTags(this);
 
-        const data = {
+        const data: any = {
           model: {
             name: file.name,
             originalType,
@@ -196,12 +196,14 @@ const customUploader = async (event: {files: File[]}) => {
 };
 
 
-async function onFileChanged(event: {files: File[]}) {
-
-}
+// async function onFileChanged(event: {files: File[]}) {
+//
+// }
 
 const toggleMenuItem = (event: any, index: number) => {
-    menuRef.value[index].toggle(event);
+  menuRef.value[index].toggle(event);
+}
+
 /*
 const exportCSV = () => {
     dt.value.exportCSV();
@@ -211,7 +213,7 @@ const confirmDeleteSelected = () => {
     deleteProductsDialog.value = true;
 };
 const deleteSelectedProducts = () => {
-    products.value = products.value.filter((val) => !selectedProducts.value.includes(val));
+    products.value = products.value.filter((val: any) => !selectedProducts.value.includes(val));
     deleteProductsDialog.value = false;
     selectedProducts.value = null;
     toast.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
@@ -225,20 +227,20 @@ const deleteSelectedProducts = () => {
 //     uploadFiles.value = uploadFiles.value.filter((file) => file.name !== removeFile.name);
 // };
 
-const formatSize = (bytes: number) => {
-  const k = 1024;
-  const dm = 3;
-  const sizes = $primevue.config.locale.fileSizeTypes;
-
-  if (bytes === 0) {
-    return `0 ${sizes[0]}`;
-  }
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-  return `${formattedSize} ${sizes[i]}`;
-};
+// const formatSize = (bytes: number) => {
+//   const k = 1024;
+//   const dm = 3;
+//   const sizes = $primevue.config.locale.fileSizeTypes;
+//
+//   if (bytes === 0) {
+//     return `0 ${sizes[0]}`;
+//   }
+//
+//   const i = Math.floor(Math.log(bytes) / Math.log(k));
+//   const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+//
+//   return `${formattedSize} ${sizes[i]}`;
+// };
 
 // const onRemoveTemplatingFile = (file: File, removeFileCallback: Function, index: number) => {
 //   removeFileCallback(index);
@@ -251,7 +253,7 @@ const initFilters = () => {
     filters.value = {
         global: { value: null, matchMode: FilterMatchMode.CONTAINS }
     };
-};
+}
 </script>
 
 <template>
@@ -268,7 +270,10 @@ const initFilters = () => {
                     </template>
 
                     <template v-slot:end>
-                        <FileUpload mode="advanced" :multiple="true" previewWidth="100" :maxFileSize="100000000" label="Import" chooseLabel="Import" class="mr-2 inline-block" />
+                        <FileUpload mode="advanced" :multiple="true" previewWidth="100" :maxFileSize="100000000"
+                                    label="Import" chooseLabel="Import" class="mr-2 inline-block"
+                                    customUpload :uploader="customUploader"
+                        />
                         <!--    <Button label="Export" icon="pi pi-upload" severity="help" @click="exportCSV($event)" /> -->
                     </template>
                 </Toolbar>
