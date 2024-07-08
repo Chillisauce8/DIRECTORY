@@ -12,6 +12,21 @@ export enum FileType {
 }
 
 
+
+export interface IMediaProperties {
+  width: number;
+  height: number;
+  aspectRatio: string|undefined;
+}
+
+
+export interface IMediaFileProperties extends IMediaProperties {
+  name: string;
+  fileFormat: string;
+  size?: number;
+}
+
+
 export class FileHelperService {
   private _base64EncodingMultiplyer = 1.37;
   private _base64HeadersSize = 814;
@@ -19,7 +34,7 @@ export class FileHelperService {
   private readonly possibleExtensionToShowInBrowser = ['json', 'xml', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'txt',
     'mp4', 'webm', 'mp3', 'ogg'];
 
-  public isFileSizeOk(file: File, fileSizeConfig: IFileSizeConfig): boolean {
+  isFileSizeOk(file: File, fileSizeConfig: IFileSizeConfig): boolean {
     if (!fileSizeConfig || !file) {
       return true;
     }
@@ -39,7 +54,7 @@ export class FileHelperService {
     return true;
   }
 
-  public convertFileSizeStringIntoBytes(fileSizeString: string): number|null {
+  convertFileSizeStringIntoBytes(fileSizeString: string): number|null {
     let sizeConvertIncrement = {
       '': 1,
       'b': 1,
@@ -65,7 +80,7 @@ export class FileHelperService {
     return maxFileSizeBase * maxFileSizeIncrement;
   }
 
-  public convertBytesToFileSizeString(fileSizeInBytes: number) {
+  convertBytesToFileSizeString(fileSizeInBytes: number) {
     if (!fileSizeInBytes) {
       return '0B';
     }
@@ -85,7 +100,7 @@ export class FileHelperService {
     return Math.max(fileInCurrentUnits, 0.1).toFixed(1) + sizeUnits[i];
   }
 
-  public calculateBase64Size(originalSize: number): number {
+  calculateBase64Size(originalSize: number): number {
     return originalSize * this._base64EncodingMultiplyer + this._base64HeadersSize;
   }
 
@@ -126,6 +141,37 @@ export class FileHelperService {
 
     return FileType.Document;
    }
+
+  calculateAspectRatio(width: number, height: number): string | undefined {
+
+    function gcd(a: number, b: number): number {
+      return (b === 0) ? a : gcd(b, a % b);
+    }
+
+    if (!width || !height) {
+      return undefined;
+    }
+
+    const r = gcd(width, height);
+
+    return width / r + ':' + height / r;
+  }
+
+  getMediaFileProperties(file: any): IMediaFileProperties {
+    const width = file.metadata && file.metadata.width || 0;
+    const height = file.metadata && file.metadata.height || 0;
+
+    const size = file.size;
+
+    return {
+      name: file.name,
+      fileFormat: file.type,
+      width: width,
+      height: height,
+      size: size,
+      aspectRatio: this.calculateAspectRatio(width, height)
+    };
+  }
 
   canShowFile(fileName: string): boolean {
     const extension = this.getFileExtension(fileName);

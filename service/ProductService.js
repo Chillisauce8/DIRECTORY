@@ -4,9 +4,7 @@ export class ProductService {
             .then((res) => res.json())
             .then((d) => d.data);
     }
-  
 
-  
     getProductsSmall() {
         return fetch('/demo/data/products-small.json', { headers: { 'Cache-Control': 'no-cache' } })
             .then((res) => res.json())
