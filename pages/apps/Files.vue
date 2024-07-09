@@ -8,6 +8,8 @@ import { fileHelperService } from '~/service/file/file-helper-service';
 import EXIF from '~/service/file/exif';
 import { fileUploaderService } from '~/service/file/file-uploader-service';
 import { filesService } from '~/service/file/files-service';
+import useSchemaFormController from '~/composables/schema-forms/useSchemaFormController';
+import { httpService } from '~/service/http/http.service';
 
 
 const toast = useToast();
@@ -100,26 +102,6 @@ const hideDialog = () => {
     submitted.value = false;
 };
 
-const saveProduct = () => {
-    submitted.value = true;
-    if (currentFile.value.name && currentFile.value.name.trim() && currentFile.value.price) {
-        if (currentFile.value.id) {
-            currentFile.value.inventoryStatus = currentFile.value.inventoryStatus.value ? currentFile.value.inventoryStatus.value : currentFile.value.inventoryStatus;
-            dbFiles.value[findIndexById(currentFile.value.id)] = currentFile.value;
-            toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-        } else {
-            currentFile.value.id = createId();
-            currentFile.value.code = createId();
-            currentFile.value.image = 'currentFile-placeholder.svg';
-            currentFile.value.inventoryStatus = currentFile.value.inventoryStatus ? currentFile.value.inventoryStatus.value : 'INSTOCK';
-            dbFiles.value.push(currentFile.value);
-            toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-        }
-        fileDialog.value = false;
-        currentFile.value = {};
-    }
-};
-
 const editFile = (fileData: any) => {
     currentFile.value = { ...fileData };
     fileDialog.value = true;
@@ -153,15 +135,6 @@ const findIndexById = (id: number) => {
         }
     }
     return index;
-};
-
-const createId = () => {
-    let id = '';
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (let i = 0; i < 5; i++) {
-        id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return id;
 };
 
 const customUploader = async (event: {files: File[]}) => {
@@ -224,6 +197,8 @@ const customUploader = async (event: {files: File[]}) => {
   }
 
   toast.add({ severity: 'info', summary: 'Process finished', detail: 'Uploading finished', life: 3000 });
+
+  loadAllFiles();
 };
 
 
@@ -293,9 +268,19 @@ const initFilters = () => {
     };
 }
 
-const test = (slotProps: any) => {
-  return 'test';
+
+let dataToSave: any;
+let saveDataFunc: Function;
+
+function dataChanged(result: {data: any, saveDataFunc: (data: any) => Promise<void>}) {
+  dataToSave = result.data;
+  saveDataFunc = result.saveDataFunc;
 }
+
+async function updateFile() {
+  return saveDataFunc(dataToSave);
+}
+
 
 </script>
 
@@ -425,21 +410,20 @@ const test = (slotProps: any) => {
                     </Column>
                 </DataTable>
 
-                <Dialog v-model:visible="fileDialog" :style="{ width: '450px' }" header="File Details" :modal="true" class="p-fluid">
-                    <img :src="'/demo/images/product/' + currentFile.image" :alt="currentFile.image" v-if="currentFile.image" width="150" class="mt-0 mx-auto mb-5 block shadow-2" />
-                    <div class="field">
-                        <label for="name">Name</label>
-                        <InputText id="name" v-model.trim="currentFile.name" required="true" autofocus :invalid="submitted && !currentFile.name" />
-                        <small class="p-invalid" v-if="submitted && !currentFile.name">Name is required.</small>
-                    </div>
-                    <div class="field">
-                        <label for="description">Description</label>
-                        <Textarea id="description" v-model="currentFile.description" required="true" rows="3" cols="20" />
-                    </div>
+                <Dialog v-model:visible="fileDialog" :style="{ width: '450px' }" header="File Details" :modal="true"
+                        class="p-fluid">
+
+                    <DataItem
+                      v-if="currentFile"
+                      collection="files"
+                      function="update"
+                      @changed="dataChanged($event)"
+                      :id="currentFile?._doc">
+                    </DataItem>
 
                     <template #footer>
                         <Button label="Cancel" icon="pi pi-times" @click="hideDialog" />
-                        <Button label="Save" icon="pi pi-check" @click="saveProduct" />
+                        <Button label="Save" icon="pi pi-check" @click="updateFile" />
                     </template>
                 </Dialog>
 
