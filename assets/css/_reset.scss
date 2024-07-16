@@ -1,4 +1,4 @@
-@layer reset {
+
 *,
 *:before,
 *:after {
@@ -25,5 +25,4 @@
 html{
   overflow-x: hidden; // Effects position sticky on some elements - EG Split Box. Done for stopping x- flow on mobile
   position: relative;
-}
 }
