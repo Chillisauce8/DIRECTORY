@@ -123,7 +123,12 @@ const model = ref([
                 to: '/gallery'
             },
             {
-                label: 'Test From',
+                label: 'Test Form',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/apps/testSchemaForms'
+            },
+            {
+                label: 'Test Form Field Layout',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/apps/testSchemaForms'
             }
