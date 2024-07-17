@@ -534,6 +534,11 @@ export default defineNuxtConfig({
         path: '/apps/testSchemaForms',
         file: '@/pages/apps/TestForm.vue'
       });
+      pages.push({
+        name: 'Test Forms Layout',
+        path: '/apps/testFormLayout',
+        file: '@/pages/apps/TestFormLayout.vue'
+      });
     }
   },
   alias: {

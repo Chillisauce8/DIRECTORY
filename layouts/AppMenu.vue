@@ -130,7 +130,7 @@ const model = ref([
             {
                 label: 'Test Form Field Layout',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/apps/testSchemaForms'
+                to: '/apps/testFormLayout'
             }
         ]
     },
