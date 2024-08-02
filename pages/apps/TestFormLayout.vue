@@ -1,148 +1,10 @@
 <script setup lang="ts"></script>
 
 <template>
-    <div class="form">
-        <div class="object">
-            <div class="field-group">
-                <div class="field">
-                    <label for="text">Username</label>
-                    <InputText id="text" v-model="value" />
-                </div>
-            </div>
-
-            <div class="field-group">
-                <div class="field">
-                    <label for="username">Username</label>
-                    <InputText id="username" v-model="value" />
-                    <div class="message">Enter your username to reset your password.</div>
-                </div>
-            </div>
-        </div>
-        <div class="object">
-            <div class="field-group">
-                <div class="field" style="max-width: 250px">
-                    <label for="username">Username</label>
-                    <InputText id="username" v-model="value" />
-                    <div class="message">Enter your username to reset your password.</div>
-                </div>
-            </div>
-            <div class="field-group">
-                <div class="field">
-                    <label for="username">Rating</label>
-                    <Rating v-model="valueX" />
-                </div>
-            </div>
-            <div class="field-group">
-                <div class="field">
-                    <label for="username">Username</label>
-                    <InputText id="username" v-model="value" />
-                </div>
-            </div>
-            <div class="field-group">
-                <div class="field">
-                    <label for="city-select">List Box</label>
-                    <Listbox id="city-select" v-model="selectedCity" :options="cities" optionLabel="name" />
-                </div>
-            </div>
-            <div class="field-group">
-                <div class="field">
-                    <label for="city-select">List Box</label>
-                    <Listbox id="city-select" v-model="selectedCity" :options="cities" optionLabel="name" />
-                </div>
-            </div>
-            <div class="object">
-                <div class="row-start field-group">
-                    <div class="field">
-                        <label for="integeronly"> Integer Only </label>
-                        <InputNumber v-model="value1" inputId="integeronly" fluid />
-                    </div>
-                    <div class="field">
-                        <label for="withoutgrouping"> Without Grouping </label>
-                        <InputNumber v-model="value2" inputId="withoutgrouping" :useGrouping="false" fluid />
-                    </div>
-                    <div class="field">
-                        <label for="minmaxfraction"> Min-Max Fraction Digits </label>
-                        <InputNumber v-model="value3" inputId="minmaxfraction" :minFractionDigits="2" :maxFractionDigits="5" fluid />
-                    </div>
-                </div>
-                <div class="field-group">
-                    <div class="field">
-                        <label for="minmax"> Min-Max Boundaries </label>
-                        <InputNumber v-model="value4" inputId="minmax" :min="0" :max="100" fluid />
-                    </div>
-                </div>
-            </div>
-            <div class="array">
-                <div class="header">
-                    <div class="title">Array Title</div>
-                </div>
-                <div class="row-start field-group object">
-                    <div class="field">
-                        <label for="integeronly"> Integer Only </label>
-                        <InputNumber v-model="value1" inputId="integeronly" fluid />
-                    </div>
-                    <div class="field">
-                        <label for="withoutgrouping"> Without Grouping </label>
-                        <InputNumber v-model="value2" inputId="withoutgrouping" :useGrouping="false" fluid />
-                    </div>
-                    <div class="field">
-                        <label for="minmaxfraction"> Min-Max Fraction Digits </label>
-                        <InputNumber v-model="value3" inputId="minmaxfraction" :minFractionDigits="2" :maxFractionDigits="5" fluid />
-                    </div>
-                    <SpeedDial />
-                </div>
-            </div>
-        </div>
-    </div>
-    <FormBuilder :schema="testSchema" />
+    <FormBuilder :unformattedForm="unformattedForm" id="test form" :title="title" :subtitle="subtitle" />
 </template>
 
-<style lang="scss">
-.form {
-    & * {
-        font-size: 14px;
-        color: black;
-        font-weight: 400;
-        letter-spacing: 1px;
-        font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-    }
-    .title {
-        font-weight: 600;
-        font-size: 18px;
-        color: black;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin: 20px 0 0 10px;
-    }
-    .field-group {
-        &.row-start {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .field {
-            display: flex;
-            flex-direction: column;
-            margin: 20px 10px 10px;
-            label {
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: 2px;
-                text-transform: uppercase;
-                color: navy;
-            }
-            .message {
-                font-size: 12px;
-            }
-        }
-    }
-    .p-speeddial {
-        position: relative;
-        button {
-            scale: 0.6;
-        }
-    }
-}
-</style>
+<style lang="scss"></style>
 
 <script setup>
 import { ref } from 'vue';
@@ -161,84 +23,60 @@ const value2 = ref(58151);
 const value3 = ref(2351.35);
 const value4 = ref(50);
 
-const testSchema = ref({
+const title = 'Test Form Title';
+const subtitle = 'This is where a subtitle would go which could explain a little bit more about the form below';
+
+const unformattedForm = ref({
     name: {
         type: 'string',
         title: 'Name'
     },
-    description: {
-        type: 'string',
-        title: 'Description',
-        maxLength: 2000,
-        component: 'Textarea',
-        props: {
-            autoResize: true,
-            rows: 20,
-            cols: 30
-        }
-    },
-    startDate: {
-        type: 'string',
-        title: 'Date',
-        component: 'Calendar',
-        props: {
-            showIcon: true,
-            iconDisplay: 'input',
-            dateFormat: 'D dd M yy'
-        }
-    },
-    endDate: {
-        type: 'string',
-        title: 'End Date',
-        component: 'Calendar',
-        props: {
-            showIcon: true,
-            iconDisplay: 'input',
-            dateFormat: 'D dd M yy'
-        }
-    },
-    members: {
-        type: 'array',
-        title: 'Members',
-        items: {
-            type: 'object',
-            title: 'Member'
-        },
-        join: {
-            collection: 'member',
-            mappings: [
-                {
-                    from: 'name'
-                },
-                {
-                    from: 'image'
+    testing: {
+        title: 'Testing Nesting',
+        type: 'object',
+        properties: {
+            this: {
+                type: 'string',
+                title: 'Name'
+            },
+            that: {
+                type: 'string',
+                title: 'Description',
+                maxLength: 2000,
+                component: 'Textarea',
+                props: {
+                    autoResize: true,
+                    rows: 20,
+                    cols: 30
                 }
-            ]
+            },
+            deeper: {
+                title: 'Deeper Nesting',
+                type: 'object',
+                properties: {
+                    this: {
+                        type: 'string',
+                        title: 'Deeper Nested'
+                    },
+                    that: {
+                        type: 'string',
+                        title: 'Deeper Nested Description',
+                        maxLength: 2000,
+                        component: 'Textarea',
+                        props: {
+                            autoResize: true,
+                            rows: 20,
+                            cols: 30
+                        }
+                    }
+                }
+            }
         }
     },
-    vehicles: {
-        type: 'array',
-        title: 'Vehicles',
-        component: 'MultiSelect',
-        props: {
-            optionLabel: 'name',
-            filter: true
-        },
-        items: {
-            type: 'object',
-            title: 'Vehicle'
-        },
-        join: {
-            collection: 'vehicles',
-            mappings: [
-                {
-                    from: 'name'
-                },
-                {
-                    from: 'image'
-                }
-            ]
-        }
+    rowStart: {
+        type: 'container',
+        class: 'row',
+        title: 'Test Row Start'
     },
     completed: {
         type: 'boolean',
@@ -247,19 +85,21 @@ const testSchema = ref({
     status: {
         type: 'string',
         title: 'Status',
+        errorMessage: 'Here is message to display on error',
         enum: ['Waiting', 'Approved', 'Complete']
     },
-    comments: {
-        type: 'number',
-        title: 'Comments'
+    testString: {
+        type: 'string',
+        title: 'Test aanother String',
+        subtext: 'here is an example of some form sub text'
     },
-    attachments: {
-        type: 'number',
-        title: 'Attachments'
+    rowEnd: {
+        type: '/container'
     },
     pageOrder: {
         type: 'array',
         title: 'Page Order',
+        containerClass: 'object',
         hide: {
             if: "['productCategoryGroup', 'locationGroup', 'blog'].includes(/type) === false",
             value: true
@@ -267,9 +107,10 @@ const testSchema = ref({
         items: {
             type: 'object',
             properties: {
-                order: {
-                    type: 'number',
-                    title: 'order'
+                testString: {
+                    type: 'string',
+                    title: 'Test String',
+                    subtext: 'here is an example of some form sub text'
                 },
                 section: {
                     type: 'array',
@@ -282,6 +123,18 @@ const testSchema = ref({
                     }
                 }
             }
+        }
+    },
+    status2: {
+        type: 'string',
+        title: 'Status 2',
+        enum: ['Waiting', 'Approved', 'Complete']
+    },
+    testArrayString: {
+        type: 'array',
+        title: 'Test Array String',
+        items: {
+            type: 'string'
         }
     }
 });
