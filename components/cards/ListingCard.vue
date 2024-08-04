@@ -10,8 +10,8 @@
         <card-text-wrapper>
             <div class="sale-type">{{ saleType }}</div>
             <h1 class="name">{{ year }} {{ name }}</h1>
-            <div class="flag"></div>
-            <div class="price">{{ price }}</div>
+
+            <div v-if="price" class="price">£{{ price }}</div>
 
             <div class="specs">
                 <span v-if="engine" class="engine">{{ engine }}</span>

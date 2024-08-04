@@ -6,13 +6,13 @@
                 <div class="make">{{ make }}</div>
                 <div class="name">{{ name }}</div>
             </h1>
-            <div class="years">{{ yearFrom }} to {{ yearToo }}</div>
+            <div class="years">{{ years[0] }} to {{ years[years.length - 1] }}</div>
         </card-text-wrapper>
     </card-wrapper>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['images', 'name', 'make', 'yearFrom', 'yearToo']);
+const props = defineProps(['images', 'name', 'make', 'years']);
 </script>
 
 <style lang="scss">
