@@ -8,7 +8,7 @@
             </div>
         </image-wrapper>
         <card-text-wrapper>
-            <!--     <div class="sale-type">{{ saleType }}</div> -->
+            <div class="sale-type">{{ saleType }}</div>
             <h1 class="name">{{ year }} {{ name }}</h1>
             <div class="flag"></div>
             <div class="price">{{ price }}</div>

@@ -131,6 +131,11 @@ const model = ref([
                 label: 'Test Form Field Layout',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/apps/testFormLayout'
+            },
+            {
+                label: 'Markets',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/markets'
             }
         ]
     },

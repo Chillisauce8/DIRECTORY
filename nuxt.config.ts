@@ -539,6 +539,11 @@ export default defineNuxtConfig({
         path: '/apps/testFormLayout',
         file: '@/pages/apps/TestFormLayout.vue'
       });
+      pages.push({
+        name: 'Markets',
+        path: '/markets',
+        file: '@/pages/apps/Markets.vue'
+      });
     }
   },
   alias: {
