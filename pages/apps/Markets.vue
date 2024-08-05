@@ -1,4 +1,7 @@
 <template>
+    <div class="card flex justify-center">
+        <Breadcrumb :home="home" :model="breadcrumb" />
+    </div>
     <div class="card">
         <h1>{{ market.name }}</h1>
         <div>{{ market.classicDescription }}</div>
@@ -54,6 +57,12 @@ const sortOptions = [
     { label: 'Name', value: 'name' },
     { label: 'Nickname', value: 'nickname' }
 ];
+
+const home = ref({
+    icon: 'pi pi-home',
+    route: '/introduction'
+});
+const breadcrumb = ref([{ label: 'Austin-Healey' }, { label: '100' }, { label: 'BN2' }, { label: '100M' }]);
 
 const market = ref({
     _id: '669a4824b66b93c06179784c',
