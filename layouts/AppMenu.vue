@@ -25,6 +25,11 @@ const model = ref([
         icon: 'pi pi-th-large',
         items: [
             {
+                label: 'Markets',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/market/list',
+            },
+            {
                 label: 'Blog',
                 icon: 'pi pi-fw pi-comment',
                 items: [
@@ -132,11 +137,6 @@ const model = ref([
                 icon: 'pi pi-fw pi-check-square',
                 to: '/apps/testFormLayout'
             },
-            {
-                label: 'Markets',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/markets'
-            }
         ]
     },
     {
