@@ -1,3 +1,50 @@
+<template>
+    <div class="card">
+        <h1>{{ market.name }}</h1>
+        <div>{{ market.classicDescription }}</div>
+    </div>
+    <div class="card">
+        <DataView :value="markets" paginator :rows="7" layout="grid" :sortOrder="sortOrder" :sortField="sortField">
+            <template #header>
+                <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
+                    <span class="text-xl text-900 font-semibold">Sub Markets</span>
+                    <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
+                </div>
+            </template>
+            <template #grid="slotProps">
+                <layout-grid>
+                    <ModelCard v-for="(item, index) in slotProps.items" :key="index" :name="item.name" :make="item.make" :years="item.years" :images="item.images" />
+                </layout-grid>
+            </template>
+        </DataView>
+        <DataView :value="listings" paginator :rows="7" layout="grid" :sortOrder="sortOrder" :sortField="sortField">
+            <template #header>
+                <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
+                    <span class="text-xl text-900 font-semibold">Listings</span>
+                    <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
+                </div>
+            </template>
+            <template #grid="slotProps">
+                <layout-grid>
+                    <ListingCard
+                        v-for="(item, index) in slotProps.items"
+                        :key="index"
+                        :name="item.content.name"
+                        :make="item.spec.make"
+                        :images="item.content.imageURLs"
+                        :saleType="item.sale.saleType"
+                        :price="item.sale.price"
+                        :engine="item.spec.engine"
+                        :odometer="item.spec.odometer"
+                        :transmission="item.spec.transmission"
+                        :stearingSide="item.spec.stearingSide"
+                    />
+                </layout-grid>
+            </template>
+        </DataView>
+    </div>
+</template>
+
 <script setup>
 import { ref } from 'vue';
 
@@ -760,50 +807,3 @@ const onSortChange = (event) => {
     }
 };
 </script>
-
-<template>
-    <div class="card">
-        <h1>{{ market.name }}</h1>
-        <div>{{ market.classicDescription }}</div>
-    </div>
-    <div class="card">
-        <DataView :value="markets" paginator :rows="7" layout="grid" :sortOrder="sortOrder" :sortField="sortField">
-            <template #header>
-                <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
-                    <span class="text-xl text-900 font-semibold">Sub Markets</span>
-                    <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
-                </div>
-            </template>
-            <template #grid="slotProps">
-                <layout-grid>
-                    <ModelCard v-for="(item, index) in slotProps.items" :key="index" :name="item.name" :make="item.make" :years="item.years" :images="item.images" />
-                </layout-grid>
-            </template>
-        </DataView>
-        <DataView :value="listings" paginator :rows="7" layout="grid" :sortOrder="sortOrder" :sortField="sortField">
-            <template #header>
-                <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
-                    <span class="text-xl text-900 font-semibold">Listings</span>
-                    <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
-                </div>
-            </template>
-            <template #grid="slotProps">
-                <layout-grid>
-                    <ListingCard
-                        v-for="(item, index) in slotProps.items"
-                        :key="index"
-                        :name="item.content.name"
-                        :make="item.spec.make"
-                        :images="item.content.imageURLs"
-                        :saleType="item.sale.saleType"
-                        :price="item.sale.price"
-                        :engine="item.spec.engine"
-                        :odometer="item.spec.odometer"
-                        :transmission="item.spec.transmission"
-                        :stearingSide="item.spec.stearingSide"
-                    />
-                </layout-grid>
-            </template>
-        </DataView>
-    </div>
-</template>
