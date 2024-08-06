@@ -27,7 +27,7 @@ const model = ref([
             {
                 label: 'Markets',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/market/list',
+                to: '/market',
             },
             {
                 label: 'Blog',

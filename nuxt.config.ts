@@ -544,11 +544,18 @@ export default defineNuxtConfig({
         path: '/markets',
         file: '@/pages/apps/Markets.vue'
       });
-      pages.push({
-        name: 'Market',
-        path: '/market/:slug+',
-        file: '@/pages/market/slug.vue'
-      });
+      pages.push(
+        {
+          name: 'Market List',
+          path: '/market',
+          file: '@/pages/market/list.vue',
+        },
+        {
+          name: 'Market',
+          path: '/market/:slug+',
+          file: '@/pages/market/slug.vue'
+        }
+      );
     }
   },
   alias: {
