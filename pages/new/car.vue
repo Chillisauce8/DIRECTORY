@@ -3,35 +3,6 @@
 
     <ContentBlock :title="content1.title" :text="content1.text" :images="content1.images" />
     <ContentBlock :title="content2.title" :text="content2.text" :images="content2.images" />
-
-    <!-- <PageNav /> -->
-    <CardsContainer display="slider" :toggle="true" title="Makes">
-        <template v-for="(make, index) in makes" :key="index">
-            <MakeCard :images="make.images" :name="make.name" />
-        </template>
-    </CardsContainer>
-    <ContentBlock :title="content1.title" :text="content1.text" :images="content1.images" />
-    <CardsContainer display="slider" :toggle="true" title="Models">
-        <template v-for="(model, index) in models" :key="index">
-            <ModelCard :images="model.images" :make="model.make" :name="model.name" :yearFrom="model.yearFrom" :yearToo="model.yearToo" />
-        </template>
-    </CardsContainer>
-    <HeroHeader :props="heroHeaderProps" />
-    <CardsContainer display="slider" :toggle="true" title="Vehicles">
-        <template v-for="(listing, index) in listings" :key="index">
-            <ListingCard
-                :images="listing.images"
-                :saleType="listing.saleType"
-                :name="listing.name"
-                :year="listing.year"
-                :price="listing.price"
-                :engine="listing.engine"
-                :odometer="listing.odometer"
-                :transmission="listing.transmission"
-                :stearingSide="listing.stearingSide"
-            />
-        </template>
-    </CardsContainer>
 </template>
 
 <script setup lang="ts">

@@ -540,7 +540,7 @@ export default defineNuxtConfig({
         file: '@/pages/apps/TestFormLayout.vue'
       });
       pages.push({
-        name: 'Markets',
+        name: 'Markets 1',
         path: '/markets',
         file: '@/pages/apps/Markets.vue'
       });
