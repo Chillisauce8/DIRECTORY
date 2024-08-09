@@ -21,7 +21,7 @@ const model = ref([
             {
                 label: 'Vehicle Card Design',
                 icon: 'pi pi-fw pi-image',
-                to: '/apps/vehicles/list'
+                to: '/new/carddesign'
             },
             {
                 label: 'Task List to DB',
@@ -31,12 +31,12 @@ const model = ref([
             {
                 label: 'Test Form',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/apps/testSchemaForms'
+                to: '/new/testForm'
             },
             {
                 label: 'Test Form Field Layout',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/apps/testFormLayout'
+                to: '/new/testFormLayout'
             },
             {
                 label: 'Image Gallery Design',
