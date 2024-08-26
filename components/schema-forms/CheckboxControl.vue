@@ -1,5 +1,5 @@
 <template>
-  <FloatLabel>
+  <SchemaControl>
     <component :is="componentName"
                v-model="vm.model" @update:modelValue="onModelChange($event)"
                :name="props.description.name"
@@ -8,7 +8,7 @@
               :class="[props.description.class || '']">
     </component>
     <label :for="props.description.name" class="ml-2"> {{vm.placeholderValue}} </label>
-  </FloatLabel>
+  </SchemaControl>
 </template>
 
 <script setup lang="ts">

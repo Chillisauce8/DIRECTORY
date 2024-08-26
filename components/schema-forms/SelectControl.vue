@@ -1,5 +1,5 @@
 <template>
-  <FloatLabel>
+  <SchemaControl :vuelidateField="$v.model">
     <component :is="componentName"
                v-if="vm.filteredSelectValues"
                :name="props.description.name"
@@ -13,8 +13,7 @@
                :class="[props.description.class || '']">
     </component>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  </SchemaControl>
 
 <!--    <div class="flex-10 column center-center" v-if="props.description.isRelator">-->
 <!--      <schema-form-relator-context-menu [description]="description" [(model)]="model" [context]="context">-->

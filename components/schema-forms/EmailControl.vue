@@ -1,12 +1,11 @@
 <template>
-  <FloatLabel>
+  <SchemaControl :vuelidateField="$v.model">
     <InputText type="email" v-model="vm.model"
                @update:modelValue="onModelChange($event)"
                :name="props.description.name" :class="{'p-invalid': $v.$error}"
                :invalid="$v.$error"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  </SchemaControl>
 </template>
 
 <script setup lang="ts">

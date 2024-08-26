@@ -1,16 +1,15 @@
 <template>
-  <FloatLabel>
-  <Calendar v-model="fakeModel"
-              @update:modelValue="onModelChange($event)"
-              dateFormat="D dd M yy"
-              showIcon iconDisplay="input"
-              :name="props.description.name" :class="{'p-invalid': $v.$error}"
-              :minDate="props.description.minimum" :maxDate="props.description.maximum"
-              :manualInput="false" showButtonBar
-              :invalid="$v.$error"/>
+  <SchemaControl :vuelidateField="$v.model">
+    <Calendar v-model="fakeModel"
+                @update:modelValue="onModelChange($event)"
+                dateFormat="D dd M yy"
+                showIcon iconDisplay="input"
+                :name="props.description.name" :class="{'p-invalid': $v.$error}"
+                :minDate="props.description.minimum" :maxDate="props.description.maximum"
+                :manualInput="false" showButtonBar
+                :invalid="$v.$error"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  </SchemaControl>
 </template>
 
 

@@ -1,12 +1,12 @@
 <template>
-  <FloatLabel>
+  <SchemaControl :vuelidateField="$v.model">
     <Textarea v-model="vm.originalModel"
               @update:modelValue="onModelChangeDebounced($event)"
-              :name="props.description.name" :class="{'p-invalid': $v.$error}"
+              :name="props.description.name"
+              :class="{'p-invalid': $v.$error}"
               :invalid="$v.$error"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  </SchemaControl>
 </template>
 
 <script setup lang="ts">

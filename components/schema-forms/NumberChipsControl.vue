@@ -1,11 +1,10 @@
 <template>
   <div>
-    <FloatLabel>
+    <SchemaControl :vuelidateField="$v.model">
       <Chips id="chips" v-model="vm.model" @update:modelValue="onModelChange($event)"
              :inputProps="{type: 'number'}"/>
       <label for="chips"></label>
-    </FloatLabel>
-    <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+    </SchemaControl>
   </div>
 </template>
 

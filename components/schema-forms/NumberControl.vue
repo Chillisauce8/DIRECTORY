@@ -1,5 +1,5 @@
 <template>
-  <FloatLabel>
+  <SchemaControl :vuelidateField="$v.model">
     <component :is="componentName"
                v-model="vm.model" @update:modelValue="onModelChange($event)"
                :min="props.description.minimum" :max="props.description.maximum"
@@ -13,8 +13,7 @@
                :class="[props.description.class || '', $v.$error ? 'p-invalid' : '']">
     </component>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  </SchemaControl>
 </template>
 
 <script setup lang="ts">

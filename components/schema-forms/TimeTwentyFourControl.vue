@@ -1,11 +1,10 @@
 <template>
-  <FloatLabel>
+  <SchemaControl :vuelidateField="$v.model">
     <Calendar id="calendar-timeonly" v-model="vm.model"
               @update:modelValue="onModelChange($event)"
               timeOnly hourFormat="24"/>
     <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  </SchemaControl>
 </template>
 
 <script setup lang="ts">
