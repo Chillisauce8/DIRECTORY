@@ -5,18 +5,22 @@ main {
   container-name: main;
 }
 
-@import 'transitions';
+
+@layer reset {
 @import 'reset';
-//@import 'helpers';
+}
+@import 'transitions';
 @import 'layout';
-//@import 'body';
-
-// @import 'common';
-
 @import 'font-family';
 
 
 /*
+//@import 'helpers';
+
+//@import 'body';
+
+// @import 'common';
+
 @import "button-wrapper";
 @import "user-form";
 @import "dialogs";

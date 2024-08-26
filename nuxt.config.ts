@@ -529,11 +529,19 @@ export default defineNuxtConfig({
         path: '/apps/mail/trash',
         file: '@/pages/apps/mail/MailTypes.vue'
       });
-      pages.push({
-        name: 'Test Schema Forms',
-        path: '/apps/testSchemaForms',
-        file: '@/pages/apps/TestForm.vue'
-      });
+
+      pages.push(
+        {
+          name: 'Market List',
+          path: '/market',
+          file: '@/pages/market/list.vue',
+        },
+        {
+          name: 'Market',
+          path: '/market/:slug+',
+          file: '@/pages/market/slug.vue'
+        }
+      );
     }
   },
   alias: {

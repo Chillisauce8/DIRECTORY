@@ -5,6 +5,47 @@ import AppSubMenu from './AppSubMenu.vue';
 
 const model = ref([
     {
+        label: 'NEW !',
+        icon: 'pi pi-home',
+        items: [
+            {
+                label: 'Markets',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/market'
+            },
+            {
+                label: 'Vehicle Page Design',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/car'
+            },
+            {
+                label: 'Vehicle Card Design',
+                icon: 'pi pi-fw pi-image',
+                to: '/new/carddesign'
+            },
+            {
+                label: 'Task List to DB',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/apps/tasklisttest'
+            },
+            {
+                label: 'Test Form',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/testForm'
+            },
+            {
+                label: 'Test Form Field Layout',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/testFormLayout'
+            },
+            {
+                label: 'Image Gallery Design',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/gallery'
+            }
+        ]
+    },
+    {
         label: 'Dashboards',
         icon: 'pi pi-home',
         items: [
@@ -42,27 +83,6 @@ const model = ref([
                         label: 'Edit',
                         icon: 'pi pi-fw pi-pencil',
                         to: '/apps/blog/edit'
-                    }
-                ]
-            },
-            {
-                label: 'Vehicles',
-                icon: 'pi pi-fw pi-comment',
-                items: [
-                    {
-                        label: 'List',
-                        icon: 'pi pi-fw pi-image',
-                        to: '/apps/vehicles/list'
-                    },
-                    {
-                        label: 'Detail',
-                        icon: 'pi pi-fw pi-list',
-                        to: '/apps/vehicles/detail'
-                    },
-                    {
-                        label: 'Edit',
-                        icon: 'pi pi-fw pi-pencil',
-                        to: '/apps/vehicles/edit'
                     }
                 ]
             },
@@ -106,26 +126,6 @@ const model = ref([
                 label: 'Task List',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/apps/tasklist'
-            },
-            {
-                label: 'Task List Test',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/apps/tasklisttest'
-            },
-            {
-                label: 'Car Listings',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/car'
-            },
-            {
-                label: 'Image Gallery',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/gallery'
-            },
-            {
-                label: 'Test From',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/apps/testSchemaForms'
             }
         ]
     },

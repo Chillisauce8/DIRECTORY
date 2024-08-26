@@ -12,6 +12,7 @@
     flex-wrap: wrap;
     gap: 2rem;
     padding: 2rem;
+    background-color: grey;
     > * {
         flex-grow: 1;
         max-width: 500px;
