@@ -163,7 +163,6 @@ function getDefaults(value) {
     --section-side-color: lightgrey;
     --field-subtext-color: grey;
     --error-message-color: crimson;
-
     background-color: var(--background-color);
     & * {
         font-size: 14px;
@@ -171,6 +170,9 @@ function getDefaults(value) {
         font-weight: 400;
         letter-spacing: 1px;
         font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    }
+    .hide {
+        display: none;
     }
     input {
         //    background-color: lightblue;
