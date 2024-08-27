@@ -1,18 +1,14 @@
 <template>
-  <SchemaControl :vuelidateField="$v.model">
-    <component :is="componentName"
+  <SchemaControl :vm=vm :vuelidateField="$v.model">
+    <component :is="vm.componentName"
                v-model="vm.model" @update:modelValue="onModelChange($event)"
                :min="props.description.minimum" :max="props.description.maximum"
-               :name="props.description.name"
                :mode="getMode()"
-               :currency="props.description.currency"
-               :locale="props.description.locale"
                showButtons
                :step="props.description.xStep || 1"
                v-bind="props.description"
-               :class="[props.description.class || '', $v.$error ? 'p-invalid' : '']">
+               :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']">
     </component>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </SchemaControl>
 </template>
 
@@ -40,11 +36,6 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const componentName = props.description.component || 'InputNumber';
-
-const selfRef = ref(null);
-
-
 const baseFieldExport = useBaseControl(props, emits);
 
 let {
@@ -56,6 +47,10 @@ let {
 vm = extend(vm, {
   allowDecimals: undefined,
 });
+
+if (!vm.componentName) {
+  vm.componentName = 'InputNumber';
+}
 
 const initFieldBase = sharedFunctions.initField;
 const getDefaultValueBase = sharedFunctions.getDefaultValue;

@@ -94,113 +94,6 @@ export default function useSchemaFormController(formName: string): any {
         });
     },
 
-    // const schema = {
-    //   "name": "events",
-    //   "description": "",
-    //   "properties": {
-    //     "name": {
-    //       "type": "string",
-    //       "title": "Name"
-    //     },
-    //     "description": {
-    //       "type": "string",
-    //       "title": "Description"
-    //     },
-    //     "startDate": {
-    //       "type": "string",
-    //       "title": "Date"
-    //     },
-    //     "endDate": {
-    //       "type": "string",
-    //       "title": "End Date"
-    //     },
-    //     "alerts": {
-    //       "type": "array",
-    //       "title": "Alerts",
-    //       "items": {
-    //         "type": "object",
-    //         "properties": {
-    //           "dateTime": {
-    //             "type": "string"
-    //           },
-    //           "relativeTime": {
-    //             "type": "string",
-    //             "enum": [
-    //               "At time of event",
-    //               "5 minutes before",
-    //               "10 minutes before",
-    //               "15 minutes before",
-    //               "30 minutes before",
-    //               "1 hour before",
-    //               "2 hours before",
-    //               "1 day before",
-    //               "2 days before",
-    //               "1 week before"
-    //             ]
-    //           }
-    //         }
-    //       }
-    //     },
-    //     "files": {
-    //       "type": "array",
-    //       "title": "Files",
-    //       "items": {
-    //         "type": "object",
-    //         "properties": {
-    //           "id": {
-    //             "type": "string"
-    //           }
-    //         }
-    //       }
-    //     },
-    //     "status": {
-    //       "type": "array",
-    //       "title": "Status",
-    //       "items": {
-    //         "type": "object",
-    //         "properties": {
-    //           "state": {
-    //             "type": "string",
-    //             "enum": [
-    //               "Outstanding",
-    //               "Completed",
-    //               "Deleted"
-    //             ]
-    //           },
-    //           "user": {
-    //             "type": "object",
-    //             "properties": {
-    //               "id": {
-    //                 "type": "string"
-    //               },
-    //               "name": {
-    //                 "type": "string"
-    //               }
-    //             }
-    //           },
-    //           "dateTime": {
-    //             "type": "string"
-    //           }
-    //         }
-    //       }
-    //     },
-    //     "vehicles": {
-    //       "type": "array",
-    //       "title": "Vehicles",
-    //       "items": {
-    //         "type": "object",
-    //         "properties": {
-    //           "id": {
-    //             "type": "string"
-    //           }
-    //         }
-    //       }
-    //     }
-    //   },
-    //   "title": "events",
-    //   "_doc": "6630c1aead18f5f1de44dfc2"
-    // }
-
     buildGroupsDescription: async (): Promise<any> => {
       return null;
     },
@@ -365,7 +258,7 @@ export default function useSchemaFormController(formName: string): any {
           vm.model = vm.schemaFormsBuildHelper.buildEmptyModel();
         }
       })
-      .then(() => sharedFunctions.buildGroupsDescription())
+      .then(() => sharedFunctions.buildGroupsDescription(true))// TODO: update useOneGroup
       .then((result: Array<Object>) => {
         formDescription.value = result;
       })

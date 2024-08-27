@@ -1,13 +1,11 @@
 <template>
-  <SchemaControl>
-    <component :is="componentName"
+  <SchemaControl :vm=vm>
+    <component :is="vm.componentName"
                v-model="vm.model" @update:modelValue="onModelChange($event)"
-               :name="props.description.name"
                :binary="true"
                v-bind="props.description"
-              :class="[props.description.class || '']">
+              :class="[...sharedFunctions.getClasses()]">
     </component>
-    <label :for="props.description.name" class="ml-2"> {{vm.placeholderValue}} </label>
   </SchemaControl>
 </template>
 
@@ -25,8 +23,6 @@ const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const componentName = props.description.component || 'Checkbox';
-
 const baseFieldExport = useBaseControl(props, emits);
 
 let {
@@ -38,6 +34,10 @@ let {
 vm = extend(vm, {
   originalModel: undefined,
 });
+
+if (!vm.componentName) {
+  vm.componentName = 'Checkbox';
+}
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 

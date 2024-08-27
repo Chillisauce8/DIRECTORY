@@ -1,19 +1,17 @@
 <template>
-  <component :is="componentName"
+  <SchemaControl :vm=vm :vuelidateField="$v.model">
+    <component :is="vm.componentName"
              v-if="vm.filteredSelectValues"
-             :name="props.description.name"
-             v-model="_fakeModel"
-             @update:modelValue="onModelChange($event)"
+             v-model="_fakeModel" @update:modelValue="onModelChange($event)"
              :options="autocompleteItems"
              :optionLabel="props.description.optionLabel || autocompleteItems?.[0]?.title ? 'title' : autocompleteItems?.[0]?.name ? 'name' : undefined"
              :placeholder="vm.placeholderValue"
              :showClear="!props.description.required"
              :maxSelectedLabels="getLimitTo()"
              v-bind="props.description"
-             :class="[props.description.class || '']">
-  </component>
-
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+             :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']">
+    </component>
+  </SchemaControl>
 </template>
 
 <script setup lang="ts">
@@ -35,18 +33,16 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const componentName = props.description.component || 'MultiSelect';
-
-const selfRef = ref(null);
-
-
 const baseFieldExport = useBaseSelectableControl(props, emits);
 
 let {
   vm,
-  im,
   sharedFunctions,
 } = baseFieldExport;
+
+if (!vm.componentName) {
+  vm.componentName = 'MultiSelect';
+}
 
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;

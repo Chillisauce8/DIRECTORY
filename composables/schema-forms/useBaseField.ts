@@ -60,12 +60,29 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
   const vm = reactive({
     model: props.model,
     context: props.context,
-    placeholderValue: props.noPlaceholder,
+    title: '',
+    componentName: props.description.component,
   });
 
   const initDone = ref(false);
 
   const sharedFunctions = {
+
+    getClasses(): string[] {
+      const result = [];
+
+      if (props.description.class) {
+        result.push(props.description.class);
+      }
+
+      if (vm.componentName) {
+        result.push(vm.componentName);
+      } else if (props.description.type) {
+        result.push(props.description.type);
+      }
+
+      return result;
+    },
 
     setRefs(refsValue: ComponentRefs) {
       im.refs = refsValue;

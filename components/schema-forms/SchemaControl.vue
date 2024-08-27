@@ -4,6 +4,7 @@ import FieldError from '~/components/schema-forms/FieldError.vue';
 
 
 interface SchemaControlProps {
+  vm: any,
   vuelidateField?: any;
 }
 
@@ -11,16 +12,22 @@ interface SchemaControlProps {
 // @ts-ignore
 const props = defineProps<SchemaControlProps>();
 
-
 </script>
 
 <template>
-  <FloatLabel>
-    <slot></slot>
-  </FloatLabel>
-  <FieldError class="form-text-error" v-if="props.vuelidateField" :vuelidate-field="props.vuelidateField"></FieldError>
+  <div class="field-wrapper">
+    <label>{{ props.vm.title }}</label>
+    <div class="field">
+      <div class="input-wrapper">
+        <slot></slot>
+      </div>
+    </div>
+  </div>
+  <FieldError class="error-message"
+              v-if="props.vuelidateField"
+              :vuelidate-field="props.vuelidateField">
+  </FieldError>
 </template>
 
-<style scoped lang="scss">
-
+<style lang="scss">
 </style>

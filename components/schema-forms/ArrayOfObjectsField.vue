@@ -1,5 +1,5 @@
 <template>
-    <div ref="selfRef" class="schema-form-array-of-objects-field">
+    <section :class="[...sharedFunctions.getClasses()]">
         <div v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
              v-show="!props.description.xHideValue" class="array-wrap">
             <div v-for="(row, rowIndex) in vm.model" :key="rowIndex">
@@ -41,35 +41,41 @@
                     </template>
                 </div>
 
-                <SpeedDial :model="createSpeedDialItems(rowIndex)" v-if="!sharedFunctions.isReadonly()" direction="left" :style="{ top: 'calc(50% - 2rem)', right: 0 }" />
+                <SpeedDial :model="createSpeedDialItems(rowIndex)" v-if="!sharedFunctions.isReadonly()"
+                           direction="left" :style="{ top: 'calc(50% - 2rem)', right: 0 }" />
             </div>
 
             <div class="empty row start-center" v-if="!vm.model?.length">
                 <p class="label flex">
                     {{ sharedFunctions.getTitle() }}
 
-                    <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                        <!-- <i class="icon icon-question-mark padding_-5"></i> -->
+                    <span v-if="sharedFunctions.getDescriptionText()"
+                          v-tooltip.bottom="sharedFunctions.getDescriptionText()">
                         <SvgIcon svg="help" />
                     </span>
                 </p>
 
-                <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode">
+                <Button icon="pi pi-plus" aria-label="Add First Row"
+                        v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode">
                     <!--              #contextMenuTrigger [matMenuTriggerFor]="contextMenu"-->
                 </Button>
 
-                <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode" @click="addFirstRow()"> </Button>
+                <Button icon="pi pi-plus" aria-label="Add First Row"
+                        v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode"
+                        @click="addFirstRow()"> </Button>
             </div>
 
             <ContextMenu ref="menu" :model="getContextMenuItems(vm.selectionValues)" />
 
-            <div v-if="!sharedFunctions.isValidMaxItems()" class="text-color_red field_wrap">Max items value is {{ props.description.xMaxItemsValue }}</div>
+            <div v-if="!sharedFunctions.isValidMaxItems()"
+                 class="text-color_red field_wrap">Max items value is {{ props.description.xMaxItemsValue }}</div>
 
-            <div v-if="!sharedFunctions.isValidMinItems()" class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
+            <div v-if="!sharedFunctions.isValidMinItems()"
+                 class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
 
             <div v-if="!ifValidUniqueItems()" class="text-color_red field_wrap">Items are not unique</div>
         </div>
-    </div>
+    </section>
 </template>
 
 <script setup lang="ts">
@@ -85,7 +91,6 @@ const props = defineProps<BaseFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const selfRef = ref(null);
 
 let { vm, sharedFunctions, initDone } = useBaseArrayFieldControl(props, emits);
 

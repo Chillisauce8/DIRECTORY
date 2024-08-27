@@ -9,19 +9,19 @@
 <script setup>
 import { ref } from 'vue';
 
-const selectedCity = ref();
-const cities = ref([
-    { name: 'New York', code: 'NY' },
-    { name: 'Rome', code: 'RM' },
-    { name: 'London', code: 'LDN' },
-    { name: 'Istanbul', code: 'IST' },
-    { name: 'Paris', code: 'PRS' }
-]);
-
-const value1 = ref(42723);
-const value2 = ref(58151);
-const value3 = ref(2351.35);
-const value4 = ref(50);
+// const selectedCity = ref();
+// const cities = ref([
+//     { name: 'New York', code: 'NY' },
+//     { name: 'Rome', code: 'RM' },
+//     { name: 'London', code: 'LDN' },
+//     { name: 'Istanbul', code: 'IST' },
+//     { name: 'Paris', code: 'PRS' }
+// ]);
+//
+// const value1 = ref(42723);
+// const value2 = ref(58151);
+// const value3 = ref(2351.35);
+// const value4 = ref(50);
 
 const title = 'Test Form Title';
 const subtitle = 'This is where a subtitle would go which could explain a little bit more about the form below';
@@ -90,7 +90,7 @@ const unformattedForm = ref({
     },
     testString: {
         type: 'string',
-        title: 'Test aanother String',
+        title: 'Test another String',
         subtext: 'here is an example of some form sub text'
     },
     rowEnd: {

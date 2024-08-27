@@ -1,11 +1,10 @@
 <template>
-  <SchemaControl :vuelidateField="$v.model">
+  <SchemaControl :vm=vm :vuelidateField="$v.model">
     <Textarea v-model="vm.originalModel"
               @update:modelValue="onModelChangeDebounced($event)"
               :name="props.description.name"
-              :class="{'p-invalid': $v.$error}"
+              :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']"
               :invalid="$v.$error"/>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </SchemaControl>
 </template>
 
@@ -32,15 +31,16 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 let {vm, sharedFunctions} = useBaseControl(props, emits);
 
 
 vm = extend(vm, {
-  originalModel: undefined,
+  originalModel: undefined
 });
+
+if (!vm.componentName) {
+  vm.componentName = 'Textarea';
+}
 
 const initFieldBase = sharedFunctions.initField;
 const setModelBase = sharedFunctions.setModel;
@@ -146,6 +146,5 @@ sharedFunctions.correctExistingValue = correctExistingValue;
 
 </script>
 
-<style scoped>
-
+<style>
 </style>

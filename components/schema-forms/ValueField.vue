@@ -1,21 +1,10 @@
 <template>
-    <div ref="selfRef" class="schema-form-value-field" v-if="shouldFieldBeConstructed"
-         v-show="!props.description.xHideValue">
-        <!--   <div class="field_wrap row start-baseline gap-horizontal_15"
-         v-if="shouldFieldBeConstructed" v-show="!props.description.xHideValue"> -->
-
-        <p v-if="showTitle">
-            {{ sharedFunctions.getTitle() }}
-
-            <i class="icon icon-question-mark padding_-5" v-if="vm.descriptionText" v-tooltip.bottom="vm.descriptionText"></i>
-        </p>
-
-        <DynamicControl :description="props.description" :model="vm.model"
-                        @modelChange="onModelChange($event)"
-                        :context="props.context" :noPlaceholder="showTitle">
-        </DynamicControl>
-        <!--   </div> -->
-    </div>
+    <DynamicControl
+        v-if="shouldFieldBeConstructed" v-show="!props.description.xHideValue"
+        :description="props.description" :model="vm.model"
+        @modelChange="onModelChange($event)"
+        :context="props.context">
+    </DynamicControl>
 </template>
 
 <script setup lang="ts">
@@ -35,8 +24,6 @@ export interface ValueFieldProps extends BaseFieldProps {
 const props = defineProps<ValueFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
-
-const selfRef = ref(null);
 
 let { im, vm, sharedFunctions } = useBaseField(props, emits);
 
@@ -151,4 +138,4 @@ sharedFunctions.deleteModel = deleteModel;
 sharedFunctions.processXFeatures = processXFeatures;
 </script>
 
-<style scoped></style>
+<style></style>

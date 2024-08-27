@@ -1,15 +1,30 @@
 <template>
-    <div ref="selfRef" class="schema-form-dynamic-field">
+    <div class="field-block">
         <template v-if="initDone">
-            <ValueField v-if="props.description.formDirective === 'valueField'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ValueField>
+            <ValueField v-if="props.description.formDirective === 'valueField'"
+                        :model="fakeModel" @modelChange="onModelChange($event)"
+                        :context="vm.context" :description="props.description.description">
+            </ValueField>
 
-            <ObjectField v-else-if="props.description.formDirective === 'objectField'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ObjectField>
+            <ObjectField v-else-if="props.description.formDirective === 'objectField'"
+                         :model="fakeModel" @modelChange="onModelChange($event)"
+                         :context="vm.context" :description="props.description.description">
+            </ObjectField>
 
-            <ObjectField v-else-if="props.description.formDirective === 'structureTag'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ObjectField>
+            <ObjectField v-else-if="props.description.formDirective === 'structureTag'"
+                         :model="fakeModel" @modelChange="onModelChange($event)"
+                         :context="vm.context" :description="props.description.description">
+            </ObjectField>
 
-            <ArrayOfValuesField v-else-if="props.description.formDirective === 'arrayOfValuesField'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ArrayOfValuesField>
+            <ArrayOfValuesField v-else-if="props.description.formDirective === 'arrayOfValuesField'"
+                                :model="fakeModel" @modelChange="onModelChange($event)"
+                                :context="vm.context" :description="props.description.description">
+            </ArrayOfValuesField>
 
-            <ArrayOfObjectsField v-else-if="props.description.formDirective === 'arrayOfObjectsField'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ArrayOfObjectsField>
+            <ArrayOfObjectsField v-else-if="props.description.formDirective === 'arrayOfObjectsField'"
+                                 :model="fakeModel" @modelChange="onModelChange($event)"
+                                 :context="vm.context" :description="props.description.description">
+            </ArrayOfObjectsField>
 
             <!--    <ImagesArrayField v-else-if="props.description.formDirective === 'arrayOfImagesField'"-->
             <!--                      :model="fakeModel" @modelChange="onModelChange($event)"-->
@@ -50,7 +65,6 @@ const props = defineProps<BaseFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const selfRef = ref(null);
 
 const { im, vm, sharedFunctions } = useBaseField(props, emits);
 
@@ -209,7 +223,5 @@ sharedFunctions.initField = initField;
 </script>
 
 <style>
-.schema-form-dynamic-field {
-    margin: 2rem 0;
-}
+
 </style>

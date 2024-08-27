@@ -49,9 +49,6 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 const baseFieldExport = useBaseControl(props, emits);
 
 const {

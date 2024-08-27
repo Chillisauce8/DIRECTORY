@@ -1,21 +1,24 @@
 <template>
-    <div ref="selfRef" class="schema-form-group" :id="'pf-' + props.description.header.name">
-        <!--       <div class="form_header row start-center" v-show="!props.description.noHeaderDisplay">
+    <div class="form-group field-block" :id="'pf-' + props.description.header.name">
+       <div class="row start-center" v-show="!props.description.noHeaderDisplay">
             <h4>{{ props.description.header.title }}</h4>
-        </div> -->
+        </div>
 
-        <!-- <div class="schema-wrapper bg-color_white"> -->
         <template v-for="(contentDescription, contentIndex) in props.description.content">
             <template v-if="im.shouldContentBeConstructed[contentIndex]">
                 <template v-if="im.shouldAddHeaderNameToModelPathValues[contentIndex]">
-                    <DynamicField :model="vm.model[props.description.header.name]" @modelChange="onModelChangeByPath($event)" :context="vm.context" :description="contentDescription"> </DynamicField>
+                    <DynamicField :model="vm.model[props.description.header.name]"
+                                  @modelChange="onModelChangeByPath($event)" :context="vm.context"
+                                  :description="contentDescription">
+                    </DynamicField>
                 </template>
                 <template v-if="!im.shouldAddHeaderNameToModelPathValues[contentIndex]">
-                    <DynamicField :model="vm.model" @modelChange="onModelChange($event)" :context="vm.context" :description="contentDescription"> </DynamicField>
+                    <DynamicField :model="vm.model" @modelChange="onModelChange($event)" :context="vm.context"
+                                  :description="contentDescription">
+                    </DynamicField>
                 </template>
             </template>
         </template>
-        <!--  </div> -->
     </div>
 </template>
 
@@ -40,7 +43,6 @@ const props = defineProps<BaseFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const selfRef = ref(null);
 
 const { vm, sharedFunctions } = useBaseField(props, emits);
 
@@ -182,6 +184,7 @@ function processXFeatures(): any {
 sharedFunctions.initField = initField;
 sharedFunctions.setModel = setModel;
 sharedFunctions.processXFeatures = processXFeatures;
+
 </script>
 
-<style scoped></style>
+<style></style>

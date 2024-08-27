@@ -1,10 +1,10 @@
 <template>
-  <SchemaControl :vuelidateField="$v.model">
-    <InputText type="url" v-model="vm.model"
-               @update:modelValue="onModelChange($event)"
-               :name="props.description.name" :class="{'p-invalid': $v.$error}"
-               :invalid="$v.$error"/>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
+  <SchemaControl :vm=vm :vuelidateField="$v.model">
+    <InputText type="url"
+               v-model="vm.model" @update:modelValue="onModelChange($event)"
+               :name="props.description.name"
+               :invalid="$v.$error"
+               :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']"/>
   </SchemaControl>
 </template>
 
@@ -27,11 +27,11 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 const {vm, sharedFunctions} = useBaseControl(props, emits);
 
+if (!vm.componentName) {
+  vm.componentName = 'InputText';
+}
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 

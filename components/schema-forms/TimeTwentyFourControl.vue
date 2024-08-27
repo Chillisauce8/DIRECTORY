@@ -1,9 +1,8 @@
 <template>
-  <SchemaControl :vuelidateField="$v.model">
-    <Calendar id="calendar-timeonly" v-model="vm.model"
-              @update:modelValue="onModelChange($event)"
-              timeOnly hourFormat="24"/>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
+  <SchemaControl :vm=vm :vuelidateField="$v.model">
+    <Calendar v-model="vm.model" @update:modelValue="onModelChange($event)"
+              timeOnly hourFormat="24"
+              :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']"/>
   </SchemaControl>
 </template>
 
@@ -31,9 +30,6 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 const dateHelper = new DateHelper();
 
 const baseFieldExport = useBaseControl(props, emits);
@@ -49,8 +45,9 @@ vm = extend(vm, {
 });
 
 
-const correctExistingValueBase = sharedFunctions.correctExistingValue;
-
+if (!vm.componentName) {
+  vm.componentName = 'Calendar';
+}
 
 
 const validateRules = computed(() => {
@@ -124,6 +121,6 @@ sharedFunctions.correctExistingValue = correctExistingValue;
 
 </script>
 
-<style scoped>
+<style>
 
 </style>

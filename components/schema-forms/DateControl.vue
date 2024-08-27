@@ -1,14 +1,14 @@
 <template>
-  <SchemaControl :vuelidateField="$v.model">
-    <Calendar v-model="fakeModel"
-                @update:modelValue="onModelChange($event)"
-                dateFormat="D dd M yy"
-                showIcon iconDisplay="input"
-                :name="props.description.name" :class="{'p-invalid': $v.$error}"
-                :minDate="props.description.minimum" :maxDate="props.description.maximum"
-                :manualInput="false" showButtonBar
-                :invalid="$v.$error"/>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
+  <SchemaControl :vm=vm :vuelidateField="$v.model">
+    <Calendar v-model="fakeModel" @update:modelValue="onModelChange($event)"
+              dateFormat="D dd M yy"
+              showIcon iconDisplay="input"
+              :name="props.description.name"
+              :minDate="props.description.minimum" :maxDate="props.description.maximum"
+              :manualInput="false"
+              showButtonBar
+              :invalid="$v.$error"
+              :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']"/>
   </SchemaControl>
 </template>
 
@@ -33,11 +33,11 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 const {vm, sharedFunctions} = useBaseControl(props, emits);
 
+if (!vm.componentName) {
+  vm.componentName = 'Calendar';
+}
 
 const initFieldBase = sharedFunctions.initField;
 const correctExistingValueBase = sharedFunctions.correctExistingValue;

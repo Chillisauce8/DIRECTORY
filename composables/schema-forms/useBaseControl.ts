@@ -31,7 +31,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
   function initField() {
     initFieldBase();
 
-    refreshPlaceholder();
+    refreshTitle();
 
     if (vm.model) {
       correctExistingValue();
@@ -45,8 +45,8 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
   }
 
 
-  function refreshPlaceholder() {
-    vm.placeholderValue = sharedFunctions.getPlaceholder();
+  function refreshTitle() {
+    vm.title = sharedFunctions.getTitle();
   }
 
   function isValid(): boolean {
@@ -182,7 +182,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
       processXReadOnlyForModelChanges(features['readonly']);
     }
 
-    refreshPlaceholder();
+    refreshTitle();
 
     return features;
   }

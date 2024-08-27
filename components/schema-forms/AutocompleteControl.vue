@@ -1,12 +1,12 @@
 <template>
-  <AutoComplete v-model="vm.model"
-                @update:modelValue="onModelChange($event)"
-                dropdown
-                :suggestions="suggestions"
-                :optionLabel="(suggestions?.[0]?.title || vm.model?.title) ? 'title' : undefined"
-                @complete="onSearchStringChange" />
-
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  <SchemaControl :vm=vm :vuelidateField="$v.model">
+    <AutoComplete v-model="vm.model"
+                  @update:modelValue="onModelChange($event)"
+                  dropdown
+                  :suggestions="suggestions"
+                  :optionLabel="(suggestions?.[0]?.title || vm.model?.title) ? 'title' : undefined"
+                  @complete="onSearchStringChange" />
+  </SchemaControl>
 </template>
 
 
@@ -27,9 +27,6 @@ import { getCurrentInstance } from 'vue';
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
-
-
-const selfRef = ref(null);
 
 
 const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);

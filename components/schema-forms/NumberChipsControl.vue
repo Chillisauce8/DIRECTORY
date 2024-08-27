@@ -1,15 +1,12 @@
 <template>
-  <div>
-    <SchemaControl :vuelidateField="$v.model">
-      <Chips id="chips" v-model="vm.model" @update:modelValue="onModelChange($event)"
-             :inputProps="{type: 'number'}"/>
-      <label for="chips"></label>
+    <SchemaControl :vm=vm :vuelidateField="$v.model">
+      <Chips v-model="vm.model" @update:modelValue="onModelChange($event)"
+             :inputProps="{type: 'number'}"
+             :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']"/>
     </SchemaControl>
-  </div>
 </template>
 
 <script setup lang="ts">
-import FieldError from "~/components/schema-forms/FieldError.vue";
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
@@ -24,16 +21,16 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 const baseFieldExport = useBaseControl(props, emits);
 
-let {
+const {
   vm,
   sharedFunctions,
 } = baseFieldExport;
 
+if (!vm.componentName) {
+  vm.componentName = 'Chips';
+}
 
 const getDefaultValueBase = sharedFunctions.getDefaultValue;
 const fillEmptyModelBase = sharedFunctions.fillEmptyModel;
@@ -124,6 +121,5 @@ sharedFunctions.correctExistingValue = correctExistingValue;
 
 </script>
 
-<style scoped>
-
+<style>
 </style>

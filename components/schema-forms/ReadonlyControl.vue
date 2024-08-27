@@ -1,10 +1,9 @@
 <template>
-  <SchemaControl>
-    <Checkbox v-if="props.description.formType === 'checkbox'" v-model="vm.model"
-              :name="props.description.name" :readonly="true"/>
-    <InputText v-else type="text" v-model="valueForReadonlyInput"
-               :name="props.description.name" readonly="true"/>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
+  <SchemaControl :vm="vm">
+    <component :is="vm.componentName" v-model="valueForReadonlyInput"
+               :name="props.description.name" :readonly="true"
+               :class="[...sharedFunctions.getClasses()]">
+    </component>
   </SchemaControl>
 
 </template>
@@ -23,10 +22,15 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 const {vm, sharedFunctions} = useBaseControl(props, emits);
+
+if (!vm.componentName) {
+  if (props.description.formType === 'checkbox') {
+    vm.componentName = "Checkbox";
+  } else {
+    vm.componentName = 'InputText';
+  }
+}
 
 
 const valueForReadonlyInput = computed(() => {

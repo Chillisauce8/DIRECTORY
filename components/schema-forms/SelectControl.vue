@@ -1,18 +1,15 @@
 <template>
-  <SchemaControl :vuelidateField="$v.model">
-    <component :is="componentName"
+  <SchemaControl :vm=vm :vuelidateField="$v.model">
+    <component :is="vm.componentName"
                v-if="vm.filteredSelectValues"
-               :name="props.description.name"
                :showClear="!props.description.required"
-               v-model="vm.model"
-               @update:modelValue="onModelChange($event)"
+               v-model="vm.model" @update:modelValue="onModelChange($event)"
                :options="vm.filteredSelectValues"
                :optionLabel="props.description.optionLabel || (vm.filteredSelectValues?.[0]?.title ? 'title' : undefined)"
                :placeholder="vm.placeholderValue"
                v-bind="props.description"
-               :class="[props.description.class || '']">
+               :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']">
     </component>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
   </SchemaControl>
 
 <!--    <div class="flex-10 column center-center" v-if="props.description.isRelator">-->
@@ -40,13 +37,11 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const componentName = props.description.component || 'Dropdown';
-
-const selfRef = ref(null);
-
-
 const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);
 
+if (!vm.componentName) {
+  vm.componentName = 'Dropdown';
+}
 
 const initFieldBase = sharedFunctions.initField;
 
@@ -129,6 +124,5 @@ sharedFunctions.initField = initField;
 
 </script>
 
-<style scoped>
-
+<style>
 </style>

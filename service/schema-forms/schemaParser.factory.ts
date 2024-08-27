@@ -68,7 +68,6 @@ export class SchemaParser {
     result['xMinItems'] = properties['x-minItems'] || item['x-minItems'] ||
       properties['minItems'] || item['minItems'];
 
-
     result['xMaxItems'] = properties['x-maxItems'] || item['x-maxItems'] ||
       properties['maxItems'] || item['maxItems'];
 

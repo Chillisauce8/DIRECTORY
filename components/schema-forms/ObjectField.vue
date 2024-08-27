@@ -1,29 +1,36 @@
 <template>
-    <div ref="selfRef" class="schema-form-object-field">
-        <div v-if="sharedFunctions?.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue">
-            <!---  <div class="field_wrap row start-baseline gap-horizontal_15"
-           v-for="(line, lineIndex) in vm.lines"
-           v-show="!isAllLineHidden(line)"> -->
+    <section :class="[...sharedFunctions.getClasses()]"
+         v-if="sharedFunctions?.shouldBeConstructed(props.description.header)"
+         v-show="!props.description.xHideValue">
 
-            <p class="label" v-if="props.description.header.title" :style="{ opacity: shouldShowTitle(lineIndex) ? 1 : 0 }">
-                <span>
-                    {{ sharedFunctions.getTitle() }}
+        <div class="field-block"
+            v-for="(line, lineIndex) in vm.lines"
+            v-show="!isAllLineHidden(line)">
 
-                    <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
-                </span>
-            </p>
+          <label v-if="props.description.header.title"
+                 :style="{ opacity: shouldShowTitle(lineIndex) ? 1 : 0 }">
+            {{ sharedFunctions.getTitle() }}
+            <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()"
+               v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
+          </label>
 
-            <template v-for="item in line">
-                <div class="flex" :style="{ width: item.description.xFlex + '%' }" v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
-                    <DynamicControl v-if="item.formDirective === 'valueField'" :description="item.description" :model="vm.model[item.description.name]" @modelChange="onModelChange(item.description.name, $event)" :context="vm.context">
-                    </DynamicControl>
+          <template v-for="item in line">
+              <div class="flex" :style="{ width: item.description.xFlex + '%' }"
+                   v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
+                  <DynamicControl v-if="item.formDirective === 'valueField'"
+                                  :description="item.description" :model="vm.model[item.description.name]"
+                                  @modelChange="onModelChange(item.description.name, $event)"
+                                  :context="vm.context">
+                  </DynamicControl>
 
-                    <DynamicField class="inner-dynamic-field" v-if="item.formDirective !== 'valueField'" :description="item" :model="vm.model" @modelChange="onModelChange(undefined, $event)" :context="vm.context"> </DynamicField>
-                </div>
-            </template>
-            <!--   </div> -->
-        </div>
-    </div>
+                  <DynamicField class="inner-dynamic-field" v-if="item.formDirective !== 'valueField'"
+                                :description="item" :context="vm.context"
+                                :model="vm.model" @modelChange="onModelChange(undefined, $event)">
+                  </DynamicField>
+              </div>
+          </template>
+         </div>
+    </section>
 </template>
 
 <script setup lang="ts">
@@ -41,7 +48,6 @@ const props = defineProps<BaseFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const selfRef = ref(null);
 
 let { vm, sharedFunctions } = useBaseField(props, emits);
 
