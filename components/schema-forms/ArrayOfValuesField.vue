@@ -2,14 +2,8 @@
     <section :class="sharedFunctions.prepareClasses()" :id="props.description.id">
         <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)"
                   v-show="!props.description.xHideValue">
-            <div v-for="(line, index) in vm.model" :key="index">
+            <div class="TEST" v-for="(line, index) in vm.model" :key="index">
                 <p class="label flex-none" v-if="props.description.title && index === 0">
-                    {{ sharedFunctions.getTitle() }}
-                    <span>
-                      <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()"
-                                 direction="left" style="position: relative" />
-                    </span>
-
                     <span v-if="sharedFunctions.getDescriptionText()"
                           v-tooltip.bottom="sharedFunctions.getDescriptionText()">
                         <i class="pi pi-question padding_-5"></i>
@@ -25,6 +19,9 @@
                       :context="sharedFunctions.createInnerFieldContext(props.description.name, index)"
                       :noPlaceholder="true">
                     </DynamicControl>
+
+                  <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()"
+                             direction="left" style="position: relative" />
                 </div>
             </div>
 
