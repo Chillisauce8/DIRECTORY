@@ -5,9 +5,7 @@
 
         <template v-if="!!context">
             <template v-for="(groupDescription, groupIndex) in props.description" :key="groupIndex">
-                <FormGroup :model="vm.model" @modelChange="onModelChange($event)"
-                           :description="groupDescription" :context="context">
-                </FormGroup>
+                <FormGroup :model="vm.model" @modelChange="onModelChange($event)" :description="groupDescription" :context="context"> </FormGroup>
             </template>
         </template>
         <Toast />
@@ -46,7 +44,6 @@ const props = withDefaults(defineProps<FormProps>(), {
 const emits = defineEmits<FormEmits>();
 
 let formDoneSent = false;
-
 
 const { vm, sharedFunctions } = useBaseField(props, emits);
 
@@ -155,101 +152,106 @@ sharedFunctions.processInnerModelChanged = processInnerModelChanged;
 
 <style lang="scss">
 .form {
-  --background-color: white;
-  --text-color: black;
-  --form-title-color: black;
-  --form-subtitle-color: grey;
-  --section-title-color: black;
-  --section-side-color: lightgrey;
-  --field-subtext-color: grey;
-  --error-message-color: crimson;
+    --background-color: white;
+    --text-color: black;
+    --form-title-color: black;
+    --form-subtitle-color: grey;
+    --section-title-color: black;
+    --section-side-color: lightgrey;
+    --field-subtext-color: grey;
+    --error-message-color: crimson;
 
-  background-color: var(--background-color);
-  & * {
-    font-size: 14px;
-    color: var(--text-color);
-    font-weight: 400;
-    letter-spacing: 1px;
-    font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-  }
-  input {
-    //    background-color: lightblue;
-  }
-  & section {
-    &:nth-child(2n) {
-      //  background: #f0f2f7;
+    background-color: var(--background-color);
+    & * {
+        font-size: 14px;
+        color: var(--text-color);
+        font-weight: 400;
+        letter-spacing: 1px;
+        //  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
     }
-    &:nth-child(2n + 1) {
-      //   background: #f5f6fa;
+    input {
+        //    background-color: lightblue;
     }
-  }
-  & section {
-    margin: 10px 0 10px;
-    padding-left: 20px;
-    border-left: 3px solid var(--section-side-color); //  border-radius: 10px;
-    &.row .field-block {
-      display: flex;
+    & section {
+        &:nth-child(2n) {
+            //  background: #f0f2f7;
+        }
+        &:nth-child(2n + 1) {
+            //   background: #f5f6fa;
+        }
     }
-  }
-  h1 {
-    font-weight: 600;
-    font-size: 14px;
-    color: var(--section-title-color);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin: 5px;
-  }
-  > h1 {
-    font-size: 24px;
-    text-align: center;
-    color: var(--form-title-color);
-  }
-  h2 {
-    font-size: 18px;
-    text-align: center;
-    color: var(--form-subtitle-color);
-  }
+    & section {
+        margin: 10px 0 10px;
+        padding-left: 20px;
+        border-left: 3px solid var(--section-side-color); //  border-radius: 10px;
+        &.row .field-block {
+            display: flex;
+        }
+    }
+    h1 {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--section-title-color);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 5px;
+    }
+    > h1 {
+        font-size: 24px;
+        text-align: center;
+        color: var(--form-title-color);
+    }
+    h2 {
+        font-size: 18px;
+        text-align: center;
+        color: var(--form-subtitle-color);
+    }
 
-  .field-wrapper {
-    display: flex;
-    flex-direction: column;
-    margin: 10px;
-    label {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .subtext {
-      font-size: 12px;
-      color: var(--field-subtext-color);
-    }
-    .error-message {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--error-message-color);
-    }
-    .field {
-      display: flex;
-      flex-direction: row;
-      margin-bottom: 0;
-      .input-wrapper {
-        flex-grow: 1;
+    .field-wrapper {
         display: flex;
         flex-direction: column;
-      }
+        margin: 10px;
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .subtext {
+            font-size: 12px;
+            color: var(--field-subtext-color);
+        }
+        .error-message {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--error-message-color);
+        }
+        .field {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 0;
+            .input-wrapper {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+        }
     }
-  }
-  .field-group {
-    &.row-start {
-      display: flex;
-      flex-wrap: wrap;
+    .field-group {
+        &.row-start {
+            display: flex;
+            flex-wrap: wrap;
+        }
     }
-  }
-  .p-speeddial {
-    position: relative;
-    button {
-      scale: 0.6;
+    .p-speeddial {
+        position: relative;
+        button {
+            scale: 0.6;
+        }
     }
-  }
+
+    .p-speeddial-action {
+        // Modifies the button colour on speedial open.
+        background-color: rgb(200, 200, 200);
+    }
 }
 </style>
