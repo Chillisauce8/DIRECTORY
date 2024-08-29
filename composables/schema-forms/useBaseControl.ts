@@ -2,6 +2,7 @@ import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsPro
 import type { BaseFieldEmits, BaseFieldProps, ComponentRefs } from '~/composables/schema-forms/useBaseField';
 import { isUndefined, isEqual } from '~/service/utils';
 import useBaseField from '~/composables/schema-forms/useBaseField';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
 
 
 export interface BaseControlProps extends BaseFieldProps {
@@ -24,9 +25,11 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
 
   const initFieldBase = sharedFunctions.initField;
+  const doOnMountedBase = sharedFunctions.doOnMounted;
   const possibleOldXPropertyNamesBase = sharedFunctions.possibleOldXPropertyNames;
   const possibleXPropertyNamesBase = sharedFunctions.possibleXPropertyNames;
   const processXFeaturesBase = sharedFunctions.processXFeatures;
+
 
   function initField() {
     initFieldBase();
@@ -45,8 +48,35 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
   }
 
 
+  function doOnMounted(componentInternalInstance: ComponentInternalInstance | null, validator?: any) {
+
+    const parentObjectField = sharedFunctions.getParentByName(componentInternalInstance, 'ObjectField');
+    const parentDynamicControl = sharedFunctions.getParentByName(componentInternalInstance, 'DynamicControl');
+    const parentGroupField = sharedFunctions.getParentByName(componentInternalInstance, 'FormGroup');
+    const schemaForm = sharedFunctions.getParentByName(componentInternalInstance, 'SchemaForm');
+
+    const refs = {
+      self: componentInternalInstance,
+      form: {
+        formName: schemaForm?.props.formName,
+        needCorrectExistingValues: true,
+      },
+      parentObjectField: parentObjectField,
+      parentGroupField: parentGroupField,
+      parentDynamicControl: parentDynamicControl,
+    };
+
+    sharedFunctions.setRefs(refs);
+
+    if (validator) {
+      sharedFunctions.setValidation(validator);
+    }
+
+    doOnMountedBase();
+  }
+
   function refreshTitle() {
-    vm.title = sharedFunctions.getTitle();
+    props.description.controlTitle = sharedFunctions.getTitle();
   }
 
   function isValid(): boolean {

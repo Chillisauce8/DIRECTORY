@@ -1,15 +1,9 @@
 <template>
-  <SchemaControl :vm=vm :vuelidateField="$v.model">
-    <Calendar v-model="fakeModel" @update:modelValue="onModelChange($event)"
-              dateFormat="D dd M yy"
-              showIcon iconDisplay="input"
-              :name="props.description.name"
-              :minDate="props.description.minimum" :maxDate="props.description.maximum"
-              :manualInput="false"
-              showButtonBar
-              :invalid="$v.$error"
-              :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']"/>
-  </SchemaControl>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :vuelidator="$v"
+                   :model="fakeModel" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
 
 
@@ -35,9 +29,20 @@ const emits = defineEmits<BaseFieldEmits>();
 
 const {vm, sharedFunctions} = useBaseControl(props, emits);
 
-if (!vm.componentName) {
-  vm.componentName = 'Calendar';
-}
+
+const componentName = vm.componentName || 'Calendar';
+
+const componentProperties = {
+  ...props.description,
+  dateFormat: "D dd M yy",
+  showIcon: true,
+  iconDisplay: "input",
+  minDate: props.description.minimum,
+  maxDate: props.description.maximum,
+  manualInput: false,
+  showButtonBar: true,
+};
+
 
 const initFieldBase = sharedFunctions.initField;
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
@@ -69,27 +74,7 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 function initField() {

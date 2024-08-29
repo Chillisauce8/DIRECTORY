@@ -1,12 +1,10 @@
 <template>
-  <SchemaControl :vm="vm">
-    <component :is="vm.componentName" v-model="valueForReadonlyInput"
-               :name="props.description.name" :readonly="true"
-               :class="[...sharedFunctions.getClasses()]">
-    </component>
-  </SchemaControl>
-
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :model="valueForReadonlyInput">
+  </SchemaComponent>
 </template>
+
 
 <script setup lang="ts">
 import { isObject } from '~/service/utils';
@@ -24,13 +22,21 @@ const emits = defineEmits<BaseFieldEmits>();
 
 const {vm, sharedFunctions} = useBaseControl(props, emits);
 
+let componentName = vm.componentName;
+
 if (!vm.componentName) {
   if (props.description.formType === 'checkbox') {
-    vm.componentName = "Checkbox";
+    componentName = "Checkbox";
   } else {
-    vm.componentName = 'InputText';
+    componentName = 'InputText';
   }
 }
+
+const componentProperties = {
+  ...props.description,
+  readonly: true
+};
+
 
 
 const valueForReadonlyInput = computed(() => {
@@ -54,26 +60,7 @@ const valueForReadonlyInput = computed(() => {
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance);
 });
 
 </script>

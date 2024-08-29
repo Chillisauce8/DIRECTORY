@@ -1,12 +1,20 @@
 <template>
-  <SchemaControl :vm=vm :vuelidateField="$v.model">
-    <AutoComplete v-model="vm.model"
-                  @update:modelValue="onModelChange($event)"
-                  dropdown
-                  :suggestions="suggestions"
-                  :optionLabel="(suggestions?.[0]?.title || vm.model?.title) ? 'title' : undefined"
-                  @complete="onSearchStringChange" />
-  </SchemaControl>
+  <div class="field-wrapper" :id="props.description.id">
+    <label>{{ vm.title }}</label>
+    <div class="field">
+      <div class="input-wrapper">
+        <AutoComplete v-model="vm.model"
+                      @update:modelValue="onModelChange($event)"
+                      dropdown
+                      :suggestions="suggestions"
+                      :optionLabel="(suggestions?.[0]?.title || vm.model?.title) ? 'title' : undefined"
+                      @complete="onSearchStringChange" />
+      </div>
+    </div>
+  </div>
+  <FieldError class="error-message"
+              :vuelidate-field="$v.model">
+  </FieldError>
 </template>
 
 
@@ -15,12 +23,12 @@
 import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
 import { required } from '@vuelidate/validators'
-import FieldError from '~/components/schema-forms/FieldError.vue';
 import useBaseSelectableControl from '~/composables/schema-forms/useBaseSelectableControl';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
+import FieldError from '~/components/schema-forms/FieldError.vue';
 
 
 // @ts-ignore
@@ -80,27 +88,7 @@ function doOnMounted() {
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 // function ngOnChanges(changes: SimpleChanges) {
@@ -120,7 +108,6 @@ onMounted(() => {
 function initField() {
   initFieldBase();
 }
-
 
 function onModelChange(value: any) {
   // vm.model = value;
@@ -155,14 +142,6 @@ function onSearchStringChange(request: any) {
   if (!request.query) {
     vm.model = undefined;
   }
-}
-
-function isValid(): boolean {
-  return !$v.$error;
-}
-
-function touch() {
-  //
 }
 
 

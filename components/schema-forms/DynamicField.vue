@@ -112,27 +112,8 @@ function doOnMounted() {
 }
 
 onMounted(() => {
-    const instance = getCurrentInstance();
-
-    const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-    const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-    const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-    const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-    const refs = {
-        self: instance,
-        form: {
-            formName: schemaForm?.props.formName,
-            needCorrectExistingValues: true
-        },
-        parentObjectField: parentObjectField,
-        parentGroupField: parentGroupField,
-        parentDynamicControl: parentDynamicControl
-    };
-
-    sharedFunctions.setRefs(refs);
-
-    doOnMounted();
+  const instance = getCurrentInstance();
+  sharedFunctions.doOnMounted(instance);
 });
 
 onDeactivated(() => {

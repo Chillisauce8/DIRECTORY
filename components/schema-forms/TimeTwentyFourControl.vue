@@ -1,9 +1,9 @@
 <template>
-  <SchemaControl :vm=vm :vuelidateField="$v.model">
-    <Calendar v-model="vm.model" @update:modelValue="onModelChange($event)"
-              timeOnly hourFormat="24"
-              :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']"/>
-  </SchemaControl>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :vuelidator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
@@ -45,9 +45,13 @@ vm = extend(vm, {
 });
 
 
-if (!vm.componentName) {
-  vm.componentName = 'Calendar';
-}
+const componentName = vm.componentName || 'Calendar';
+
+const componentProperties = {
+  ...props.description,
+  timeOnly: true,
+  hourFormat: "24"
+};
 
 
 const validateRules = computed(() => {
@@ -82,27 +86,7 @@ function onModelChange(value: any) {
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 function correctExistingValue() {

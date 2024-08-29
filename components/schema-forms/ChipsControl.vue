@@ -1,10 +1,10 @@
 <template>
-    <SchemaControl :vm=vm :vuelidateField="$v.model">
-      <Chips
-        v-bind="props.description"
-        v-model="vm.model" @update:modelValue="onModelChange($event)"
-        :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']"/>
-    </SchemaControl>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :vuelidator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)"
+                   v-if="vm.filteredSelectValues">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
@@ -23,6 +23,12 @@ const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
+
+const componentName = 'Chips';
+
+const componentProperties = {
+  ...props.description,
+};
 
 const baseFieldExport = useBaseControl(props, emits);
 
@@ -54,27 +60,7 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 

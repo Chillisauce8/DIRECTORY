@@ -1,11 +1,9 @@
 <template>
-  <SchemaControl :vm=vm :vuelidateField="$v.model">
-    <component :is="vm.componentName"
-               v-model="vm.originalModel" @update:modelValue="onModelChangeDebounced($event)"
-               v-bind="props.description"
-               :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']">
-    </component>
-  </SchemaControl>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :vuelidator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
@@ -43,9 +41,13 @@ vm = extend(vm, {
   originalModel: undefined,
 });
 
-if (!vm.componentName) {
-  vm.componentName = 'InputText';
-}
+
+const componentName = vm.componentName || 'InputText';
+
+const componentProperties = {
+  ...props.description,
+};
+
 
 const initFieldBase = sharedFunctions.initField;
 const setModelBase = sharedFunctions.setModel;
@@ -75,27 +77,7 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 function initField() {
@@ -170,7 +152,7 @@ function _prepareMinMaxValues() {
     }
 
     if (props.description['maximumDate']) {
-      props.description.maximum = props._parseDateString(props.description['maximumDate']);
+      props.description.maximum = _parseDateString(props.description['maximumDate']);
     }
   }
 }

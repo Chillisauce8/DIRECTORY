@@ -1,5 +1,5 @@
 <template>
-    <section :class="[...sharedFunctions.getClasses()]">
+    <section :class="sharedFunctions.prepareClasses()" :id="props.description.id">
         <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)"
                   v-show="!props.description.xHideValue">
             <div v-for="(line, index) in vm.model" :key="index">
@@ -74,26 +74,7 @@ const { vm, sharedFunctions, initDone } = useBaseArrayFieldControl(props, emits)
 
 onMounted(() => {
     const instance = getCurrentInstance();
-
-    const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-    const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-    const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-    const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-    const refs = {
-        self: instance,
-        form: {
-            formName: schemaForm?.props.formName,
-            needCorrectExistingValues: true
-        },
-        parentObjectField: parentObjectField,
-        parentGroupField: parentGroupField,
-        parentDynamicControl: parentDynamicControl
-    };
-
-    sharedFunctions.setRefs(refs);
-
-    sharedFunctions.doOnMounted();
+    sharedFunctions.doOnMounted(instance);
 });
 
 onDeactivated(() => {

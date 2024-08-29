@@ -1,12 +1,8 @@
 <template>
-  <SchemaControl :vm=vm>
-    <component :is="vm.componentName"
-               v-model="vm.model" @update:modelValue="onModelChange($event)"
-               :binary="true"
-               v-bind="props.description"
-              :class="[...sharedFunctions.getClasses()]">
-    </component>
-  </SchemaControl>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :model="vm.model" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
@@ -35,34 +31,19 @@ vm = extend(vm, {
   originalModel: undefined,
 });
 
-if (!vm.componentName) {
-  vm.componentName = 'Checkbox';
-}
+
+const componentName = vm.componentName || 'InputSwitch';
+
+const componentProperties = {
+  ...props.description,
+  binary: true,
+};
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance);
 });
 
 function isValid(): boolean {

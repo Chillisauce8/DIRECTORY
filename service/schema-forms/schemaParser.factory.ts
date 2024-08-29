@@ -333,6 +333,10 @@ export class SchemaParser {
         return 'multiselect';
       }
 
+      if (item.items && item.items.type === 'string') {
+        return 'multiselect';
+      }
+
       if ((item.items && '_relator' in item.items) ||
         '_relator' in item ||
         (item.items && 'join' in item.items) ||

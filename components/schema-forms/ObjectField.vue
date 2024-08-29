@@ -1,7 +1,8 @@
 <template>
-    <section :class="[...sharedFunctions.getClasses()]"
+    <section :class="sharedFunctions.prepareClasses()"
          v-if="sharedFunctions?.shouldBeConstructed(props.description.header)"
-         v-show="!props.description.xHideValue">
+         v-show="!props.description.xHideValue"
+         :id="props.description.id">
 
         <div class="field-block"
             v-for="(line, lineIndex) in vm.lines"

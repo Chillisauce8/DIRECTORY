@@ -1,12 +1,11 @@
 <template>
-  <SchemaControl :vm=vm :vuelidateField="$v.model">
-    <InputText type="email"
-               v-model="vm.model" @update:modelValue="onModelChange($event)"
-               :name="props.description.name"
-               :invalid="$v.$error"
-               :class="[...sharedFunctions.getClasses(), $v.$error ? 'p-invalid' : '']"/>
-  </SchemaControl>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :vuelidator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
+
 
 <script setup lang="ts">
 
@@ -30,9 +29,13 @@ const emits = defineEmits<BaseFieldEmits>();
 
 const {vm, sharedFunctions} = useBaseControl(props, emits);
 
-if (!vm.componentName) {
-  vm.componentName = 'InputText';
-}
+
+const componentName = vm.componentName || 'InputText';
+
+const componentProperties = {
+  ...props.description,
+  type: "email"
+};
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
@@ -58,27 +61,7 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 function onModelChange(value: any) {

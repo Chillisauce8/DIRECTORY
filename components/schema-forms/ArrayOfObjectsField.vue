@@ -1,5 +1,5 @@
 <template>
-    <section :class="[...sharedFunctions.getClasses()]">
+    <section :class="sharedFunctions.prepareClasses()" :id="props.description.id">
         <div v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
              v-show="!props.description.xHideValue" class="array-wrap">
             <div v-for="(row, rowIndex) in vm.model" :key="rowIndex">
@@ -126,26 +126,7 @@ function initField() {
 
 onMounted(() => {
     const instance = getCurrentInstance();
-
-    const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-    const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-    const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-    const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-    const refs = {
-        self: instance,
-        form: {
-            formName: schemaForm?.props.formName,
-            needCorrectExistingValues: true
-        },
-        parentObjectField: parentObjectField,
-        parentGroupField: parentGroupField,
-        parentDynamicControl: parentDynamicControl
-    };
-
-    sharedFunctions.setRefs(refs);
-
-    sharedFunctions.doOnMounted();
+    sharedFunctions.doOnMounted(instance);
 });
 
 onDeactivated(() => {

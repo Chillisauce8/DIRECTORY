@@ -68,20 +68,22 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
   const sharedFunctions = {
 
-    getClasses(): string[] {
+    prepareClasses(componentName: string): string {
       const result = [];
 
       if (props.description.class) {
         result.push(props.description.class);
       }
 
-      if (vm.componentName) {
-        result.push(vm.componentName);
+      if (componentName) {
+        result.push(componentName);
+      } else if (props.description.header?.type) {
+        result.push(props.description.header?.type);
       } else if (props.description.type) {
         result.push(props.description.type);
       }
 
-      return result;
+      return result.join(' ');
     },
 
     setRefs(refsValue: ComponentRefs) {
@@ -115,6 +117,22 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       return im._innerModel;
     },
 
+    prepareId: (): string|null => {
+      const path = props.description.header?.path || props.description.path;
+
+      if (!path) {
+        return null;
+      }
+
+      const id = path.replace(/\[\]$/, '');
+
+      if (id.includes('[]')) {
+        return null;
+      }
+
+      return id;
+    },
+
     setModel: (value: any, updated?: boolean) => {
       value = sharedFunctions.correctModelBeforeSet(value);
 
@@ -138,6 +156,8 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
     initField: () => {
       registerField();
+
+      props.description.id = sharedFunctions.prepareId();
     },
 
     afterFieldInit: () => {
