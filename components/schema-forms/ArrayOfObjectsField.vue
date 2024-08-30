@@ -1,5 +1,5 @@
 <template>
-    <section :class="sharedFunctions.prepareClasses()" :id="props.description.id">
+    <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
         <div v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
              v-show="!props.description.xHideValue" class="array-wrap">
             <div v-for="(row, rowIndex) in vm.model" :key="rowIndex">

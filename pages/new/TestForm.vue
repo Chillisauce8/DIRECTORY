@@ -2,7 +2,7 @@
 
 <template>
     <div class="card">
-        <DataItem function="create" collection="test"></DataItem>
+        <DataItem function="create" collection="products"></DataItem>
     </div>
 
     <div class="card">

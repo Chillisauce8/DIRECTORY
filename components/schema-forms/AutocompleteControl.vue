@@ -79,7 +79,7 @@ function doOnMounted() {
   }
 
   if (!autocompleteInitValue) {
-    suggestions.value = suggestions.value = sharedFunctions.querySearch('', im.cachedPossibleValues);
+    suggestions.value = sharedFunctions.querySearch('', im.cachedPossibleValues);
   } else {
     onSearchStringChange({query: autocompleteInitValue});
   }

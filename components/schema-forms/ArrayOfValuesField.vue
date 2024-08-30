@@ -1,13 +1,15 @@
 <template>
-    <section :class="sharedFunctions.prepareClasses()" :id="props.description.id">
+    <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
         <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)"
                   v-show="!props.description.xHideValue">
-            <div class="TEST" v-for="(line, index) in vm.model" :key="index">
+            <div v-for="(line, index) in vm.model" :key="index">
                 <p class="label flex-none" v-if="props.description.title && index === 0">
-                    <span v-if="sharedFunctions.getDescriptionText()"
-                          v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                        <i class="pi pi-question padding_-5"></i>
-                    </span>
+                  {{ sharedFunctions.getTitle() }}
+
+                  <span v-if="sharedFunctions.getDescriptionText()"
+                        v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+                      <i class="pi pi-question padding_-5"></i>
+                  </span>
                 </p>
 
                 <p class="label flex-none" v-if="props.description.title && index !== 0"></p>

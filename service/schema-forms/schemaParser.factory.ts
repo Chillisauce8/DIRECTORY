@@ -264,7 +264,7 @@ export class SchemaParser {
       return 'number';
     }
 
-    if (item['_relator'] || item['join']) {
+    if ((item['_relator'] || item['join']) && !item['component']) {
       return 'autocomplete';
     }
 

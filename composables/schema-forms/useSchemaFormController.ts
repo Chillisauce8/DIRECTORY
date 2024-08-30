@@ -258,12 +258,17 @@ export default function useSchemaFormController(formName: string): any {
           vm.model = vm.schemaFormsBuildHelper.buildEmptyModel();
         }
       })
-      .then(() => sharedFunctions.buildGroupsDescription(true))// TODO: update useOneGroup
+      .then(() => {
+        return sharedFunctions.buildGroupsDescription(true);
+      })// TODO: update useOneGroup
       .then((result: Array<Object>) => {
         formDescription.value = result;
       })
       .then(() => {
         schemaFormsProcessingHelper.registerForm(vm.name);
+      })
+      .catch(err => {
+        console.log(err);
       })
       .finally(() => {
         vm.inProgress = false;
