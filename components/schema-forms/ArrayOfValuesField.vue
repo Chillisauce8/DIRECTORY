@@ -3,7 +3,7 @@
         <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)"
                   v-show="!props.description.xHideValue">
             <div v-for="(line, index) in vm.model" :key="index">
-                <p class="label flex-none" v-if="props.description.title && index === 0">
+                <p class="label" v-if="props.description.title && index === 0">
                   {{ sharedFunctions.getTitle() }}
 
                   <span v-if="sharedFunctions.getDescriptionText()"
@@ -12,9 +12,9 @@
                   </span>
                 </p>
 
-                <p class="label flex-none" v-if="props.description.title && index !== 0"></p>
+                <p class="label" v-if="props.description.title && index !== 0"></p>
 
-                <div class="flex" v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
+                <div v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
                     <DynamicControl
                       :description="vm.rowDescriptions[index]"
                       :model="vm.model[index]" @modelChange="onModelChange($event, index)"
@@ -28,7 +28,7 @@
             </div>
 
             <div class="empty row start-center" v-if="!vm?.model?.length">
-                <p class="label flex">
+                <p class="label">
                     {{ sharedFunctions.getTitle() }}
 
                     <span v-if="sharedFunctions.getDescriptionText()"

@@ -46,7 +46,7 @@
             </div>
 
             <div class="empty row start-center" v-if="!vm.model?.length">
-                <p class="label flex">
+                <p class="label">
                     {{ sharedFunctions.getTitle() }}
 
                     <span v-if="sharedFunctions.getDescriptionText()"

@@ -16,7 +16,7 @@
           </label>
 
           <template v-for="item in line">
-              <div class="flex" :style="{ width: item.description.xFlex + '%' }"
+              <div :style="{ width: item.description.xFlex + '%' }"
                    v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
                   <DynamicControl v-if="item.formDirective === 'valueField'"
                                   :description="item.description" :model="vm.model[item.description.name]"

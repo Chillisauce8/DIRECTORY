@@ -7,8 +7,8 @@
                 @select="onFileChanged($event)" />
 
     <div class="row queue" v-if="vm.model">
-      <p class="flex h8 name">{{vm.model.name}}</p>
-      <p class="flex h8 name">{{vm.model.type}}</p>
+      <p class="h8 name">{{vm.model.name}}</p>
+      <p class="h8 name">{{vm.model.type}}</p>
       <p class="padding_0_2 text-align_center h8">~{{ getFileSizeString() }}</p>
 
       <Button icon="pi pi-eye" class="link" aria-label="Open File"
