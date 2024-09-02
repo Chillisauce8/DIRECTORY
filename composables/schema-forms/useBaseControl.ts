@@ -49,30 +49,11 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
 
   function doOnMounted(componentInternalInstance: ComponentInternalInstance | null, validator?: any) {
-
-    const parentObjectField = sharedFunctions.getParentByName(componentInternalInstance, 'ObjectField');
-    const parentDynamicControl = sharedFunctions.getParentByName(componentInternalInstance, 'DynamicControl');
-    const parentGroupField = sharedFunctions.getParentByName(componentInternalInstance, 'FormGroup');
-    const schemaForm = sharedFunctions.getParentByName(componentInternalInstance, 'SchemaForm');
-
-    const refs = {
-      self: componentInternalInstance,
-      form: {
-        formName: schemaForm?.props.formName,
-        needCorrectExistingValues: true,
-      },
-      parentObjectField: parentObjectField,
-      parentGroupField: parentGroupField,
-      parentDynamicControl: parentDynamicControl,
-    };
-
-    sharedFunctions.setRefs(refs);
-
     if (validator) {
       sharedFunctions.setValidation(validator);
     }
 
-    doOnMountedBase();
+    doOnMountedBase(componentInternalInstance);
   }
 
   function refreshTitle() {
@@ -328,6 +309,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
 
   sharedFunctions.initField = initField;
+  sharedFunctions.doOnMounted = doOnMounted;
   sharedFunctions.trackByIndexFn = trackByIndexFn;
   sharedFunctions.possibleOldXPropertyNames = possibleOldXPropertyNames;
   sharedFunctions.possibleXPropertyNames = possibleXPropertyNames;

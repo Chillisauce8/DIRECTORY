@@ -100,26 +100,7 @@ function initField(): void {
 
 onMounted(() => {
     const instance = getCurrentInstance();
-
-    const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-    const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-    const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-    const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-    const refs = {
-        self: instance,
-        form: {
-            formName: schemaForm?.props.formName,
-            needCorrectExistingValues: true
-        },
-        parentObjectField: parentObjectField,
-        parentGroupField: parentGroupField,
-        parentDynamicControl: parentDynamicControl
-    };
-
-    sharedFunctions.setRefs(refs);
-
-    sharedFunctions.doOnMounted();
+    sharedFunctions.doOnMounted(instance);
 });
 
 onDeactivated(() => {

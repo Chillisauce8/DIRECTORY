@@ -1,8 +1,7 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service'
 import { isUndefined, intersection, isObject, isString, isEqual, cloneDeep } from '~/service/utils';
 import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
-// @ts-ignore
-import { onMounted } from 'vue';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
 
 
 export interface BaseFieldProps {
@@ -172,7 +171,28 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       initDone.value = true;
     },
 
-    doOnMounted: () => {
+    doOnMounted: (componentInternalInstance: ComponentInternalInstance | null, ) => {
+
+      if (componentInternalInstance) {
+        const parentObjectField = sharedFunctions.getParentByName(componentInternalInstance, 'ObjectField');
+        const parentDynamicControl = sharedFunctions.getParentByName(componentInternalInstance, 'DynamicControl');
+        const parentGroupField = sharedFunctions.getParentByName(componentInternalInstance, 'FormGroup');
+        const schemaForm = sharedFunctions.getParentByName(componentInternalInstance, 'SchemaForm');
+
+        const refs = {
+          self: componentInternalInstance,
+          form: {
+            formName: schemaForm?.props.formName,
+            needCorrectExistingValues: true,
+          },
+          parentObjectField: parentObjectField,
+          parentGroupField: parentGroupField,
+          parentDynamicControl: parentDynamicControl,
+        };
+
+        sharedFunctions.setRefs(refs);
+      }
+
       sharedFunctions.initField();
 
       // call this if description was set after model was set!

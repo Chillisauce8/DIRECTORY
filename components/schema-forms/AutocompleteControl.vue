@@ -1,9 +1,10 @@
 <template>
   <div class="field-wrapper" :id="props.description.id">
-    <label>{{ vm.title }}</label>
+    <label>{{ props.description.controlTitle }}</label>
     <div class="field">
       <div class="input-wrapper">
         <AutoComplete v-model="vm.model"
+                      class="AutoComplete"
                       @update:modelValue="onModelChange($event)"
                       dropdown
                       :suggestions="suggestions"
@@ -55,7 +56,9 @@ const validateRules = computed(() => {
   };
 
   if (props.description.required) {
-    result['model']['required'] = required;
+    result['model'] = {
+      required
+    }
   }
 
   return result;

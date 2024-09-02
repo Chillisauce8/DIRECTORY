@@ -427,12 +427,14 @@ export class SchemaFormsBuildHelper {
     return result;
   }
 
-  async buildFormDescription(useOneGroup: boolean = false, showTitles: boolean = true, readonly: boolean = false): Promise<any> {
+  async buildFormDescription(showTitles: boolean = true, readonly: boolean = false): Promise<any> {
     this.clearPromisesList();
     this.clearRelatorsBulkRequestParams();
 
     const result: any[] = [];
     const children = this.schemaParser.getItemChildren('');
+
+    const useOneGroup = !this.schemaParser.isMultiGroupSchema();
 
     if (useOneGroup) {
       const oneGroupDescription = {

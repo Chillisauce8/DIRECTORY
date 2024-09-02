@@ -107,10 +107,6 @@ function onModelChange(value: any) {
     }
 }
 
-function doOnMounted() {
-    initField();
-}
-
 onMounted(() => {
   const instance = getCurrentInstance();
   sharedFunctions.doOnMounted(instance);

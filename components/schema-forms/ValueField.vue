@@ -15,6 +15,7 @@ import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import DynamicControl from '~/components/schema-forms/DynamicControl.vue';
 import { getCurrentInstance } from 'vue';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
 
 export interface ValueFieldProps extends BaseFieldProps {
     showTitle?: boolean;
@@ -28,6 +29,7 @@ const emits = defineEmits<BaseFieldEmits>();
 let { im, vm, sharedFunctions } = useBaseField(props, emits);
 
 const processXFeaturesBase = sharedFunctions.processXFeatures;
+const doOnMountedBase = sharedFunctions.doOnMounted;
 
 vm = extend(vm, {
     descriptionText: '',
@@ -36,13 +38,15 @@ vm = extend(vm, {
 
 const shouldFieldBeConstructed = ref(false);
 
-function doOnMounted() {
+function doOnMounted(instance: ComponentInternalInstance | null) {
     refreshShouldBeConstructedValues();
 
     if (shouldFieldBeConstructed) {
         refreshDescription();
         initField();
     }
+
+    doOnMountedBase(instance);
 }
 
 function initField(): void {
@@ -65,26 +69,7 @@ function initField(): void {
 
 onMounted(() => {
     const instance = getCurrentInstance();
-
-    const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-    const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-    const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-    const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-    const refs = {
-        self: instance,
-        form: {
-            formName: schemaForm?.props.formName,
-            needCorrectExistingValues: true
-        },
-        parentObjectField: parentObjectField,
-        parentGroupField: parentGroupField,
-        parentDynamicControl: parentDynamicControl
-    };
-
-    sharedFunctions.setRefs(refs);
-
-    doOnMounted();
+    doOnMounted(instance);
 });
 
 onDeactivated(() => {

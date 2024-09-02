@@ -34,6 +34,10 @@ export class SchemaParser {
     //
   }
 
+  isMultiGroupSchema(): boolean {
+    return !!this.schemaJson.useMultiGroups;
+  }
+
   parseItem(path: string): Object {
     const item = this.getItem(path);
 

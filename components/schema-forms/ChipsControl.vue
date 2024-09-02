@@ -48,7 +48,9 @@ const validateRules = computed(() => {
   };
 
   if (props.description.required) {
-    result['model']['required'] = required;
+    result['model'] = {
+      required
+    }
   }
 
   return result;
