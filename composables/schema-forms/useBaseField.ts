@@ -136,7 +136,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       value = sharedFunctions.correctModelBeforeSet(value);
 
       if (isStructureTag() && vm.context) {
-        setModelValueForStructureTagDescription(value);
+        setModelValueForContainerTagDescription(value);
       } else {
         im._previousValue = im._innerModel;
 
@@ -161,7 +161,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
     afterFieldInit: () => {
       if (isStructureTag() && im._innerModel) {
-        setModelValueForStructureTagDescription(im._innerModel);
+        setModelValueForContainerTagDescription(im._innerModel);
       }
 
       if (sharedFunctions.needXProcessTheField()) {
@@ -577,7 +577,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     value = sharedFunctions.correctModelBeforeSet(value);
 
     if (isStructureTag() && vm.context) {
-      setModelValueForStructureTagDescription(value);
+      setModelValueForContainerTagDescription(value);
     } else {
       im._previousValue = im._innerModel;
 
@@ -627,7 +627,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
   }
 
   function isStructureTag(): boolean {
-    return sharedFunctions.getDescription() && sharedFunctions.getDescription().structureTagDescription;
+    return sharedFunctions.getDescription() && sharedFunctions.getDescription().containerTagDescription;
   }
 
   function _checkAnyChildHasXHide(): boolean {
@@ -766,7 +766,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     return null;
   }
 
-  function setModelValueForStructureTagDescription(value: any) {
+  function setModelValueForContainerTagDescription(value: any) {
     const parentPath = sharedFunctions.getParentPath();
     const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
 

@@ -92,7 +92,7 @@ sharedFunctions.getTarget = async (): Promise<any> => {
   return {};
 }
 
-sharedFunctions.buildGroupsDescription = async (showTitles=true): Promise<any> => {
+sharedFunctions.buildFormDescription = async (showTitles=true): Promise<any> => {
   const readonly = props.function === 'read';
   return vm.schemaFormsBuildHelper.buildFormDescription(showTitles, readonly);
 }

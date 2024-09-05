@@ -23,13 +23,6 @@ export class PathTreeNode {
 
 export class SchemaParser {
 
-  private static isStructureTagRegexp = new RegExp('^\\d+_.+');
-
-  static isStructureTag(path: string): boolean {
-    const itemName = path.split('.')[0];
-    return SchemaParser.isStructureTagRegexp.test(itemName);
-  }
-
   constructor(private schemaJson: any) {
     //
   }

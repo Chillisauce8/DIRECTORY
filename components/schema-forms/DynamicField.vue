@@ -11,7 +11,7 @@
                          :context="vm.context" :description="props.description.description">
             </ObjectField>
 
-            <ObjectField v-else-if="props.description.formDirective === 'structureTag'"
+            <ObjectField v-else-if="props.description.formDirective === 'container'"
                          :model="fakeModel" @modelChange="onModelChange($event)"
                          :context="vm.context" :description="props.description.description">
             </ObjectField>
@@ -85,7 +85,7 @@ const fakeModel = computed(() => {
 function onModelChange(value: any) {
     const key = _getKeyForInnerModel();
 
-    if (sharedFunctions.getDescription() && sharedFunctions.getDescription().structureTagDescription && vm.context) {
+    if (sharedFunctions.getDescription() && sharedFunctions.getDescription().containerTagDescription && vm.context) {
         const parentPath = sharedFunctions.getParentPath();
         const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
 
@@ -122,7 +122,7 @@ function initField(): void {
     initDone.value = true;
 }
 
-function setModelValueForStructureTagDescription(value: any) {
+function setModelValueForContainerTagDescription(value: any) {
     //
 }
 

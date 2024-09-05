@@ -94,7 +94,7 @@ export default function useSchemaFormController(formName: string): any {
         });
     },
 
-    buildGroupsDescription: async (): Promise<any> => {
+    buildFormDescription: async (): Promise<any> => {
       return null;
     },
 
@@ -173,18 +173,18 @@ export default function useSchemaFormController(formName: string): any {
     const _dataToSave = cloneDeep(dataToSave);
     deleteNullProperties(_dataToSave, true);
     stripProperties(_dataToSave, true);
-    deleteStructureProperties(_dataToSave);
+    // deleteStructureProperties(_dataToSave);
     return _dataToSave;
   }
 
-  function deleteStructureProperties(data: any) {
-    if (!isObject(data)) {
-      return;
-    }
-
-    deletePropertiesWithPrefix(data, (key: string) =>
-      vm.schemaFormsBuildHelper.isStructureTag(key), true);
-  }
+  // function deleteStructureProperties(data: any) {
+  //   if (!isObject(data)) {
+  //     return;
+  //   }
+  //
+  //   deletePropertiesWithPrefix(data, (key: string) =>
+  //     vm.schemaFormsBuildHelper.isStructureTag(key), true);
+  // }
 
   function saveErrorHandler(result: any) {
     if (!result) {
@@ -259,7 +259,7 @@ export default function useSchemaFormController(formName: string): any {
         }
       })
       .then(() => {
-        return sharedFunctions.buildGroupsDescription(true);
+        return sharedFunctions.buildFormDescription(true);
       })// TODO: update useOneGroup
       .then((result: Array<Object>) => {
         formDescription.value = result;

@@ -4,21 +4,32 @@
         <h2 v-if="props.subtitle" class="subtitle">{{ props.subtitle }}</h2>
 
         <template v-if="!!context">
-            <template v-for="(groupDescription, groupIndex) in props.description" :key="groupIndex">
-                <FormGroup :model="vm.model" @modelChange="onModelChange($event)" :description="groupDescription" :context="context"> </FormGroup>
-            </template>
+          <template v-for="(contentDescription, contentIndex) in props.description.content">
+              <template v-if="im.shouldAddHeaderNameToModelPathValues[contentIndex]">
+                <DynamicField :model="vm.model[props.description.header.name]"
+                              @modelChange="onModelChangeByPath($event)" :context="context"
+                              :description="contentDescription">
+                </DynamicField>
+              </template>
+              <template v-if="!im.shouldAddHeaderNameToModelPathValues[contentIndex]">
+                <DynamicField :model="vm.model" @modelChange="onModelChange($event)" :context="context"
+                              :description="contentDescription">
+                </DynamicField>
+              </template>
+          </template>
         </template>
         <Toast />
     </section>
 </template>
 
 <script setup lang="ts">
-import { isObject } from '~/service/utils';
+import { isEqual, isObject } from '~/service/utils';
 import { schemaFormsProcessingHelper } from '~/service/schema-forms/schemaFormsProcessing.service';
 import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import FormGroup from '~/components/schema-forms/FormGroup.vue';
 import useBaseField from '~/composables/schema-forms/useBaseField';
+import DynamicField from '~/components/schema-forms/DynamicField.vue';
 
 export interface FormProps extends BaseFieldProps {
     id?: string;
@@ -45,13 +56,19 @@ const emits = defineEmits<FormEmits>();
 
 let formDoneSent = false;
 
+const im = reactive({
+  shouldHeaderBeConstructed: false,
+  shouldContentBeConstructed: [],
+  shouldAddHeaderNameToModelPathValues: undefined
+});
+
 const { vm, sharedFunctions } = useBaseField(props, emits);
 
 const initFieldBase = sharedFunctions.initField;
 const setModelBase = sharedFunctions.setModel;
 const processInnerModelChangedBase = sharedFunctions.processInnerModelChanged;
 
-const context = ref();
+const context = ref(null);
 
 onMounted(() => {
     const refs = {
@@ -124,6 +141,10 @@ function initField() {
         _cachedFunction: {}
     };
     // });
+
+    vm.context = context.value;
+
+    initShouldAddHeaderNameToModelPath();
 }
 
 function setModel(value: any, updated?: boolean) {
@@ -141,9 +162,43 @@ function processInnerModelChanged(value?: any) {
 
 function onModelChange(value: any) {
     vm.model = value;
-
     emits('modelChange', vm.model);
 }
+
+function onModelChangeByPath(value: any) {
+  if (!isEqual(vm.model[props.description.header.name], value)) {
+    vm.model[props.description.header.name] = value;
+    setModel(vm.model, true);
+  } else {
+    schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
+  }
+}
+
+function initShouldAddHeaderNameToModelPath() {
+  im.shouldAddHeaderNameToModelPathValues = [];
+
+  for (let i = 0; i < props.description.content.length; ++i) {
+    const value = shouldAddHeaderNameToModelPath(props.description.content[i]);
+    im.shouldAddHeaderNameToModelPathValues.push(value);
+  }
+}
+
+function shouldAddHeaderNameToModelPath(contentDescription: any): boolean {
+  if (!Object.keys(props.description.header).length || !props.description.header.path) {
+    return false;
+  }
+
+  if (props.description.header.type === 'container') {
+    return false;
+  }
+
+  if (contentDescription.description.header) {
+    return contentDescription.description.header.path !== props.description.header.path;
+  } else {
+    return contentDescription.description.path !== props.description.header.path;
+  }
+}
+
 
 sharedFunctions.initField = initField;
 sharedFunctions.setModel = setModel;

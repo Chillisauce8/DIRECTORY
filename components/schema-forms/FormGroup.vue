@@ -50,18 +50,6 @@ const initFieldBase = sharedFunctions.initField;
 const setModelBase = sharedFunctions.setModel;
 const processXFeaturesBase = sharedFunctions.processXFeatures;
 
-watch(
-    () => props?.model,
-    (value: any) => {
-        if (value && vm.context) {
-            vm.context = {
-                ...vm.context,
-                // ...model,
-                resultModel: value
-            };
-        }
-    }
-);
 
 onMounted(() => {
     const instance = getCurrentInstance();
@@ -160,7 +148,7 @@ function shouldAddHeaderNameToModelPath(contentDescription: any): boolean {
         return false;
     }
 
-    if (SchemaParser.isStructureTag(props.description.header.path)) {
+    if (props.description.header.type === 'container') {
         return false;
     }
 
