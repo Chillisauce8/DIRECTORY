@@ -135,7 +135,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     setModel: (value: any, updated?: boolean) => {
       value = sharedFunctions.correctModelBeforeSet(value);
 
-      if (isStructureTag() && vm.context) {
+      if (isContainerTag() && vm.context) {
         setModelValueForContainerTagDescription(value);
       } else {
         im._previousValue = im._innerModel;
@@ -160,7 +160,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     afterFieldInit: () => {
-      if (isStructureTag() && im._innerModel) {
+      if (isContainerTag() && im._innerModel) {
         setModelValueForContainerTagDescription(im._innerModel);
       }
 
@@ -489,7 +489,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     shouldSetValueForRealModelValue: (): boolean => {
-      return isStructureTag() && vm.context;
+      return isContainerTag() && vm.context;
     },
 
     isReadonly: (): boolean => {
@@ -576,7 +576,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
     value = sharedFunctions.correctModelBeforeSet(value);
 
-    if (isStructureTag() && vm.context) {
+    if (isContainerTag() && vm.context) {
       setModelValueForContainerTagDescription(value);
     } else {
       im._previousValue = im._innerModel;
@@ -626,8 +626,8 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     return props.description?.rawData?.errorMessage;
   }
 
-  function isStructureTag(): boolean {
-    return sharedFunctions.getDescription() && sharedFunctions.getDescription().containerTagDescription;
+  function isContainerTag(): boolean {
+    return sharedFunctions.getDescription() && sharedFunctions.getDescription().isContainer;
   }
 
   function _checkAnyChildHasXHide(): boolean {

@@ -163,6 +163,8 @@ function processInnerModelChanged(value?: any) {
 function onModelChange(value: any) {
     vm.model = value;
     emits('modelChange', vm.model);
+
+    // console.log(JSON.stringify(vm.model, null, 4));
 }
 
 function onModelChangeByPath(value: any) {

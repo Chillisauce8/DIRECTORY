@@ -85,7 +85,7 @@ const fakeModel = computed(() => {
 function onModelChange(value: any) {
     const key = _getKeyForInnerModel();
 
-    if (sharedFunctions.getDescription() && sharedFunctions.getDescription().containerTagDescription && vm.context) {
+    if (sharedFunctions.getDescription() && sharedFunctions.getDescription().isContainer && vm.context) {
         const parentPath = sharedFunctions.getParentPath();
         const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
 

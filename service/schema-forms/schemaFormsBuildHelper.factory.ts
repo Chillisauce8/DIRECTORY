@@ -315,6 +315,7 @@ export class SchemaFormsBuildHelper {
 
     if (SchemaFormElementTypes.container === formElementType) {
       result['description']['header'] = this.buildHeaderDescription(preparedPath);
+      result['description']['isContainer'] = true;
       result['description']['content'] = [];
       this.internalContainers.push(result);
 
@@ -378,6 +379,7 @@ export class SchemaFormsBuildHelper {
 
         const result = {formDirective: SchemaFormElementTypes.container, description};
         result['description']['header'] = this.buildHeaderDescription(childName);
+        result['description']['isContainer'] = true;
         result['description']['content'] = [];
         containerField = result;
       } else if (item.type === '/container') {

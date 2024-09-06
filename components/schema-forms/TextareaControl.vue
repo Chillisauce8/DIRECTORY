@@ -1,7 +1,7 @@
 <template>
   <SchemaComponent :componentName="componentName"
                    :componentProperties="componentProperties"
-                   :vuelidator="$v"
+                   :validator="$v"
                    :model="vm.originalModel" @onModelChange="onModelChangeDebounced($event)">
   </SchemaComponent>
 </template>
