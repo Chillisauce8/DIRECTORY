@@ -1,15 +1,9 @@
 <template>
-  <FloatLabel>
-    <component :is="componentName"
-               v-model="vm.originalModel" @update:modelValue="onModelChangeDebounced($event)"
-               :name="props.description.name"
-               v-bind="props.description"
-               :class="[props.description.class || '', $v.$error ? 'p-invalid' : '']">
-    </component>
-
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :validator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
@@ -22,7 +16,6 @@ import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
 import { required, minLength, maxLength } from '@vuelidate/validators'
 import { patternValidator } from '~/service/forms-validators';
-import FieldError from '~/components/schema-forms/FieldError.vue';
 import { debounce } from '~/service/utils';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
@@ -40,11 +33,6 @@ const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const componentName = props.description.component || 'InputText';
-
-
-const selfRef = ref(null);
-
 
 let {vm, sharedFunctions} = useBaseControl(props, emits);
 
@@ -52,6 +40,14 @@ let {vm, sharedFunctions} = useBaseControl(props, emits);
 vm = extend(vm, {
   originalModel: undefined,
 });
+
+
+const componentName = vm.componentName || 'InputText';
+
+const componentProperties = {
+  ...props.description,
+};
+
 
 const initFieldBase = sharedFunctions.initField;
 const setModelBase = sharedFunctions.setModel;
@@ -81,27 +77,7 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 function initField() {
@@ -176,7 +152,7 @@ function _prepareMinMaxValues() {
     }
 
     if (props.description['maximumDate']) {
-      props.description.maximum = props._parseDateString(props.description['maximumDate']);
+      props.description.maximum = _parseDateString(props.description['maximumDate']);
     }
   }
 }
@@ -199,6 +175,5 @@ sharedFunctions.getDefaultValue = getDefaultValue;
 
 </script>
 
-<style scoped>
-
+<style>
 </style>

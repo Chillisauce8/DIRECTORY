@@ -23,15 +23,12 @@ export class PathTreeNode {
 
 export class SchemaParser {
 
-  private static isStructureTagRegexp = new RegExp('^\\d+_.+');
-
-  static isStructureTag(path: string): boolean {
-    const itemName = path.split('.')[0];
-    return SchemaParser.isStructureTagRegexp.test(itemName);
-  }
-
   constructor(private schemaJson: any) {
     //
+  }
+
+  isMultiGroupSchema(): boolean {
+    return !!this.schemaJson.useMultiGroups;
   }
 
   parseItem(path: string): Object {
@@ -67,7 +64,6 @@ export class SchemaParser {
     result['xMaximum'] = properties['x-maximum'] || item['x-maximum'];
     result['xMinItems'] = properties['x-minItems'] || item['x-minItems'] ||
       properties['minItems'] || item['minItems'];
-
 
     result['xMaxItems'] = properties['x-maxItems'] || item['x-maxItems'] ||
       properties['maxItems'] || item['maxItems'];
@@ -265,7 +261,7 @@ export class SchemaParser {
       return 'number';
     }
 
-    if (item['_relator'] || item['join']) {
+    if ((item['_relator'] || item['join']) && !item['component']) {
       return 'autocomplete';
     }
 
@@ -331,6 +327,10 @@ export class SchemaParser {
       }
 
       if (['MultiSelect', 'Listbox', 'Chips'].includes(item?.component)) {
+        return 'multiselect';
+      }
+
+      if (item.items && item.items.type === 'string') {
         return 'multiselect';
       }
 

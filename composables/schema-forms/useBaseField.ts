@@ -1,8 +1,7 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service'
-import { isUndefined, intersection, isObject, isString, isEqual, cloneDeep } from '~/service/utils';
+import { isUndefined, intersection, isObject, isString, isEqual, cloneDeep, pick } from '~/service/utils';
 import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
-// @ts-ignore
-import { onMounted } from 'vue';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
 
 
 export interface BaseFieldProps {
@@ -60,12 +59,31 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
   const vm = reactive({
     model: props.model,
     context: props.context,
-    placeholderValue: props.noPlaceholder,
+    title: '',
+    componentName: props.description.component,
   });
 
   const initDone = ref(false);
 
   const sharedFunctions = {
+
+    prepareClasses(componentName: string): string {
+      const result = [];
+
+      if (props.description.class) {
+        result.push(props.description.class);
+      }
+
+      if (componentName) {
+        result.push(componentName);
+      } else if (props.description.header?.type) {
+        result.push(props.description.header?.type);
+      } else if (props.description.type) {
+        result.push(props.description.type);
+      }
+
+      return result.join(' ');
+    },
 
     setRefs(refsValue: ComponentRefs) {
       im.refs = refsValue;
@@ -89,21 +107,37 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     getModel: () => {
-      if (sharedFunctions.shouldSetValueForRealModelValue()) {
-        const parentPath = sharedFunctions.getParentPath();
-        const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
-        return parentModel[sharedFunctions.getDescription().name];
-      }
+      // if (sharedFunctions.shouldSetValueForRealModelValue()) {
+      //   const parentPath = sharedFunctions.getParentPath();
+      //   const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+      //   return parentModel[sharedFunctions.getDescription().name];
+      // }
 
       return im._innerModel;
+    },
+
+    prepareId: (): string|null => {
+      const path = props.description.header?.path || props.description.path;
+
+      if (!path) {
+        return null;
+      }
+
+      const id = path.replace(/\[\]$/, '');
+
+      if (id.includes('[]')) {
+        return null;
+      }
+
+      return id;
     },
 
     setModel: (value: any, updated?: boolean) => {
       value = sharedFunctions.correctModelBeforeSet(value);
 
-      if (isStructureTag() && vm.context) {
-        setModelValueForStructureTagDescription(value);
-      } else {
+      // if (isContainerTag() && vm.context) {
+      //   setModelValueForContainerTagDescription(value);
+      // } else {
         im._previousValue = im._innerModel;
 
         const valuesDifferent = valueAndPreviousAreDifferent(value);
@@ -116,17 +150,19 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
           im._innerModel = value;
           sharedFunctions.processInnerModelChanged();
         }
-      }
+     // }
     },
 
     initField: () => {
       registerField();
+
+      props.description.id = sharedFunctions.prepareId();
     },
 
     afterFieldInit: () => {
-      if (isStructureTag() && im._innerModel) {
-        setModelValueForStructureTagDescription(im._innerModel);
-      }
+      // if (isContainerTag() && im._innerModel) {
+      //   setModelValueForContainerTagDescription(im._innerModel);
+      // }
 
       if (sharedFunctions.needXProcessTheField()) {
         sharedFunctions.processXFeatures();
@@ -135,7 +171,28 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       initDone.value = true;
     },
 
-    doOnMounted: () => {
+    doOnMounted: (componentInternalInstance: ComponentInternalInstance | null, ) => {
+
+      if (componentInternalInstance) {
+        const parentObjectField = sharedFunctions.getParentByName(componentInternalInstance, 'ObjectField');
+        const parentDynamicControl = sharedFunctions.getParentByName(componentInternalInstance, 'DynamicControl');
+        const parentGroupField = sharedFunctions.getParentByName(componentInternalInstance, 'FormGroup');
+        const schemaForm = sharedFunctions.getParentByName(componentInternalInstance, 'SchemaForm');
+
+        const refs = {
+          self: componentInternalInstance,
+          form: {
+            formName: schemaForm?.props.formName,
+            needCorrectExistingValues: true,
+          },
+          parentObjectField: parentObjectField,
+          parentGroupField: parentGroupField,
+          parentDynamicControl: parentDynamicControl,
+        };
+
+        sharedFunctions.setRefs(refs);
+      }
+
       sharedFunctions.initField();
 
       // call this if description was set after model was set!
@@ -432,7 +489,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     shouldSetValueForRealModelValue: (): boolean => {
-      return isStructureTag() && vm.context;
+      return isContainerTag() && vm.context;
     },
 
     isReadonly: (): boolean => {
@@ -519,9 +576,9 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
     value = sharedFunctions.correctModelBeforeSet(value);
 
-    if (isStructureTag() && vm.context) {
-      setModelValueForStructureTagDescription(value);
-    } else {
+    // if (isContainerTag() && vm.context) {
+    //   setModelValueForContainerTagDescription(value);
+    // } else {
       im._previousValue = im._innerModel;
 
       const valuesDifferent = valueAndPreviousAreDifferent(value);
@@ -534,7 +591,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         im._innerModel = value;
         sharedFunctions.processInnerModelChanged();
       }
-    }
+    // }
   }
 
   watch(() => props?.model, (value: any) => {
@@ -569,8 +626,8 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     return props.description?.rawData?.errorMessage;
   }
 
-  function isStructureTag(): boolean {
-    return sharedFunctions.getDescription() && sharedFunctions.getDescription().structureTagDescription;
+  function isContainerTag(): boolean {
+    return sharedFunctions.getDescription() && sharedFunctions.getDescription().isContainer;
   }
 
   function _checkAnyChildHasXHide(): boolean {
@@ -709,7 +766,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     return null;
   }
 
-  function setModelValueForStructureTagDescription(value: any) {
+  function setModelValueForContainerTagDescription(value: any) {
     const parentPath = sharedFunctions.getParentPath();
     const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
 
@@ -717,19 +774,17 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       return;
     }
 
-    const name = sharedFunctions.getDescription().name;
-
-    im._previousValue = parentModel[name];
+    im._previousValue = pick(parentModel, sharedFunctions.getDescription().content.map((item: any) => item.description.name));
 
     if (!valueAndPreviousAreDifferent(value)) {
       return;
     }
 
-    parentModel[name] = value;
+    Object.assign(parentModel, value);
 
-    im._innerModel = undefined;
+    im._innerModel = value;
 
-    sharedFunctions.processInnerModelChanged();
+    sharedFunctions.processInnerModelChanged(value);
     schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
   }
 

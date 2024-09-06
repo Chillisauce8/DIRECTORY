@@ -2,6 +2,7 @@ import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsPro
 import type { BaseFieldEmits, BaseFieldProps, ComponentRefs } from '~/composables/schema-forms/useBaseField';
 import { isUndefined, isEqual } from '~/service/utils';
 import useBaseField from '~/composables/schema-forms/useBaseField';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
 
 
 export interface BaseControlProps extends BaseFieldProps {
@@ -24,14 +25,16 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
 
   const initFieldBase = sharedFunctions.initField;
+  const doOnMountedBase = sharedFunctions.doOnMounted;
   const possibleOldXPropertyNamesBase = sharedFunctions.possibleOldXPropertyNames;
   const possibleXPropertyNamesBase = sharedFunctions.possibleXPropertyNames;
   const processXFeaturesBase = sharedFunctions.processXFeatures;
 
+
   function initField() {
     initFieldBase();
 
-    refreshPlaceholder();
+    refreshTitle();
 
     if (vm.model) {
       correctExistingValue();
@@ -45,8 +48,16 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
   }
 
 
-  function refreshPlaceholder() {
-    vm.placeholderValue = sharedFunctions.getPlaceholder();
+  function doOnMounted(componentInternalInstance: ComponentInternalInstance | null, validator?: any) {
+    if (validator) {
+      sharedFunctions.setValidation(validator);
+    }
+
+    doOnMountedBase(componentInternalInstance);
+  }
+
+  function refreshTitle() {
+    props.description.controlTitle = sharedFunctions.getTitle();
   }
 
   function isValid(): boolean {
@@ -182,7 +193,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
       processXReadOnlyForModelChanges(features['readonly']);
     }
 
-    refreshPlaceholder();
+    refreshTitle();
 
     return features;
   }
@@ -298,6 +309,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
 
 
   sharedFunctions.initField = initField;
+  sharedFunctions.doOnMounted = doOnMounted;
   sharedFunctions.trackByIndexFn = trackByIndexFn;
   sharedFunctions.possibleOldXPropertyNames = possibleOldXPropertyNames;
   sharedFunctions.possibleXPropertyNames = possibleXPropertyNames;

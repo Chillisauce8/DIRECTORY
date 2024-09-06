@@ -5,6 +5,7 @@ import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { extend } from 'vue-extend-reactive';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
 
 
 export default function useBaseArrayFieldControl(props: BaseControlProps, emits: BaseFieldEmits): any {
@@ -27,6 +28,7 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
     defaultMaximum: undefined,
   });
 
+  const doOnMountedBase = sharedFunctions.doOnMounted;
   const initFieldBase = sharedFunctions.initField;
   const processXFeaturesBase = sharedFunctions.processXFeatures;
 
@@ -53,7 +55,8 @@ export default function useBaseArrayFieldControl(props: BaseControlProps, emits:
     initFieldBase();
   }
 
-  function doOnMounted() {
+  function doOnMounted(instance: ComponentInternalInstance | null) {
+    doOnMountedBase(instance);
     initField();
     // call this if description was set after model was set!
     sharedFunctions.afterFieldInit();

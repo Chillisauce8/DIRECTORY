@@ -39,7 +39,8 @@ export function getDescriptionBinding(description: any) {
 
 export class SchemaFormsBuildHelper {
   public waitPromises: Array<Promise<any>> = [];
-  public relatorsBulkRequestParams: Array<Object> = [];
+  public relatorsBulkRequestParams: Array<any> = [];
+  public internalContainers: Array<any> = [];
 
   private currentStructuresTagMap: {[path: string]: any} = {};
   // @ts-ignore
@@ -60,6 +61,10 @@ export class SchemaFormsBuildHelper {
 
   clearRelatorsBulkRequestParams() {
     this.relatorsBulkRequestParams = [];
+  }
+
+  clearFormContainers() {
+    this.internalContainers = [];
   }
 
   _addRelatorsToBulkRequest(path: string, resultObj: Object) {
@@ -215,8 +220,12 @@ export class SchemaFormsBuildHelper {
   autodetectDirectiveType(path: string): SchemaFormElementTypes|null {
     const item = this.schemaParser.getItem(path);
 
-    if (SchemaParser.isStructureTag(path)) {
-      return SchemaFormElementTypes.structureTag;
+    if (item.type === 'container') {
+      return SchemaFormElementTypes.container;
+    }
+
+    if (item.type === '/container') {
+      return SchemaFormElementTypes.containerEnd;
     }
 
     if (!item) {
@@ -304,9 +313,22 @@ export class SchemaFormsBuildHelper {
 
     const result = {formDirective: formElementType, description};
 
+    if (SchemaFormElementTypes.container === formElementType) {
+      result['description']['header'] = this.buildHeaderDescription(preparedPath);
+      result['description']['isContainer'] = true;
+      result['description']['content'] = [];
+      this.internalContainers.push(result);
+
+      return null;
+    }
+
+    if (SchemaFormElementTypes.containerEnd === formElementType) {
+      const container: Object = this.internalContainers.pop();
+      return container;
+    }
+
     if ([SchemaFormElementTypes.objectField, SchemaFormElementTypes.arrayOfObjectsField,
-      SchemaFormElementTypes.arrayOfImagesField, SchemaFormElementTypes.arrayOfVideoField,
-      SchemaFormElementTypes.structureTag].includes(formElementType)) {
+      SchemaFormElementTypes.arrayOfImagesField, SchemaFormElementTypes.arrayOfVideoField].includes(formElementType)) {
 
       const children = this.schemaParser.getItemChildren(path);
 
@@ -322,155 +344,62 @@ export class SchemaFormsBuildHelper {
       }
     }
 
-    return result;
-  }
-
-  isStructureTag(path: string): boolean {
-    return SchemaParser.isStructureTag(path);
-  }
-
-  getStructureFieldLevel(field: ISchemaFormField): number {
-    const match = field.description['name'].match(/^(\d)+_.+/);
-    return match && parseInt(match[1], 10);
-  }
-
-  buildGroupDescription(name: string, showTitles: boolean = true, readonly: boolean = false) {
-    const item = this.schemaParser.getItem(name);
-
-    const path = name + (item.type === 'array' ? '[]' : '');
-
-    const result: any = {
-      header: this.buildHeaderDescription(path),
-      content: [],
-      fakeObject: false,
-    };
-
-    const isStructureTag = this.isStructureTag(name);
-
-    const fieldType = item['x-fieldtype'] || item['fieldType'];
-
-    if (result.header['type'] === 'object' && !fieldType && !isStructureTag && !result.header['component']) {
-      if (this._isAbsolutelyRemovedFromForm(item)) {
-        return null;
-      }
-
-      const children = this.schemaParser.getItemChildren(name);
-      for (const childName of Object.getOwnPropertyNames(children)) {
-        const field = this.generateField(name + '.' + childName, showTitles, readonly);
-
-        if (!field || !field['description']) {
-          continue;
-        }
-
-        result.content.push(field);
-      }
+    if (this.internalContainers.length) {
+      const internalContainer = this.internalContainers[this.internalContainers.length - 1];
+      internalContainer['description']['content'].push(result);
     } else {
-      const field = this.generateField(name, showTitles, readonly);
-
-      if (field) {
-        const parentPath = name.split('.').slice(0, -1).join('.');
-
-        if (field.formDirective === SchemaFormElementTypes.structureTag) {
-          result.fakeObject = true;
-          result.header['type'] = 'object';
-
-          const structureLevel = this.getStructureFieldLevel(field);
-          this.currentStructuresTagMap[parentPath + '_' + structureLevel] = result;
-
-          if (!isUndefined(this.currentStructuresTagLevel)) {
-            const resultToObjectField = {
-              formDirective: SchemaFormElementTypes.objectField,
-              description: {
-                header: result.header,
-                content: result.content,
-                type: 'object',
-                name: result.header['name'],
-                path: result.header['path'],
-                title: result.header['title'],
-                required: result.header['required'],
-                xHide: result.header['xHide'],
-              }
-            };
-
-            if (structureLevel > this.currentStructuresTagLevel) {
-              const parentLevelMapKey = parentPath + '_' + this.currentStructuresTagLevel;
-              this.currentStructuresTagMap[parentLevelMapKey].content.push(resultToObjectField);
-
-              this.currentStructuresTagLevel = structureLevel;
-              return null;
-            } else if (structureLevel < this.currentStructuresTagLevel) {
-              const parentLevelMapKey = parentPath + '_' + (structureLevel - 1);
-              this.currentStructuresTagMap[parentLevelMapKey].content.push(resultToObjectField);
-
-              this.currentStructuresTagLevel = structureLevel;
-              return null;
-            }
-          }
-
-          this.currentStructuresTagLevel = structureLevel;
-
-        } else {
-          const mapKey = parentPath + '_' + this.currentStructuresTagLevel;
-
-          if (this.currentStructuresTagMap[mapKey]) {
-            field.description['structureTagDescription'] = !!this.currentStructuresTagMap[mapKey];
-            this.currentStructuresTagMap[mapKey].content.push(field);
-
-            return null;
-          }
-
-          result.content.push(field);
-        }
-      }
+      return result;
     }
-
-    return result;
   }
 
-  async buildFormDescription(useOneGroup: boolean = false, showTitles: boolean = true, readonly: boolean = false): Promise<any> {
+  async buildFormDescription(showTitles: boolean = true, readonly: boolean = false): Promise<any> {
     this.clearPromisesList();
     this.clearRelatorsBulkRequestParams();
+    this.clearFormContainers()
 
-    const result: any[] = [];
     const children = this.schemaParser.getItemChildren('');
 
-    if (useOneGroup) {
-      const oneGroupDescription = {
-        header: {},
-        noHeaderDisplay: true,
-        content: []
-      };
+    const description = {
+      header: {},
+      noHeaderDisplay: true,
+      content: []
+    };
 
-      for (const childName of Object.getOwnPropertyNames(children)) {
+    let containerField: any = null;
+
+    for (const childName of Object.getOwnPropertyNames(children)) {
+      const item = this.schemaParser.getItem(childName);
+
+      if (item.type === SchemaFormElementTypes.container) {
+        const description = this.buildItemDescription(childName, showTitles, readonly);
+
+        if (!description) {
+          return null;
+        }
+
+        const result = {formDirective: SchemaFormElementTypes.container, description};
+        result['description']['header'] = this.buildHeaderDescription(childName);
+        result['description']['isContainer'] = true;
+        result['description']['content'] = [];
+        containerField = result;
+      } else if (item.type === SchemaFormElementTypes.containerEnd) {
+        description.content.push(containerField);
+        containerField = null;
+      } else {
         const field = this.generateField(childName, showTitles, readonly);
 
         if (field) {
           // @ts-ignore
-          oneGroupDescription.content.push(field);
+          description.content.push(field);
         }
       }
-
-      result.push(oneGroupDescription);
-
-    } else {
-      for (const childName of Object.getOwnPropertyNames(children)) {
-        const description = this.buildGroupDescription(childName, showTitles, readonly);
-
-        if (description) {
-          result.push(description);
-        }
-      }
-    }
-
-    if (readonly) {
-
     }
 
     const promise = this._fetchRelatorChoicesInBulk();
     this.waitPromises.push(promise);
 
     await Promise.all(this.waitPromises)
-    return result;
+    return description;
   }
 
   buildEmptyModel(path: string = ''): any {
@@ -487,6 +416,10 @@ export class SchemaFormsBuildHelper {
 
       if (children) {
         for (const childName of Object.getOwnPropertyNames(children)) {
+          if ([SchemaFormElementTypes.container, SchemaFormElementTypes.containerEnd].includes(children[childName].type)) {
+            continue;
+          }
+
           let defaultValue = undefined;
 
           const subItem = this.schemaParser.getItem(path);

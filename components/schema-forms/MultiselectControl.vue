@@ -1,27 +1,18 @@
 <template>
-  <component :is="componentName"
-             v-if="vm.filteredSelectValues"
-             :name="props.description.name"
-             v-model="_fakeModel"
-             @update:modelValue="onModelChange($event)"
-             :options="autocompleteItems"
-             :optionLabel="props.description.optionLabel || autocompleteItems?.[0]?.title ? 'title' : autocompleteItems?.[0]?.name ? 'name' : undefined"
-             :placeholder="vm.placeholderValue"
-             :showClear="!props.description.required"
-             :maxSelectedLabels="getLimitTo()"
-             v-bind="props.description"
-             :class="[props.description.class || '']">
-  </component>
-
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :validator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)"
+                   v-if="componentProperties">
+  </SchemaComponent>
 </template>
+
 
 <script setup lang="ts">
 // @ts-ignore
 import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
 import { required } from '@vuelidate/validators'
-import FieldError from '~/components/schema-forms/FieldError.vue';
 import { isObject, isEqual } from '~/service/utils';
 import useBaseSelectableControl from '~/composables/schema-forms/useBaseSelectableControl';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
@@ -35,18 +26,18 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const componentName = props.description.component || 'MultiSelect';
-
-const selfRef = ref(null);
-
-
 const baseFieldExport = useBaseSelectableControl(props, emits);
 
 let {
   vm,
-  im,
   sharedFunctions,
 } = baseFieldExport;
+
+const autocompleteItems = ref();
+
+const componentName = vm.componentName || 'MultiSelect';
+
+let componentProperties = ref();
 
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
@@ -60,7 +51,9 @@ const validateRules = computed(() => {
   };
 
   if (props.description.required) {
-    result['model']['required'] = required;
+    result['model'] = {
+      required
+    }
   }
 
   return result;
@@ -69,7 +62,6 @@ const validateRules = computed(() => {
 
 const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
-const autocompleteItems = ref();
 
 const _fakeModel = ref();
 
@@ -80,28 +72,23 @@ let _prevXFeatures: any;
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
+
+function initField() {
+  initFieldBase();
+  _initInnerData();
+
+  componentProperties.value = {
+    ...props.description,
+    options: autocompleteItems,
+    optionLabel: props.description.optionLabel || (autocompleteItems.value?.[0]?.title ? 'title' :
+      autocompleteItems.value?.[0]?.name ? 'name' : undefined),
+    placeholder: vm.placeholderValue,
+    showClear: !props.description.required,
+    maxSelectedLabels: getLimitTo(),
+  };
+}
 
 function onModelChange(value: any) {
   _fakeModel.value = value;
@@ -129,11 +116,6 @@ function onModelChange(value: any) {
   $v.value.$validate();
 
   emits('modelChange', vm.model);
-}
-
-function initField() {
-  initFieldBase();
-  _initInnerData();
 }
 
 function getLimitTo() {

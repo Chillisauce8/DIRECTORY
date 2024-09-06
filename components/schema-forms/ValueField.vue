@@ -1,21 +1,10 @@
 <template>
-    <div ref="selfRef" class="schema-form-value-field" v-if="shouldFieldBeConstructed"
-         v-show="!props.description.xHideValue">
-        <!--   <div class="field_wrap row start-baseline gap-horizontal_15"
-         v-if="shouldFieldBeConstructed" v-show="!props.description.xHideValue"> -->
-
-        <p v-if="showTitle">
-            {{ sharedFunctions.getTitle() }}
-
-            <i class="icon icon-question-mark padding_-5" v-if="vm.descriptionText" v-tooltip.bottom="vm.descriptionText"></i>
-        </p>
-
-        <DynamicControl :description="props.description" :model="vm.model"
-                        @modelChange="onModelChange($event)"
-                        :context="props.context" :noPlaceholder="showTitle">
-        </DynamicControl>
-        <!--   </div> -->
-    </div>
+    <DynamicControl
+        v-if="shouldFieldBeConstructed" v-show="!props.description.xHideValue"
+        :description="props.description" :model="vm.model"
+        @modelChange="onModelChange($event)"
+        :context="props.context">
+    </DynamicControl>
 </template>
 
 <script setup lang="ts">
@@ -26,6 +15,7 @@ import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import DynamicControl from '~/components/schema-forms/DynamicControl.vue';
 import { getCurrentInstance } from 'vue';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
 
 export interface ValueFieldProps extends BaseFieldProps {
     showTitle?: boolean;
@@ -36,11 +26,10 @@ const props = defineProps<ValueFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const selfRef = ref(null);
-
 let { im, vm, sharedFunctions } = useBaseField(props, emits);
 
 const processXFeaturesBase = sharedFunctions.processXFeatures;
+const doOnMountedBase = sharedFunctions.doOnMounted;
 
 vm = extend(vm, {
     descriptionText: '',
@@ -49,13 +38,15 @@ vm = extend(vm, {
 
 const shouldFieldBeConstructed = ref(false);
 
-function doOnMounted() {
+function doOnMounted(instance: ComponentInternalInstance | null) {
     refreshShouldBeConstructedValues();
 
     if (shouldFieldBeConstructed) {
         refreshDescription();
         initField();
     }
+
+    doOnMountedBase(instance);
 }
 
 function initField(): void {
@@ -78,26 +69,7 @@ function initField(): void {
 
 onMounted(() => {
     const instance = getCurrentInstance();
-
-    const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-    const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-    const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-    const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-    const refs = {
-        self: instance,
-        form: {
-            formName: schemaForm?.props.formName,
-            needCorrectExistingValues: true
-        },
-        parentObjectField: parentObjectField,
-        parentGroupField: parentGroupField,
-        parentDynamicControl: parentDynamicControl
-    };
-
-    sharedFunctions.setRefs(refs);
-
-    doOnMounted();
+    doOnMounted(instance);
 });
 
 onDeactivated(() => {
@@ -151,4 +123,4 @@ sharedFunctions.deleteModel = deleteModel;
 sharedFunctions.processXFeatures = processXFeatures;
 </script>
 
-<style scoped></style>
+<style></style>

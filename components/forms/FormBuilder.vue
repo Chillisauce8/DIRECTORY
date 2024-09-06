@@ -5,7 +5,8 @@
         <div class="field-block">
             <template v-for="(value, index) in effectiveForm" :key="index">
                 <template v-if="getDefaults(value).field">
-                    <div class="field-wrapper" :id="value.id" :class="value.component ? value.component : getDefaults(value).field">
+                    <div class="field-wrapper" :id="value.id"
+                         :class="value.component ? value.component : getDefaults(value).field">
                         <label>{{ value.title }}</label>
                         <div class="field">
                             <div class="input-wrapper">
@@ -20,7 +21,8 @@
                         <div v-if="value.subtext" class="subtext">{{ value.subtext }}</div>
                     </div>
                 </template>
-                <FormBuilder v-if="getObject(value)" :formattedForm="getObject(value)" :id="value.id" :title="value.title" :classes="getClass(value)" />
+                <FormBuilder v-if="getObject(value)" :formattedForm="getObject(value)" :id="value.id" :title="value.title"
+                             :classes="getClass(value)" />
             </template>
         </div>
     </section>
@@ -54,7 +56,7 @@ const formatForm = (obj, basePath = '') => {
         if (!obj[key] || !obj[key].type) continue; // Ensure the object has a 'type' field
 
         const originalPath = basePath ? `${basePath}.${key}` : key;
-        const itemWithId = { ...obj[key], id: originalPath };
+        const itemWithId = { ...obj[key], id: originalPath.replace(/\.items/, '') };
 
         if (obj[key].type === 'container') {
             result[key] = {
@@ -163,7 +165,6 @@ function getDefaults(value) {
     --section-side-color: lightgrey;
     --field-subtext-color: grey;
     --error-message-color: crimson;
-
     background-color: var(--background-color);
     & * {
         font-size: 14px;
@@ -171,6 +172,9 @@ function getDefaults(value) {
         font-weight: 400;
         letter-spacing: 1px;
         font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    }
+    .hide {
+        display: none;
     }
     input {
         //    background-color: lightblue;

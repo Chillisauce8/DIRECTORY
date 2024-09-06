@@ -4,6 +4,7 @@
     </Button>
 
     <SchemaForm :formName="formName"
+                :id="formName"
                 v-if="formDescription"
                 :description="formDescription"
                 :model="vm.model"
@@ -91,11 +92,9 @@ sharedFunctions.getTarget = async (): Promise<any> => {
   return {};
 }
 
-sharedFunctions.buildGroupsDescription = async (): Promise<any> => {
-  const useOneGroup = false;
-  const showTitles = true;
+sharedFunctions.buildFormDescription = async (showTitles=true): Promise<any> => {
   const readonly = props.function === 'read';
-  return vm.schemaFormsBuildHelper.buildFormDescription(useOneGroup, showTitles, readonly);
+  return vm.schemaFormsBuildHelper.buildFormDescription(showTitles, readonly);
 }
 
 sharedFunctions.isEditMode = () => {

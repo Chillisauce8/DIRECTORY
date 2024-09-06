@@ -1,25 +1,10 @@
 <template>
-  <FloatLabel>
-    <component :is="componentName"
-               v-if="vm.filteredSelectValues"
-               :name="props.description.name"
-               :showClear="!props.description.required"
-               v-model="vm.model"
-               @update:modelValue="onModelChange($event)"
-               :options="vm.filteredSelectValues"
-               :optionLabel="props.description.optionLabel || (vm.filteredSelectValues?.[0]?.title ? 'title' : undefined)"
-               :placeholder="vm.placeholderValue"
-               v-bind="props.description"
-               :class="[props.description.class || '']">
-    </component>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
-
-<!--    <div class="flex-10 column center-center" v-if="props.description.isRelator">-->
-<!--      <schema-form-relator-context-menu [description]="description" [(model)]="model" [context]="context">-->
-<!--      </schema-form-relator-context-menu>-->
-<!--    </div>-->
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :validator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)"
+                   v-if="componentProperties">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
@@ -41,13 +26,11 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const componentName = props.description.component || 'Dropdown';
-
-const selfRef = ref(null);
-
-
 const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);
 
+const componentName = vm.componentName || 'Dropdown';
+
+let componentProperties = ref();
 
 const initFieldBase = sharedFunctions.initField;
 
@@ -57,7 +40,9 @@ const validateRules = computed(() => {
   };
 
   if (props.description.required) {
-    result['model']['required'] = required;
+    result['model'] = {
+      required
+    }
   }
 
   return result;
@@ -69,28 +54,9 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
+
 
 function onModelChange(value: any) {
   vm.model = value;
@@ -105,6 +71,14 @@ function initField() {
   if (vm.model && vm.model.id) {
     vm.model = im.cachedPossibleValues.find((item: any) => item.id === vm.model.id);
   }
+
+  componentProperties.value = {
+    ...props.description,
+    showClear: !props.description.required,
+    options: vm.filteredSelectValues,
+    optionLabel: props.description.optionLabel || (vm.filteredSelectValues?.[0]?.title ? 'title' : undefined),
+    placeholder: vm.placeholderValue,
+  };
 }
 
 
@@ -130,6 +104,5 @@ sharedFunctions.initField = initField;
 
 </script>
 
-<style scoped>
-
+<style>
 </style>

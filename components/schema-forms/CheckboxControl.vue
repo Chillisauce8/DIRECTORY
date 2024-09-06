@@ -1,14 +1,8 @@
 <template>
-  <FloatLabel>
-    <component :is="componentName"
-               v-model="vm.model" @update:modelValue="onModelChange($event)"
-               :name="props.description.name"
-               :binary="true"
-               v-bind="props.description"
-              :class="[props.description.class || '']">
-    </component>
-    <label :for="props.description.name" class="ml-2"> {{vm.placeholderValue}} </label>
-  </FloatLabel>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :model="vm.model" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
@@ -25,8 +19,6 @@ const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const componentName = props.description.component || 'Checkbox';
-
 const baseFieldExport = useBaseControl(props, emits);
 
 let {
@@ -39,30 +31,19 @@ vm = extend(vm, {
   originalModel: undefined,
 });
 
+
+const componentName = vm.componentName || 'InputSwitch';
+
+const componentProperties = {
+  ...props.description,
+  binary: true,
+};
+
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance);
 });
 
 function isValid(): boolean {

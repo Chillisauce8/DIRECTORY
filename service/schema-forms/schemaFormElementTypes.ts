@@ -1,7 +1,8 @@
 
 
 export enum SchemaFormElementTypes {
-  structureTag = 'structureTag',
+  container = 'container',
+  containerEnd = 'containerEnd',
   mapPlaceField = 'mapPlaceField',
   valueField = 'valueField',
   objectField = 'objectField',

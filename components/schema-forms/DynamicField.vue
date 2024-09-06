@@ -1,15 +1,30 @@
 <template>
-    <div ref="selfRef" class="schema-form-dynamic-field">
+    <div class="field-block">
         <template v-if="initDone">
-            <ValueField v-if="props.description.formDirective === 'valueField'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ValueField>
+            <ValueField v-if="props.description.formDirective === 'valueField'"
+                        :model="fakeModel" @modelChange="onModelChange($event)"
+                        :context="vm.context" :description="props.description.description">
+            </ValueField>
 
-            <ObjectField v-else-if="props.description.formDirective === 'objectField'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ObjectField>
+            <ObjectField v-else-if="props.description.formDirective === 'objectField'"
+                         :model="fakeModel" @modelChange="onModelChange($event)"
+                         :context="vm.context" :description="props.description.description">
+            </ObjectField>
 
-            <ObjectField v-else-if="props.description.formDirective === 'structureTag'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ObjectField>
+            <ObjectField v-else-if="props.description.formDirective === 'container'"
+                         :model="fakeModel" @modelChange="onModelChange($event)"
+                         :context="vm.context" :description="props.description.description">
+            </ObjectField>
 
-            <ArrayOfValuesField v-else-if="props.description.formDirective === 'arrayOfValuesField'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ArrayOfValuesField>
+            <ArrayOfValuesField v-else-if="props.description.formDirective === 'arrayOfValuesField'"
+                                :model="fakeModel" @modelChange="onModelChange($event)"
+                                :context="vm.context" :description="props.description.description">
+            </ArrayOfValuesField>
 
-            <ArrayOfObjectsField v-else-if="props.description.formDirective === 'arrayOfObjectsField'" :model="fakeModel" @modelChange="onModelChange($event)" :context="vm.context" :description="props.description.description"> </ArrayOfObjectsField>
+            <ArrayOfObjectsField v-else-if="props.description.formDirective === 'arrayOfObjectsField'"
+                                 :model="fakeModel" @modelChange="onModelChange($event)"
+                                 :context="vm.context" :description="props.description.description">
+            </ArrayOfObjectsField>
 
             <!--    <ImagesArrayField v-else-if="props.description.formDirective === 'arrayOfImagesField'"-->
             <!--                      :model="fakeModel" @modelChange="onModelChange($event)"-->
@@ -36,7 +51,7 @@
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import { schemaFormsProcessingHelper } from '~/service/schema-forms/schemaFormsProcessing.service';
-import { isUndefined } from '~/service/utils';
+import { isUndefined, pick } from '~/service/utils';
 import { isObject } from '~/service/utils';
 import ArrayOfObjectsField from '~/components/schema-forms/ArrayOfObjectsField.vue';
 import ArrayOfValuesField from '~/components/schema-forms/ArrayOfValuesField.vue';
@@ -50,7 +65,6 @@ const props = defineProps<BaseFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-const selfRef = ref(null);
 
 const { im, vm, sharedFunctions } = useBaseField(props, emits);
 
@@ -60,9 +74,13 @@ const fakeModel = computed(() => {
     const key = _getKeyForInnerModel();
 
     if (sharedFunctions.shouldSetValueForRealModelValue()) {
-        const parentPath = sharedFunctions.getParentPath();
-        const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
-        return parentModel[key];
+        // const parentPath = sharedFunctions.getParentPath();
+        // const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+        //
+        // return pick(parentModel, sharedFunctions.getDescription().content.map((item: any) =>
+        //   item.description.name));
+
+      return im._innerModel;
     }
 
     return im._innerModel[key];
@@ -71,17 +89,21 @@ const fakeModel = computed(() => {
 function onModelChange(value: any) {
     const key = _getKeyForInnerModel();
 
-    if (sharedFunctions.getDescription() && sharedFunctions.getDescription().structureTagDescription && vm.context) {
-        const parentPath = sharedFunctions.getParentPath();
-        const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+    if (sharedFunctions.getDescription() && sharedFunctions.getDescription().isContainer && vm.context) {
+        // const parentPath = sharedFunctions.getParentPath();
+        // let parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+        //
+        // // const previousValue = parentModel[key];
+        //
+        // Object.assign(parentModel, value);
+        // sharedFunctions.processInnerModelChanged(parentModel);
+        // schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
 
-        const previousValue = parentModel[key];
-
-        if (previousValue !== value) {
-            parentModel[key] = value;
-            sharedFunctions.processInnerModelChanged(parentModel);
-            schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
-        }
+      if (im._innerModel !== value) {
+        im._innerModel = value;
+        sharedFunctions.processInnerModelChanged(value);
+        schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
+      }
     } else {
         const previousValue = im._innerModel[key];
 
@@ -93,32 +115,9 @@ function onModelChange(value: any) {
     }
 }
 
-function doOnMounted() {
-    initField();
-}
-
 onMounted(() => {
-    const instance = getCurrentInstance();
-
-    const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-    const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-    const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-    const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-    const refs = {
-        self: instance,
-        form: {
-            formName: schemaForm?.props.formName,
-            needCorrectExistingValues: true
-        },
-        parentObjectField: parentObjectField,
-        parentGroupField: parentGroupField,
-        parentDynamicControl: parentDynamicControl
-    };
-
-    sharedFunctions.setRefs(refs);
-
-    doOnMounted();
+  const instance = getCurrentInstance();
+  sharedFunctions.doOnMounted(instance);
 });
 
 onDeactivated(() => {
@@ -131,7 +130,7 @@ function initField(): void {
     initDone.value = true;
 }
 
-function setModelValueForStructureTagDescription(value: any) {
+function setModelValueForContainerTagDescription(value: any) {
     //
 }
 
@@ -147,8 +146,14 @@ function initializeModel() {
     let parentModelToInit;
 
     if (sharedFunctions.shouldSetValueForRealModelValue()) {
-        const parentPath = sharedFunctions.getParentPath();
-        parentModelToInit = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+      const parentPath = sharedFunctions.getParentPath();
+      const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+
+      vm.model = pick(parentModel, sharedFunctions.getDescription().content.map((item: any) =>
+        item.description.name));
+
+        // const parentPath = sharedFunctions.getParentPath();
+        // parentModelToInit = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
     } else {
         vm.model = props.model || {};
         parentModelToInit = props.model;
@@ -209,7 +214,5 @@ sharedFunctions.initField = initField;
 </script>
 
 <style>
-.schema-form-dynamic-field {
-    margin: 2rem 0;
-}
+
 </style>

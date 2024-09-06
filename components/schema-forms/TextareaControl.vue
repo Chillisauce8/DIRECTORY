@@ -1,12 +1,9 @@
 <template>
-  <FloatLabel>
-    <Textarea v-model="vm.originalModel"
-              @update:modelValue="onModelChangeDebounced($event)"
-              :name="props.description.name" :class="{'p-invalid': $v.$error}"
-              :invalid="$v.$error"/>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :validator="$v"
+                   :model="vm.originalModel" @onModelChange="onModelChangeDebounced($event)">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
@@ -32,15 +29,19 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 let {vm, sharedFunctions} = useBaseControl(props, emits);
 
 
 vm = extend(vm, {
-  originalModel: undefined,
+  originalModel: undefined
 });
+
+
+const componentName = vm.componentName || 'Textarea';
+
+const componentProperties = {
+  ...props.description,
+};
 
 const initFieldBase = sharedFunctions.initField;
 const setModelBase = sharedFunctions.setModel;
@@ -69,27 +70,7 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 function initField() {
@@ -146,6 +127,5 @@ sharedFunctions.correctExistingValue = correctExistingValue;
 
 </script>
 
-<style scoped>
-
+<style>
 </style>

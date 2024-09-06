@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <FloatLabel>
-      <Chips id="chips" v-model="vm.model" @update:modelValue="onModelChange($event)"/>
-      <label for="chips"></label>
-    </FloatLabel>
-    <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
-  </div>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :validator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)"
+                   v-if="vm.filteredSelectValues">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
-import FieldError from "~/components/schema-forms/FieldError.vue";
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { required } from '@vuelidate/validators/dist/index';
@@ -26,8 +24,11 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
+const componentName = 'Chips';
 
+const componentProperties = {
+  ...props.description,
+};
 
 const baseFieldExport = useBaseControl(props, emits);
 
@@ -47,7 +48,9 @@ const validateRules = computed(() => {
   };
 
   if (props.description.required) {
-    result['model']['required'] = required;
+    result['model'] = {
+      required
+    }
   }
 
   return result;
@@ -59,27 +62,7 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 

@@ -23,6 +23,7 @@ function prepareAbsPathPrefix(pathParts: string[], steps: number) {
     .map(item => item + '.').join('');
 }
 
+
 export function prepareRelativeJs(js: string|any, fieldPath: string) {
   if (!isString(js)) {
     return js;
@@ -69,6 +70,7 @@ export function evalInContextFunction(js: string, fieldPath: string): any {
     console.log(e);
   }
 }
+
 
 export function evalInContext(js: string, context = {}) {
   return evalInContextFunction(js, '').call(context);

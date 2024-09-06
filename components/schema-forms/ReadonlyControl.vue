@@ -1,13 +1,10 @@
 <template>
-  <FloatLabel>
-    <Checkbox v-if="props.description.formType === 'checkbox'" v-model="vm.model"
-              :name="props.description.name" :readonly="true"/>
-    <InputText v-else type="text" v-model="valueForReadonlyInput"
-               :name="props.description.name" readonly="true"/>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :model="valueForReadonlyInput">
+  </SchemaComponent>
 </template>
+
 
 <script setup lang="ts">
 import { isObject } from '~/service/utils';
@@ -23,10 +20,23 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 const {vm, sharedFunctions} = useBaseControl(props, emits);
+
+let componentName = vm.componentName;
+
+if (!vm.componentName) {
+  if (props.description.formType === 'checkbox') {
+    componentName = "Checkbox";
+  } else {
+    componentName = 'InputText';
+  }
+}
+
+const componentProperties = {
+  ...props.description,
+  readonly: true
+};
+
 
 
 const valueForReadonlyInput = computed(() => {
@@ -50,26 +60,7 @@ const valueForReadonlyInput = computed(() => {
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance);
 });
 
 </script>

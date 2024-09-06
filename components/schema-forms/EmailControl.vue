@@ -1,13 +1,11 @@
 <template>
-  <FloatLabel>
-    <InputText type="email" v-model="vm.model"
-               @update:modelValue="onModelChange($event)"
-               :name="props.description.name" :class="{'p-invalid': $v.$error}"
-               :invalid="$v.$error"/>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :validator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
+
 
 <script setup lang="ts">
 
@@ -29,11 +27,15 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 const {vm, sharedFunctions} = useBaseControl(props, emits);
 
+
+const componentName = vm.componentName || 'InputText';
+
+const componentProperties = {
+  ...props.description,
+  type: "email"
+};
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
@@ -59,27 +61,7 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 function onModelChange(value: any) {

@@ -1,11 +1,9 @@
 <template>
-  <FloatLabel>
-    <Calendar id="calendar-timeonly" v-model="vm.model"
-              @update:modelValue="onModelChange($event)"
-              timeOnly hourFormat="24"/>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :validator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
 
 <script setup lang="ts">
@@ -32,9 +30,6 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const selfRef = ref(null);
-
-
 const dateHelper = new DateHelper();
 
 const baseFieldExport = useBaseControl(props, emits);
@@ -50,8 +45,13 @@ vm = extend(vm, {
 });
 
 
-const correctExistingValueBase = sharedFunctions.correctExistingValue;
+const componentName = vm.componentName || 'Calendar';
 
+const componentProperties = {
+  ...props.description,
+  timeOnly: true,
+  hourFormat: "24"
+};
 
 
 const validateRules = computed(() => {
@@ -86,27 +86,7 @@ function onModelChange(value: any) {
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 function correctExistingValue() {
@@ -125,6 +105,6 @@ sharedFunctions.correctExistingValue = correctExistingValue;
 
 </script>
 
-<style scoped>
+<style>
 
 </style>

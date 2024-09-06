@@ -1,21 +1,11 @@
 <template>
-  <FloatLabel>
-    <component :is="componentName"
-               v-model="vm.model" @update:modelValue="onModelChange($event)"
-               :min="props.description.minimum" :max="props.description.maximum"
-               :name="props.description.name"
-               :mode="getMode()"
-               :currency="props.description.currency"
-               :locale="props.description.locale"
-               showButtons
-               :step="props.description.xStep || 1"
-               v-bind="props.description"
-               :class="[props.description.class || '', $v.$error ? 'p-invalid' : '']">
-    </component>
-    <label :for="props.description.name">{{vm.placeholderValue}}</label>
-  </FloatLabel>
-  <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
+  <SchemaComponent :componentName="componentName"
+                   :componentProperties="componentProperties"
+                   :validator="$v"
+                   :model="vm.model" @onModelChange="onModelChange($event)">
+  </SchemaComponent>
 </template>
+
 
 <script setup lang="ts">
 import { isNumber } from '~/service/utils';
@@ -27,7 +17,6 @@ import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
 import { required, minValue, maxValue} from '@vuelidate/validators'
 import { patternValidator } from '~/service/forms-validators';
-import FieldError from '~/components/schema-forms/FieldError.vue';
 import { isUndefined } from '~/service/utils';
 import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
@@ -41,11 +30,6 @@ const props = defineProps<BaseControlProps>();
 const emits = defineEmits<BaseFieldEmits>();
 
 
-const componentName = props.description.component || 'InputNumber';
-
-const selfRef = ref(null);
-
-
 const baseFieldExport = useBaseControl(props, emits);
 
 let {
@@ -57,6 +41,18 @@ let {
 vm = extend(vm, {
   allowDecimals: undefined,
 });
+
+
+const componentName = vm.componentName || 'InputNumber';
+
+const componentProperties = {
+  ...props.description,
+  min: props.description.minimum,
+  max: props.description.maximum,
+  mode: getMode(),
+  showButtons: true,
+  step: props.description.xStep || 1,
+};
 
 const initFieldBase = sharedFunctions.initField;
 const getDefaultValueBase = sharedFunctions.getDefaultValue;
@@ -80,33 +76,12 @@ const validateRules = computed(() => {
   return result;
 });
 
-
 const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 
 onMounted(() => {
   const instance = getCurrentInstance();
-
-  const parentObjectField = sharedFunctions.getParentByName(instance, 'ObjectField');
-  const parentDynamicControl = sharedFunctions.getParentByName(instance, 'DynamicControl');
-  const parentGroupField = sharedFunctions.getParentByName(instance, 'FormGroup');
-  const schemaForm = sharedFunctions.getParentByName(instance, 'SchemaForm');
-
-  const refs = {
-    self: instance,
-    form: {
-      formName: schemaForm?.props.formName,
-      needCorrectExistingValues: true,
-    },
-    parentObjectField: parentObjectField,
-    parentGroupField: parentGroupField,
-    parentDynamicControl: parentDynamicControl,
-  };
-
-  sharedFunctions.setRefs(refs);
-  sharedFunctions.setValidation($v);
-
-  sharedFunctions.doOnMounted();
+  sharedFunctions.doOnMounted(instance, $v);
 });
 
 function initField() {
