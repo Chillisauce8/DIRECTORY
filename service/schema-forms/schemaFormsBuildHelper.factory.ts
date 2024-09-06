@@ -370,7 +370,7 @@ export class SchemaFormsBuildHelper {
     for (const childName of Object.getOwnPropertyNames(children)) {
       const item = this.schemaParser.getItem(childName);
 
-      if (item.type === 'container') {
+      if (item.type === SchemaFormElementTypes.container) {
         const description = this.buildItemDescription(childName, showTitles, readonly);
 
         if (!description) {
@@ -382,7 +382,7 @@ export class SchemaFormsBuildHelper {
         result['description']['isContainer'] = true;
         result['description']['content'] = [];
         containerField = result;
-      } else if (item.type === '/container') {
+      } else if (item.type === SchemaFormElementTypes.containerEnd) {
         description.content.push(containerField);
         containerField = null;
       } else {
@@ -416,6 +416,10 @@ export class SchemaFormsBuildHelper {
 
       if (children) {
         for (const childName of Object.getOwnPropertyNames(children)) {
+          if ([SchemaFormElementTypes.container, SchemaFormElementTypes.containerEnd].includes(children[childName].type)) {
+            continue;
+          }
+
           let defaultValue = undefined;
 
           const subItem = this.schemaParser.getItem(path);

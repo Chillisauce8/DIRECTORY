@@ -1,5 +1,5 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service'
-import { isUndefined, intersection, isObject, isString, isEqual, cloneDeep } from '~/service/utils';
+import { isUndefined, intersection, isObject, isString, isEqual, cloneDeep, pick } from '~/service/utils';
 import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 
@@ -107,11 +107,11 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     getModel: () => {
-      if (sharedFunctions.shouldSetValueForRealModelValue()) {
-        const parentPath = sharedFunctions.getParentPath();
-        const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
-        return parentModel[sharedFunctions.getDescription().name];
-      }
+      // if (sharedFunctions.shouldSetValueForRealModelValue()) {
+      //   const parentPath = sharedFunctions.getParentPath();
+      //   const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+      //   return parentModel[sharedFunctions.getDescription().name];
+      // }
 
       return im._innerModel;
     },
@@ -135,9 +135,9 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     setModel: (value: any, updated?: boolean) => {
       value = sharedFunctions.correctModelBeforeSet(value);
 
-      if (isContainerTag() && vm.context) {
-        setModelValueForContainerTagDescription(value);
-      } else {
+      // if (isContainerTag() && vm.context) {
+      //   setModelValueForContainerTagDescription(value);
+      // } else {
         im._previousValue = im._innerModel;
 
         const valuesDifferent = valueAndPreviousAreDifferent(value);
@@ -150,7 +150,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
           im._innerModel = value;
           sharedFunctions.processInnerModelChanged();
         }
-      }
+     // }
     },
 
     initField: () => {
@@ -160,9 +160,9 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     afterFieldInit: () => {
-      if (isContainerTag() && im._innerModel) {
-        setModelValueForContainerTagDescription(im._innerModel);
-      }
+      // if (isContainerTag() && im._innerModel) {
+      //   setModelValueForContainerTagDescription(im._innerModel);
+      // }
 
       if (sharedFunctions.needXProcessTheField()) {
         sharedFunctions.processXFeatures();
@@ -576,9 +576,9 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
     value = sharedFunctions.correctModelBeforeSet(value);
 
-    if (isContainerTag() && vm.context) {
-      setModelValueForContainerTagDescription(value);
-    } else {
+    // if (isContainerTag() && vm.context) {
+    //   setModelValueForContainerTagDescription(value);
+    // } else {
       im._previousValue = im._innerModel;
 
       const valuesDifferent = valueAndPreviousAreDifferent(value);
@@ -591,7 +591,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         im._innerModel = value;
         sharedFunctions.processInnerModelChanged();
       }
-    }
+    // }
   }
 
   watch(() => props?.model, (value: any) => {
@@ -774,19 +774,17 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       return;
     }
 
-    const name = sharedFunctions.getDescription().name;
-
-    im._previousValue = parentModel[name];
+    im._previousValue = pick(parentModel, sharedFunctions.getDescription().content.map((item: any) => item.description.name));
 
     if (!valueAndPreviousAreDifferent(value)) {
       return;
     }
 
-    parentModel[name] = value;
+    Object.assign(parentModel, value);
 
-    im._innerModel = undefined;
+    im._innerModel = value;
 
-    sharedFunctions.processInnerModelChanged();
+    sharedFunctions.processInnerModelChanged(value);
     schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
   }
 

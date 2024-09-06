@@ -282,3 +282,16 @@ export function toCamel(string: string) {
       .replace('_', '');
   });
 }
+
+export function pick(obj: object, props: string[]) {
+  if (!obj || !props) return;
+
+  const picked: object = {};
+
+  props.forEach(function(prop) {
+    // @ts-ignore
+    picked[prop] = obj[prop];
+  });
+
+  return picked;
+}
