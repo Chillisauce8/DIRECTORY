@@ -8,12 +8,12 @@
             v-for="(line, lineIndex) in vm.lines"
             v-show="!isAllLineHidden(line)">
 
-          <label v-if="props.description.header.title"
+          <h1 class="title" v-if="props.description.header.title"
                  :style="{ opacity: shouldShowTitle(lineIndex) ? 1 : 0 }">
             {{ sharedFunctions.getTitle() }}
             <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()"
                v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
-          </label>
+          </h1>
 
           <template v-for="item in line">
               <div :style="{ width: item.description.xFlex + '%' }"

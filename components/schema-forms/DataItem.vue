@@ -4,6 +4,8 @@
     </Button>
 
     <SchemaForm :formName="formName"
+                :title="props.title"
+                :subtitle="props.subtitle"
                 :id="formName"
                 v-if="formDescription"
                 :description="formDescription"
@@ -31,6 +33,8 @@ interface FieldProps {
   find?: Object;
   fields?: Object;
   id?: string;
+  title?: string;
+  subtitle?: string;
 }
 
 // @ts-ignore

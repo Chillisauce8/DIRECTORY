@@ -1,9 +1,10 @@
 <script setup lang="ts"></script>
 
 <template>
-    <div class="card">
-        <DataItem function="create" collection="product"></DataItem>
-    </div>
+    <DataItem function="create" collection="test_form"
+        title='Test Form Title'
+        subtitle='This is where a subtitle would go which could explain a little bit more about the form below'>
+    </DataItem>
 
 <!--    <div class="card">-->
 <!--        <DataItem function="read" id="66683710ec39a4c35261a9a6" collection="events" :fields="{ name: 1, startDate: 1, endDate: 1 }" v-slot="{ item }">-->

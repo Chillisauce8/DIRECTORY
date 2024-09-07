@@ -2,8 +2,8 @@ import type {EnvironmentConfiguration} from '~/environment.example';
 
 
 // export const serverURL = 'http://localhost:2999';
-// export const serverURL = 'https://test.skunkworksproject.com';
-export const serverURL = 'https://test.chillisauce.com';
+export const serverURL = 'https://test.skunkworksproject.com';
+// export const serverURL = 'https://test.chillisauce.com';
 
 
 const pageCacheRule = {
