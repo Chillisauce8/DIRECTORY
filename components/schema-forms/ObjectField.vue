@@ -4,9 +4,7 @@
          v-show="!props.description.xHideValue"
          :id="props.description.id">
 
-        <div class="field-block"
-            v-for="(line, lineIndex) in vm.lines"
-            v-show="!isAllLineHidden(line)">
+        <template v-for="(line, lineIndex) in vm.lines" v-show="!isAllLineHidden(line)">
 
           <h1 class="title" v-if="props.description.header.title"
                  :style="{ opacity: shouldShowTitle(lineIndex) ? 1 : 0 }">
@@ -15,22 +13,23 @@
                v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
           </h1>
 
-          <template v-for="item in line">
-              <div :style="{ width: item.description.xFlex + '%' }"
-                   v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
-                  <DynamicControl v-if="item.formDirective === 'valueField'"
-                                  :description="item.description" :model="vm.model[item.description.name]"
-                                  @modelChange="onModelChange(item.description.name, $event)"
-                                  :context="vm.context">
-                  </DynamicControl>
+          <div class="field-block">
+            <template v-for="item in line">
+                <template v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
+                    <DynamicControl v-if="item.formDirective === 'valueField'"
+                                    :description="item.description" :model="vm.model[item.description.name]"
+                                    @modelChange="onModelChange(item.description.name, $event)"
+                                    :context="vm.context">
+                    </DynamicControl>
 
-                  <DynamicField class="inner-dynamic-field" v-if="item.formDirective !== 'valueField'"
-                                :description="item" :context="vm.context"
-                                :model="vm.model" @modelChange="onModelChange(undefined, $event)">
-                  </DynamicField>
-              </div>
-          </template>
-         </div>
+                    <DynamicField class="inner-dynamic-field" v-if="item.formDirective !== 'valueField'"
+                                  :description="item" :context="vm.context"
+                                  :model="vm.model" @modelChange="onModelChange(undefined, $event)">
+                    </DynamicField>
+                </template>
+            </template>
+          </div>
+       </template>
     </section>
 </template>
 

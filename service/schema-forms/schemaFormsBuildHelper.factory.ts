@@ -388,7 +388,13 @@ export class SchemaFormsBuildHelper {
       } else {
         const field = this.generateField(childName, showTitles, readonly);
 
-        if (field) {
+        if (!field) {
+          continue;
+        }
+
+        if (containerField) {
+          containerField['description']['content'].push(field);
+        } else {
           // @ts-ignore
           description.content.push(field);
         }

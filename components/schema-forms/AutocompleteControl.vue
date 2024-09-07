@@ -1,6 +1,4 @@
 <template>
-  <div class="field-wrapper" :id="props.description.id">
-    <label>{{ props.description.controlTitle }}</label>
     <div class="field">
       <div class="input-wrapper">
         <AutoComplete v-model="vm.model"
@@ -11,11 +9,10 @@
                       :optionLabel="(suggestions?.[0]?.title || vm.model?.title) ? 'title' : undefined"
                       @complete="onSearchStringChange" />
       </div>
+      <FieldError class="error-message"
+                  :vuelidate-field="$v.model">
+      </FieldError>
     </div>
-  </div>
-  <FieldError class="error-message"
-              :vuelidate-field="$v.model">
-  </FieldError>
 </template>
 
 

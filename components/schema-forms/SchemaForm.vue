@@ -3,7 +3,7 @@
         <h1 v-if="props.title" class="title">{{ props.title }}</h1>
         <h2 v-if="props.subtitle" class="subtitle">{{ props.subtitle }}</h2>
 
-        <template v-if="!!context">
+        <div class="field-block" v-if="!!context">
           <template v-for="(contentDescription, contentIndex) in props.description.content">
               <template v-if="im.shouldAddHeaderNameToModelPathValues[contentIndex]">
                 <DynamicField :model="vm.model[props.description.header.name]"
@@ -17,7 +17,7 @@
                 </DynamicField>
               </template>
           </template>
-        </template>
+        </div>
         <Toast />
     </section>
 </template>
@@ -27,7 +27,6 @@ import { isEqual, isObject } from '~/service/utils';
 import { schemaFormsProcessingHelper } from '~/service/schema-forms/schemaFormsProcessing.service';
 import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
-import FormGroup from '~/components/schema-forms/FormGroup.vue';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
 

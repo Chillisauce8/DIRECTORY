@@ -1,50 +1,28 @@
 <template>
-    <div class="field-block">
-        <template v-if="initDone">
-            <ValueField v-if="props.description.formDirective === 'valueField'"
+    <ValueField v-if="initDone && props.description.formDirective === 'valueField'"
+                :model="fakeModel" @modelChange="onModelChange($event)"
+                :context="vm.context" :description="props.description.description">
+    </ValueField>
+
+    <ObjectField v-else-if="initDone && props.description.formDirective === 'objectField'"
+                 :model="fakeModel" @modelChange="onModelChange($event)"
+                 :context="vm.context" :description="props.description.description">
+    </ObjectField>
+
+    <ObjectField v-else-if="initDone && props.description.formDirective === 'container'"
+                 :model="fakeModel" @modelChange="onModelChange($event)"
+                 :context="vm.context" :description="props.description.description">
+    </ObjectField>
+
+    <ArrayOfValuesField v-else-if="initDone && props.description.formDirective === 'arrayOfValuesField'"
                         :model="fakeModel" @modelChange="onModelChange($event)"
                         :context="vm.context" :description="props.description.description">
-            </ValueField>
+    </ArrayOfValuesField>
 
-            <ObjectField v-else-if="props.description.formDirective === 'objectField'"
+    <ArrayOfObjectsField v-else-if="initDone && props.description.formDirective === 'arrayOfObjectsField'"
                          :model="fakeModel" @modelChange="onModelChange($event)"
                          :context="vm.context" :description="props.description.description">
-            </ObjectField>
-
-            <ObjectField v-else-if="props.description.formDirective === 'container'"
-                         :model="fakeModel" @modelChange="onModelChange($event)"
-                         :context="vm.context" :description="props.description.description">
-            </ObjectField>
-
-            <ArrayOfValuesField v-else-if="props.description.formDirective === 'arrayOfValuesField'"
-                                :model="fakeModel" @modelChange="onModelChange($event)"
-                                :context="vm.context" :description="props.description.description">
-            </ArrayOfValuesField>
-
-            <ArrayOfObjectsField v-else-if="props.description.formDirective === 'arrayOfObjectsField'"
-                                 :model="fakeModel" @modelChange="onModelChange($event)"
-                                 :context="vm.context" :description="props.description.description">
-            </ArrayOfObjectsField>
-
-            <!--    <ImagesArrayField v-else-if="props.description.formDirective === 'arrayOfImagesField'"-->
-            <!--                      :model="fakeModel" @modelChange="onModelChange($event)"-->
-            <!--                      :context="vm.context"-->
-            <!--                      :description="props.description.description">-->
-            <!--    </ImagesArrayField>-->
-
-            <!--    <VideoArrayField v-else-if="props.description.formDirective === 'arrayOfVideoField'"-->
-            <!--                     :model="fakeModel" @modelChange="onModelChange($event)"-->
-            <!--                     :context="vm.context"-->
-            <!--                     :description="props.description.description">-->
-            <!--    </VideoArrayField>-->
-
-            <!--    <MapPlaceField v-else-if="props.description.formDirective === 'mapPlaceField'"-->
-            <!--                   :model="fakeModel" @modelChange="onModelChange($event)"-->
-            <!--                   :context="vm.context"-->
-            <!--                   :description="props.description.description">-->
-            <!--    </MapPlaceField>-->
-        </template>
-    </div>
+    </ArrayOfObjectsField>
 </template>
 
 <script setup lang="ts">

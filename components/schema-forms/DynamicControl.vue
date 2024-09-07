@@ -1,123 +1,123 @@
 <template>
-    <div ref="parentDynamicControl" v-show="!props.description.xHideValue" class="field-block">
-        <template v-if="initDone">
-            <ReadonlyControl v-if="latestControlType === 'readonly'"
-                             :model="vm.model"
-                             :description="props.description" :context="vm.context"
-                             :noPlaceholder="props.noPlaceholder"> </ReadonlyControl>
+    <div v-if="initDone" v-show="!props.description.xHideValue"
+          class="field-wrapper" :id="props.description.id">
+        <label>{{ props.description.controlTitle }}</label>
+        <ReadonlyControl v-if="latestControlType === 'readonly'"
+                         :model="vm.model"
+                         :description="props.description" :context="vm.context"
+                         :noPlaceholder="props.noPlaceholder"> </ReadonlyControl>
 
-            <DateControl v-else-if="latestControlType === 'date'"
+        <DateControl v-else-if="latestControlType === 'date'"
+                     :model="vm.model" @modelChange="onModelChange($event)"
+                     :description="props.description" :context="vm.context"
+                     :noPlaceholder="props.noPlaceholder">
+        </DateControl>
+
+        <TimeTwentyFourControl v-else-if="latestControlType === 'time'"
+                               :model="vm.model" @modelChange="onModelChange($event)"
+                               :description="props.description" :context="vm.context"
+                               :noPlaceholder="props.noPlaceholder">
+        </TimeTwentyFourControl>
+
+        <TimeTwentyFourControl v-else-if="latestControlType === 'time24'"
+                               :model="vm.model" @modelChange="onModelChange($event)"
+                               :description="props.description" :context="vm.context"
+                               :noPlaceholder="props.noPlaceholder">
+        </TimeTwentyFourControl>
+
+        <TextControl v-else-if="latestControlType === 'text'"
+                     :model="vm.model" @modelChange="onModelChange($event)"
+                     :description="props.description" :context="vm.context"
+                     :noPlaceholder="props.noPlaceholder">
+        </TextControl>
+
+        <!--    <PathTreeSelectControl v-else-if="latestControlType === 'treePath'"-->
+        <!--                          :model="vm.model" @modelChange="onModelChange($event)"-->
+        <!--                          :description="props.description" :context="vm.context"-->
+        <!--                          :noPlaceholder="props.noPlaceholder">-->
+        <!--    </PathTreeSelectControl>-->
+
+        <TextareaControl v-else-if="latestControlType === 'textarea'"
                          :model="vm.model" @modelChange="onModelChange($event)"
                          :description="props.description" :context="vm.context"
                          :noPlaceholder="props.noPlaceholder">
-            </DateControl>
+        </TextareaControl>
 
-            <TimeTwentyFourControl v-else-if="latestControlType === 'time'"
-                                   :model="vm.model" @modelChange="onModelChange($event)"
-                                   :description="props.description" :context="vm.context"
-                                   :noPlaceholder="props.noPlaceholder">
-            </TimeTwentyFourControl>
+        <EmailControl v-else-if="latestControlType === 'email'"
+                      :model="vm.model" @modelChange="onModelChange($event)"
+                      :description="props.description" :context="vm.context"
+                      :noPlaceholder="props.noPlaceholder"> </EmailControl>
 
-            <TimeTwentyFourControl v-else-if="latestControlType === 'time24'"
-                                   :model="vm.model" @modelChange="onModelChange($event)"
-                                   :description="props.description" :context="vm.context"
-                                   :noPlaceholder="props.noPlaceholder">
-            </TimeTwentyFourControl>
+        <NumberControl v-else-if="latestControlType === 'number'"
+                       :model="vm.model" @modelChange="onModelChange($event)"
+                       :description="props.description" :context="vm.context"
+                       :noPlaceholder="props.noPlaceholder"> </NumberControl>
 
-            <TextControl v-else-if="latestControlType === 'text'"
+        <UrlControl v-else-if="latestControlType === 'url'"
+                    :model="vm.model" @modelChange="onModelChange($event)"
+                    :description="props.description" :context="vm.context"
+                    :noPlaceholder="props.noPlaceholder">
+        </UrlControl>
+
+        <CheckboxControl v-else-if="latestControlType === 'checkbox'"
                          :model="vm.model" @modelChange="onModelChange($event)"
                          :description="props.description" :context="vm.context"
                          :noPlaceholder="props.noPlaceholder">
-            </TextControl>
+        </CheckboxControl>
 
-            <!--    <PathTreeSelectControl v-else-if="latestControlType === 'treePath'"-->
-            <!--                          :model="vm.model" @modelChange="onModelChange($event)"-->
-            <!--                          :description="props.description" :context="vm.context"-->
-            <!--                          :noPlaceholder="props.noPlaceholder">-->
-            <!--    </PathTreeSelectControl>-->
+        <SelectControl v-else-if="latestControlType === 'select'"
+                       :model="vm.model" @modelChange="onModelChange($event)"
+                       :description="props.description" :context="vm.context"
+                       :noPlaceholder="props.noPlaceholder">
+        </SelectControl>
 
-            <TextareaControl v-else-if="latestControlType === 'textarea'"
+        <MultiselectControl v-else-if="latestControlType === 'multiselect'"
+                            :model="vm.model" @modelChange="onModelChange($event)"
+                            :description="props.description" :context="vm.context"
+                            :noPlaceholder="props.noPlaceholder">
+        </MultiselectControl>
+
+        <ChipsControl v-else-if="latestControlType === 'chips'"
+                      :model="vm.model" @modelChange="onModelChange($event)"
+                      :description="props.description" :context="vm.context"
+                      :noPlaceholder="props.noPlaceholder">
+        </ChipsControl>
+
+        <NumberChipsControl v-else-if="latestControlType === 'number-chips'"
+                            :model="vm.model" @modelChange="onModelChange($event)"
+                            :description="props.description" :context="vm.context"
+                            :noPlaceholder="props.noPlaceholder">
+        </NumberChipsControl>
+
+        <AutocompleteControl v-else-if="latestControlType === 'autocomplete'"
                              :model="vm.model" @modelChange="onModelChange($event)"
                              :description="props.description" :context="vm.context"
                              :noPlaceholder="props.noPlaceholder">
-            </TextareaControl>
+        </AutocompleteControl>
 
-            <EmailControl v-else-if="latestControlType === 'email'"
-                          :model="vm.model" @modelChange="onModelChange($event)"
-                          :description="props.description" :context="vm.context"
-                          :noPlaceholder="props.noPlaceholder"> </EmailControl>
+        <UploadControl v-else-if="latestControlType === 'upload'"
+                       :model="vm.model" @modelChange="onModelChange($event)"
+                       :description="props.description" :context="vm.context"
+                       :noPlaceholder="props.noPlaceholder">
+        </UploadControl>
 
-            <NumberControl v-else-if="latestControlType === 'number'"
-                           :model="vm.model" @modelChange="onModelChange($event)"
-                           :description="props.description" :context="vm.context"
-                           :noPlaceholder="props.noPlaceholder"> </NumberControl>
+        <!--    <ConditionControl v-else-if="latestControlType === 'condition'"-->
+        <!--                     :model="vm.model" @modelChange="onModelChange($event)"-->
+        <!--                     :description="props.description"-->
+        <!--                     :context="vm.context">-->
+        <!--    </ConditionControl>-->
 
-            <UrlControl v-else-if="latestControlType === 'url'"
-                        :model="vm.model" @modelChange="onModelChange($event)"
-                        :description="props.description" :context="vm.context"
-                        :noPlaceholder="props.noPlaceholder">
-            </UrlControl>
+        <!--    <ConditionControl v-else-if="latestControlType === 'filter'"-->
+        <!--                     :model="vm.model" @modelChange="onModelChange($event)"-->
+        <!--                     :description="props.description"-->
+        <!--                     :context="vm.context">-->
+        <!--    </ConditionControl>-->
 
-            <CheckboxControl v-else-if="latestControlType === 'checkbox'"
-                             :model="vm.model" @modelChange="onModelChange($event)"
-                             :description="props.description" :context="vm.context"
-                             :noPlaceholder="props.noPlaceholder">
-            </CheckboxControl>
-
-            <SelectControl v-else-if="latestControlType === 'select'"
-                           :model="vm.model" @modelChange="onModelChange($event)"
-                           :description="props.description" :context="vm.context"
-                           :noPlaceholder="props.noPlaceholder">
-            </SelectControl>
-
-            <MultiselectControl v-else-if="latestControlType === 'multiselect'"
-                                :model="vm.model" @modelChange="onModelChange($event)"
-                                :description="props.description" :context="vm.context"
-                                :noPlaceholder="props.noPlaceholder">
-            </MultiselectControl>
-
-            <ChipsControl v-else-if="latestControlType === 'chips'"
-                          :model="vm.model" @modelChange="onModelChange($event)"
-                          :description="props.description" :context="vm.context"
-                          :noPlaceholder="props.noPlaceholder">
-            </ChipsControl>
-
-            <NumberChipsControl v-else-if="latestControlType === 'number-chips'"
-                                :model="vm.model" @modelChange="onModelChange($event)"
-                                :description="props.description" :context="vm.context"
-                                :noPlaceholder="props.noPlaceholder">
-            </NumberChipsControl>
-
-            <AutocompleteControl v-else-if="latestControlType === 'autocomplete'"
-                                 :model="vm.model" @modelChange="onModelChange($event)"
-                                 :description="props.description" :context="vm.context"
-                                 :noPlaceholder="props.noPlaceholder">
-            </AutocompleteControl>
-
-            <UploadControl v-else-if="latestControlType === 'upload'"
-                           :model="vm.model" @modelChange="onModelChange($event)"
-                           :description="props.description" :context="vm.context"
-                           :noPlaceholder="props.noPlaceholder">
-            </UploadControl>
-
-            <!--    <ConditionControl v-else-if="latestControlType === 'condition'"-->
-            <!--                     :model="vm.model" @modelChange="onModelChange($event)"-->
-            <!--                     :description="props.description"-->
-            <!--                     :context="vm.context">-->
-            <!--    </ConditionControl>-->
-
-            <!--    <ConditionControl v-else-if="latestControlType === 'filter'"-->
-            <!--                     :model="vm.model" @modelChange="onModelChange($event)"-->
-            <!--                     :description="props.description"-->
-            <!--                     :context="vm.context">-->
-            <!--    </ConditionControl>-->
-
-            <!--    <JsonControl v-else-if="latestControlType === 'json'"-->
-            <!--                :model="vm.model" @modelChange="onModelChange($event)"-->
-            <!--                :description="props.description"-->
-            <!--                :context="vm.context">-->
-            <!--    </JsonControl>-->
-        </template>
+        <!--    <JsonControl v-else-if="latestControlType === 'json'"-->
+        <!--                :model="vm.model" @modelChange="onModelChange($event)"-->
+        <!--                :description="props.description"-->
+        <!--                :context="vm.context">-->
+        <!--    </JsonControl>-->
     </div>
 </template>
 

@@ -45,23 +45,20 @@ function prepareClasses(): string {
 </script>
 
 <template>
-  <div class="field-wrapper" :id="props.componentProperties.id">
-    <label>{{ props.componentProperties.controlTitle }}</label>
-    <div class="field">
-      <div class="input-wrapper">
-        <component :is="props.componentName"
-                   v-model="props.model" @update:modelValue="onModelChange($event)"
-                   v-bind="props.componentProperties"
-                   :invalid="validator?.$error"
-                   :class="[prepareClasses(), props.validator?.$error ? 'p-invalid' : '']">
-        </component>
-      </div>
+  <div class="field">
+    <div class="input-wrapper">
+      <component :is="props.componentName"
+                 v-model="props.model" @update:modelValue="onModelChange($event)"
+                 v-bind="props.componentProperties"
+                 :invalid="validator?.$error"
+                 :class="[prepareClasses(), props.validator?.$error ? 'p-invalid' : '']">
+      </component>
     </div>
+    <FieldError class="error-message"
+                v-if="props.validator"
+                :vuelidate-field="props.validator.vuelidateField">
+    </FieldError>
   </div>
-  <FieldError class="error-message"
-              v-if="props.validator"
-              :vuelidate-field="props.validator.vuelidateField">
-  </FieldError>
 </template>
 
 <style lang="scss">
