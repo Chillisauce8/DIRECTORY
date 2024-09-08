@@ -1,5 +1,5 @@
 <template>
-  <SchemaComponent :componentName="componentName"
+  <SchemaComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)"
@@ -10,21 +10,18 @@
 <script setup lang="ts">
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
-import { required } from '@vuelidate/validators/dist/index';
+import { required } from '@vuelidate/validators';
 // @ts-ignore
-import { useVuelidate } from '@vuelidate/core/dist/index';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import { useVuelidate } from '@vuelidate/core';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 import { getCurrentInstance } from 'vue';
 
 
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
-
-const componentName = 'Chips';
 
 const componentProperties = {
   ...props.description,
@@ -37,6 +34,8 @@ let {
   sharedFunctions,
 } = baseFieldExport;
 
+
+vm.componentName = 'Chips';
 
 const getDefaultValueBase = sharedFunctions.getDefaultValue;
 const fillEmptyModelBase = sharedFunctions.fillEmptyModel;

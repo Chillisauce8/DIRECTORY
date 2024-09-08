@@ -1,5 +1,5 @@
 <template>
-  <SchemaComponent :componentName="componentName"
+  <SchemaComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)">
@@ -10,15 +10,14 @@
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 import { required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 import { getCurrentInstance } from 'vue';
 
 
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 
 const baseFieldExport = useBaseControl(props, emits);
@@ -29,7 +28,7 @@ const {
 } = baseFieldExport;
 
 
-const componentName = vm.componentName || 'Chips';
+vm.componentName = vm.componentName || 'Chips';
 
 const componentProperties = {
   ...props.description,

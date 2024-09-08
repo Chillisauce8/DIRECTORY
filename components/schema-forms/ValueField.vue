@@ -1,10 +1,10 @@
 <template>
-    <DynamicControl
+    <DynamicComponent
         v-if="shouldFieldBeConstructed" v-show="!props.description.xHideValue"
         :description="props.description" :model="vm.model"
         @modelChange="onModelChange($event)"
         :context="props.context">
-    </DynamicControl>
+    </DynamicComponent>
 </template>
 
 <script setup lang="ts">
@@ -13,7 +13,7 @@ import { extend } from 'vue-extend-reactive';
 import type { BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
 import useBaseField from '~/composables/schema-forms/useBaseField';
-import DynamicControl from '~/components/schema-forms/DynamicControl.vue';
+import DynamicComponent from '~/components/schema-forms/DynamicComponent.vue';
 import { getCurrentInstance } from 'vue';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 

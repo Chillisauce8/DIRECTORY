@@ -6,8 +6,7 @@
 
         <template v-for="(line, lineIndex) in vm.lines" v-show="!isAllLineHidden(line)">
 
-          <h1 class="title" v-if="props.description.header.title"
-                 :style="{ opacity: shouldShowTitle(lineIndex) ? 1 : 0 }">
+          <h1 class="title" v-if="props.description.header.title">
             {{ sharedFunctions.getTitle() }}
             <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()"
                v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
@@ -16,13 +15,13 @@
           <div class="field-block">
             <template v-for="item in line">
                 <template v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
-                    <DynamicControl v-if="item.formDirective === 'valueField'"
+                    <DynamicComponent v-if="item.formDirective === 'valueField'"
                                     :description="item.description" :model="vm.model[item.description.name]"
                                     @modelChange="onModelChange(item.description.name, $event)"
                                     :context="vm.context">
-                    </DynamicControl>
+                    </DynamicComponent>
 
-                    <DynamicField class="inner-dynamic-field" v-if="item.formDirective !== 'valueField'"
+                    <DynamicField v-if="item.formDirective !== 'valueField'"
                                   :description="item" :context="vm.context"
                                   :model="vm.model" @modelChange="onModelChange(undefined, $event)">
                     </DynamicField>
@@ -40,7 +39,7 @@ import useBaseField from '~/composables/schema-forms/useBaseField';
 import { isObject } from '~/service/utils';
 // @ts-ignore
 import { extend } from 'vue-extend-reactive';
-import DynamicControl from '~/components/schema-forms/DynamicControl.vue';
+import DynamicComponent from '~/components/schema-forms/DynamicComponent.vue';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
 
 // @ts-ignore

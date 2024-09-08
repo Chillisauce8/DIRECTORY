@@ -1,5 +1,5 @@
 <template>
-  <SchemaComponent :componentName="componentName"
+  <SchemaComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :model="vm.model" @onModelChange="onModelChange($event)">
   </SchemaComponent>
@@ -10,14 +10,13 @@
 // @ts-ignore
 import { extend } from 'vue-extend-reactive';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 import { getCurrentInstance } from 'vue';
 
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 const baseFieldExport = useBaseControl(props, emits);
 
@@ -32,7 +31,7 @@ vm = extend(vm, {
 });
 
 
-const componentName = vm.componentName || 'InputSwitch';
+vm.componentName = vm.componentName || 'InputSwitch';
 
 const componentProperties = {
   ...props.description,

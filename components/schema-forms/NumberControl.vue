@@ -1,5 +1,5 @@
 <template>
-  <SchemaComponent :componentName="componentName"
+  <SchemaComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)">
@@ -18,8 +18,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, minValue, maxValue} from '@vuelidate/validators'
 import { patternValidator } from '~/service/forms-validators';
 import { isUndefined } from '~/service/utils';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
 
@@ -27,7 +26,7 @@ import { getCurrentInstance } from 'vue';
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 
 const baseFieldExport = useBaseControl(props, emits);
@@ -43,7 +42,7 @@ vm = extend(vm, {
 });
 
 
-const componentName = vm.componentName || 'InputNumber';
+vm.componentName = vm.componentName || 'InputNumber';
 
 const componentProperties = {
   ...props.description,
@@ -84,6 +83,7 @@ onMounted(() => {
   sharedFunctions.doOnMounted(instance, $v);
 });
 
+
 function initField() {
   initFieldBase();
 
@@ -94,6 +94,7 @@ function initField() {
   }
 }
 
+
 function getDefaultValue(): any {
   let defaultValue = getDefaultValueBase();
   if (!isUndefined(defaultValue)) {
@@ -101,11 +102,13 @@ function getDefaultValue(): any {
   }
 }
 
+
 function onModelChange(value: any) {
   vm.model = value;
   $v.value.$validate();
   emits('modelChange', vm.model);
 }
+
 
 function correctExistingValue() {
   if (!isNumber(vm.model)) {
@@ -114,6 +117,7 @@ function correctExistingValue() {
     correctExistingValueBase();
   }
 }
+
 
 function fillDescriptionPattern() {
   fillDescriptionPatternBase();

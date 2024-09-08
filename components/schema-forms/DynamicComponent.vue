@@ -1,132 +1,112 @@
 <template>
     <div v-if="initDone" v-show="!props.description.xHideValue"
-          class="field-wrapper" :id="props.description.id">
-        <label>{{ props.description.controlTitle }}</label>
-        <ReadonlyControl v-if="latestControlType === 'readonly'"
+         :id="props.index == undefined ? props.description.id : null"
+         :class="['field-wrapper', prepareClasses()]">
+        <label v-if="!props.noPlaceholder">{{ props.description.controlTitle }}</label>
+
+        <ReadonlyControl v-if="controlType === 'readonly'"
                          :model="vm.model"
                          :description="props.description" :context="vm.context"
-                         :noPlaceholder="props.noPlaceholder"> </ReadonlyControl>
+                         @initDone="onControlInitDone($event)">
+        </ReadonlyControl>
 
-        <DateControl v-else-if="latestControlType === 'date'"
+        <DateControl v-else-if="controlType === 'date'"
                      :model="vm.model" @modelChange="onModelChange($event)"
                      :description="props.description" :context="vm.context"
-                     :noPlaceholder="props.noPlaceholder">
+                     @initDone="onControlInitDone($event)">
         </DateControl>
 
-        <TimeTwentyFourControl v-else-if="latestControlType === 'time'"
+        <TimeTwentyFourControl v-else-if="controlType === 'time'"
                                :model="vm.model" @modelChange="onModelChange($event)"
                                :description="props.description" :context="vm.context"
-                               :noPlaceholder="props.noPlaceholder">
+                               @initDone="onControlInitDone($event)">
         </TimeTwentyFourControl>
 
-        <TimeTwentyFourControl v-else-if="latestControlType === 'time24'"
+        <TimeTwentyFourControl v-else-if="controlType === 'time24'"
                                :model="vm.model" @modelChange="onModelChange($event)"
                                :description="props.description" :context="vm.context"
-                               :noPlaceholder="props.noPlaceholder">
+                               @initDone="onControlInitDone($event)">
         </TimeTwentyFourControl>
 
-        <TextControl v-else-if="latestControlType === 'text'"
+        <TextControl v-else-if="controlType === 'text'"
                      :model="vm.model" @modelChange="onModelChange($event)"
                      :description="props.description" :context="vm.context"
-                     :noPlaceholder="props.noPlaceholder">
+                     @initDone="onControlInitDone($event)">
         </TextControl>
 
-        <!--    <PathTreeSelectControl v-else-if="latestControlType === 'treePath'"-->
-        <!--                          :model="vm.model" @modelChange="onModelChange($event)"-->
-        <!--                          :description="props.description" :context="vm.context"-->
-        <!--                          :noPlaceholder="props.noPlaceholder">-->
-        <!--    </PathTreeSelectControl>-->
-
-        <TextareaControl v-else-if="latestControlType === 'textarea'"
+        <TextareaControl v-else-if="controlType === 'textarea'"
                          :model="vm.model" @modelChange="onModelChange($event)"
                          :description="props.description" :context="vm.context"
-                         :noPlaceholder="props.noPlaceholder">
+                         @initDone="onControlInitDone($event)">
         </TextareaControl>
 
-        <EmailControl v-else-if="latestControlType === 'email'"
+        <EmailControl v-else-if="controlType === 'email'"
                       :model="vm.model" @modelChange="onModelChange($event)"
                       :description="props.description" :context="vm.context"
-                      :noPlaceholder="props.noPlaceholder"> </EmailControl>
+                      @initDone="onControlInitDone($event)">
+        </EmailControl>
 
-        <NumberControl v-else-if="latestControlType === 'number'"
+        <NumberControl v-else-if="controlType === 'number'"
                        :model="vm.model" @modelChange="onModelChange($event)"
                        :description="props.description" :context="vm.context"
-                       :noPlaceholder="props.noPlaceholder"> </NumberControl>
+                       @initDone="onControlInitDone($event)">
+        </NumberControl>
 
-        <UrlControl v-else-if="latestControlType === 'url'"
+        <UrlControl v-else-if="controlType === 'url'"
                     :model="vm.model" @modelChange="onModelChange($event)"
                     :description="props.description" :context="vm.context"
-                    :noPlaceholder="props.noPlaceholder">
+                    @initDone="onControlInitDone($event)">
         </UrlControl>
 
-        <CheckboxControl v-else-if="latestControlType === 'checkbox'"
+        <CheckboxControl v-else-if="controlType === 'checkbox'"
                          :model="vm.model" @modelChange="onModelChange($event)"
                          :description="props.description" :context="vm.context"
-                         :noPlaceholder="props.noPlaceholder">
+                         @initDone="onControlInitDone($event)">
         </CheckboxControl>
 
-        <SelectControl v-else-if="latestControlType === 'select'"
+        <SelectControl v-else-if="controlType === 'select'"
                        :model="vm.model" @modelChange="onModelChange($event)"
                        :description="props.description" :context="vm.context"
-                       :noPlaceholder="props.noPlaceholder">
+                       @initDone="onControlInitDone($event)">
         </SelectControl>
 
-        <MultiselectControl v-else-if="latestControlType === 'multiselect'"
+        <MultiselectControl v-else-if="controlType === 'multiselect'"
                             :model="vm.model" @modelChange="onModelChange($event)"
                             :description="props.description" :context="vm.context"
-                            :noPlaceholder="props.noPlaceholder">
+                            @initDone="onControlInitDone($event)">
         </MultiselectControl>
 
-        <ChipsControl v-else-if="latestControlType === 'chips'"
+        <ChipsControl v-else-if="controlType === 'chips'"
                       :model="vm.model" @modelChange="onModelChange($event)"
                       :description="props.description" :context="vm.context"
-                      :noPlaceholder="props.noPlaceholder">
+                      @initDone="onControlInitDone($event)">
         </ChipsControl>
 
-        <NumberChipsControl v-else-if="latestControlType === 'number-chips'"
+        <NumberChipsControl v-else-if="controlType === 'number-chips'"
                             :model="vm.model" @modelChange="onModelChange($event)"
                             :description="props.description" :context="vm.context"
-                            :noPlaceholder="props.noPlaceholder">
+                            @initDone="onControlInitDone($event)">
         </NumberChipsControl>
 
-        <AutocompleteControl v-else-if="latestControlType === 'autocomplete'"
+        <AutocompleteControl v-else-if="controlType === 'autocomplete'"
                              :model="vm.model" @modelChange="onModelChange($event)"
                              :description="props.description" :context="vm.context"
-                             :noPlaceholder="props.noPlaceholder">
+                             @initDone="onControlInitDone($event)">
         </AutocompleteControl>
 
-        <UploadControl v-else-if="latestControlType === 'upload'"
+        <UploadControl v-else-if="controlType === 'upload'"
                        :model="vm.model" @modelChange="onModelChange($event)"
                        :description="props.description" :context="vm.context"
-                       :noPlaceholder="props.noPlaceholder">
+                       @initDone="onControlInitDone($event)">
         </UploadControl>
-
-        <!--    <ConditionControl v-else-if="latestControlType === 'condition'"-->
-        <!--                     :model="vm.model" @modelChange="onModelChange($event)"-->
-        <!--                     :description="props.description"-->
-        <!--                     :context="vm.context">-->
-        <!--    </ConditionControl>-->
-
-        <!--    <ConditionControl v-else-if="latestControlType === 'filter'"-->
-        <!--                     :model="vm.model" @modelChange="onModelChange($event)"-->
-        <!--                     :description="props.description"-->
-        <!--                     :context="vm.context">-->
-        <!--    </ConditionControl>-->
-
-        <!--    <JsonControl v-else-if="latestControlType === 'json'"-->
-        <!--                :model="vm.model" @modelChange="onModelChange($event)"-->
-        <!--                :description="props.description"-->
-        <!--                :context="vm.context">-->
-        <!--    </JsonControl>-->
     </div>
 </template>
 
 <script setup lang="ts">
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
-import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
-import { extend } from 'vue-extend-reactive';
+import { getCurrentInstance } from 'vue';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
+import useBaseControl from '~/composables/schema-forms/useBaseControl';
 import EmailControl from '~/components/schema-forms/EmailControl.vue';
 import TextareaControl from '~/components/schema-forms/TextareaControl.vue';
 import TextControl from '~/components/schema-forms/TextControl.vue';
@@ -141,28 +121,38 @@ import AutocompleteControl from '~/components/schema-forms/AutocompleteControl.v
 import ReadonlyControl from '~/components/schema-forms/ReadonlyControl.vue';
 import DateControl from '~/components/schema-forms/DateControl.vue';
 import TimeTwentyFourControl from '~/components/schema-forms/TimeTwentyFourControl.vue';
-// @ts-ignore
-import { getCurrentInstance } from 'vue';
-
-// @ts-ignore
-const props = defineProps<BaseControlProps>();
-// @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
 
 
-const latestControlType = ref();
+export interface DynamicControlProps extends BaseControlProps {
+  index?: number;
+}
+
+
+// @ts-ignore
+const props = defineProps<DynamicControlProps>();
+// @ts-ignore
+const emits = defineEmits<BaseControlEmits>();
+
+
+const controlType = ref();
+const componentName = ref();
+
 
 const { vm, sharedFunctions, initDone } = useBaseControl(props, emits);
+const doOnMountedBase = sharedFunctions.doOnMounted;
 
 function doOnMounted() {
-    latestControlType.value = calculateControlType();
+    controlType.value = calculateControlType();
     sharedFunctions.initField();
+
+    const instance = getCurrentInstance();
+
+    doOnMountedBase(instance);
     initDone.value = true;
 }
 
 onMounted(() => {
-  const instance = getCurrentInstance();
-  sharedFunctions.doOnMounted(instance);
+  doOnMounted();
 });
 
 function processControlTypeChanges() {
@@ -174,12 +164,17 @@ function onModelChange($event: any) {
     emits('modelChange', $event);
 }
 
+function onControlInitDone($event: any) {
+  componentName.value = $event.componentName;
+}
+
+
 function needXProcessTheField(): boolean {
     return true;
 }
 
 function processXFeatures() {
-    latestControlType.value = calculateControlType();
+    controlType.value = calculateControlType();
     return null;
 }
 
@@ -209,6 +204,23 @@ function touch() {
     //
 }
 
+function prepareClasses(): string {
+  const result = [];
+
+  if (props.description.class) {
+    result.push(props.description.class);
+  }
+
+  if (componentName.value) {
+    result.push(componentName.value);
+  } else if (props.description.type) {
+    result.push(props.description.type);
+  }
+
+  return result.join(' ');
+}
+
+sharedFunctions.doOnMounted = doOnMounted;
 sharedFunctions.processXFeatures = processXFeatures;
 sharedFunctions.needXProcessTheField = needXProcessTheField;
 sharedFunctions.processControlTypeChanges = processControlTypeChanges;

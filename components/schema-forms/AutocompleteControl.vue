@@ -38,6 +38,8 @@ const emits = defineEmits<BaseFieldEmits>();
 const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);
 
 
+vm.componentName = 'AutoComplete';
+
 let autocompleteInitValue: any;
 const suggestions = ref([]);
 let minLength = 0;

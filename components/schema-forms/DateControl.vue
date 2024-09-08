@@ -1,5 +1,5 @@
 <template>
-  <SchemaComponent :componentName="componentName"
+  <SchemaComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="fakeModel" @onModelChange="onModelChange($event)">
@@ -14,9 +14,7 @@ import useBaseControl from '~/composables/schema-forms/useBaseControl';
 import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
 import { required, maxLength, email } from '@vuelidate/validators'
-import FieldError from '~/components/schema-forms/FieldError.vue';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 import { DateHelper } from '~/service/date-helper';
 import { getCurrentInstance } from 'vue';
 
@@ -24,13 +22,13 @@ import { getCurrentInstance } from 'vue';
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 
 const {vm, sharedFunctions} = useBaseControl(props, emits);
 
 
-const componentName = vm.componentName || 'Calendar';
+vm.componentName = vm.componentName || 'Calendar';
 
 const componentProperties = {
   ...props.description,
@@ -52,7 +50,6 @@ const getDefaultValueBase = sharedFunctions.getDefaultValue;
 const dateHelper = new DateHelper();
 
 const fakeModel = ref();
-
 
 
 const validateRules = computed(() => {
@@ -145,7 +142,7 @@ function _prepareMinMaxValues() {
     }
 
     if (props.description['maximumDate']) {
-      props.description.maximum = props._parseDateString(props.description['maximumDate']);
+      props.description.maximum = _parseDateString(props.description['maximumDate']);
     }
   }
 }

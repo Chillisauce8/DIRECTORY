@@ -1,5 +1,5 @@
 <template>
-  <SchemaComponent :componentName="componentName"
+  <SchemaComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :model="valueForReadonlyInput">
   </SchemaComponent>
@@ -9,26 +9,24 @@
 <script setup lang="ts">
 import { isObject } from '~/service/utils';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 import { getCurrentInstance } from 'vue';
 
 
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 
 const {vm, sharedFunctions} = useBaseControl(props, emits);
 
-let componentName = vm.componentName;
 
 if (!vm.componentName) {
   if (props.description.formType === 'checkbox') {
-    componentName = "Checkbox";
+    vm.componentName = "Checkbox";
   } else {
-    componentName = 'InputText';
+    vm.componentName = 'InputText';
   }
 }
 
@@ -36,7 +34,6 @@ const componentProperties = {
   ...props.description,
   readonly: true
 };
-
 
 
 const valueForReadonlyInput = computed(() => {

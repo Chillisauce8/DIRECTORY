@@ -12,15 +12,14 @@
                   </span>
                 </p>
 
-                <p class="label" v-if="props.description.title && index !== 0"></p>
-
                 <div v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
-                    <DynamicControl
+                    <DynamicComponent
                       :description="vm.rowDescriptions[index]"
                       :model="vm.model[index]" @modelChange="onModelChange($event, index)"
                       :context="sharedFunctions.createInnerFieldContext(props.description.name, index)"
+                      :index="index"
                       :noPlaceholder="true">
-                    </DynamicControl>
+                    </DynamicComponent>
 
                   <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()"
                              direction="left" style="position: relative" />

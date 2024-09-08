@@ -36,9 +36,8 @@ import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
-import { required, minValue, maxValue} from '@vuelidate/validators'
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import { required } from '@vuelidate/validators'
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
 
@@ -46,7 +45,7 @@ import { getCurrentInstance } from 'vue';
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 
 const baseFieldExport = useBaseControl(props, emits);
@@ -78,6 +77,8 @@ const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 onMounted(() => {
   const instance = getCurrentInstance();
   sharedFunctions.doOnMounted(instance, $v);
+
+  emits('initDone', {componentName: 'Upload'});
 });
 
 

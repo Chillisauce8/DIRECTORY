@@ -1,6 +1,6 @@
 
 
-export enum SchemaFormElementTypes {
+export enum SchemaFormFieldTypes {
   container = 'container',
   containerEnd = '/container',
   mapPlaceField = 'mapPlaceField',

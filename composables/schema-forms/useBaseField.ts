@@ -52,7 +52,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     __id: Math.floor(Math.random() * 10000),
     _previousValue: null,
     registered: false,
-    refs: null,
+    refs: undefined,
     needCorrectExistingValues: false,
   });
 

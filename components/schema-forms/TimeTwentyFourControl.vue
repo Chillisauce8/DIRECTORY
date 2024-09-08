@@ -1,5 +1,5 @@
 <template>
-  <SchemaComponent :componentName="componentName"
+  <SchemaComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)">
@@ -16,10 +16,7 @@ import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
 import { required, minLength, maxLength } from '@vuelidate/validators'
 import { patternValidator } from '~/service/forms-validators';
-import FieldError from '~/components/schema-forms/FieldError.vue';
-import { debounce } from '~/service/utils';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 import { DateHelper } from '~/service/date-helper';
 import { getCurrentInstance } from 'vue';
 
@@ -27,7 +24,7 @@ import { getCurrentInstance } from 'vue';
 
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 
 const dateHelper = new DateHelper();
@@ -45,7 +42,7 @@ vm = extend(vm, {
 });
 
 
-const componentName = vm.componentName || 'Calendar';
+vm.componentName = vm.componentName || 'Calendar';
 
 const componentProperties = {
   ...props.description,

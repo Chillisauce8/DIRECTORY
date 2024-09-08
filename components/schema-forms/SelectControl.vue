@@ -1,5 +1,5 @@
 <template>
-  <SchemaComponent :componentName="componentName"
+  <SchemaComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)"
@@ -11,24 +11,22 @@
 // @ts-ignore
 import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
-import { required, maxLength, email } from '@vuelidate/validators'
-import FieldError from '~/components/schema-forms/FieldError.vue';
+import { required } from '@vuelidate/validators'
 import { isObject } from '~/service/utils';
 import useBaseSelectableControl from '~/composables/schema-forms/useBaseSelectableControl';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 import { getCurrentInstance } from 'vue';
 
 
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 
 const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);
 
-const componentName = vm.componentName || 'Dropdown';
+vm.componentName = vm.componentName || 'Dropdown';
 
 let componentProperties = ref();
 

@@ -9,8 +9,17 @@ export interface BaseControlProps extends BaseFieldProps {
 
 }
 
+export interface BaseControlEmitsValue {
+  componentName?: string;
+}
 
-export default function useBaseControl(props: BaseControlProps, emits: BaseFieldEmits): any {
+
+export interface BaseControlEmits extends BaseFieldEmits {
+  (e: 'initDone', value: BaseControlEmitsValue): void;
+}
+
+
+export default function useBaseControl(props: BaseControlProps, emits: BaseControlEmits): any {
 
   // @ViewChild('controlModel') public controlModel: NgModel;
 
@@ -45,6 +54,8 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseField
     if (vm.model === undefined || vm.model === null) {
       sharedFunctions.fillEmptyModel();
     }
+
+    emits('initDone', {componentName: vm.componentName});
   }
 
 

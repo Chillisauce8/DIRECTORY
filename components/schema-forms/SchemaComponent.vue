@@ -25,22 +25,6 @@ function onModelChange(value: any) {
   emits('onModelChange', value);
 }
 
-function prepareClasses(): string {
-  const result = [];
-
-  if (props.componentProperties.class) {
-    result.push(props.componentProperties.class);
-  }
-
-  if (props.componentName) {
-    result.push(props.componentName);
-  } else if (props.componentProperties.type) {
-    result.push(props.componentProperties.type);
-  }
-
-  return result.join(' ');
-}
-
 
 </script>
 
@@ -51,7 +35,7 @@ function prepareClasses(): string {
                  v-model="props.model" @update:modelValue="onModelChange($event)"
                  v-bind="props.componentProperties"
                  :invalid="validator?.$error"
-                 :class="[prepareClasses(), props.validator?.$error ? 'p-invalid' : '']">
+                 :class="[props.validator?.$error ? 'p-invalid' : '']">
       </component>
     </div>
     <FieldError class="error-message"

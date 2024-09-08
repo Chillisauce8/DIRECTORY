@@ -1,5 +1,5 @@
 <template>
-  <SchemaComponent :componentName="componentName"
+  <SchemaComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)">
@@ -17,8 +17,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, minLength, maxLength } from '@vuelidate/validators'
 import { patternValidator } from '~/service/forms-validators';
 import { debounce } from '~/service/utils';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
 import { isDate } from '~/service/utils';
@@ -31,7 +30,7 @@ const dateHelper = new DateHelper();
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 
 let {vm, sharedFunctions} = useBaseControl(props, emits);
@@ -42,7 +41,7 @@ vm = extend(vm, {
 });
 
 
-const componentName = vm.componentName || 'InputText';
+vm.componentName = vm.componentName || 'InputText';
 
 const componentProperties = {
   ...props.description,

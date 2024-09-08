@@ -1,11 +1,11 @@
 import { schemaRelatorsFetchService, SchemaRelatorsFetchService } from './schemaRelatorsFetch.service';
 import { SchemaParser, schemaParserFactory, SchemaParserFactory } from './schemaParser.factory';
-import {SchemaFormElementTypes} from './schemaFormElementTypes';
+import {SchemaFormFieldTypes} from './schemaFormFieldTypes';
 import { groupBy, isUndefined } from '../utils';
 
 
 export interface ISchemaFormField {
-  formDirective: SchemaFormElementTypes;
+  formDirective: SchemaFormFieldTypes;
   description: any;
 }
 
@@ -217,15 +217,15 @@ export class SchemaFormsBuildHelper {
     return result;
   };
 
-  autodetectDirectiveType(path: string): SchemaFormElementTypes|null {
+  autodetectFieldType(path: string): SchemaFormFieldTypes|null {
     const item = this.schemaParser.getItem(path);
 
     if (item.type === 'container') {
-      return SchemaFormElementTypes.container;
+      return SchemaFormFieldTypes.container;
     }
 
     if (item.type === '/container') {
-      return SchemaFormElementTypes.containerEnd;
+      return SchemaFormFieldTypes.containerEnd;
     }
 
     if (!item) {
@@ -242,60 +242,60 @@ export class SchemaFormsBuildHelper {
 
     if (item.type === 'object') {
       if (fieldType === 'map') {
-        return SchemaFormElementTypes.mapPlaceField;
+        return SchemaFormFieldTypes.mapPlaceField;
       }
 
       if (item.component) {
-        return SchemaFormElementTypes.valueField;
+        return SchemaFormFieldTypes.valueField;
       }
 
       if (item._relator || item.join) {
-        return SchemaFormElementTypes.valueField;
+        return SchemaFormFieldTypes.valueField;
       } else if (!item.properties || !Object.keys(item.properties).length) {
-        return SchemaFormElementTypes.valueField;
+        return SchemaFormFieldTypes.valueField;
       } else {
-        return SchemaFormElementTypes.objectField;
+        return SchemaFormFieldTypes.objectField;
       }
     } else if (item.type === 'array') {
       if (fieldType === 'chips') {
-        return SchemaFormElementTypes.valueField;
+        return SchemaFormFieldTypes.valueField;
       }
 
       if (fieldType === 'multiselect') {
-        return SchemaFormElementTypes.valueField;
+        return SchemaFormFieldTypes.valueField;
       }
 
       if (fieldType === 'imageslist') {
-        return SchemaFormElementTypes.arrayOfImagesField;
+        return SchemaFormFieldTypes.arrayOfImagesField;
       }
 
       if (fieldType === 'videolist') {
-        return SchemaFormElementTypes.arrayOfVideoField;
+        return SchemaFormFieldTypes.arrayOfVideoField;
       }
 
       if (item.items.type === 'object') {
         if (item.items._relator || item.items.join) {
-          return SchemaFormElementTypes.arrayOfValuesField;
+          return SchemaFormFieldTypes.arrayOfValuesField;
         } else if (!item.items.properties || !Object.keys(item.items.properties).length) {
-          return SchemaFormElementTypes.arrayOfValuesField;
+          return SchemaFormFieldTypes.arrayOfValuesField;
         }
-        return SchemaFormElementTypes.arrayOfObjectsField;
+        return SchemaFormFieldTypes.arrayOfObjectsField;
       } else if (item.items.type === 'array') {
         return null;
       } else {
         if (item.items.enum) {
-          return SchemaFormElementTypes.valueField;
+          return SchemaFormFieldTypes.valueField;
         } else {
-          return SchemaFormElementTypes.arrayOfValuesField;
+          return SchemaFormFieldTypes.arrayOfValuesField;
         }
       }
     } else {
-      return SchemaFormElementTypes.valueField;
+      return SchemaFormFieldTypes.valueField;
     }
   }
 
   generateField(path: string, showTitles: boolean = true, readonly: boolean = false): ISchemaFormField|null {
-    const formElementType = this.autodetectDirectiveType(path) as SchemaFormElementTypes;
+    const formElementType = this.autodetectFieldType(path) as SchemaFormFieldTypes;
 
     const item = this.schemaParser.getItem(path);
 
@@ -313,7 +313,7 @@ export class SchemaFormsBuildHelper {
 
     const result = {formDirective: formElementType, description};
 
-    if (SchemaFormElementTypes.container === formElementType) {
+    if (SchemaFormFieldTypes.container === formElementType) {
       result['description']['header'] = this.buildHeaderDescription(preparedPath);
       result['description']['isContainer'] = true;
       result['description']['content'] = [];
@@ -322,13 +322,13 @@ export class SchemaFormsBuildHelper {
       return null;
     }
 
-    if (SchemaFormElementTypes.containerEnd === formElementType) {
+    if (SchemaFormFieldTypes.containerEnd === formElementType) {
       const container: Object = this.internalContainers.pop();
       return container;
     }
 
-    if ([SchemaFormElementTypes.objectField, SchemaFormElementTypes.arrayOfObjectsField,
-      SchemaFormElementTypes.arrayOfImagesField, SchemaFormElementTypes.arrayOfVideoField].includes(formElementType)) {
+    if ([SchemaFormFieldTypes.objectField, SchemaFormFieldTypes.arrayOfObjectsField,
+      SchemaFormFieldTypes.arrayOfImagesField, SchemaFormFieldTypes.arrayOfVideoField].includes(formElementType)) {
 
       const children = this.schemaParser.getItemChildren(path);
 
@@ -370,19 +370,19 @@ export class SchemaFormsBuildHelper {
     for (const childName of Object.getOwnPropertyNames(children)) {
       const item = this.schemaParser.getItem(childName);
 
-      if (item.type === SchemaFormElementTypes.container) {
+      if (item.type === SchemaFormFieldTypes.container) {
         const description = this.buildItemDescription(childName, showTitles, readonly);
 
         if (!description) {
           return null;
         }
 
-        const result = {formDirective: SchemaFormElementTypes.container, description};
+        const result = {formDirective: SchemaFormFieldTypes.container, description};
         result['description']['header'] = this.buildHeaderDescription(childName);
         result['description']['isContainer'] = true;
         result['description']['content'] = [];
         containerField = result;
-      } else if (item.type === SchemaFormElementTypes.containerEnd) {
+      } else if (item.type === SchemaFormFieldTypes.containerEnd) {
         description.content.push(containerField);
         containerField = null;
       } else {
@@ -422,7 +422,7 @@ export class SchemaFormsBuildHelper {
 
       if (children) {
         for (const childName of Object.getOwnPropertyNames(children)) {
-          if ([SchemaFormElementTypes.container, SchemaFormElementTypes.containerEnd].includes(children[childName].type)) {
+          if ([SchemaFormFieldTypes.container, SchemaFormFieldTypes.containerEnd].includes(children[childName].type)) {
             continue;
           }
 
