@@ -15,16 +15,16 @@
           <div class="field-block">
             <template v-for="item in line">
                 <template v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
-                    <DynamicComponent v-if="item.formDirective === 'valueField'"
+                    <DynamicField v-if="item.formDirective === 'valueField'"
                                     :description="item.description" :model="vm.model[item.description.name]"
                                     @modelChange="onModelChange(item.description.name, $event)"
                                     :context="vm.context">
-                    </DynamicComponent>
+                    </DynamicField>
 
-                    <DynamicField v-if="item.formDirective !== 'valueField'"
+                    <DynamicFieldBlock v-if="item.formDirective !== 'valueField'"
                                   :description="item" :context="vm.context"
                                   :model="vm.model" @modelChange="onModelChange(undefined, $event)">
-                    </DynamicField>
+                    </DynamicFieldBlock>
                 </template>
             </template>
           </div>
@@ -39,7 +39,7 @@ import useBaseField from '~/composables/schema-forms/useBaseField';
 import { isObject } from '~/service/utils';
 // @ts-ignore
 import { extend } from 'vue-extend-reactive';
-import DynamicComponent from '~/components/schema-forms/DynamicComponent.vue';
+import DynamicFieldBlock from '~/components/schema-forms/DynamicFieldBlock.vue';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
 
 // @ts-ignore

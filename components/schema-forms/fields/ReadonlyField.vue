@@ -1,8 +1,8 @@
 <template>
-  <SchemaComponent :componentName="vm.componentName"
+  <DynamicComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :model="valueForReadonlyInput">
-  </SchemaComponent>
+  </DynamicComponent>
 </template>
 
 

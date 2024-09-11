@@ -5,17 +5,9 @@
 
         <div class="field-block" v-if="!!context">
           <template v-for="(contentDescription, contentIndex) in props.description.content">
-              <template v-if="im.shouldAddHeaderNameToModelPathValues[contentIndex]">
-                <DynamicField :model="vm.model[props.description.header.name]"
-                              @modelChange="onModelChangeByPath($event)" :context="context"
-                              :description="contentDescription">
-                </DynamicField>
-              </template>
-              <template v-if="!im.shouldAddHeaderNameToModelPathValues[contentIndex]">
-                <DynamicField :model="vm.model" @modelChange="onModelChange($event)" :context="context"
-                              :description="contentDescription">
-                </DynamicField>
-              </template>
+            <DynamicFieldBlock :model="vm.model" @modelChange="onModelChange($event)" :context="context"
+                          :description="contentDescription">
+            </DynamicFieldBlock>
           </template>
         </div>
         <Toast />
@@ -28,7 +20,7 @@ import { schemaFormsProcessingHelper } from '~/service/schema-forms/schemaFormsP
 import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import useBaseField from '~/composables/schema-forms/useBaseField';
-import DynamicField from '~/components/schema-forms/DynamicField.vue';
+import DynamicFieldBlock from '~/components/schema-forms/DynamicFieldBlock.vue';
 
 export interface FormProps extends BaseFieldProps {
     id?: string;

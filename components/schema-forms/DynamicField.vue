@@ -1,196 +1,170 @@
 <template>
-    <ValueField v-if="initDone && props.description.formDirective === 'valueField'"
-                :model="fakeModel" @modelChange="onModelChange($event)"
-                :context="vm.context" :description="props.description.description">
-    </ValueField>
+  <div v-if="initDone" v-show="!props.description.xHideValue"
+       :id="props.index == undefined ? props.description.id : null"
+       :class="['field-wrapper', prepareClasses()]">
+    <label v-if="!props.noPlaceholder">{{ props.description.controlTitle }}</label>
 
-    <ObjectField v-else-if="initDone && props.description.formDirective === 'objectField'"
-                 :model="fakeModel" @modelChange="onModelChange($event)"
-                 :context="vm.context" :description="props.description.description">
-    </ObjectField>
-
-    <ObjectField v-else-if="initDone && props.description.formDirective === 'container'"
-                 :model="fakeModel" @modelChange="onModelChange($event)"
-                 :context="vm.context" :description="props.description.description">
-    </ObjectField>
-
-    <ArrayOfValuesField v-else-if="initDone && props.description.formDirective === 'arrayOfValuesField'"
-                        :model="fakeModel" @modelChange="onModelChange($event)"
-                        :context="vm.context" :description="props.description.description">
-    </ArrayOfValuesField>
-
-    <ArrayOfObjectsField v-else-if="initDone && props.description.formDirective === 'arrayOfObjectsField'"
-                         :model="fakeModel" @modelChange="onModelChange($event)"
-                         :context="vm.context" :description="props.description.description">
-    </ArrayOfObjectsField>
+    <component :is="componentInstance"
+               :description="props.description" :context="vm.context"
+               :model="vm.model" @modelChange="onModelChange($event)"
+               @initDone="onControlInitDone($event)">
+    </component>
+  </div>
 </template>
 
+
 <script setup lang="ts">
-import useBaseField from '~/composables/schema-forms/useBaseField';
-import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
-import { schemaFormsProcessingHelper } from '~/service/schema-forms/schemaFormsProcessing.service';
-import { isUndefined, pick } from '~/service/utils';
-import { isObject } from '~/service/utils';
-import ArrayOfObjectsField from '~/components/schema-forms/ArrayOfObjectsField.vue';
-import ArrayOfValuesField from '~/components/schema-forms/ArrayOfValuesField.vue';
-import ObjectField from '~/components/schema-forms/ObjectField.vue';
-import ValueField from '~/components/schema-forms/ValueField.vue';
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
-
-// @ts-ignore
-const props = defineProps<BaseFieldProps>();
-// @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
+import useBaseControl from '~/composables/schema-forms/useBaseControl';
 
 
-const { im, vm, sharedFunctions } = useBaseField(props, emits);
+const EmailField = resolveComponent('EmailField');
+const TextareaField = resolveComponent('TextareaField');
+const TextField = resolveComponent('TextField');
+const NumberField = resolveComponent('NumberField');
+const UrlField = resolveComponent('UrlField');
+const CheckboxField = resolveComponent('CheckboxField');
+const ChipsField = resolveComponent('ChipsField');
+const SelectField = resolveComponent('SelectField');
+const MultiselectField = resolveComponent('MultiselectField');
+const NumberChipsField = resolveComponent('NumberChipsField');
+const AutocompleteField = resolveComponent('AutocompleteField');
+const ReadonlyField = resolveComponent('ReadonlyField');
+const DateField = resolveComponent('DateField');
+const TimeTwentyFourField = resolveComponent('TimeTwentyFourField');
+const UploadField = resolveComponent('UploadField');
 
-const initDone = ref(false);
 
-const fakeModel = computed(() => {
-    const key = _getKeyForInnerModel();
-
-    if (sharedFunctions.shouldSetValueForRealModelValue()) {
-        // const parentPath = sharedFunctions.getParentPath();
-        // const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
-        //
-        // return pick(parentModel, sharedFunctions.getDescription().content.map((item: any) =>
-        //   item.description.name));
-
-      return im._innerModel;
-    }
-
-    return im._innerModel[key];
-});
-
-function onModelChange(value: any) {
-    const key = _getKeyForInnerModel();
-
-    if (sharedFunctions.getDescription() && sharedFunctions.getDescription().isContainer && vm.context) {
-        // const parentPath = sharedFunctions.getParentPath();
-        // let parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
-        //
-        // // const previousValue = parentModel[key];
-        //
-        // Object.assign(parentModel, value);
-        // sharedFunctions.processInnerModelChanged(parentModel);
-        // schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
-
-      if (im._innerModel !== value) {
-        im._innerModel = value;
-        sharedFunctions.processInnerModelChanged(value);
-        schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
-      }
-    } else {
-        const previousValue = im._innerModel[key];
-
-        if (previousValue !== value) {
-            im._innerModel[key] = value;
-            sharedFunctions.processInnerModelChanged();
-            schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
-        }
-    }
+export interface DynamicControlProps extends BaseControlProps {
+  index?: number;
 }
 
-onMounted(() => {
-  const instance = getCurrentInstance();
-  sharedFunctions.doOnMounted(instance);
-});
 
-onDeactivated(() => {
-    sharedFunctions.onDeactivated();
-});
+// @ts-ignore
+const props = defineProps<DynamicControlProps>();
+// @ts-ignore
+const emits = defineEmits<BaseControlEmits>();
 
-function initField(): void {
-    initializeModel();
 
+const controlType = ref();
+const innerComponentName = ref();
+
+
+const { vm, sharedFunctions, initDone } = useBaseControl(props, emits);
+const doOnMountedBase = sharedFunctions.doOnMounted;
+
+function doOnMounted() {
+    controlType.value = calculateControlType();
+    sharedFunctions.initField();
+
+    const instance = getCurrentInstance();
+
+    doOnMountedBase(instance);
     initDone.value = true;
 }
 
-function setModelValueForContainerTagDescription(value: any) {
+onMounted(() => {
+  doOnMounted();
+});
+
+const componentInstance = computed(() => {
+  switch(controlType.value) {
+    case 'readonly': return ReadonlyField;
+    case 'date': return DateField;
+    case 'time': return TimeTwentyFourField;
+    case 'time24': return TimeTwentyFourField;
+    case 'text': return TextField;
+    case 'textarea': return TextareaField;
+    case 'number': return NumberField;
+    case 'email': return EmailField;
+    case 'checkbox': return CheckboxField;
+    case 'url': return UrlField;
+    case 'select': return SelectField;
+    case 'multiselect': return MultiselectField;
+    case 'chips': return ChipsField;
+    case 'number-chips': return NumberChipsField;
+    case 'autocomplete': return AutocompleteField;
+    case 'upload': return UploadField;
+
+    default: return 'TextField';
+  }
+});
+
+function processControlTypeChanges() {
     //
 }
 
-function _getKeyForInnerModel(): string {
-    if (['objectField', 'arrayOfObjectsField', 'arrayOfImagesField', 'arrayOfVideoField'].includes(props.description.formDirective)) {
-        return props.description.description.header.name;
-    }
-
-    return props.description.description.name;
+function onModelChange($event: any) {
+    vm.model = $event;
+    emits('modelChange', $event);
 }
 
-function initializeModel() {
-    let parentModelToInit;
-
-    if (sharedFunctions.shouldSetValueForRealModelValue()) {
-      const parentPath = sharedFunctions.getParentPath();
-      const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
-
-      vm.model = pick(parentModel, sharedFunctions.getDescription().content.map((item: any) =>
-        item.description.name));
-
-        // const parentPath = sharedFunctions.getParentPath();
-        // parentModelToInit = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
-    } else {
-        vm.model = props.model || {};
-        parentModelToInit = props.model;
-    }
-
-    if (isUndefined(parentModelToInit)) {
-        // related with structure tag processing
-        return;
-    }
-
-    switch (props.description.formDirective) {
-        case 'valueField':
-            if (isObject(parentModelToInit) && !Array.isArray(parentModelToInit) && !(props.description.description.name in parentModelToInit)) {
-                parentModelToInit[props.description.description.name] = undefined;
-            }
-            break;
-
-        // case 'objectField':
-        //   if (! (props.description.description.header.name in parentModelToInit)) {
-        //     parentModelToInit[props.description.description.header.name] = {};
-        //   }
-        //   break;
-
-        case 'arrayOfValuesField':
-            if (isObject(parentModelToInit) && !Array.isArray(parentModelToInit) && !(props.description.description.name in parentModelToInit)) {
-                parentModelToInit[props.description.description.name] = [];
-            }
-
-            break;
-
-        case 'arrayOfObjectsField':
-            if (!(props.description.description.header.name in parentModelToInit)) {
-                parentModelToInit[props.description.description.header.name] = [];
-            }
-            break;
-
-        case 'filter':
-            if (!(props.description.description.name in parentModelToInit)) {
-                parentModelToInit[props.description.description.name] = [];
-            }
-            break;
-
-        case 'arrayOfImagesField':
-            if (!(props.description.description.header.name in parentModelToInit)) {
-                parentModelToInit[props.description.description.header.name] = [];
-            }
-            break;
-
-        case 'arrayOfVideoField':
-            if (!(props.description.description.header.name in parentModelToInit)) {
-                parentModelToInit[props.description.description.header.name] = [];
-            }
-            break;
-    }
+function onControlInitDone($event: any) {
+  innerComponentName.value = $event.componentName;
 }
 
-sharedFunctions.initField = initField;
+
+function needXProcessTheField(): boolean {
+    return true;
+}
+
+function processXFeatures() {
+    controlType.value = calculateControlType();
+    return null;
+}
+
+function calculateControlType(): string {
+    if (sharedFunctions.isReadonly()) {
+        return 'readonly';
+    }
+
+    if (props.description.xEnumValues || props.description.xOptionsValues) {
+        if (props.description.formType !== 'multiselect' && props.description.formType !== 'autocomplete') {
+            return 'select';
+        }
+    }
+
+    if (props.description.xUpload) {
+        return 'upload';
+    }
+
+    return props.description.formType;
+}
+
+function isValid(): boolean {
+    return true;
+}
+
+function touch() {
+    //
+}
+
+function prepareClasses(): string {
+  const result = [];
+
+  if (props.description.class) {
+    result.push(props.description.class);
+  }
+
+  if (innerComponentName.value) {
+    result.push(innerComponentName.value);
+  } else if (props.description.type) {
+    result.push(props.description.type);
+  }
+
+  return result.join(' ');
+}
+
+sharedFunctions.doOnMounted = doOnMounted;
+sharedFunctions.processXFeatures = processXFeatures;
+sharedFunctions.needXProcessTheField = needXProcessTheField;
+sharedFunctions.processControlTypeChanges = processControlTypeChanges;
+sharedFunctions.isValid = isValid;
+sharedFunctions.touch = touch;
 </script>
 
-<style>
 
+<style>
 </style>

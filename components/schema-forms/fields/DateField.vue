@@ -1,9 +1,9 @@
 <template>
-  <SchemaComponent :componentName="vm.componentName"
+  <DynamicComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="fakeModel" @onModelChange="onModelChange($event)">
-  </SchemaComponent>
+  </DynamicComponent>
 </template>
 
 

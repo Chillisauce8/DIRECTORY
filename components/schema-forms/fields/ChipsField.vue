@@ -1,10 +1,10 @@
 <template>
-  <SchemaComponent :componentName="vm.componentName"
+  <DynamicComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)"
                    v-if="vm.filteredSelectValues">
-  </SchemaComponent>
+  </DynamicComponent>
 </template>
 
 <script setup lang="ts">

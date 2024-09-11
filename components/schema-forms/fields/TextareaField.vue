@@ -1,9 +1,9 @@
 <template>
-  <SchemaComponent :componentName="vm.componentName"
+  <DynamicComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
-                   :model="vm.model" @onModelChange="onModelChange($event)">
-  </SchemaComponent>
+                   :model="vm.originalModel" @onModelChange="onModelChangeDebounced($event)">
+  </DynamicComponent>
 </template>
 
 <script setup lang="ts">
@@ -16,39 +16,34 @@ import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
 import { required, minLength, maxLength } from '@vuelidate/validators'
 import { patternValidator } from '~/service/forms-validators';
+import { debounce } from '~/service/utils';
 import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
-import { DateHelper } from '~/service/date-helper';
 import { getCurrentInstance } from 'vue';
 
 
-
+// @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseControlEmits>();
 
 
-const dateHelper = new DateHelper();
-
-const baseFieldExport = useBaseControl(props, emits);
-
-let {
-  vm,
-  sharedFunctions,
-} = baseFieldExport;
+let {vm, sharedFunctions} = useBaseControl(props, emits);
 
 
 vm = extend(vm, {
-  originalModel: undefined,
+  originalModel: undefined
 });
 
 
-vm.componentName = vm.componentName || 'Calendar';
+vm.componentName = vm.componentName || 'Textarea';
 
 const componentProperties = {
   ...props.description,
-  timeOnly: true,
-  hourFormat: "24"
 };
+
+const initFieldBase = sharedFunctions.initField;
+const setModelBase = sharedFunctions.setModel;
+const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
 
 const validateRules = computed(() => {
@@ -68,17 +63,7 @@ const validateRules = computed(() => {
 });
 
 
-
 const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
-
-
-
-function onModelChange(value: any) {
-  vm.model = value;
-
-  $v.value.$validate();
-  emits('modelChange', vm.model);
-}
 
 
 onMounted(() => {
@@ -86,22 +71,59 @@ onMounted(() => {
   sharedFunctions.doOnMounted(instance, $v);
 });
 
+function initField() {
+  initFieldBase();
+  vm.originalModel = vm.model;
+}
+
+function setModel(value: any, updated?: boolean) {
+  setModelBase(value, updated);
+
+  if (!vm.originalModel || (isString(vm.originalModel) && vm.originalModel.trim() !== vm.model)) {
+    vm.originalModel = vm.model;
+  }
+}
+
+function onModelChange(value: any) {
+  vm.originalModel = value;
+
+  if (value) {
+    vm.model = value.trim();
+
+    if (vm.model.length === 0) {
+      vm.model = undefined;
+    }
+  } else {
+    vm.model = undefined;
+  }
+
+  $v.value.$validate();
+
+  emits('modelChange', vm.model);
+}
+
+const onModelChangeDebounced = debounce(onModelChange, 1000);
+
 function correctExistingValue() {
   if (!isString(vm.model)) {
-    vm.model = null;
+    vm.model = undefined;
   } else {
-    const timeValue = dateHelper.parseTime(vm.model);
-    if (timeValue) {
-      vm.model = dateHelper.inputTimeFormat(timeValue);
+    vm.model = vm.model.trim();
+
+    if (vm.model.length === 0) {
+      vm.model = undefined;
+    } else {
+      correctExistingValueBase();
     }
   }
 }
 
 
+sharedFunctions.initField = initField;
+sharedFunctions.setModel = setModel;
 sharedFunctions.correctExistingValue = correctExistingValue;
 
 </script>
 
 <style>
-
 </style>

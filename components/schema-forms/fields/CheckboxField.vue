@@ -1,8 +1,8 @@
 <template>
-  <SchemaComponent :componentName="vm.componentName"
+  <DynamicComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :model="vm.model" @onModelChange="onModelChange($event)">
-  </SchemaComponent>
+  </DynamicComponent>
 </template>
 
 <script setup lang="ts">

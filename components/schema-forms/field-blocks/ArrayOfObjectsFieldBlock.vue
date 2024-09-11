@@ -19,23 +19,23 @@
                 <div class="lines" v-for="line in vm.linesForRows[rowIndex]" v-show="!isWholeLineHidden(line)">
                     <template v-for="item in line">
                         <div class="line" :style="{ width: item.description.xFlex + '%' }" v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)" v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
-                            <DynamicComponent
+                            <DynamicField
                                 v-if="item.formDirective === 'valueField'"
                                 :description="item.description"
                                 :model="vm.model[rowIndex][item.description.name]"
                                 :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
                                 @modelChange="onModelChange(rowIndex, item.description.name, $event)"
                             >
-                            </DynamicComponent>
+                            </DynamicField>
 
-                            <DynamicField
+                            <DynamicFieldBlock
                                 v-if="item.formDirective !== 'valueField'"
                                 :description="item"
                                 :model="vm.model[rowIndex]"
                                 :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
                                 @modelChange="onModelChange(rowIndex, null, $event)"
                             >
-                            </DynamicField>
+                            </DynamicFieldBlock>
                         </div>
                     </template>
                 </div>
@@ -80,7 +80,7 @@
 <script setup lang="ts">
 import useBaseArrayFieldControl from '~/composables/schema-forms/useBaseArrayFieldControl';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
-import { uniqBy, uniqWith } from '~/service/utils';
+import { uniqWith } from '~/service/utils';
 // @ts-ignore
 import { extend } from 'vue-extend-reactive';
 import { getCurrentInstance } from 'vue';

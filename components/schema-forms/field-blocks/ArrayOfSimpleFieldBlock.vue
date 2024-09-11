@@ -13,13 +13,13 @@
                 </p>
 
                 <div v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
-                    <DynamicComponent
+                    <DynamicField
                       :description="vm.rowDescriptions[index]"
                       :model="vm.model[index]" @modelChange="onModelChange($event, index)"
                       :context="sharedFunctions.createInnerFieldContext(props.description.name, index)"
                       :index="index"
                       :noPlaceholder="true">
-                    </DynamicComponent>
+                    </DynamicField>
 
                   <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()"
                              direction="left" style="position: relative" />

@@ -1,48 +1,63 @@
 <template>
-  <SchemaComponent :componentName="vm.componentName"
+  <DynamicComponent :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)">
-  </SchemaComponent>
+  </DynamicComponent>
 </template>
 
-
 <script setup lang="ts">
-
 import { isString } from '~/service/utils';
+// @ts-ignore
+import { extend } from 'vue-extend-reactive';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
-import { required, maxLength, email } from '@vuelidate/validators'
+import { required, minLength, maxLength } from '@vuelidate/validators'
+import { patternValidator } from '~/service/forms-validators';
 import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
+import { DateHelper } from '~/service/date-helper';
 import { getCurrentInstance } from 'vue';
 
 
-// @ts-ignore
+
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
 const emits = defineEmits<BaseControlEmits>();
 
 
-const {vm, sharedFunctions} = useBaseControl(props, emits);
+const dateHelper = new DateHelper();
 
-vm.componentName = vm.componentName || 'InputText';
+const baseFieldExport = useBaseControl(props, emits);
+
+let {
+  vm,
+  sharedFunctions,
+} = baseFieldExport;
+
+
+vm = extend(vm, {
+  originalModel: undefined,
+});
+
+
+vm.componentName = vm.componentName || 'Calendar';
 
 const componentProperties = {
   ...props.description,
-  type: "email"
+  timeOnly: true,
+  hourFormat: "24"
 };
-
-const correctExistingValueBase = sharedFunctions.correctExistingValue;
 
 
 const validateRules = computed(() => {
   const result: any = {
     model: {
+      minLength: minLength(props.description.minLength || 0),
       maxLength: maxLength(props.description.maxLength || 100),
-      email: email,
-    }
+      pattern: patternValidator(new RegExp(props.description.pattern, 'gi')),
+    },
   };
 
   if (props.description.required) {
@@ -53,7 +68,17 @@ const validateRules = computed(() => {
 });
 
 
+
 const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
+
+
+
+function onModelChange(value: any) {
+  vm.model = value;
+
+  $v.value.$validate();
+  emits('modelChange', vm.model);
+}
 
 
 onMounted(() => {
@@ -61,32 +86,22 @@ onMounted(() => {
   sharedFunctions.doOnMounted(instance, $v);
 });
 
-function onModelChange(value: any) {
-  vm.model = value;
-  $v.value.$validate();
-
-  emits('modelChange', vm.model);
-}
-
 function correctExistingValue() {
   if (!isString(vm.model)) {
     vm.model = null;
   } else {
-    vm.model = vm.model ? vm.model.toLowerCase() : '';
-    correctExistingValueBase();
+    const timeValue = dateHelper.parseTime(vm.model);
+    if (timeValue) {
+      vm.model = dateHelper.inputTimeFormat(timeValue);
+    }
   }
-}
-
-function correctModelBeforeSet(value: any) {
-  return value ? value.toLowerCase() : '';
 }
 
 
 sharedFunctions.correctExistingValue = correctExistingValue;
-sharedFunctions.correctModelBeforeSet = correctModelBeforeSet;
 
 </script>
 
-<style scoped>
+<style>
 
 </style>
