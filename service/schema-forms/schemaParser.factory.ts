@@ -326,12 +326,16 @@ export class SchemaParser {
         return 'multiselect';
       }
 
-      if (['MultiSelect', 'Listbox', 'Chips'].includes(item?.component)) {
+      if (['MultiSelect', 'Listbox'].includes(item?.component)) {
         return 'multiselect';
       }
 
+      if (['Chips'].includes(item?.component)) {
+        return 'chips';
+      }
+
       if (item.items && item.items.type === 'string') {
-        return 'multiselect';
+        return 'chips';
       }
 
       if ((item.items && '_relator' in item.items) ||

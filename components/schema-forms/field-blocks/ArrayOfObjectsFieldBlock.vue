@@ -1,67 +1,65 @@
 <template>
     <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
-        <div v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
-             v-show="!props.description.xHideValue" class="array-wrap">
-            <div v-for="(row, rowIndex) in vm.model" :key="rowIndex">
-                <p v-if="rowIndex === 0 && props.description.header.title">
-                    {{ sharedFunctions.getTitle() }}
+        <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
+             v-show="!props.description.xHideValue">
+            <h1 class="title" v-if="props.description.header.title">
+              {{ sharedFunctions.getTitle() }}
 
-                    <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                        <SvgIcon svg="info" />
-                    </span>
+              <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+                  <SvgIcon svg="info" />
+              </span>
 
-                    <!--        <i class="pi pi-table padding_-5" v-if="props.description.xGrid"-->
-                    <!--           v-tooltip.bottom="'Grid view'" style="cursor: pointer"-->
-                    <!--           @click="showGridView()"></i>-->
-                </p>
-                <!-- <p class="label flex-none" v-if="props.description.header.title && rowIndex !== 0"></p> -->
+              <!--        <i class="pi pi-table padding_-5" v-if="props.description.xGrid"-->
+              <!--           v-tooltip.bottom="'Grid view'" style="cursor: pointer"-->
+              <!--           @click="showGridView()"></i>-->
+            </h1>
 
-                <div class="lines" v-for="line in vm.linesForRows[rowIndex]" v-show="!isWholeLineHidden(line)">
-                    <template v-for="item in line">
-                        <div class="line" :style="{ width: item.description.xFlex + '%' }" v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)" v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
-                            <DynamicField
-                                v-if="item.formDirective === 'valueField'"
-                                :description="item.description"
-                                :model="vm.model[rowIndex][item.description.name]"
-                                :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
-                                @modelChange="onModelChange(rowIndex, item.description.name, $event)"
-                            >
-                            </DynamicField>
+            <div class="field-block">
+              <template v-for="(row, rowIndex) in vm.model" :key="rowIndex">
+                  <template v-for="(line, lineIndex) in vm.linesForRows[rowIndex]" v-show="!isWholeLineHidden(line)">
+                      <template v-for="(item, itemIndex) in line">
+                          <template :style="{ width: item.description.xFlex + '%' }"
+                               v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)"
+                               v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
+                              <DynamicField
+                                  v-if="item.formDirective === 'valueField'"
+                                  :description="item.description"
+                                  :model="vm.model[rowIndex][item.description.name]"
+                                  :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
+                                  @modelChange="onModelChange(rowIndex, item.description.name, $event)">
 
-                            <DynamicFieldBlock
-                                v-if="item.formDirective !== 'valueField'"
-                                :description="item"
-                                :model="vm.model[rowIndex]"
-                                :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
-                                @modelChange="onModelChange(rowIndex, null, $event)"
-                            >
-                            </DynamicFieldBlock>
-                        </div>
-                    </template>
-                </div>
+                                <SpeedDial :model="createSpeedDialItems(rowIndex)"
+                                           v-if="showSpeedDeal(lineIndex, line, rowIndex, itemIndex)"
+                                           direction="left" />
+                              </DynamicField>
 
-                <SpeedDial :model="createSpeedDialItems(rowIndex)" v-if="!sharedFunctions.isReadonly()"
-                           direction="left" :style="{ top: 'calc(50% - 2rem)', right: 0 }" />
-            </div>
+                            <template v-if="item.formDirective !== 'valueField'">
+                              <DynamicFieldBlock
+                                  :description="item"
+                                  :model="vm.model[rowIndex]"
+                                  :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
+                                  @modelChange="onModelChange(rowIndex, null, $event)">
+                              </DynamicFieldBlock>
 
-            <div class="empty row start-center" v-if="!vm.model?.length">
-                <p class="label">
-                    {{ sharedFunctions.getTitle() }}
+                              <SpeedDial :model="createSpeedDialItems(rowIndex)"
+                                       v-if="showSpeedDeal(lineIndex, line, rowIndex, itemIndex)"
+                                       direction="left" />
+                          </template>
+                      </template>
+                  </template>
+                </template>
+              </template>
 
-                    <span v-if="sharedFunctions.getDescriptionText()"
-                          v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                        <SvgIcon svg="help" />
-                    </span>
-                </p>
+              <div v-if="!vm.model?.length">
+                  <Button icon="pi pi-plus" aria-label="Add First Row"
+                          v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode">
+                      <!--              #contextMenuTrigger [matMenuTriggerFor]="contextMenu"-->
+                  </Button>
 
-                <Button icon="pi pi-plus" aria-label="Add First Row"
-                        v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode">
-                    <!--              #contextMenuTrigger [matMenuTriggerFor]="contextMenu"-->
-                </Button>
-
-                <Button icon="pi pi-plus" aria-label="Add First Row"
-                        v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode"
-                        @click="addFirstRow()"> </Button>
+                  <Button icon="pi pi-plus" aria-label="Add First Row"
+                          v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode"
+                          @click="addFirstRow()"> </Button>
+              </div>
             </div>
 
             <ContextMenu ref="menu" :model="getContextMenuItems(vm.selectionValues)" />
@@ -73,7 +71,7 @@
                  class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
 
             <div v-if="!ifValidUniqueItems()" class="text-color_red field_wrap">Items are not unique</div>
-        </div>
+        </template>
     </section>
 </template>
 
@@ -138,6 +136,12 @@ function isValid(): boolean {
 
 function touch() {
     //
+}
+
+function showSpeedDeal(lineIndex: number, line: any[], rowIndex: number, itemIndex: number): boolean {
+  return !sharedFunctions.isReadonly() &&
+    lineIndex === vm.linesForRows[rowIndex].length - 1 &&
+    itemIndex === line.length - 1;
 }
 
 function getContextMenuItems(selectionValues: string[]) {

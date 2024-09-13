@@ -1,3 +1,19 @@
+<template>
+    <div class="input-wrapper">
+      <component :is="props.componentName"
+                 v-model="props.model" @update:modelValue="onModelChange($event)"
+                 v-bind="props.componentProperties"
+                 :invalid="validator?.$error"
+                 :class="[props.validator?.$error ? 'p-invalid' : '']">
+      </component>
+    </div>
+    <FieldError class="error-message"
+                v-if="props.validator"
+                :vuelidate-field="props.validator.vuelidateField">
+    </FieldError>
+</template>
+
+
 <script setup lang="ts">
 
 import FieldError from '~/components/schema-forms/fields/FieldError.vue';
@@ -25,25 +41,8 @@ function onModelChange(value: any) {
   emits('onModelChange', value);
 }
 
-
 </script>
 
-<template>
-  <div class="field">
-    <div class="input-wrapper">
-      <component :is="props.componentName"
-                 v-model="props.model" @update:modelValue="onModelChange($event)"
-                 v-bind="props.componentProperties"
-                 :invalid="validator?.$error"
-                 :class="[props.validator?.$error ? 'p-invalid' : '']">
-      </component>
-    </div>
-    <FieldError class="error-message"
-                v-if="props.validator"
-                :vuelidate-field="props.validator.vuelidateField">
-    </FieldError>
-  </div>
-</template>
 
 <style lang="scss">
 </style>

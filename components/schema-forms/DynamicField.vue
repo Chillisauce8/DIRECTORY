@@ -1,14 +1,30 @@
 <template>
-  <div v-if="initDone" v-show="!props.description.xHideValue"
-       :id="props.index == undefined ? props.description.id : null"
-       :class="['field-wrapper', prepareClasses()]">
-    <label v-if="!props.noPlaceholder">{{ props.description.controlTitle }}</label>
-
+  <div class="field"
+       v-if="initDone && props.noWrapper"
+       v-show="!props.description.xHideValue">
     <component :is="componentInstance"
                :description="props.description" :context="vm.context"
                :model="vm.model" @modelChange="onModelChange($event)"
                @initDone="onControlInitDone($event)">
     </component>
+    <slot></slot>
+  </div>
+
+  <div v-else-if="initDone && !props.noWrapper"
+       :class="['field-wrapper', prepareClasses()]"
+       v-show="!props.description.xHideValue"
+       :id="props.index == undefined ? props.description.id : null">
+
+    <label>{{ sharedFunctions.getTitle() }}</label>
+
+    <div class="field">
+      <component :is="componentInstance"
+                 :description="props.description" :context="vm.context"
+                 :model="vm.model" @modelChange="onModelChange($event)"
+                 @initDone="onControlInitDone($event)">
+      </component>
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -16,7 +32,10 @@
 <script setup lang="ts">
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
-import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
+import type {
+  BaseControlProps,
+  BaseControlEmits,
+} from '~/composables/schema-forms/useBaseControl';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 
 
@@ -39,8 +58,8 @@ const UploadField = resolveComponent('UploadField');
 
 export interface DynamicControlProps extends BaseControlProps {
   index?: number;
+  noWrapper?: boolean;
 }
-
 
 // @ts-ignore
 const props = defineProps<DynamicControlProps>();
@@ -57,7 +76,6 @@ const doOnMountedBase = sharedFunctions.doOnMounted;
 
 function doOnMounted() {
     controlType.value = calculateControlType();
-    sharedFunctions.initField();
 
     const instance = getCurrentInstance();
 
@@ -68,6 +86,10 @@ function doOnMounted() {
 onMounted(() => {
   doOnMounted();
 });
+
+function initField() {
+
+}
 
 const componentInstance = computed(() => {
   switch(controlType.value) {
@@ -103,8 +125,8 @@ function onModelChange($event: any) {
 
 function onControlInitDone($event: any) {
   innerComponentName.value = $event.componentName;
+  emits('initDone', $event);
 }
-
 
 function needXProcessTheField(): boolean {
     return true;
@@ -158,6 +180,7 @@ function prepareClasses(): string {
 }
 
 sharedFunctions.doOnMounted = doOnMounted;
+sharedFunctions.initField = initField;
 sharedFunctions.processXFeatures = processXFeatures;
 sharedFunctions.needXProcessTheField = needXProcessTheField;
 sharedFunctions.processControlTypeChanges = processControlTypeChanges;

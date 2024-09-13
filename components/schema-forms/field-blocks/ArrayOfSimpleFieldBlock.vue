@@ -1,41 +1,32 @@
 <template>
-    <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
+    <div class="field-wrapper" :class="innerComponentName" :id="props.description.id">
         <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)"
                   v-show="!props.description.xHideValue">
-            <div v-for="(line, index) in vm.model" :key="index">
-                <p class="label" v-if="props.description.title && index === 0">
-                  {{ sharedFunctions.getTitle() }}
+            <label v-if="props.description.title">
+              {{ sharedFunctions.getTitle() }}
 
-                  <span v-if="sharedFunctions.getDescriptionText()"
-                        v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                      <i class="pi pi-question padding_-5"></i>
-                  </span>
-                </p>
-
-                <div v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
+              <span v-if="sharedFunctions.getDescriptionText()"
+                    v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+                        <i class="pi pi-question padding_-5"></i>
+                    </span>
+            </label>
+            <template v-for="(line, index) in vm.model" :key="index">
+                <template v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
                     <DynamicField
                       :description="vm.rowDescriptions[index]"
                       :model="vm.model[index]" @modelChange="onModelChange($event, index)"
                       :context="sharedFunctions.createInnerFieldContext(props.description.name, index)"
                       :index="index"
-                      :noPlaceholder="true">
-                    </DynamicField>
+                      :noWrapper="true"
+                      @initDone="onControlInitDone($event)">
 
-                  <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()"
-                             direction="left" style="position: relative" />
-                </div>
-            </div>
+                      <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()"
+                                 direction="left" style="position: relative" />
+                    </DynamicField>
+                </template>
+            </template>
 
             <div class="empty row start-center" v-if="!vm?.model?.length">
-                <p class="label">
-                    {{ sharedFunctions.getTitle() }}
-
-                    <span v-if="sharedFunctions.getDescriptionText()"
-                          v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                        <i class="pi pi-question padding_-5"></i>
-                    </span>
-                </p>
-
                 <Button icon="pi pi-plus" aria-label="Add First Row"
                         v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore()"
                         @click="sharedFunctions.addFirstRow()">
@@ -54,7 +45,7 @@
               Items are not unique
             </div>
         </template>
-    </section>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -67,6 +58,7 @@ const props = defineProps<BaseFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
+const innerComponentName = ref();
 
 const { vm, sharedFunctions, initDone } = useBaseArrayFieldControl(props, emits);
 
@@ -117,6 +109,10 @@ function isValid(): boolean {
 
 function touch() {
     //
+}
+
+function onControlInitDone($event: any) {
+  innerComponentName.value = $event.componentName;
 }
 
 sharedFunctions.createModelRow = createModelRow;

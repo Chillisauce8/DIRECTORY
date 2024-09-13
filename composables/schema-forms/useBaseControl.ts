@@ -43,8 +43,6 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
   function initField() {
     initFieldBase();
 
-    refreshTitle();
-
     if (vm.model) {
       correctExistingValue();
     }
@@ -65,10 +63,6 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
     }
 
     doOnMountedBase(componentInternalInstance);
-  }
-
-  function refreshTitle() {
-    props.description.controlTitle = sharedFunctions.getTitle();
   }
 
   function isValid(): boolean {
@@ -203,8 +197,6 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
     if ('readonly' in features) {
       processXReadOnlyForModelChanges(features['readonly']);
     }
-
-    refreshTitle();
 
     return features;
   }
