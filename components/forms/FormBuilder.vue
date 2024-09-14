@@ -1,12 +1,15 @@
 <template>
     <section :class="classes ? classes : 'form'" :id="id">
-        <h1 v-if="title" class="title">{{ title }}</h1>
+        <div v-if="arrayOfObject" class="array-of-object-header">
+            <h1 v-if="title" class="title array-of-object">{{ title }}</h1>
+            <SpeedDial />
+        </div>
+        <h1 v-else-if="title" class="title">{{ title }}</h1>
         <h2 v-if="subtitle" class="subtitle">{{ subtitle }}</h2>
         <div class="field-block">
             <template v-for="(value, index) in effectiveForm" :key="index">
                 <template v-if="getDefaults(value).field">
-                    <div class="field-wrapper" :id="value.id"
-                         :class="value.component ? value.component : getDefaults(value).field">
+                    <div class="field-wrapper" :id="value.id" :class="value.component ? value.component : getDefaults(value).field">
                         <label>{{ value.title }}</label>
                         <div class="field">
                             <div class="input-wrapper">
@@ -21,8 +24,8 @@
                         <div v-if="value.subtext" class="subtext">{{ value.subtext }}</div>
                     </div>
                 </template>
-                <FormBuilder v-if="getObject(value)" :formattedForm="getObject(value)" :id="value.id" :title="value.title"
-                             :classes="getClass(value)" />
+
+                <FormBuilder v-if="getObject(value)" :formattedForm="getObject(value)" :id="value.id" :title="value.title" :arrayOfObject="getDefaults(value).arrayOfObject" :classes="getClass(value)" />
             </template>
         </div>
     </section>
@@ -36,7 +39,8 @@ const props = defineProps({
     unformattedForm: Object,
     formattedForm: Object,
     nested: String,
-    classes: String
+    classes: String,
+    arrayOfObject: Boolean
 });
 
 // Define reactive reference for the effective form to use in the template
@@ -138,6 +142,8 @@ function getDefaults(value) {
             showDefault.field = 'InputSwitch';
             showDefault.props = {};
             showDefault.speedDial = true;
+        } else if (value.items.type === 'object') {
+            showDefault.arrayOfObject = true;
         }
     } else {
         if (value.type === 'string') {
@@ -253,6 +259,15 @@ function getDefaults(value) {
         position: relative;
         button {
             scale: 0.6;
+        }
+    }
+
+    .array-of-object-header {
+        display: flex;
+        justify-content: space-between;
+        .p-button:first-of-type {
+            background-color: red;
+            border-color: red;
         }
     }
 }

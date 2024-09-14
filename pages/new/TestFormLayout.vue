@@ -98,7 +98,7 @@ const unformattedForm = ref({
     },
     pageOrder: {
         type: 'array',
-        title: 'Page Order',
+        title: 'Page Order - Array of Object',
         containerClass: 'object',
         hide: {
             if: "['productCategoryGroup', 'locationGroup', 'blog'].includes(/type) === false",
@@ -122,39 +122,32 @@ const unformattedForm = ref({
                         enum: ['stag', 'hen', 'groups', 'events', 'golf', 'vouchers']
                     }
                 },
-              "internalObject": {
-                "title": "Internal object",
-                "type": "object",
-                "if": "showInternalArray !== true'",
-                "then": {
-                  "hide": true
-                },
-                "hide": "showInternalArray",
-                "properties": {
-                  "testString2": {
-                    "type": "string",
-                    "title": "Test String 2",
-                    "subtext": "here is an example of some form sub text"
-                  },
-                  "section2": {
-                    "type": "array",
-                    "title": "Section 2",
-                    "line": 2,
-                    "fieldType": "multiselect",
-                    "items": {
-                      "type": "string",
-                      "enum": [
-                        "stag",
-                        "hen",
-                        "groups",
-                        "events",
-                        "golf",
-                        "vouchers"
-                      ]
+                internalObject: {
+                    title: 'Internal Object',
+                    type: 'object',
+                    if: "showInternalArray !== true'",
+                    then: {
+                        hide: true
+                    },
+                    hide: 'showInternalArray',
+                    properties: {
+                        testString2: {
+                            type: 'string',
+                            title: 'Test String 2',
+                            subtext: 'here is an example of some form sub text'
+                        },
+                        section2: {
+                            type: 'array',
+                            title: 'Section 2',
+                            line: 2,
+                            fieldType: 'multiselect',
+                            items: {
+                                type: 'string',
+                                enum: ['stag', 'hen', 'groups', 'events', 'golf', 'vouchers']
+                            }
+                        }
                     }
-                  }
                 }
-              }
             }
         }
     },
