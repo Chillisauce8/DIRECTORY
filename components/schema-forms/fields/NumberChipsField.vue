@@ -1,9 +1,9 @@
 <template>
-  <DynamicComponent :componentName="vm.componentName"
+  <ComponentRender :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)">
-  </DynamicComponent>
+  </ComponentRender>
 </template>
 
 <script setup lang="ts">

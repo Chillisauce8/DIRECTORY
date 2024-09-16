@@ -59,7 +59,7 @@ function initField(): void {
     }
 
     if (props.showTitle === undefined) {
-        if (props.description.formType === 'checkbox') {
+        if (props.description.component === 'Checkbox') {
             vm.showTitle = false;
         } else {
             vm.showTitle = true;
@@ -83,11 +83,11 @@ function onModelChange($event: any) {
 }
 
 function _createModel(): any {
-    if (props.description.formType === 'multiselect') {
+    if (props.description.component === 'Multiselect') {
         return [];
     }
 
-    if (props.description.formType === 'chips') {
+    if (props.description.component === 'Chips') {
         return [];
     }
 

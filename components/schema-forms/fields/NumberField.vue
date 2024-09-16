@@ -1,9 +1,9 @@
 <template>
-  <DynamicComponent :componentName="vm.componentName"
+  <ComponentRender :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)">
-  </DynamicComponent>
+  </ComponentRender>
 </template>
 
 
@@ -41,8 +41,6 @@ vm = extend(vm, {
   allowDecimals: undefined,
 });
 
-
-vm.componentName = vm.componentName || 'InputNumber';
 
 const componentProperties = {
   ...props.description,

@@ -38,16 +38,17 @@ export class SchemaParser {
 
     const result: any = item.props || {};
 
-    result['formType'] = this.parseItemFormType(item);
+    // result['formType'] = this.parseItemFormType(properties);
 
-    result['component'] = properties.component;
+    result['component'] = this.parseItemComponent(item, properties);
+
     result['class'] = properties.class;
 
     result['title'] = properties.title || item.title;
     result['required'] = properties.required || item.required;
     result['readonly'] = properties.readonly || item.readonly;
     result['default'] = properties['default'] || item['default'];
-    result['type'] = properties['type'] || item['type'];
+    result['type'] = item['type'] || properties['type'];
 
     result['xHide'] = properties['x-hide'] || item['x-hide'];
     result['xRequired'] = properties['x-required'] || item['x-required'];
@@ -242,100 +243,84 @@ export class SchemaParser {
     return this._getAllPathTree(properties, fields, showBrackets);
   }
 
-  parseItemFormType(item: any): string {
-    const fieldType = item['x-fieldtype'] || item['fieldType'];
+  parseItemComponent(item: any, properties?: any): string {
+    // const fieldType = item['x-fieldtype'] || item['fieldType'];
 
-    if (fieldType) {
-      if (fieldType === 'chips' && item['items']['type'] === 'number') {
-        return 'number-chips';
-      }
-
-      return fieldType;
+    if (properties?.component) {
+      return properties.component;
     }
 
     if (item.type === 'number') {
       if ('enum' in item) {
-        return 'select';
+        return 'Dropdown';
       }
 
-      return 'number';
+      return 'InputNumber';
     }
 
     if ((item['_relator'] || item['join']) && !item['component']) {
-      return 'autocomplete';
+      return 'AutoComplete';
     }
 
     if (item.type === 'string') {
       if (item.format === 'date') {
-        return 'date';
+        return 'Calendar';
       }
 
       if (item.format === 'time') {
-        return 'time';
+        return 'Calendar';
       }
 
       if (item.format === 'datetime') {
-        return 'text';
+        return 'InputText';
       }
 
       if (item.format === 'date-time') {
-        return 'text';
+        return 'InputText';
       }
 
       if (item.format === 'time24') {
-        return 'time24';
+        return 'Calendar';
       }
 
       if (item.format === 'url') {
-        return 'url';
+        return 'InputText';
       }
 
       if (item.format === 'uri') {
-        return 'url';
+        return 'InputText';
       }
 
       if (item.format === 'email') {
-        return 'email';
+        return 'InputText';
       }
 
-      if (item.format === 'treePath') {
-        return 'treePath';
-      }
+      // if (item.format === 'treePath') {
+      //   return 'treePath';
+      // }
 
       if ('enum' in item) {
-        return 'select';
+        return 'Dropdown';
       }
 
       if ('options' in item) {
-        return 'select';
+        return 'Dropdown';
       }
 
-      if (item.component === 'Dropdown') {
-        return 'select';
-      }
-
-      return 'text';
+      return 'InputText';
     }
 
     if (item.type === 'boolean') {
-      return 'checkbox';
+      return 'InputSwitch';
     }
 
     if (item.type === 'array') {
       if (!!item.items && 'enum' in item.items) {
-        return 'multiselect';
-      }
-
-      if (['MultiSelect', 'Listbox'].includes(item?.component)) {
-        return 'multiselect';
-      }
-
-      if (['Chips'].includes(item?.component)) {
-        return 'chips';
+        return 'MultiSelect';
       }
 
       if (item.items && item.items.type === 'string') {
-        return 'chips';
+        return 'Chips';
       }
 
       if ((item.items && '_relator' in item.items) ||
@@ -343,23 +328,19 @@ export class SchemaParser {
         (item.items && 'join' in item.items) ||
         'join' in item
       ) {
-        return 'select';
+        return 'Dropdown';
       } else if (item.items) {
-        return this.parseItemFormType(item.items);
+        return this.parseItemComponent(item.items);
       }
     }
 
     if (item.type === 'object') {
       if (('_relator' in item) || ('join' in item)) {
-        return 'select';
-      }
-
-      if (item.component === 'Dropdown') {
-        return 'select';
+        return 'Dropdown';
       }
     }
 
-    return 'text';
+    return 'InputText';
   }
 
   parseSelectionFeature(path: string, item: any) {

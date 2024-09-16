@@ -2,48 +2,41 @@
     <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
         <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
              v-show="!props.description.xHideValue">
-            <h1 class="title" v-if="props.description.header.title">
-              {{ sharedFunctions.getTitle() }}
+          <div class="array-of-object-header">
+            <h1 class="title array-of-object" v-if="props.description.header.title">
+                {{ sharedFunctions.getTitle() }}
 
-              <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                  <SvgIcon svg="info" />
-              </span>
+                <span v-if="sharedFunctions.getDescriptionText()"
+                      v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+                    <SvgIcon svg="info" />
+                </span>
+              </h1>
 
-              <!--        <i class="pi pi-table padding_-5" v-if="props.description.xGrid"-->
-              <!--           v-tooltip.bottom="'Grid view'" style="cursor: pointer"-->
-              <!--           @click="showGridView()"></i>-->
-            </h1>
+              <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems()" direction="left" />
+            </div>
 
             <div class="field-block">
               <template v-for="(row, rowIndex) in vm.model" :key="rowIndex">
                   <template v-for="(line, lineIndex) in vm.linesForRows[rowIndex]" v-show="!isWholeLineHidden(line)">
-                      <template v-for="(item, itemIndex) in line">
+                    <template v-for="(item, itemIndex) in line">
                           <template :style="{ width: item.description.xFlex + '%' }"
                                v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)"
                                v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
                               <DynamicField
-                                  v-if="item.formDirective === 'valueField'"
+                                  v-if="item.blockComponent === BlockComponents.value"
                                   :description="item.description"
                                   :model="vm.model[rowIndex][item.description.name]"
                                   :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
                                   @modelChange="onModelChange(rowIndex, item.description.name, $event)">
-
-                                <SpeedDial :model="createSpeedDialItems(rowIndex)"
-                                           v-if="showSpeedDeal(lineIndex, line, rowIndex, itemIndex)"
-                                           direction="left" />
                               </DynamicField>
 
-                            <template v-if="item.formDirective !== 'valueField'">
+                            <template v-if="item.blockComponent !== BlockComponents.value">
                               <DynamicFieldBlock
                                   :description="item"
                                   :model="vm.model[rowIndex]"
                                   :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
                                   @modelChange="onModelChange(rowIndex, null, $event)">
                               </DynamicFieldBlock>
-
-                              <SpeedDial :model="createSpeedDialItems(rowIndex)"
-                                       v-if="showSpeedDeal(lineIndex, line, rowIndex, itemIndex)"
-                                       direction="left" />
                           </template>
                       </template>
                   </template>
@@ -53,12 +46,12 @@
               <div v-if="!vm.model?.length">
                   <Button icon="pi pi-plus" aria-label="Add First Row"
                           v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode">
-                      <!--              #contextMenuTrigger [matMenuTriggerFor]="contextMenu"-->
                   </Button>
 
                   <Button icon="pi pi-plus" aria-label="Add First Row"
                           v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode"
-                          @click="addFirstRow()"> </Button>
+                          @click="addFirstRow()">
+                  </Button>
               </div>
             </div>
 
@@ -82,6 +75,7 @@ import { uniqWith } from '~/service/utils';
 // @ts-ignore
 import { extend } from 'vue-extend-reactive';
 import { getCurrentInstance } from 'vue';
+import { BlockComponents } from '~/service/schema-forms/blockComponents';
 
 // @ts-ignore
 const props = defineProps<BaseFieldProps>();
@@ -153,7 +147,8 @@ function getContextMenuItems(selectionValues: string[]) {
     });
 }
 
-function createSpeedDialItems(index: number) {
+function createSpeedDialItems() {
+    const index = vm.model.length - 1;
     return [
         {
             icon: 'pi pi-plus',
@@ -310,25 +305,6 @@ function isWholeLineHidden(line: Array<Object>): boolean {
     });
 }
 
-// function showGridView() {
-//   this.xGridShowDialogService.show(vm.model, props.description, vm.context)
-//     .pipe(
-//       take(1)
-//     )
-//     .subscribe((result: ICommonDialogResult) => {
-//       agGridModelService.reset();
-//
-//       if (!result) {
-//         return;
-//       }
-//
-//       if (result && !result.canceled && result.data !== null) {
-//         vm.model = result.data;
-//         initField();
-//       }
-//     });
-// }
-
 function ifValidUniqueItems(): boolean {
     if (!vm.needCheckUniq) {
         return true;
@@ -351,7 +327,7 @@ function ifValidUniqueItems(): boolean {
     );
 }
 
-function onModelChange(rowIndex: number, descriptionName: string, $event: any) {
+function onModelChange(rowIndex: number, descriptionName: string|null, $event: any) {
     const modelClone = [...vm.model];
 
     if (descriptionName) {

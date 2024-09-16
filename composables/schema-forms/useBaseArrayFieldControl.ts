@@ -1,18 +1,14 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service';
-import type { BaseFieldEmits, BaseFieldProps, ComponentRefs } from '~/composables/schema-forms/useBaseField';
+import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import { isUndefined, isEqual, isNumber, cloneDeep, uniq } from '~/service/utils';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import useBaseControl from '~/composables/schema-forms/useBaseControl';
-// @ts-ignore
 import { extend } from 'vue-extend-reactive';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
+import useBaseField from '~/composables/schema-forms/useBaseField';
 
 
-export default function useBaseArrayFieldControl(props: BaseControlProps, emits: BaseFieldEmits): any {
+export default function useBaseArrayFieldControl(props: BaseFieldProps, emits: BaseFieldEmits): any {
 
-  // @ViewChild('controlModel') public controlModel: NgModel;
-
-  const baseFieldExport = useBaseControl(props, emits);
+  const baseFieldExport = useBaseField(props, emits);
 
   let {
     vm,

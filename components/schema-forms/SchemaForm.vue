@@ -301,5 +301,14 @@ sharedFunctions.processInnerModelChanged = processInnerModelChanged;
         // Modifies the button colour on speedial open.
         background-color: rgb(200, 200, 200);
     }
+
+    .array-of-object-header {
+      display: flex;
+      justify-content: space-between;
+      .p-button:first-of-type {
+        background-color: red;
+        border-color: red;
+      }
+    }
 }
 </style>

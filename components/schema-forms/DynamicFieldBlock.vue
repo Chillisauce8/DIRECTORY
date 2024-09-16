@@ -15,11 +15,12 @@ import { isUndefined, pick } from '~/service/utils';
 import { isObject } from '~/service/utils';
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
+import { BlockComponents } from '~/service/schema-forms/blockComponents';
 
-const SimpleFieldBlock = resolveComponent('SimpleFieldBlock');
-const ArrayOfObjectsFieldBlock = resolveComponent('ArrayOfObjectsFieldBlock');
-const ArrayOfSimpleFieldBlock = resolveComponent('ArrayOfSimpleFieldBlock');
-const ObjectFieldBlock = resolveComponent('ObjectFieldBlock');
+const ValueBlock = resolveComponent('ValueBlock');
+const ArrayOfObjectsBlock = resolveComponent('ArrayOfObjectsBlock');
+const ArrayOfValuesBlock = resolveComponent('ArrayOfValuesBlock');
+const ObjectBlock = resolveComponent('ObjectBlock');
 
 
 // @ts-ignore
@@ -34,12 +35,12 @@ const initDone = ref(false);
 
 
 const componentInstance = computed(() => {
-  switch (props.description.formDirective) {
-    case 'valueField': return SimpleFieldBlock;
-    case 'objectField': return ObjectFieldBlock;
-    case 'container': return ObjectFieldBlock;
-    case 'arrayOfValuesField': return ArrayOfSimpleFieldBlock;
-    case 'arrayOfObjectsField': return ArrayOfObjectsFieldBlock;
+  switch (props.description.blockComponent) {
+    case BlockComponents.value: return ValueBlock;
+    case BlockComponents.object: return ObjectBlock;
+    case BlockComponents.container: return ObjectBlock;
+    case BlockComponents.arrayOfValues: return ArrayOfValuesBlock;
+    case BlockComponents.arrayOfObjects: return ArrayOfObjectsBlock;
   }
 });
 
@@ -109,7 +110,8 @@ function setModelValueForContainerTagDescription(value: any) {
 }
 
 function _getKeyForInnerModel(): string {
-  if (['objectField', 'arrayOfObjectsField', 'arrayOfImagesField', 'arrayOfVideoField'].includes(props.description.formDirective)) {
+  if ([BlockComponents.object, BlockComponents.arrayOfObjects,
+    BlockComponents.arrayOfImages, BlockComponents.arrayOfVideo].includes(props.description.blockComponent)) {
     return props.description.description.header.name;
   }
 
@@ -138,27 +140,27 @@ function initializeModel() {
     return;
   }
 
-  switch (props.description.formDirective) {
-    case 'valueField':
+  switch (props.description.blockComponent) {
+    case BlockComponents.value:
       if (isObject(parentModelToInit) && !Array.isArray(parentModelToInit) && !(props.description.description.name in parentModelToInit)) {
         parentModelToInit[props.description.description.name] = undefined;
       }
       break;
 
-    // case 'objectField':
+    // case BlockComponents.object:
     //   if (! (props.description.description.header.name in parentModelToInit)) {
     //     parentModelToInit[props.description.description.header.name] = {};
     //   }
     //   break;
 
-    case 'arrayOfValuesField':
+    case BlockComponents.arrayOfValues:
       if (isObject(parentModelToInit) && !Array.isArray(parentModelToInit) && !(props.description.description.name in parentModelToInit)) {
         parentModelToInit[props.description.description.name] = [];
       }
 
       break;
 
-    case 'arrayOfObjectsField':
+    case BlockComponents.arrayOfObjects:
       if (!(props.description.description.header.name in parentModelToInit)) {
         parentModelToInit[props.description.description.header.name] = [];
       }
@@ -170,13 +172,13 @@ function initializeModel() {
       }
       break;
 
-    case 'arrayOfImagesField':
+    case BlockComponents.arrayOfImages:
       if (!(props.description.description.header.name in parentModelToInit)) {
         parentModelToInit[props.description.description.header.name] = [];
       }
       break;
 
-    case 'arrayOfVideoField':
+    case BlockComponents.arrayOfVideo:
       if (!(props.description.description.header.name in parentModelToInit)) {
         parentModelToInit[props.description.description.header.name] = [];
       }

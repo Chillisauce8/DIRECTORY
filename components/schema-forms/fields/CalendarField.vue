@@ -1,9 +1,9 @@
 <template>
-  <DynamicComponent :componentName="vm.componentName"
+  <ComponentRender :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="fakeModel" @onModelChange="onModelChange($event)">
-  </DynamicComponent>
+  </ComponentRender>
 </template>
 
 
@@ -28,10 +28,7 @@ const emits = defineEmits<BaseControlEmits>();
 const {vm, sharedFunctions} = useBaseControl(props, emits);
 
 
-vm.componentName = vm.componentName || 'Calendar';
-
 const componentProperties = {
-  ...props.description,
   dateFormat: "D dd M yy",
   showIcon: true,
   iconDisplay: "input",
@@ -39,6 +36,9 @@ const componentProperties = {
   maxDate: props.description.maximum,
   manualInput: false,
   showButtonBar: true,
+  hourFormat: "24",
+  timeOnly: false,
+  ...props.description,
 };
 
 
@@ -131,12 +131,20 @@ function correctExistingValue() {
   if (!isString(vm.model) && !isDate(vm.model)) {
     vm.model = null;
   } else {
+
+    if (props.description.timeOnly) {
+      const timeValue = dateHelper.parseTime(vm.model);
+      if (timeValue) {
+        vm.model = dateHelper.inputTimeFormat(timeValue);
+      }
+    }
+
     correctExistingValueBase();
   }
 }
 
 function _prepareMinMaxValues() {
-  if (props.description.formType === 'date') {
+  if (props.description.component === 'Calendar') {
     if (props.description['minimumDate']) {
       props.description.minimum = _parseDateString(props.description['minimumDate']);
     }

@@ -1,8 +1,8 @@
 <template>
-  <DynamicComponent :componentName="vm.componentName"
+  <ComponentRender :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :model="valueForReadonlyInput">
-  </DynamicComponent>
+  </ComponentRender>
 </template>
 
 
@@ -23,7 +23,7 @@ const {vm, sharedFunctions} = useBaseControl(props, emits);
 
 
 if (!vm.componentName) {
-  if (props.description.formType === 'checkbox') {
+  if (props.description.component === 'Checkbox') {
     vm.componentName = "Checkbox";
   } else {
     vm.componentName = 'InputText';

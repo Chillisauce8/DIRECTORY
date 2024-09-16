@@ -1,9 +1,9 @@
 <template>
-  <DynamicComponent :componentName="vm.componentName"
+  <ComponentRender :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
-                   :model="vm.model" @onModelChange="onModelChange($event)">
-  </DynamicComponent>
+                   :model="vm.model" @onModelChange="onModelChangeDebounced($event)">
+  </ComponentRender>
 </template>
 
 <script setup lang="ts">
@@ -14,11 +14,10 @@ import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
-import { required, minLength, maxLength } from '@vuelidate/validators'
+import { required, minLength, maxLength, email, url } from '@vuelidate/validators'
 import { patternValidator } from '~/service/forms-validators';
 import { debounce } from '~/service/utils';
 import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
-// @ts-ignore
 import { getCurrentInstance } from 'vue';
 import { isDate } from '~/service/utils';
 import { DateHelper } from '~/service/date-helper';
@@ -62,6 +61,15 @@ const validateRules = computed(() => {
       pattern: patternValidator(new RegExp(props.description.pattern, 'gi')),
     },
   };
+
+  if (props.description.type === 'email') {
+    result['model']['email'] = email;
+  }
+
+  if (props.description.type === 'url') {
+    result['model']['url'] = url;
+  }
+
 
   if (props.description.required) {
     result['model']['required'] = required;
@@ -115,7 +123,6 @@ function onModelChange(value: any) {
   emits('modelChange', vm.model);
 }
 
-
 const onModelChangeDebounced = debounce(onModelChange, 1000);
 
 function correctExistingValue() {
@@ -124,6 +131,10 @@ function correctExistingValue() {
   } else {
     vm.model = vm.model.trim();
 
+    if (props.description.type === 'email') {
+      vm.model = vm.model ? vm.model.toLowerCase() : '';
+    }
+
     if (vm.model.length === 0) {
       vm.model = undefined;
     } else {
@@ -131,7 +142,6 @@ function correctExistingValue() {
     }
   }
 }
-
 
 function getDefaultValue(): any {
   const defaultValue = getDefaultValueBase();
@@ -164,12 +174,20 @@ function _parseDateString(value: string): Date|undefined {
   }
 }
 
+function correctModelBeforeSet(value: any) {
+  if (props.description.type === 'email') {
+    return value ? value.toLowerCase() : '';
+  }
 
+  return value;
+}
 
 sharedFunctions.initField = initField;
 sharedFunctions.setModel = setModel;
 sharedFunctions.correctExistingValue = correctExistingValue;
+sharedFunctions.correctModelBeforeSet = correctModelBeforeSet;
 sharedFunctions.getDefaultValue = getDefaultValue;
+
 
 
 </script>

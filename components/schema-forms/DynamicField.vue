@@ -1,17 +1,18 @@
 <template>
-  <div class="field"
-       v-if="initDone && props.noWrapper"
-       v-show="!props.description.xHideValue">
+
+  <div class="field" v-if="initDone && props.noWrapper" v-show="!props.description.xHideValue">
+
     <component :is="componentInstance"
                :description="props.description" :context="vm.context"
                :model="vm.model" @modelChange="onModelChange($event)"
-               @initDone="onControlInitDone($event)">
+               @initDone="onDynamicComponentInitDone($event)">
     </component>
     <slot></slot>
   </div>
 
   <div v-else-if="initDone && !props.noWrapper"
-       :class="['field-wrapper', prepareClasses()]"
+       class="field-wrapper"
+       :class="prepareClasses"
        v-show="!props.description.xHideValue"
        :id="props.index == undefined ? props.description.id : null">
 
@@ -21,7 +22,7 @@
       <component :is="componentInstance"
                  :description="props.description" :context="vm.context"
                  :model="vm.model" @modelChange="onModelChange($event)"
-                 @initDone="onControlInitDone($event)">
+                 @initDone="onDynamicComponentInitDone($event)">
       </component>
       <slot></slot>
     </div>
@@ -39,20 +40,15 @@ import type {
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 
 
-const EmailField = resolveComponent('EmailField');
-const TextareaField = resolveComponent('TextareaField');
 const TextField = resolveComponent('TextField');
 const NumberField = resolveComponent('NumberField');
-const UrlField = resolveComponent('UrlField');
 const CheckboxField = resolveComponent('CheckboxField');
 const ChipsField = resolveComponent('ChipsField');
-const SelectField = resolveComponent('SelectField');
+const DropdownField = resolveComponent('DropdownField');
 const MultiselectField = resolveComponent('MultiselectField');
-const NumberChipsField = resolveComponent('NumberChipsField');
-const AutocompleteField = resolveComponent('AutocompleteField');
+const AutocompleteField = resolveComponent('AutoCompleteField');
 const ReadonlyField = resolveComponent('ReadonlyField');
-const DateField = resolveComponent('DateField');
-const TimeTwentyFourField = resolveComponent('TimeTwentyFourField');
+const CalendarField = resolveComponent('CalendarField');
 const UploadField = resolveComponent('UploadField');
 
 
@@ -67,7 +63,7 @@ const props = defineProps<DynamicControlProps>();
 const emits = defineEmits<BaseControlEmits>();
 
 
-const controlType = ref();
+const componentName = ref();
 const innerComponentName = ref();
 
 
@@ -75,7 +71,7 @@ const { vm, sharedFunctions, initDone } = useBaseControl(props, emits);
 const doOnMountedBase = sharedFunctions.doOnMounted;
 
 function doOnMounted() {
-    controlType.value = calculateControlType();
+    componentName.value = calculateComponentName();
 
     const instance = getCurrentInstance();
 
@@ -92,78 +88,25 @@ function initField() {
 }
 
 const componentInstance = computed(() => {
-  switch(controlType.value) {
-    case 'readonly': return ReadonlyField;
-    case 'date': return DateField;
-    case 'time': return TimeTwentyFourField;
-    case 'time24': return TimeTwentyFourField;
-    case 'text': return TextField;
-    case 'textarea': return TextareaField;
-    case 'number': return NumberField;
-    case 'email': return EmailField;
-    case 'checkbox': return CheckboxField;
-    case 'url': return UrlField;
-    case 'select': return SelectField;
-    case 'multiselect': return MultiselectField;
-    case 'chips': return ChipsField;
-    case 'number-chips': return NumberChipsField;
-    case 'autocomplete': return AutocompleteField;
-    case 'upload': return UploadField;
+  switch(componentName.value) {
+    case 'Readonly': return ReadonlyField;
+    case 'AutoComplete': return AutocompleteField;
+    case 'Upload': return UploadField;
+    case 'InputText': return TextField;
+    case 'Textarea': return TextField;
+    case 'InputNumber': return NumberField;
+    case 'Calendar': return CalendarField;
+    case 'InputSwitch': return CheckboxField;
+    case 'Checkbox': return CheckboxField;
+    case 'Chips': return ChipsField;
+    case 'Dropdown': return DropdownField;
+    case 'MultiSelect': return MultiselectField;
 
-    default: return 'TextField';
+    default: return TextField;
   }
 });
 
-function processControlTypeChanges() {
-    //
-}
-
-function onModelChange($event: any) {
-    vm.model = $event;
-    emits('modelChange', $event);
-}
-
-function onControlInitDone($event: any) {
-  innerComponentName.value = $event.componentName;
-  emits('initDone', $event);
-}
-
-function needXProcessTheField(): boolean {
-    return true;
-}
-
-function processXFeatures() {
-    controlType.value = calculateControlType();
-    return null;
-}
-
-function calculateControlType(): string {
-    if (sharedFunctions.isReadonly()) {
-        return 'readonly';
-    }
-
-    if (props.description.xEnumValues || props.description.xOptionsValues) {
-        if (props.description.formType !== 'multiselect' && props.description.formType !== 'autocomplete') {
-            return 'select';
-        }
-    }
-
-    if (props.description.xUpload) {
-        return 'upload';
-    }
-
-    return props.description.formType;
-}
-
-function isValid(): boolean {
-    return true;
-}
-
-function touch() {
-    //
-}
-
-function prepareClasses(): string {
+const prepareClasses = computed(() => {
   const result = [];
 
   if (props.description.class) {
@@ -177,7 +120,57 @@ function prepareClasses(): string {
   }
 
   return result.join(' ');
+});
+
+function processControlTypeChanges() {
+    //
 }
+
+function onModelChange($event: any) {
+    vm.model = $event;
+    emits('modelChange', $event);
+}
+
+function onDynamicComponentInitDone($event: any) {
+  innerComponentName.value = $event.componentName;
+  emits('initDone', $event);
+}
+
+function needXProcessTheField(): boolean {
+    return true;
+}
+
+function processXFeatures() {
+    componentName.value = calculateComponentName();
+    return null;
+}
+
+function calculateComponentName(): string {
+    if (sharedFunctions.isReadonly()) {
+        return 'Readonly';
+    }
+
+    if (props.description.xEnumValues || props.description.xOptionsValues) {
+        if (props.description.component !== 'Multiselect' && props.description.component !== 'Autocomplete') {
+            return 'Dropdown';
+        }
+    }
+
+    if (props.description.xUpload) {
+        return 'Upload';
+    }
+
+    return props.description.component;
+}
+
+function isValid(): boolean {
+    return true;
+}
+
+function touch() {
+    //
+}
+
 
 sharedFunctions.doOnMounted = doOnMounted;
 sharedFunctions.initField = initField;

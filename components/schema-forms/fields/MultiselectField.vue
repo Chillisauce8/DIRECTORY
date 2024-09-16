@@ -1,10 +1,10 @@
 <template>
-  <DynamicComponent :componentName="vm.componentName"
+  <ComponentRender :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)"
                    v-if="componentProperties">
-  </DynamicComponent>
+  </ComponentRender>
 </template>
 
 
@@ -33,8 +33,6 @@ let {
 } = baseFieldExport;
 
 const autocompleteItems = ref();
-
-vm.componentName = vm.componentName || 'MultiSelect';
 
 let componentProperties = ref();
 

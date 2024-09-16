@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 
-import FieldError from '~/components/schema-forms/fields/FieldError.vue';
+import FieldError from '~/components/schema-forms/FieldError.vue';
 
 
 interface SchemaComponentProps {

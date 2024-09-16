@@ -1,11 +1,11 @@
 import { schemaRelatorsFetchService, SchemaRelatorsFetchService } from './schemaRelatorsFetch.service';
 import { SchemaParser, schemaParserFactory, SchemaParserFactory } from './schemaParser.factory';
-import {SchemaFormFieldTypes} from './schemaFormFieldTypes';
+import {BlockComponents} from './blockComponents';
 import { groupBy, isUndefined } from '../utils';
 
 
-export interface ISchemaFormField {
-  formDirective: SchemaFormFieldTypes;
+export interface BlockDescription {
+  blockComponent: BlockComponents;
   description: any;
 }
 
@@ -146,8 +146,6 @@ export class SchemaFormsBuildHelper {
     result['showTitle'] = showTitle;
 
     return result;
-
-    // return {...result, showTitle: showTitle};
   }
 
   _needAddToRelatorsBulkRequest(description: any): boolean {
@@ -217,85 +215,65 @@ export class SchemaFormsBuildHelper {
     return result;
   };
 
-  autodetectFieldType(path: string): SchemaFormFieldTypes|null {
+  autodetectBlockComponent(path: string): BlockComponents|null {
     const item = this.schemaParser.getItem(path);
 
     if (item.type === 'container') {
-      return SchemaFormFieldTypes.container;
+      return BlockComponents.container;
     }
 
     if (item.type === '/container') {
-      return SchemaFormFieldTypes.containerEnd;
+      return BlockComponents.containerEnd;
     }
 
     if (!item) {
       return null;
     }
 
-    let fieldType = item['x-fieldtype'] || item['fieldType'];
-
-    if (!fieldType && item.component) {
-      if (['MultiSelect', 'Listbox', 'Chips'].includes(item.component)) {
-        fieldType = 'multiselect';
-      }
-    }
-
     if (item.type === 'object') {
-      if (fieldType === 'map') {
-        return SchemaFormFieldTypes.mapPlaceField;
+      if (item.component === 'map') {
+        return BlockComponents.map;
       }
 
       if (item.component) {
-        return SchemaFormFieldTypes.valueField;
+        return BlockComponents.value;
       }
 
       if (item._relator || item.join) {
-        return SchemaFormFieldTypes.valueField;
+        return BlockComponents.value;
       } else if (!item.properties || !Object.keys(item.properties).length) {
-        return SchemaFormFieldTypes.valueField;
+        return BlockComponents.value;
       } else {
-        return SchemaFormFieldTypes.objectField;
+        return BlockComponents.object;
       }
     } else if (item.type === 'array') {
-      if (fieldType === 'chips') {
-        return SchemaFormFieldTypes.valueField;
-      }
-
-      if (fieldType === 'multiselect') {
-        return SchemaFormFieldTypes.valueField;
-      }
-
-      if (fieldType === 'imageslist') {
-        return SchemaFormFieldTypes.arrayOfImagesField;
-      }
-
-      if (fieldType === 'videolist') {
-        return SchemaFormFieldTypes.arrayOfVideoField;
+      if (['MultiSelect', 'Listbox', 'Chips'].includes(item.component)) {
+        return BlockComponents.value;
       }
 
       if (item.items.type === 'object') {
         if (item.items._relator || item.items.join) {
-          return SchemaFormFieldTypes.arrayOfValuesField;
+          return BlockComponents.arrayOfValues;
         } else if (!item.items.properties || !Object.keys(item.items.properties).length) {
-          return SchemaFormFieldTypes.arrayOfValuesField;
+          return BlockComponents.arrayOfValues;
         }
-        return SchemaFormFieldTypes.arrayOfObjectsField;
+        return BlockComponents.arrayOfObjects;
       } else if (item.items.type === 'array') {
         return null;
       } else {
         if (item.items.enum) {
-          return SchemaFormFieldTypes.valueField;
+          return BlockComponents.value;
         } else {
-          return SchemaFormFieldTypes.arrayOfValuesField;
+          return BlockComponents.arrayOfValues;
         }
       }
     } else {
-      return SchemaFormFieldTypes.valueField;
+      return BlockComponents.value;
     }
   }
 
-  generateField(path: string, showTitles: boolean = true, readonly: boolean = false): ISchemaFormField|null {
-    const formElementType = this.autodetectFieldType(path) as SchemaFormFieldTypes;
+  generateField(path: string, showTitles: boolean = true, readonly: boolean = false): BlockDescription|null {
+    const blockComponent = this.autodetectBlockComponent(path) as BlockComponents;
 
     const item = this.schemaParser.getItem(path);
 
@@ -311,9 +289,9 @@ export class SchemaFormsBuildHelper {
       return null;
     }
 
-    const result = {formDirective: formElementType, description};
+    const result = {blockComponent: blockComponent, description};
 
-    if (SchemaFormFieldTypes.container === formElementType) {
+    if (BlockComponents.container === blockComponent) {
       result['description']['header'] = this.buildHeaderDescription(preparedPath);
       result['description']['isContainer'] = true;
       result['description']['content'] = [];
@@ -322,13 +300,12 @@ export class SchemaFormsBuildHelper {
       return null;
     }
 
-    if (SchemaFormFieldTypes.containerEnd === formElementType) {
-      const container: Object = this.internalContainers.pop();
-      return container;
+    if (BlockComponents.containerEnd === blockComponent) {
+      return this.internalContainers.pop() || null;
     }
 
-    if ([SchemaFormFieldTypes.objectField, SchemaFormFieldTypes.arrayOfObjectsField,
-      SchemaFormFieldTypes.arrayOfImagesField, SchemaFormFieldTypes.arrayOfVideoField].includes(formElementType)) {
+    if ([BlockComponents.object, BlockComponents.arrayOfObjects,
+      BlockComponents.arrayOfImages, BlockComponents.arrayOfVideo].includes(blockComponent)) {
 
       const children = this.schemaParser.getItemChildren(path);
 
@@ -350,6 +327,8 @@ export class SchemaFormsBuildHelper {
     } else {
       return result;
     }
+
+    return null;
   }
 
   async buildFormDescription(showTitles: boolean = true, readonly: boolean = false): Promise<any> {
@@ -370,19 +349,19 @@ export class SchemaFormsBuildHelper {
     for (const childName of Object.getOwnPropertyNames(children)) {
       const item = this.schemaParser.getItem(childName);
 
-      if (item.type === SchemaFormFieldTypes.container) {
+      if (item.type === BlockComponents.container) {
         const description = this.buildItemDescription(childName, showTitles, readonly);
 
         if (!description) {
           return null;
         }
 
-        const result = {formDirective: SchemaFormFieldTypes.container, description};
+        const result = {blockComponent: BlockComponents.container, description};
         result['description']['header'] = this.buildHeaderDescription(childName);
         result['description']['isContainer'] = true;
         result['description']['content'] = [];
         containerField = result;
-      } else if (item.type === SchemaFormFieldTypes.containerEnd) {
+      } else if (item.type === BlockComponents.containerEnd) {
         description.content.push(containerField);
         containerField = null;
       } else {
@@ -422,7 +401,7 @@ export class SchemaFormsBuildHelper {
 
       if (children) {
         for (const childName of Object.getOwnPropertyNames(children)) {
-          if ([SchemaFormFieldTypes.container, SchemaFormFieldTypes.containerEnd].includes(children[childName].type)) {
+          if ([BlockComponents.container, BlockComponents.containerEnd].includes(children[childName].type)) {
             continue;
           }
 

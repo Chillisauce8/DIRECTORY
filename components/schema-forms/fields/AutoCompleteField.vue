@@ -26,7 +26,7 @@ import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
-import FieldError from '~/components/schema-forms/fields/FieldError.vue';
+import FieldError from '~/components/schema-forms/FieldError.vue';
 
 
 // @ts-ignore
@@ -37,8 +37,6 @@ const emits = defineEmits<BaseFieldEmits>();
 
 const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);
 
-
-vm.componentName = 'AutoComplete';
 
 let autocompleteInitValue: any;
 const suggestions = ref([]);

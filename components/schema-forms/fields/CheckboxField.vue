@@ -1,8 +1,8 @@
 <template>
-  <DynamicComponent :componentName="vm.componentName"
+  <ComponentRender :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :model="vm.model" @onModelChange="onModelChange($event)">
-  </DynamicComponent>
+  </ComponentRender>
 </template>
 
 <script setup lang="ts">
@@ -34,8 +34,8 @@ vm = extend(vm, {
 vm.componentName = vm.componentName || 'InputSwitch';
 
 const componentProperties = {
-  ...props.description,
   binary: true,
+  ...props.description,
 };
 
 const correctExistingValueBase = sharedFunctions.correctExistingValue;

@@ -1,5 +1,4 @@
 <template>
-  <div class="schema-form-upload-control">
     <FileUpload mode="basic" :name="props.description.name"
                 class="file-input"
                 customUpload @uploader="customUploader"
@@ -25,7 +24,6 @@
     </div>
 
     <FieldError class="form-text-error" :vuelidate-field="$v['model']"></FieldError>
-  </div>
 </template>
 
 
@@ -54,7 +52,6 @@ const {
   vm,
   sharedFunctions,
 } = baseFieldExport;
-
 
 
 const validateRules = computed(() => {

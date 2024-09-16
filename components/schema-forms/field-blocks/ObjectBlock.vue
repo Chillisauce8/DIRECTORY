@@ -4,26 +4,25 @@
          v-show="!props.description.xHideValue"
          :id="props.description.id">
 
-        <template v-for="(line, lineIndex) in vm.lines" v-show="!isAllLineHidden(line)">
+      <h1 class="title" v-if="props.description.header.title">
+        {{ sharedFunctions.getTitle() }}
+        <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()"
+           v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
+      </h1>
 
-          <h1 class="title" v-if="props.description.header.title">
-            {{ sharedFunctions.getTitle() }}
-            <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()"
-               v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
-          </h1>
-
+      <template v-for="(line, lineIndex) in vm.lines" v-show="!isAllLineHidden(line)">
           <div class="field-block">
             <template v-for="item in line">
                 <template v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
-                    <DynamicField v-if="item.formDirective === 'valueField'"
+                    <DynamicField v-if="item.blockComponent === BlockComponents.value"
                                     :description="item.description" :model="vm.model[item.description.name]"
                                     @modelChange="onModelChange(item.description.name, $event)"
                                     :context="vm.context">
                     </DynamicField>
 
-                    <DynamicFieldBlock v-if="item.formDirective !== 'valueField'"
+                    <DynamicFieldBlock v-if="item.blockComponent !== BlockComponents.value"
                                   :description="item" :context="vm.context"
-                                  :model="vm.model" @modelChange="onModelChange(undefined, $event)">
+                                  :model="vm.model" @modelChange="onModelChange(null, $event)">
                     </DynamicFieldBlock>
                 </template>
             </template>
@@ -41,6 +40,7 @@ import { isObject } from '~/service/utils';
 import { extend } from 'vue-extend-reactive';
 import DynamicFieldBlock from '~/components/schema-forms/DynamicFieldBlock.vue';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
+import { BlockComponents } from '~/service/schema-forms/blockComponents';
 
 // @ts-ignore
 const props = defineProps<BaseFieldProps>();
@@ -116,7 +116,7 @@ function shouldShowTitle(lineIndex: number): boolean {
     return firstDisplayedLineIndex === lineIndex;
 }
 
-function onModelChange(descriptionName: string, $event: any) {
+function onModelChange(descriptionName: string|null, $event: any) {
     if (descriptionName) {
         const modelClone = { ...vm.model };
         modelClone[descriptionName] = $event;

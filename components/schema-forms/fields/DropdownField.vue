@@ -1,10 +1,10 @@
 <template>
-  <DynamicComponent :componentName="vm.componentName"
+  <ComponentRender :componentName="vm.componentName"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)"
                    v-if="componentProperties">
-  </DynamicComponent>
+  </ComponentRender>
 </template>
 
 <script setup lang="ts">
@@ -25,8 +25,6 @@ const emits = defineEmits<BaseControlEmits>();
 
 
 const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);
-
-vm.componentName = vm.componentName || 'Dropdown';
 
 let componentProperties = ref();
 
