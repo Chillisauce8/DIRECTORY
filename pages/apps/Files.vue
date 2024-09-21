@@ -164,7 +164,7 @@ const customUploader = async (event: {files: File[]}) => {
 
         const data: any = {
           model: {
-            name: file.name,
+            name: file.customName,
             originalType,
             type,
             extension,
@@ -255,11 +255,11 @@ const deleteSelectedFiles = async () => {
 //   return `${formattedSize} ${sizes[i]}`;
 // };
 
-// const onRemoveTemplatingFile = (file: File, removeFileCallback: Function, index: number) => {
-//   removeFileCallback(index);
-//   totalSize.value -= parseInt(formatSize(file.size));
-//   totalSizePercent.value = totalSize.value / 10;
-// };
+const onRemoveTemplatingFile = (file: File, removeFileCallback: Function, index: number) => {
+  removeFileCallback(index);
+  // totalSize.value -= parseInt(formatSize(file.size));
+  // totalSizePercent.value = totalSize.value / 10;
+};
 
 
 const initFilters = () => {
@@ -281,6 +281,20 @@ async function updateFile() {
   return saveDataFunc(dataToSave);
 }
 
+const formatSize = (bytes) => {
+  const k = 1024;
+  const dm = 3;
+  const sizes = $primevue.config.locale.fileSizeTypes;
+
+  if (bytes === 0) {
+    return `0 ${sizes[0]}`;
+  }
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+
+  return `${formattedSize} ${sizes[i]}`;
+};
 
 </script>
 
@@ -303,7 +317,55 @@ async function updateFile() {
                         <FileUpload mode="advanced" :multiple="true" :previewWidth="100" :maxFileSize="100000000"
                                     label="Import" chooseLabel="Import" class="mr-2 inline-block"
                                     customUpload @uploader="customUploader"
-                        />
+                        >
+                          <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
+                            <div class="flex flex-col gap-8 pt-4">
+                              <div v-if="files.length > 0">
+                                <h5>Pending</h5>
+                                <div class="flex flex-wrap gap-4">
+                                  <div v-for="(file, index) of files" :key="file.name + file.type + file.size"
+                                       class="p-8 rounded-border flex flex-col border border-surface items-center gap-4"
+                                       :set="file.customName = file.name.split('.')[0]">
+                                    <div>
+                                      <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                    </div>
+
+                                    <FloatLabel>
+                                      <InputText :id="file.name + file.type + file.size" type="text" v-model="file.customName" required/>
+                                      <label :for="file.name + file.type + file.size">File Name</label>
+                                    </FloatLabel>
+
+                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">
+                                      {{ file.name }}
+                                    </span>
+
+                                    <div>{{ formatSize(file.size) }}</div>
+
+                                    <Badge value="Pending" severity="warn" />
+                                    <Button icon="pi pi-times"
+                                            @click="onRemoveTemplatingFile(file, removeFileCallback, index)"
+                                            outlined rounded severity="danger" />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div v-if="uploadedFiles.length > 0">
+                                <h5>Completed</h5>
+                                <div class="flex flex-wrap gap-4">
+                                  <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                    <div>
+                                      <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                    </div>
+                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                    <div>{{ formatSize(file.size) }}</div>
+                                    <Badge value="Completed" class="mt-4" severity="success" />
+                                    <Button icon="pi pi-times" @click="removeUploadedFileCallback(index)" outlined rounded severity="danger" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </template>
+                        </FileUpload>
                         <!--    <Button label="Export" icon="pi pi-upload" severity="help" @click="exportCSV($event)" /> -->
                     </template>
                 </Toolbar>
