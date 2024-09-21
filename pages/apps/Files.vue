@@ -4,7 +4,7 @@ import { ref, onMounted } from 'vue';
 import { usePrimeVue } from 'primevue/config';
 import { ProductService } from '~/service/ProductService';
 import { useToast } from 'primevue/usetoast';
-import { fileHelperService } from '~/service/file/file-helper-service';
+import { fileHelperService, FileType } from '~/service/file/file-helper-service';
 import EXIF from '~/service/file/exif';
 import { fileUploaderService } from '~/service/file/file-uploader-service';
 import { filesService } from '~/service/file/files-service';
@@ -137,6 +137,11 @@ const findIndexById = (id: number) => {
     return index;
 };
 
+// for aspect ratio calculation
+function gcd (a, b) {
+  return (b == 0) ? a : gcd (b, a%b);
+}
+
 const customUploader = async (event: {files: File[]}) => {
 
   for (const file of event.files) {
@@ -148,12 +153,30 @@ const customUploader = async (event: {files: File[]}) => {
 
       const medialProperties = fileHelperService.getMediaFileProperties(file);
 
+      let imgEl;
       let imageInfo: any = {};
-      if (medialProperties.aspectRatio) {
-        imageInfo = {
-          width: medialProperties.width,
-          height: medialProperties.height,
-          aspectRatio: medialProperties.aspectRatio,
+
+      if (type === FileType.Image) {
+        imgEl = document.getElementById('img-' + file.name + file.type + file.size);
+
+        if (medialProperties.aspectRatio) {
+          imageInfo = {
+            width: medialProperties.width,
+            height: medialProperties.height,
+            aspectRatio: medialProperties.aspectRatio,
+          }
+        } else if (imgEl) {
+          const w = imgEl.naturalWidth;
+          const h = imgEl.naturalHeight;
+          const r = gcd (w, h);
+
+          const aspectRation = w/r + ":" + h/r;
+
+          imageInfo = {
+            width: w,
+            height: h,
+            aspectRation
+          }
         }
       }
 
@@ -327,12 +350,14 @@ const formatSize = (bytes) => {
                                        class="p-8 rounded-border flex flex-col border border-surface items-center gap-4"
                                        :set="file.customName = file.name.split('.')[0]">
                                     <div>
-                                      <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                      <img role="presentation" :alt="file.name" :src="file.objectURL"
+                                           :id="'img-' + file.name + file.type + file.size"
+                                           width="100" height="50" />
                                     </div>
 
                                     <FloatLabel>
-                                      <InputText :id="file.name + file.type + file.size" type="text" v-model="file.customName" required/>
-                                      <label :for="file.name + file.type + file.size">File Name</label>
+                                      <InputText :id="'name-' + file.name + file.type + file.size" type="text" v-model="file.customName" required/>
+                                      <label :for="'name-' + file.name + file.type + file.size">File Name</label>
                                     </FloatLabel>
 
                                     <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">
