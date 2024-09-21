@@ -348,21 +348,6 @@ const formatSize = (bytes) => {
                                   </div>
                                 </div>
                               </div>
-
-                              <div v-if="uploadedFiles.length > 0">
-                                <h5>Completed</h5>
-                                <div class="flex flex-wrap gap-4">
-                                  <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
-                                    <div>
-                                      <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
-                                    </div>
-                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
-                                    <div>{{ formatSize(file.size) }}</div>
-                                    <Badge value="Completed" class="mt-4" severity="success" />
-                                    <Button icon="pi pi-times" @click="removeUploadedFileCallback(index)" outlined rounded severity="danger" />
-                                  </div>
-                                </div>
-                              </div>
                             </div>
                           </template>
                         </FileUpload>
