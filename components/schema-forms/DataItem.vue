@@ -16,7 +16,7 @@
   </template>
   <template v-else-if="props.function === 'read'">
     <template v-if="targetItem || targetItems">
-      <slot :item="targetItem" :items="targetItems"></slot>
+      <slot :item="targetItem" :items="targetItems" :schema="schemaItem"></slot>
     </template>
   </template>
 </template>
@@ -35,6 +35,7 @@ interface FieldProps {
   id?: string;
   title?: string;
   subtitle?: string;
+  schema?: boolean;
 }
 
 // @ts-ignore
@@ -45,6 +46,7 @@ const emits = defineEmits(['mounted', 'changed']);
 const isCreateUpdate = ['create', 'update'].includes(props.function);
 const isReadSingle = props.function === 'read' && !!props.id;
 const isReadMulti = props.function === 'read' && !props.id;
+const needDefinition = props.schema === true;
 
 const collectionName = props.collection;
 
@@ -55,6 +57,7 @@ let dataToSave: any;
 
 const targetItem = ref(null);
 const targetItems = ref(null);
+const schemaItem = ref(null);
 
 sharedFunctions.getSchemaName = () => {
   return collectionName;
@@ -96,6 +99,13 @@ sharedFunctions.getTarget = async (): Promise<any> => {
   return {};
 }
 
+const getDefinition = async (): Promise<any> => {
+  return httpService.get(`/api/definition/type/collectionName`)
+    .then((response: any) => {
+      return response.data;
+    });
+}
+
 sharedFunctions.buildFormDescription = async (showTitles=true): Promise<any> => {
   const readonly = props.function === 'read';
   return vm.schemaFormsBuildHelper.buildFormDescription(showTitles, readonly);
@@ -105,20 +115,25 @@ sharedFunctions.isEditMode = () => {
   return !!props.id;
 }
 
-onMounted(() => {
+onMounted(async () => {
   emits('mounted', {hooks: {saveRawFunc: saveRaw, deleteRawFunc: deleteRaw}});
 
   if (isCreateUpdate) {
     sharedFunctions.doOnMounted();
-  } else if (isReadSingle) {
-    httpService.get(`/api/get/${collectionName}/${props.id}`, {
+  } else {
+    if (needDefinition) {
+      schemaItem.value = await getDefinition();
+    }
+
+    if (isReadSingle) {
+      httpService.get(`/api/get/${collectionName}/${props.id}`, {
         h: {$fields: props.fields}
       })
       .then((response: any) => {
         targetItem.value = response.data;
       });
-  } else if (isReadMulti) {
-    httpService.get(`/api/query`, {
+    } else if (isReadMulti) {
+      httpService.get(`/api/query`, {
         collection: collectionName,
         q: props.find,
         h: {$fields: props.fields},
@@ -126,6 +141,7 @@ onMounted(() => {
       .then((response: any) => {
         targetItems.value = response.data;
       });
+    }
   }
 });
 
