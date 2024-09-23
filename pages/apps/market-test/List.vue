@@ -11,19 +11,6 @@ function onDataItemMounted(result: {hooks: any}) {
 }
 
 
-function prepareData(items: any[], schema: any) {
-  const result: any = [];
-
-  const spec = schema.spec;
-
-  for (const specItem in spec) {
-
-  }
-
-
-  return result;
-}
-
 
 //
 // const onDeleteItem = async (item: any) => {
@@ -50,22 +37,26 @@ function prepareData(items: any[], schema: any) {
 
 <template>
   <div class="card">
-    <h1>Markets</h1>
+    <h1>Markets TEST</h1>
   </div>
 
   <div class="card">
     <DataItem function="read" collection="markets"
               :find="{}"
               :schema="true"
-              v-slot="{items, schema}"
+              v-slot="{items}"
               @mounted="onDataItemMounted">
 
-      <DataTable :value="prepareData(items, schema)" tableStyle="min-width: 50rem">
-        <Column field="code" header="Code"></Column>
-        <Column field="name" header="Name"></Column>
-        <Column field="category" header="Category"></Column>
-        <Column field="quantity" header="Quantity"></Column>
-      </DataTable>
+      <template v-for="item in items">
+        <p> {{item.name.schema.title}}:  {{item.name.value}}   </p>
+      </template> (edited)
+
+      <!--      <DataTable :value="items" tableStyle="min-width: 50rem">-->
+<!--        <Column field="code" header="Code"></Column>-->
+<!--        <Column field="name" header="Name"></Column>-->
+<!--        <Column field="category" header="Category"></Column>-->
+<!--        <Column field="quantity" header="Quantity"></Column>-->
+<!--      </DataTable>-->
 
     </DataItem>
   </div>

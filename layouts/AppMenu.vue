@@ -24,6 +24,11 @@ const model = ref([
                 to: '/new/carddesign'
             },
             {
+              label: 'Market test',
+              icon: 'pi pi-fw pi-check-square',
+              to: '/apps/market-test'
+            },
+            {
                 label: 'Task List to DB',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/apps/tasklisttest'

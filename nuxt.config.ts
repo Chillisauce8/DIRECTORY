@@ -223,6 +223,11 @@ export default defineNuxtConfig({
         ]
       });
       pages.push({
+        name: 'market-test',
+        path: '/apps/market-test',
+        file: '@/pages/apps/market-test/List.vue'
+      });
+      pages.push({
         name: 'tasklist',
         path: '/apps/tasklist',
         file: '@/pages/apps/tasklist/Index.vue'

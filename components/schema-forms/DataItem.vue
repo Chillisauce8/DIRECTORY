@@ -46,7 +46,7 @@ const emits = defineEmits(['mounted', 'changed']);
 const isCreateUpdate = ['create', 'update'].includes(props.function);
 const isReadSingle = props.function === 'read' && !!props.id;
 const isReadMulti = props.function === 'read' && !props.id;
-const needDefinition = props.schema === true;
+const needSchema = props.schema === true;
 
 const collectionName = props.collection;
 
@@ -100,7 +100,7 @@ sharedFunctions.getTarget = async (): Promise<any> => {
 }
 
 const getDefinition = async (): Promise<any> => {
-  return httpService.get(`/api/definition/type/collectionName`)
+  return httpService.get(`/api/sys/definitions/${props.collection}`)
     .then((response: any) => {
       return response.data;
     });
@@ -121,26 +121,32 @@ onMounted(async () => {
   if (isCreateUpdate) {
     sharedFunctions.doOnMounted();
   } else {
-    if (needDefinition) {
+    if (needSchema) {
       schemaItem.value = await getDefinition();
     }
 
     if (isReadSingle) {
-      httpService.get(`/api/get/${collectionName}/${props.id}`, {
+      const response = await httpService.get(`/api/get/${collectionName}/${props.id}`, {
         h: {$fields: props.fields}
-      })
-      .then((response: any) => {
-        targetItem.value = response.data;
       });
+
+      if (needSchema) {
+        targetItems.value = mergeSchemaAndItem(schemaItem.value, response.data);
+      } else {
+        targetItem.value = response.data;
+      }
     } else if (isReadMulti) {
-      httpService.get(`/api/query`, {
+      const response = await httpService.get(`/api/query`, {
         collection: collectionName,
         q: props.find,
         h: {$fields: props.fields},
-      })
-      .then((response: any) => {
-        targetItems.value = response.data;
       });
+
+      if (needSchema) {
+        targetItems.value = response.data.map((nodeItem: any) => mergeSchemaAndItem(schemaItem.value, nodeItem));
+      } else {
+        targetItems.value = response.data;
+      }
     }
   }
 });
@@ -164,6 +170,49 @@ async function saveRaw(dataToSave: any) {
 
 async function deleteRaw(dataId: string) {
   return sharedFunctions.deleteRaw(dataId);
+}
+
+function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
+  let value: any;
+
+  if (schemaPart._type === 'collections') {
+    value = {};
+    for (const key in schemaPart.properties) {
+      if (!nodePart[key]) {
+        continue;
+      }
+
+      value[key] = mergeSchemaAndItem(schemaPart.properties[key], nodePart[key]);
+    }
+
+    return value;
+  } else if (schemaPart.type === 'object') {
+    value = {};
+    for (const key in schemaPart.properties) {
+      if (!nodePart[key]) {
+        continue;
+      }
+
+      value[key] = mergeSchemaAndItem(schemaPart.properties[key], nodePart[key]);
+    }
+
+    return {
+      value,
+      schema: schemaPart,
+    }
+  } else if (schemaPart.type === 'array') {
+    value = [];
+
+    if (nodePart?.length) {
+      for (const arrayItem of nodePart) {
+        value.push(mergeSchemaAndItem(schemaPart['items'], arrayItem));
+      }
+    }
+
+    return {value, schema: schemaPart};
+  } else {
+    return {value: nodePart, schema: schemaPart};
+  }
 }
 
 </script>
