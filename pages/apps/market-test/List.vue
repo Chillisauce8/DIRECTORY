@@ -1,38 +1,6 @@
 <script setup lang="ts">
 
 
-let saveRawFunc: (data: any) => Promise<void>;
-let deleteRawFunc: (dataId: string) => Promise<void>;
-
-
-function onDataItemMounted(result: {hooks: any}) {
-  saveRawFunc = result.hooks?.saveRawFunc;
-  deleteRawFunc = result.hooks?.deleteRawFunc;
-}
-
-
-
-//
-// const onDeleteItem = async (item: any) => {
-//   await deleteRawFunc(deletedTask._doc);
-//   reloadData();
-// };
-
-// const openEditDialog = (item: any) => {
-//   dialogConfig.value.visible = true;
-//   dialogConfig.value.header = 'Edit Task';
-//
-//   selectedTask.value = task;
-// };
-//
-// function reloadData() {
-//   dataLoaded.value = false;
-//
-//   setTimeout(() => {
-//     dataLoaded.value = true;
-//   }, 100);
-// }
-
 </script>
 
 <template>
@@ -44,8 +12,7 @@ function onDataItemMounted(result: {hooks: any}) {
     <DataItem function="read" collection="markets"
               :find="{}"
               :schema="true"
-              v-slot="{items}"
-              @mounted="onDataItemMounted">
+              v-slot="{items}">
 
       <template v-for="item in items">
         <p> {{item.name.schema.title}}:  {{item.name.value}}   </p>
