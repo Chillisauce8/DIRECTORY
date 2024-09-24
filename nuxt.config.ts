@@ -4,13 +4,7 @@ import environment from './environment';
 
 export default defineNuxtConfig({
 //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
-  modules: [
-    '@nuxt/fonts',
-    '@pinia/nuxt',
-    '@vueuse/nuxt',
-    'nuxt-delay-hydration',
-    'nuxt-primevue',
-  ],
+  modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration', 'nuxt-primevue', '@nuxt/image'],
   primevue: {
     cssLayerOrder: 'reset, primevue',
     options: { ripple: true },
@@ -36,6 +30,11 @@ export default defineNuxtConfig({
    "@/assets/styles.scss",
     "primeicons/primeicons.css"
  ],
+ image: {
+  cloudinary: {
+    baseURL: 'https://res.cloudinary.com/<your-cloud-name>/image/upload/'
+  }
+},
   app: {
     // Added below for page transitions
     pageTransition: { name: 'page', mode: 'out-in' },

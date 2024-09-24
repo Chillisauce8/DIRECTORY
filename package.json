@@ -49,6 +49,7 @@
     "@babel/eslint-parser": "^7.18.9",
     "@nuxt/devtools": "^1.0.8",
     "@nuxt/eslint-config": "^0.2.0",
+    "@nuxt/image": "^1.8.0",
     "@types/node": "^18",
     "@vitejs/plugin-vue": "^5.0.4",
     "@vueuse/core": "^10.11.0",

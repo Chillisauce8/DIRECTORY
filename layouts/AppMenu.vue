@@ -24,9 +24,14 @@ const model = ref([
                 to: '/new/carddesign'
             },
             {
-              label: 'Market test',
-              icon: 'pi pi-fw pi-check-square',
-              to: '/apps/market-test'
+                label: 'Test Nuxt Image',
+                icon: 'pi pi-fw pi-image',
+                to: '/new/carddesign2'
+            },
+            {
+                label: 'Market test',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/apps/market-test'
             },
             {
                 label: 'Task List to DB',
