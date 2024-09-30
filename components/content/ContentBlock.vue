@@ -2,7 +2,7 @@
     <section class="content-block">
         <div class="content" :class="layoutClass">
             <div class="left">
-                <image-wrapper :images="images" :class="imageClass" loading="lazy" :width="props.width" :height="props.height" dpr="2" />
+                <swp-picture :images="images" :class="imageClass" loading="lazy" widths="400:1200" sizes="40vw" />
             </div>
             <div class="right">
                 <h2 :class="titleClass">{{ title }}</h2>

@@ -12,19 +12,19 @@ const cors = ref([
     {
         images: [
             {
-                cloudinaryId: '6636566a01ec8110073b9bfb',
+                id: '6636566a01ec8110073b9bfb',
                 alt: 'BMW 1'
             },
             {
-                cloudinaryId: '663657aa01ec8110073b9c27',
+                id: '663657aa01ec8110073b9c27',
                 alt: 'BMW 2'
             },
             {
-                cloudinaryId: '663657cd87fa1f24532a355e',
+                id: '663657cd87fa1f24532a355e',
                 alt: 'BMW 3'
             },
             {
-                cloudinaryId: '663657eb87fa1f24532a3568',
+                id: '663657eb87fa1f24532a3568',
                 alt: 'BMW 4'
             }
         ],
@@ -36,19 +36,19 @@ const cors = ref([
     {
         images: [
             {
-                cloudinaryId: '66365818e70ac51006d4d762',
+                id: '66365818e70ac51006d4d762',
                 alt: 'Cobra 1'
             },
             {
-                cloudinaryId: '6636584c44688d10012094ee',
+                id: '6636584c44688d10012094ee',
                 alt: 'Cobra 2'
             },
             {
-                cloudinaryId: '6636586de70ac51006d4d787',
+                id: '6636586de70ac51006d4d787',
                 alt: 'Cobra 3'
             },
             {
-                cloudinaryId: '6636589087fa1f24532a3582',
+                id: '6636589087fa1f24532a3582',
                 alt: 'Cobra 4'
             }
         ],
@@ -60,19 +60,19 @@ const cors = ref([
     {
         images: [
             {
-                cloudinaryId: '6636591d44688d10012094fd',
+                id: '6636591d44688d10012094fd',
                 alt: 'Merc 1'
             },
             {
-                cloudinaryId: '6636595944688d1001209505',
+                id: '6636595944688d1001209505',
                 alt: 'Merc 2'
             },
             {
-                cloudinaryId: '6636597ae70ac51006d4d7dd',
+                id: '6636597ae70ac51006d4d7dd',
                 alt: 'Merc 3'
             },
             {
-                cloudinaryId: '66365998e70ac51006d4d7e6',
+                id: '66365998e70ac51006d4d7e6',
                 alt: 'Merc 4'
             }
         ],
@@ -84,19 +84,19 @@ const cors = ref([
     {
         images: [
             {
-                cloudinaryId: '66365a43e70ac51006d4d811',
+                id: '66365a43e70ac51006d4d811',
                 alt: 'Rolls 1'
             },
             {
-                cloudinaryId: '66365a61e70ac51006d4d814',
+                id: '66365a61e70ac51006d4d814',
                 alt: 'Rolls 2'
             },
             {
-                cloudinaryId: '66365a9b87fa1f24532a35d0',
+                id: '66365a9b87fa1f24532a35d0',
                 alt: 'Rolls 3'
             },
             {
-                cloudinaryId: '66365abb87fa1f24532a35d3',
+                id: '66365abb87fa1f24532a35d3',
                 alt: 'Rolls 4'
             }
         ],
@@ -108,19 +108,19 @@ const cors = ref([
     {
         images: [
             {
-                cloudinaryId: '66365b5ee70ac51006d4d845',
+                id: '66365b5ee70ac51006d4d845',
                 alt: 'Lambo 1'
             },
             {
-                cloudinaryId: '66365ba693a20f781cf46dd5',
+                id: '66365ba693a20f781cf46dd5',
                 alt: 'Lambo 2'
             },
             {
-                cloudinaryId: '66365bc7e70ac51006d4d857',
+                id: '66365bc7e70ac51006d4d857',
                 alt: 'Lambo 3'
             },
             {
-                cloudinaryId: '66365be9e70ac51006d4d862',
+                id: '66365be9e70ac51006d4d862',
                 alt: 'Lambo 4'
             }
         ],
@@ -135,7 +135,7 @@ const vehicles = ref([
     {
         images: [
             {
-                cloudinaryId: '65466c15afa7da0f964a0012',
+                id: '65466c15afa7da0f964a0012',
                 alt: 'Car Alt Text'
             }
         ],
@@ -147,7 +147,7 @@ const vehicles = ref([
     {
         images: [
             {
-                cloudinaryId: '65466bfcafa7da0f964a000e',
+                id: '65466bfcafa7da0f964a000e',
                 alt: 'Car Alt Text'
             }
         ],
@@ -159,7 +159,7 @@ const vehicles = ref([
     {
         images: [
             {
-                cloudinaryId: '65466c4dafa7da0f964a011c',
+                id: '65466c4dafa7da0f964a011c',
                 alt: 'Car Alt Text'
             }
         ],
@@ -170,7 +170,7 @@ const vehicles = ref([
     {
         images: [
             {
-                cloudinaryId: '65466babc302c20f89908e11',
+                id: '65466babc302c20f89908e11',
                 alt: 'Car Alt Text'
             }
         ],
@@ -182,7 +182,7 @@ const vehicles = ref([
     {
         images: [
             {
-                cloudinaryId: '661fecb3d7eafa12344017a8',
+                id: '661fecb3d7eafa12344017a8',
                 alt: 'Car Alt Text'
             }
         ],

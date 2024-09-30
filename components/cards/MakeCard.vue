@@ -1,6 +1,6 @@
 <template>
     <card-wrapper class="make-card standard-card">
-        <image-wrapper v-if="images" :images="images" :max="1" :width="290" :height="145" loading="lazy">
+        <swp-picture v-if="images" :images="images" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
             <!--
       <SvgIcon svg="heart" class="heart" />
       <div class="location">
@@ -8,7 +8,7 @@
         <span class="address"> Yeovil, UK </span>
       </div>
     -->
-        </image-wrapper>
+        </swp-picture>
         <card-text-wrapper>
             <!--     <div class="sale-type">{{ saleType }}</div> -->
             <h1 class="name">{{ name }}</h1>

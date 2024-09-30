@@ -18,7 +18,7 @@ export default {
         type: String,
         src: String,
         alt: String,
-        cloudinaryId: String,
+        id: String,
         images: Array,
         width: Number,
         height: Number,
@@ -80,7 +80,7 @@ export default {
         images: function (newVal, oldVal) {
             this.onImagePropUpdated();
         },
-        cloudinaryId: function (newVal, oldVal) {
+        id: function (newVal, oldVal) {
             this.onImagePropUpdated();
         }
     },
@@ -135,10 +135,10 @@ export default {
             this.amount = 1;
 
             if (this.images) {
-                if (this.images[0]?.cloudinaryId) {
+                if (this.images[0]?.id) {
                     this.images.forEach((element) => {
                         this.imageArray.push({
-                            src: this.cloudinaryApiPath + this.cloudinaryParams + element.cloudinaryId,
+                            src: this.cloudinaryApiPath + this.cloudinaryParams + element.id,
                             alt: element.alt ?? this.alt ?? 'image'
                         });
                     });
@@ -163,9 +163,9 @@ export default {
                 // }
             } else if (this.src) {
                 this.imageArray.push({ src: this.src, alt: this.alt ?? 'image' });
-            } else if (this.cloudinaryId) {
+            } else if (this.id) {
                 this.imageArray.push({
-                    src: this.cloudinaryApiPath + this.cloudinaryParams + this.cloudinaryId,
+                    src: this.cloudinaryApiPath + this.cloudinaryParams + this.id,
                     alt: this.alt ?? 'image'
                 });
             }
@@ -183,7 +183,7 @@ export default {
             return {
                 imageList: this.images,
                 src: this.src,
-                cloudinaryId: this.cloudinaryId
+                id: this.id
             };
         }
     },

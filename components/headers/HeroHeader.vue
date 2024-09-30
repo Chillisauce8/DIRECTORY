@@ -1,15 +1,16 @@
 <template>
-    <figure class="hero-header">
-        <image-wrapper :images="props.images" loading="eager" :width="props.width" :height="props.height" dpr="2" class="darken">
+    <div class="hero-header">
+        <swp-picture :images="props.images" :sources="props.sources" loading="eager" class="darken">
             <div class="content">
                 <h1 class="text-1">{{ props.title }}</h1>
                 <h2 class="text-2">
                     {{ props.subTitle }}
                 </h2>
             </div>
-        </image-wrapper>
+        </swp-picture>
+
         <!--<PageNav></PageNav> -->
-    </figure>
+    </div>
 </template>
 
 <script>
@@ -22,10 +23,12 @@ export default {
 .hero-header {
     position: relative;
     z-index: -1;
-    figure {
+    figure,
+    picture {
         @include parallax(3);
     }
-    & .images {
+    & .images,
+    .swp-picture {
         height: 120vh;
         width: auto;
     }

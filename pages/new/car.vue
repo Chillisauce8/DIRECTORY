@@ -9,17 +9,26 @@
 const heroHeaderProps = {
     title: 'Rolls-Royce',
     subTitle: 'Phantom 2001',
-    type: 'barText',
-    random: true,
-    min: 1,
-    max: 1,
-    grayscale: false,
-    width: 1200,
-    tintClass: 'tint',
     images: [
         {
-            cloudinaryId: '66365a43e70ac51006d4d811',
+            id: '66365a43e70ac51006d4d811',
             alt: 'hero header image alt description'
+        }
+    ],
+    sources: [
+        {
+            media: '(orientation: portrait)',
+            aspectRatio: '2:3',
+            widths: '400:1200',
+            sizes: '100vw',
+            increment: 200
+        },
+        {
+            media: '(orientation: landscape)',
+            aspectRatio: '3:2',
+            widths: '1000:2000',
+            sizes: '100vw',
+            increment: 200
         }
     ]
 };
@@ -33,7 +42,7 @@ const content1 = {
     ],
     images: [
         {
-            cloudinaryId: '66365a61e70ac51006d4d814',
+            id: '66365a61e70ac51006d4d814',
             alt: 'Car Alt Text'
         }
     ]
@@ -48,11 +57,11 @@ const content2 = {
     ],
     images: [
         {
-            cloudinaryId: '66365a61e70ac51006d4d814',
+            id: '66365a61e70ac51006d4d814',
             alt: 'Car Alt Text'
         },
         {
-            cloudinaryId: '65466bfcafa7da0f964a000e',
+            id: '65466bfcafa7da0f964a000e',
             alt: 'Car Alt Text'
         }
     ]
@@ -62,7 +71,7 @@ const makes = [
     {
         images: [
             {
-                cloudinaryId: '65466c15afa7da0f964a0012',
+                id: '65466c15afa7da0f964a0012',
                 alt: 'Car Alt Text'
             }
         ],
@@ -72,7 +81,7 @@ const makes = [
     {
         images: [
             {
-                cloudinaryId: '65466bfcafa7da0f964a000e',
+                id: '65466bfcafa7da0f964a000e',
                 alt: 'Car Alt Text'
             }
         ],
@@ -82,7 +91,7 @@ const makes = [
     {
         images: [
             {
-                cloudinaryId: '65466c4dafa7da0f964a011c',
+                id: '65466c4dafa7da0f964a011c',
                 alt: 'Car Alt Text'
             }
         ],
@@ -92,7 +101,7 @@ const makes = [
     {
         images: [
             {
-                cloudinaryId: '65466babc302c20f89908e11',
+                id: '65466babc302c20f89908e11',
                 alt: 'Car Alt Text'
             }
         ],
@@ -102,7 +111,7 @@ const makes = [
     {
         images: [
             {
-                cloudinaryId: '661fecb3d7eafa12344017a8',
+                id: '661fecb3d7eafa12344017a8',
                 alt: 'Car Alt Text'
             }
         ],
@@ -115,7 +124,7 @@ const models = [
     {
         images: [
             {
-                cloudinaryId: '65466c15afa7da0f964a0012',
+                id: '65466c15afa7da0f964a0012',
                 alt: 'Car Alt Text'
             }
         ],
@@ -128,7 +137,7 @@ const models = [
     {
         images: [
             {
-                cloudinaryId: '65466bfcafa7da0f964a000e',
+                id: '65466bfcafa7da0f964a000e',
                 alt: 'Car Alt Text'
             }
         ],
@@ -141,7 +150,7 @@ const models = [
     {
         images: [
             {
-                cloudinaryId: '65466c4dafa7da0f964a011c',
+                id: '65466c4dafa7da0f964a011c',
                 alt: 'Car Alt Text'
             }
         ],
@@ -153,7 +162,7 @@ const models = [
     {
         images: [
             {
-                cloudinaryId: '65466babc302c20f89908e11',
+                id: '65466babc302c20f89908e11',
                 alt: 'Car Alt Text'
             }
         ],
@@ -166,7 +175,7 @@ const models = [
     {
         images: [
             {
-                cloudinaryId: '661fecb3d7eafa12344017a8',
+                id: '661fecb3d7eafa12344017a8',
                 alt: 'Car Alt Text'
             }
         ],
@@ -181,7 +190,7 @@ const listings = [
     {
         images: [
             {
-                cloudinaryId: '65466c15afa7da0f964a0012',
+                id: '65466c15afa7da0f964a0012',
                 alt: 'Car Alt Text'
             }
         ],
@@ -197,7 +206,7 @@ const listings = [
     {
         images: [
             {
-                cloudinaryId: '65466bfcafa7da0f964a000e',
+                id: '65466bfcafa7da0f964a000e',
                 alt: 'Car Alt Text'
             }
         ],
@@ -213,7 +222,7 @@ const listings = [
     {
         images: [
             {
-                cloudinaryId: '65466c4dafa7da0f964a011c',
+                id: '65466c4dafa7da0f964a011c',
                 alt: 'Car Alt Text'
             }
         ],
@@ -229,7 +238,7 @@ const listings = [
     {
         images: [
             {
-                cloudinaryId: '65466babc302c20f89908e11',
+                id: '65466babc302c20f89908e11',
                 alt: 'Car Alt Text'
             }
         ],
@@ -244,7 +253,7 @@ const listings = [
     {
         images: [
             {
-                cloudinaryId: '661fecb3d7eafa12344017a8',
+                id: '661fecb3d7eafa12344017a8',
                 alt: 'Car Alt Text'
             }
         ],

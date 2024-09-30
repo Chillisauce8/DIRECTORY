@@ -32,7 +32,7 @@ export default defineNuxtConfig({
  ],
  image: {
   cloudinary: {
-    baseURL: 'https://res.cloudinary.com/<your-cloud-name>/image/upload/'
+    baseURL: 'https://media.chillisauce.com/image/upload/'
   }
 },
   app: {
@@ -118,6 +118,7 @@ export default defineNuxtConfig({
          },
       },
     },
+    base: './',
     esbuild: environment.leaveDebuggers ? undefined : {
       drop: ['debugger'],
     },

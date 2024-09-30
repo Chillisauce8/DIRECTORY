@@ -1,6 +1,6 @@
 <template>
     <card-wrapper class="marketing-card" :class="{ 'X-Center': props.svg, link: props.link }" :link="props.link">
-        <ImageWrapper v-if="props.images" :images="props.images" :random="props.random" :max="props.max" :width="290" :height="145" :loading="props.loading" />
+        <swp-picture v-if="images" :images="images" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
         <LazySvgIcon v-else-if="props.svg" :svg="props.svg" />
         <card-text-wrapper>
             <h1 v-if="props.title">{{ props.title }}</h1>

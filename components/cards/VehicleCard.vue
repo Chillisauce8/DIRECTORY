@@ -1,6 +1,6 @@
 <template>
     <card-wrapper class="vehicle-card standard-card">
-        <image-wrapper v-if="images" :images="images" :max="1" :width="290" :height="145" loading="lazy"> </image-wrapper>
+        <swp-picture v-if="images" :images="images" widths="290:870" :increment="145" aspectRatio="3:2" loading="lazy"> </swp-picture>
         <card-text-wrapper>
             <div v-if="nickname" class="nickname">"{{ nickname }}"</div>
             <h1 class="name">{{ year }} {{ make }} {{ name }}</h1>
@@ -14,8 +14,12 @@ const props = defineProps(['images', 'name', 'nickname', 'make', 'year']);
 
 <style lang="scss">
 .vehicle-card {
-    figure {
+    figure,
+    picture {
         @include aspect-ratio(3, 2);
+    }
+    .overlay-testing {
+        background-color: pink;
     }
     header {
         @include aspect-ratio(3, 1);

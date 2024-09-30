@@ -23,11 +23,7 @@ const model = ref([
                 icon: 'pi pi-fw pi-image',
                 to: '/new/carddesign'
             },
-            {
-                label: 'Test Nuxt Image',
-                icon: 'pi pi-fw pi-image',
-                to: '/new/carddesign2'
-            },
+
             {
                 label: 'Market test',
                 icon: 'pi pi-fw pi-check-square',

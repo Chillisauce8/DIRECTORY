@@ -1,12 +1,12 @@
 <template>
     <card-wrapper class="listing-card standard-card">
-        <image-wrapper v-if="images" :images="images" :max="1" :width="290" :height="145" loading="lazy">
+        <swp-picture v-if="images" :images="images" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
             <SvgIcon svg="heart" class="heart" />
             <div class="location">
                 <span class="fi fi-gb flag"></span>
                 <span class="address"> Yeovil, UK </span>
             </div>
-        </image-wrapper>
+        </swp-picture>
         <card-text-wrapper>
             <div class="sale-type">{{ saleType }}</div>
             <h1 class="name">{{ year }} {{ name }}</h1>
@@ -30,7 +30,7 @@ const props = defineProps(['images', 'name', 'saleType', 'year', 'price', 'engin
 <style lang="scss">
 .listing-card {
     width: 300px;
-    figure {
+    picture {
         @include aspect-ratio(3, 2);
     }
     header {
