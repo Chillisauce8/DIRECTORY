@@ -177,7 +177,7 @@ function createSpeedDialItems() {
         },
         {
             icon: 'pi pi-clone',
-            command: () => sharedFunctions.opyRow(index),
+            command: () => sharedFunctions.copyRow(index),
             visible: () => sharedFunctions.canAddMore()
         }
     ];
