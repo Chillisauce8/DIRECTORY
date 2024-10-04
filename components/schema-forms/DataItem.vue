@@ -16,7 +16,22 @@
   </template>
   <template v-else-if="props.function === 'read'">
     <template v-if="targetItem || targetItems">
-      <slot :item="targetItem" :items="targetItems" :schema="schemaItem"></slot>
+
+      <template v-if="isReadSingle && props.defaultView">
+
+        <SchemaForm :formName="formName"
+                    :title="props.title"
+                    :subtitle="props.subtitle"
+                    :id="formName"
+                    v-if="formDescription"
+                    :description="formDescription"
+                    :model="targetItem"
+                    :needCorrectExistingValues="false">
+        </SchemaForm>
+      </template>
+      <template v-else>
+        <slot :item="targetItem" :items="targetItems" :schema="schemaItem"></slot>
+      </template>
     </template>
   </template>
 </template>
@@ -37,6 +52,7 @@ interface FieldProps {
   subtitle?: string;
   schema?: boolean;
   initialData?: any;
+  defaultView?: boolean;
 }
 
 // @ts-ignore
@@ -137,9 +153,13 @@ onMounted(async () => {
       });
 
       if (needSchema) {
-        targetItems.value = mergeSchemaAndItem(schemaItem.value, response.data);
+        targetItem.value = mergeSchemaAndItem(schemaItem.value, response.data);
       } else {
         targetItem.value = response.data;
+      }
+
+      if (props.defaultView) {
+        sharedFunctions.doOnMounted();
       }
     } else if (isReadMulti) {
       const response = await httpService.get(`/api/query`, {

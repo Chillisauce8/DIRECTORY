@@ -157,39 +157,41 @@ const saveEvent = async () => {
                     </template>
 
                     <div v-if="view === 'display'">
-                        <span class="text-900 font-semibold block mb-2">Description</span>
-                        <span class="block mb-3">{{ changedEvent.description }}</span>
+                      <DataItem function="read" collection="events" :id="changedEvent._doc" :defaultView="true">
+                      </DataItem>
+<!--                        <span class="text-900 font-semibold block mb-2">Description</span>-->
+<!--                        <span class="block mb-3">{{ changedEvent.description }}</span>-->
 
-                        <div class="grid">
-                            <div class="col-6">
-                                <div class="text-900 font-semibold mb-2">Start</div>
-                                <p class="flex align-items-center m-0">
-                                    <i class="pi pi-fw pi-clock text-700 mr-2"></i>
-                                    <span>{{ changedEvent.start.toISOString().slice(0, 10) }}</span>
-                                </p>
-                            </div>
-                            <div class="col-6">
-                                <div class="text-900 font-semibold mb-2">End</div>
-                                <p class="flex align-items-center m-0">
-                                    <i class="pi pi-fw pi-clock text-700 mr-2"></i>
-                                    <span>{{ changedEvent.end.toISOString().slice(0, 10) }}</span>
-                                </p>
-                            </div>
-                            <div class="col-12">
-                                <div class="text-900 font-semibold mb-2">Location</div>
-                                <p class="flex align-items-center m-0">
-                                    <i class="pi pi-fw pi-clock text-700 mr-2"></i>
-                                    <span>{{ changedEvent.location }}</span>
-                                </p>
-                            </div>
-                            <div class="col-12">
-                                <div class="text-900 font-semibold mb-2">Color</div>
-                                <p class="flex align-items-center m-0">
-                                    <span :style="{ 'background-color': changedEvent.color }" class="inline-flex flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></span>
-                                    <span>{{ changedEvent.tag?.name }}</span>
-                                </p>
-                            </div>
-                        </div>
+<!--                        <div class="grid">-->
+<!--                            <div class="col-6">-->
+<!--                                <div class="text-900 font-semibold mb-2">Start</div>-->
+<!--                                <p class="flex align-items-center m-0">-->
+<!--                                    <i class="pi pi-fw pi-clock text-700 mr-2"></i>-->
+<!--                                    <span>{{ changedEvent.start.toISOString().slice(0, 10) }}</span>-->
+<!--                                </p>-->
+<!--                            </div>-->
+<!--                            <div class="col-6">-->
+<!--                                <div class="text-900 font-semibold mb-2">End</div>-->
+<!--                                <p class="flex align-items-center m-0">-->
+<!--                                    <i class="pi pi-fw pi-clock text-700 mr-2"></i>-->
+<!--                                    <span>{{ changedEvent.end.toISOString().slice(0, 10) }}</span>-->
+<!--                                </p>-->
+<!--                            </div>-->
+<!--                            <div class="col-12">-->
+<!--                                <div class="text-900 font-semibold mb-2">Location</div>-->
+<!--                                <p class="flex align-items-center m-0">-->
+<!--                                    <i class="pi pi-fw pi-clock text-700 mr-2"></i>-->
+<!--                                    <span>{{ changedEvent.location }}</span>-->
+<!--                                </p>-->
+<!--                            </div>-->
+<!--                            <div class="col-12">-->
+<!--                                <div class="text-900 font-semibold mb-2">Color</div>-->
+<!--                                <p class="flex align-items-center m-0">-->
+<!--                                    <span :style="{ 'background-color': changedEvent.color }" class="inline-flex flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></span>-->
+<!--                                    <span>{{ changedEvent.tag?.name }}</span>-->
+<!--                                </p>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
                     <div v-if="view !== 'display'">
                       <DataItem function="create" collection="events"
