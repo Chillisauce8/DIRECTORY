@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { EventService } from '@/service/EventService';
+import { EventService } from '~/service/EventService.js';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -167,7 +167,7 @@ const setEvents = () => {
                                 <div class="text-900 font-semibold mb-2">Color</div>
                                 <p class="flex align-items-center m-0">
                                     <span :style="{ 'background-color': changedEvent.color }" class="inline-flex flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></span>
-                                    <span>{{ changedEvent.tag.name }}</span>
+                                    <span>{{ changedEvent.name }}</span>
                                 </p>
                             </div>
                         </div>

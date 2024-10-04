@@ -36,6 +36,7 @@ interface FieldProps {
   title?: string;
   subtitle?: string;
   schema?: boolean;
+  initialData?: any;
 }
 
 // @ts-ignore
@@ -120,6 +121,11 @@ onMounted(async () => {
 
   if (isCreateUpdate) {
     sharedFunctions.doOnMounted();
+
+    if (props.initialData) {
+      vm.model = {...vm.model, ...props.initialData};
+    }
+
   } else {
     if (needSchema) {
       schemaItem.value = await getDefinition();

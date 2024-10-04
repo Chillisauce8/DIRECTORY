@@ -1,15 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { EventService } from '@/service/EventService';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import {eventService} from "~/service/EventService";
 
 onMounted(async () => {
-    events.value = await getEvents();
-    options.value = { ...options.value, ...{ events: events.value } };
-    events.value.forEach((item) => tags.value.push(item.tag));
+  loadEvents();
 });
 
 const tags = ref([]);
@@ -32,7 +30,7 @@ const changedEvent = ref({
 });
 const options = ref({
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    initialDate: '2022-05-11',
+    initialDate: '2024-06-01',
     height: 720,
     headerToolbar: {
         left: 'prev,next today',
@@ -48,20 +46,38 @@ const options = ref({
 });
 
 const events = ref(null);
-const eventService = ref(new EventService());
 
-const getEvents = async () => {
-    const response = eventService.value.getEvents();
+let dataItemNode = null;
 
-    return response;
-};
+
+let saveRawFunc: (data: any) => Promise<void>;
+let deleteRawFunc: (dataId: string) => Promise<void>;
+
+function onDataItemMounted(result: {hooks: any}) {
+  saveRawFunc = result.hooks?.saveRawFunc;
+  deleteRawFunc = result.hooks?.deleteRawFunc;
+}
+
+
+function eventChanged({data}) {
+  dataItemNode = data;
+}
+
+const loadEvents = async () => {
+  events.value = await eventService.getEvents();
+  options.value = { ...options.value, ...{ events: events.value } };
+  events.value.forEach((item) => tags.value.push(item.tag));
+}
+
 
 const onEventClick = (e) => {
     clickedEvent = e.event;
+
     let plainEvent = e.event.toPlainObject({
         collapseExtendedProps: true,
         collapseColor: true
     });
+
     view.value = 'display';
     showDialog.value = true;
 
@@ -73,6 +89,7 @@ const onEventClick = (e) => {
 const onEditClick = () => {
     view.value = 'edit';
 };
+
 const handleSave = () => {
     const isValidDate = changedEvent.value.start && changedEvent.value.end;
     if (!isValidDate) {
@@ -80,11 +97,15 @@ const handleSave = () => {
     }
 
     showDialog.value = false;
-    clickedEvent = { ...changedEvent.value, backgroundColor: changedEvent.value.tag.color, borderColor: changedEvent.value.tag.color, textColor: '#212121' };
 
-    setEvents();
+    // clickedEvent = {
+    //   ...changedEvent.value,
+    //   // backgroundColor: changedEvent.value.tag.color,
+    //   // borderColor: changedEvent.value.tag.color,
+    //   textColor: '#212121'
+    // };
 
-    options.value = { ...options.value, ...{ events: events.value } };
+    saveEvent();
 
     clickedEvent = null;
 };
@@ -106,14 +127,12 @@ const onDateSelect = (e) => {
     };
 };
 
-const setEvents = () => {
-    const clickedEventHasId = Object.keys(clickedEvent).some((key) => key === 'id');
-    if (clickedEventHasId) {
-        events.value = events.value.map((i) => (i.id.toString() === clickedEvent.id.toString() ? (i = clickedEvent) : i));
-    } else {
-        events.value = [...events.value, { ...clickedEvent, id: Math.floor(Math.random() * 10000) }];
-    }
+const saveEvent = async () => {
+  await saveRawFunc(dataItemNode);
+  await loadEvents();
 };
+
+
 </script>
 
 <template>
@@ -167,58 +186,67 @@ const setEvents = () => {
                                 <div class="text-900 font-semibold mb-2">Color</div>
                                 <p class="flex align-items-center m-0">
                                     <span :style="{ 'background-color': changedEvent.color }" class="inline-flex flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></span>
-                                    <span>{{ changedEvent.tag.name }}</span>
+                                    <span>{{ changedEvent.tag?.name }}</span>
                                 </p>
                             </div>
                         </div>
                     </div>
                     <div v-if="view !== 'display'">
-                        <div class="grid p-fluid formgrid">
-                            <div class="col-12 md:col-6 field">
-                                <label for="title" class="text-900 font-semibold">Title</label>
-                                <IconField iconPosition="left">
-                                    <InputIcon class="pi pi-pencil" />
-                                    <InputText id="title" type="text" placeholder="Title" v-model="changedEvent.title" />
-                                </IconField>
-                            </div>
-                            <div class="col-12 md:col-6 field">
-                                <label for="location" class="text-900 font-semibold">Location</label>
-                                <IconField iconPosition="left">
-                                    <InputIcon class="pi pi-map-marker" />
-                                    <InputText id="location" type="text" placeholder="Location" v-model="changedEvent.location" />
-                                </IconField>
-                            </div>
-                            <div class="col-12 field">
-                                <label for="description" class="text-900 font-semibold">Event Description</label>
-                                <Textarea id="description" type="text" :rows="5" v-model="changedEvent.description" style="resize: none"></Textarea>
-                            </div>
+                      <DataItem function="create" collection="events"
+                                @mounted="onDataItemMounted"
+                                @changed="eventChanged"
+                                :initialData="{start: changedEvent.start, end: changedEvent.end}">
+                      </DataItem>
 
-                            <div class="col-12 md:col-6 field">
-                                <label for="start" class="text-900 font-semibold">Start Date</label>
-                                <Calendar dateFormat="mm-dd-yy" :max-date="changedEvent.end" showTime required inputId="start" v-model="changedEvent.start"></Calendar>
-                            </div>
-                            <div class="col-12 md:col-6 field">
-                                <label for="start" class="text-900 font-semibold">End Date</label>
-                                <Calendar dateFormat="mm-dd-yy" :minDate="changedEvent.start" showTime required inputId="end" v-model="changedEvent.end"></Calendar>
-                            </div>
-                            <div class="col-12 field">
-                                <label for="company-color" class="text-900 font-semibold">Color</label>
-                                <Dropdown inputId="company-color" :options="tags" v-model="changedEvent.tag" optionLabel="name">
-                                    <template #option="slotProps">
-                                        <div class="flex align-items-center">
-                                            <div :style="{ 'background-color': slotProps.option.color }" class="flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></div>
-                                            <div>{{ slotProps.option.name }}</div>
-                                        </div>
-                                    </template>
-                                    <template #value="slotProps">
-                                        <div class="flex align-items-center">
-                                            <div :style="{ 'background-color': slotProps.value.color }" class="flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></div>
-                                            <div>{{ slotProps.value.name }}</div>
-                                        </div>
-                                    </template>
-                                </Dropdown>
-                            </div>
-                        </div>
+<!--                        <div class="grid p-fluid formgrid">-->
+<!--                            <div class="col-12 md:col-6 field">-->
+<!--                                <label for="title" class="text-900 font-semibold">Name</label>-->
+<!--                                <IconField iconPosition="left">-->
+<!--                                    <InputIcon class="pi pi-pencil" />-->
+<!--                                    <InputText id="title" type="text" placeholder="Name" -->
+<!--                                               v-model="changedEvent.name" />-->
+<!--                                </IconField>-->
+<!--                            </div>-->
+<!--                            <div class="col-12 md:col-6 field">-->
+<!--                                <label for="location" class="text-900 font-semibold">Location</label>-->
+<!--                                <IconField iconPosition="left">-->
+<!--                                    <InputIcon class="pi pi-map-marker" />-->
+<!--                                    <InputText id="location" type="text" placeholder="Location" -->
+<!--                                               v-model="changedEvent.location" />-->
+<!--                                </IconField>-->
+<!--                            </div>-->
+<!--                            <div class="col-12 field">-->
+<!--                                <label for="description" class="text-900 font-semibold">Event Description</label>-->
+<!--                                <Textarea id="description" type="text" :rows="5" v-model="changedEvent.description" style="resize: none"></Textarea>-->
+<!--                            </div>-->
+
+<!--                            <div class="col-12 md:col-6 field">-->
+<!--                                <label for="start" class="text-900 font-semibold">Start Date</label>-->
+<!--                                <Calendar dateFormat="mm-dd-yy" :max-date="changedEvent.end" showTime required inputId="start" v-model="changedEvent.start"></Calendar>-->
+<!--                            </div>-->
+<!--                            <div class="col-12 md:col-6 field">-->
+<!--                                <label for="start" class="text-900 font-semibold">End Date</label>-->
+<!--                                <Calendar dateFormat="mm-dd-yy" :minDate="changedEvent.start" showTime required inputId="end" v-model="changedEvent.end"></Calendar>-->
+<!--                            </div>-->
+<!--                            <div class="col-12 field">-->
+<!--                                <label for="company-color" class="text-900 font-semibold">Color</label>-->
+
+<!--                              <Dropdown v-if="changedEvent.tag" inputId="company-color" :options="tags" v-model="changedEvent.tag" optionLabel="name">-->
+<!--                                    <template #option="slotProps">-->
+<!--                                        <div class="flex align-items-center">-->
+<!--                                            <div :style="{ 'background-color': slotProps.option.color }" class="flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></div>-->
+<!--                                            <div>{{ slotProps.option.name }}</div>-->
+<!--                                        </div>-->
+<!--                                    </template>-->
+<!--                                    <template #value="slotProps">-->
+<!--                                        <div class="flex align-items-center">-->
+<!--                                            <div :style="{ 'background-color': slotProps.value.color }" class="flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></div>-->
+<!--                                            <div>{{ slotProps.value.name }}</div>-->
+<!--                                        </div>-->
+<!--                                    </template>-->
+<!--                                </Dropdown>-->
+<!--                            </div>-->
+<!--                        </div>-->
                     </div>
 
                     <template #footer>
