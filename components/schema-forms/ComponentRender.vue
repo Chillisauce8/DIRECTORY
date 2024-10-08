@@ -4,7 +4,8 @@
                  v-model="props.model" @update:modelValue="onModelChange($event)"
                  v-bind="props.componentProperties"
                  :invalid="validator?.$error"
-                 :class="[props.validator?.$error ? 'p-invalid' : '']">
+                 :class="[props.validator?.$error ? 'p-invalid' : '', isEmpty() ? 'empty-field' : '',
+                  props.componentProperties.readonly ? 'view-mode' : '']">
       </component>
     </div>
     <FieldError class="error-message"
@@ -17,6 +18,7 @@
 <script setup lang="ts">
 
 import FieldError from '~/components/schema-forms/FieldError.vue';
+import { isObject } from '~/service/utils';
 
 
 interface SchemaComponentProps {
@@ -39,6 +41,22 @@ const emits = defineEmits<SchemaComponentEmits>();
 
 function onModelChange(value: any) {
   emits('onModelChange', value);
+}
+
+function isEmpty() {
+  if (!props.model) {
+    return true;
+  }
+
+  if (Array.isArray(props.model) && props.model.length === 0) {
+    return true;
+  }
+
+  if (isObject(props.model) && Object.keys(props.model).length === 0) {
+    return true;
+  }
+
+  return false;
 }
 
 </script>
