@@ -36,7 +36,7 @@ const onSave = async () => {
 <template>
     <div class="p-4">
         <div class="grid p-fluid formgrid">
-          <DataItem collection="tasklisttest"
+          <DataItem collection="events"
                     :function="props.selectedTaskId ? 'update' : 'create'"
                     @changed="dataChanged($event)"
                     :id="props.selectedTaskId">

@@ -172,6 +172,11 @@ export default defineNuxtConfig({
         }
       });
       pages.push({
+        name: 'apps-calendar',
+        path: '/apps/calendar/',
+        file: '@/pages/apps/Calendar.vue'
+      });
+      pages.push({
         name: 'chat',
         path: '/apps/chat/',
         file: '@/pages/apps/chat/Index.vue'
@@ -238,7 +243,6 @@ export default defineNuxtConfig({
         file: '@/pages/apps/tasklist/IndexTest.vue'
       });
       pages.push({
-        name: 'freeblocks',
         path: '/blocks',
         name: 'blocks',
         meta: {
@@ -537,6 +541,11 @@ export default defineNuxtConfig({
       });
 
       pages.push(
+        {
+          name: 'Calendar',
+          path: '/calendar',
+          file: '@/pages/new/calendar.vue',
+        },
         {
           name: 'Market List',
           path: '/market',

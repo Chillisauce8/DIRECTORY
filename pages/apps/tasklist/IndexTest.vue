@@ -41,6 +41,7 @@ const onCheckboxChange = async (updatedTask: ITask) => {
 
   reloadData();
 };
+
 const onDeleteTask = async (deletedTask: ITask) => {
   await deleteRawFunc(deletedTask._doc);
   reloadData();
@@ -102,14 +103,14 @@ function reloadData() {
       <Button class="font-semibold" outlined icon="pi pi-plus" label="Create Task" @click="openCreateDialog()"></Button>
     </div>
 
-    <DataItem function="read" collection="tasklisttest" :find="{'completed': {'$ne': true}}" v-slot="{items}"
+    <DataItem function="read" collection="events" :find="{'completed': {'$ne': true}}" v-slot="{items}"
         @mounted="onDataItemMounted">
       <List :task-list="items" title="ToDo" @checkbox:change="onCheckboxChange"
             @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog">
       </List>
     </DataItem>
 
-    <DataItem function="read" collection="tasklisttest" :find="{'completed': true}" v-slot="{items}">
+    <DataItem function="read" collection="events" :find="{'completed': true}" v-slot="{items}">
       <List :task-list="items" title="Completed" @checkbox:change="onCheckboxChange"
             @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog">
       </List>

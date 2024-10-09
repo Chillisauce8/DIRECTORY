@@ -56,7 +56,7 @@ const toggleMenu = (event, i, task) => {
                     <span class="flex align-items-center font-semibold white-space-nowrap" v-if="task.startDate"><i class="pi pi-clock mr-2"></i>{{ parseDate(task.startDate) }}</span>
              -->
                     <span class="flex align-items-center font-semibold white-space-nowrap"
-                          v-if="task.startDate"><i class="pi pi-clock mr-2"></i>{{ task.startDate }}</span>
+                          v-if="task.start"><i class="pi pi-clock mr-2"></i>{{ task.start }}</span>
                 </div>
                 <div class="flex align-items-center sm:justify-content-end">
                     <div class="mr-3">

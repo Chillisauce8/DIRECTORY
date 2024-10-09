@@ -9,6 +9,11 @@ const model = ref([
         icon: 'pi pi-home',
         items: [
             {
+              label: 'Calendar',
+              icon: 'pi pi-fw pi-calendar',
+              to: '/calendar'
+            },
+            {
                 label: 'Markets',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/market'
