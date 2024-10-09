@@ -11,9 +11,9 @@ import { NitroFetchOptions } from 'nitropack';
 
 
 
-type HttpRequestHeaders = Record<string, string>;
-type HttpRequestQueryParams = Record<string, any>;
-type HttpRequestData = Record<string, any> | any[];
+export type HttpRequestHeaders = Record<string, string>;
+export type HttpRequestQueryParams = Record<string, any>;
+export type HttpRequestData = Record<string, any> | any[];
 
 
 type AvailableHttpMethods = 'get' | 'post' | 'put' | 'delete';

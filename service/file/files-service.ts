@@ -1,4 +1,4 @@
-import { HttpService, httpService } from '~/service/http/http.service';
+import { type HttpRequestQueryParams, HttpService, httpService } from '~/service/http/http.service';
 
 
 export class FilesService {
@@ -6,8 +6,8 @@ export class FilesService {
     //
   }
 
-  async getFiles() {
-    return this.http.get('/api/files')
+  async getFiles(params?: HttpRequestQueryParams) {
+    return this.http.get('/api/files', params)
       .then(res => res.data);
   }
 
