@@ -185,11 +185,16 @@ export class FileHelperService {
     });
   }
 
-  showFile(value: string, type: string, name: string) {
+  getUrlForFileData(value: string, type: string) {
     if (value) {
       const blob = this.dataURItoBlob(value, type);
+      return window.URL.createObjectURL(blob);
+    }
+  }
 
-      const url = window.URL.createObjectURL(blob);
+  showFile(value: string, type: string) {
+    if (value) {
+      const url = this.getUrlForFileData(value, type);
       window.open(url);
     }
   }
@@ -215,7 +220,7 @@ export class FileHelperService {
   showOrDownloadFile(value: string, type: string, name: string) {
     if (value) {
       if (this.canShowFile(name)) {
-        this.showFile(value, type, name);
+        this.showFile(value, type);
       } else {
         this.downloadFile(value, type, name);
       }

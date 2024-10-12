@@ -1,7 +1,14 @@
 <template>
-    <div class="images">
+    <div v-if="singleImage">
+      <SWPImage :loading="loading" :src="imageArray[0].src" :alt="imageArray[0].alt" :width="width" :height="height"
+                :transformToElementSize="transformToElementSize" :preloadRandom="preloadRandom">
+      </SWPImage>
+    </div>
+    <div v-else class="images">
         <figure v-for="(image, index) in imageArray" :key="index" :class="'image-' + (index + 1)">
-            <SWPImage :loading="loading" :src="image.src" :alt="image.alt" :width="width" :height="height" :transformToElementSize="transformToElementSize" :preloadRandom="preloadRandom"></SWPImage>
+            <SWPImage :loading="loading" :src="image.src" :alt="image.alt" :width="width" :height="height"
+                      :transformToElementSize="transformToElementSize" :preloadRandom="preloadRandom">
+            </SWPImage>
         </figure>
 
         <div v-if="$slots.default" class="overlay" :class="tintClass">
@@ -71,6 +78,10 @@ export default {
         transformToElementSize: {
             type: Boolean,
             default: () => false
+        },
+        singleImage: {
+          type: Boolean,
+          default: () => false
         }
     },
     watch: {

@@ -21,6 +21,7 @@ const ValueBlock = resolveComponent('ValueBlock');
 const ArrayOfObjectsBlock = resolveComponent('ArrayOfObjectsBlock');
 const ArrayOfValuesBlock = resolveComponent('ArrayOfValuesBlock');
 const ObjectBlock = resolveComponent('ObjectBlock');
+const SelectOrUploadBlock = resolveComponent('SelectOrUploadBlock');
 
 
 // @ts-ignore
@@ -41,6 +42,7 @@ const componentInstance = computed(() => {
     case BlockComponents.container: return ObjectBlock;
     case BlockComponents.arrayOfValues: return ArrayOfValuesBlock;
     case BlockComponents.arrayOfObjects: return ArrayOfObjectsBlock;
+    case BlockComponents.selectOrUploadArray: return SelectOrUploadBlock;
   }
 });
 

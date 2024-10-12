@@ -10,4 +10,5 @@ export enum BlockComponents {
   arrayOfVideo = 'arrayOfVideo',
   arrayOfValues = 'arrayOfValues',
   arrayOfObjects = 'arrayOfObjects',
+  selectOrUploadArray = 'selectOrUploadArray',
 }

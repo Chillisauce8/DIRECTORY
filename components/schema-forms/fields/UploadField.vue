@@ -1,6 +1,7 @@
 <template>
     <FileUpload mode="basic" :name="props.description.name"
                 class="file-input"
+                :multiple="true"
                 customUpload @uploader="customUploader"
                 v-if="!hasFile()"
                 @select="onFileChanged($event)" />
@@ -92,11 +93,13 @@ function onFileChanged(event: {files: File[]}) {
     reader.onload = () => {
       const value: string = <string>reader.result;
 
-      const type = file.type || fileHelperService.getFileExtension(file.name);
+      const extension = file.type || fileHelperService.getFileExtension(file.name);
+      const type = fileHelperService.getFileType(file);
 
       vm.model = {
         name: file.name,
-        type: type,
+        extension,
+        type,
         size: file.size,
         value: value.split(',')[1],
       };
@@ -130,7 +133,7 @@ function canShowFile(): boolean {
 
 function showFile() {
   if (vm.model && vm.model.value) {
-    fileHelperService.showFile(vm.model.value, vm.model.type, vm.model.name);
+    fileHelperService.showFile(vm.model.value, vm.model.type);
   }
 }
 

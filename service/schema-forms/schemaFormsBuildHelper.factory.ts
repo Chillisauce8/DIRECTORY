@@ -247,6 +247,10 @@ export class SchemaFormsBuildHelper {
         return BlockComponents.object;
       }
     } else if (item.type === 'array') {
+      if (item.component === 'SelectOrUpload') {
+        return BlockComponents.selectOrUploadArray;
+      }
+
       if (['MultiSelect', 'Listbox', 'Chips'].includes(item.component)) {
         return BlockComponents.value;
       }

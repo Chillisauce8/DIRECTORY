@@ -1,7 +1,6 @@
 <template>
 
   <div class="field" v-if="initDone && props.noWrapper" v-show="!props.description.xHideValue">
-
     <component :is="componentInstance"
                :description="props.description" :context="vm.context"
                :model="vm.model" @modelChange="onModelChange($event)"
@@ -49,7 +48,6 @@ const MultiselectField = resolveComponent('MultiselectField');
 const AutocompleteField = resolveComponent('AutoCompleteField');
 const ReadonlyField = resolveComponent('ReadonlyField');
 const CalendarField = resolveComponent('CalendarField');
-const UploadField = resolveComponent('UploadField');
 
 
 export interface DynamicControlProps extends BaseControlProps {
@@ -91,7 +89,6 @@ const componentInstance = computed(() => {
   switch(componentName.value) {
     case 'Readonly': return ReadonlyField;
     case 'AutoComplete': return AutocompleteField;
-    case 'Upload': return UploadField;
     case 'InputText': return TextField;
     case 'Textarea': return TextField;
     case 'InputNumber': return NumberField;
@@ -154,10 +151,6 @@ function calculateComponentName(): string {
         if (props.description.component !== 'Multiselect' && props.description.component !== 'Autocomplete') {
             return 'Dropdown';
         }
-    }
-
-    if (props.description.xUpload) {
-        return 'Upload';
     }
 
     return props.description.component;
