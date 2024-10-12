@@ -36,17 +36,19 @@
         @update:selection="listSelectionChanged($event)">
         <template #item="{ item , index }">
           <div class="flex flex-wrap p-1 items-center gap-4 w-full">
-            <img v-if="item.url" :src="item.url" :alt="item.name" :width="30" :height="30">
-            <ImageWrapper
-              v-else
-              class="shrink-0 rounded"
-              :id="item._doc"
-              :alt="item.name"
-              :width="30"
-              :height="30"
-              dpr="1"
-              :singleImage="true"
-            />
+            <template v-if="item.type === FileType.Image">
+              <img v-if="item.url" :src="item.url" :alt="item.name" :width="30" :height="30">
+              <ImageWrapper
+                v-else
+                class="shrink-0 rounded"
+                :id="item._doc"
+                :alt="item.name"
+                :width="30"
+                :height="30"
+                dpr="1"
+                :singleImage="true"
+              />
+            </template>
 
             <div class="flex flex-col">
               <span class="font-medium text-sm">{{ item.name }}</span>
@@ -143,7 +145,7 @@ import { getCurrentInstance, ref } from 'vue';
 import { filesService } from '~/service/file/files-service';
 import { pick } from '~/service/utils';
 import FileUpload from 'primevue/fileupload';
-import { fileHelperService } from '~/service/file/file-helper-service';
+import { fileHelperService, FileType } from '~/service/file/file-helper-service';
 
 
 // @ts-ignore
@@ -164,7 +166,7 @@ const fileupload = ref();
 let virtualIdCounter = 0;
 
 onMounted(async () => {
-  filteredFiles.value = await filesService.getFiles({type: 'Image'});
+  filteredFiles.value = await filesService.getFiles({type: FileType.Image});
 
   const instance = getCurrentInstance();
   sharedFunctions.doOnMounted(instance);
