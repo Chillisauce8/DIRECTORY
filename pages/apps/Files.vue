@@ -140,11 +140,6 @@ const findIndexById = (id: number) => {
   return index;
 };
 
-// for aspect ratio calculation
-function gcd(a: number, b: number) {
-  return (b == 0) ? a : gcd (b, a % b);
-}
-
 const filesMetadata = reactive({
   names: {},
   descriptions: {},

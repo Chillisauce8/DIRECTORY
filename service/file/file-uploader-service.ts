@@ -30,15 +30,11 @@ export class FileUploaderService {
   async upload(config: FileUploaderConfig): Promise<boolean> {
     const requestOptions = this.createRequestOptions(config);
 
-    let success = true;
-
-    await this.http.request(config.url, requestOptions)
+    return this.http.request(config.url, requestOptions)
+      .then(result => result.data)
       .catch((error: any) => {
         this.processError(error);
-        success = false;
       });
-
-    return success;
   }
 
   processError(error: any) {
