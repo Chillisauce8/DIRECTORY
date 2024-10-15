@@ -12,7 +12,7 @@ defineProps({
 
 const $primevue = usePrimeVue();
 const rippleActive = computed(() => $primevue.config.ripple);
-const inputStyle = computed(() => $primevue.config.inputStyle || 'outlined') ;
+const inputStyle = computed(() => $primevue.config.inputStyle || 'outlined');
 
 const { setScale, layoutConfig, layoutState, onConfigSidebarToggle } = useLayout();
 const colorScheme = ref(layoutConfig.colorScheme.value);
@@ -104,9 +104,17 @@ const onRippleChange = (value) => {
         <i class="pi pi-cog"></i>
     </button>
 
-    <Sidebar v-model:visible="layoutState.configSidebarVisible.value" position="right" class="layout-config-sidebar w-20rem" :pt="{
-        closeButton: 'ml-auto'
-    }">
+    <Sidebar
+        v-model:visible="layoutState.configSidebarVisible.value"
+        position="right"
+        class="layout-config-sidebar w-20rem"
+        :pt="{
+            closeButton: 'ml-auto'
+        }"
+    >
+        <h5>Design Themes</h5>
+        <ThemePicker />
+
         <h5>Themes</h5>
         <div class="flex flex-wrap row-gap-3">
             <div v-for="(theme, i) in componentThemes" :key="i" class="w-3">

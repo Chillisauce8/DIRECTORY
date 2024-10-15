@@ -1,10 +1,12 @@
 <template>
     <div class="swp-picture">
         <picture v-for="(image, index) in normalizedImages" :key="index" :class="'image-' + (index + 1)">
-            <!-- Iterate over the normalized sources -->
-            <source v-for="(source, srcIndex) in normalizedSources" :key="srcIndex" :media="source.media" :srcset="constructSrcSet(source, image.id)" :sizes="sizes || source.sizes || defaultSizes(source.widths)" />
+            <!-- Conditionally render sources only if src prop is not provided -->
+            <template v-if="!src">
+                <source v-for="(source, srcIndex) in normalizedSources" :key="srcIndex" :media="source.media" :srcset="constructSrcSet(source, image.id)" :sizes="sizes || source.sizes || defaultSizes(source.widths)" />
+            </template>
             <!-- Fallback image src -->
-            <img :src="constructSrcSet(normalizedSources[0], image.id).split(',')[0].split(' ')[0]" :alt="image.alt || ''" :loading="loading || 'lazy'" />
+            <img :src="src || constructSrcSet(normalizedSources[0], image.id).split(',')[0].split(' ')[0]" :alt="image.alt || ''" :loading="loading || 'lazy'" />
         </picture>
 
         <div v-if="$slots.default" class="overlay test">
@@ -20,6 +22,7 @@ const baseUrl = 'https://media.chillisauce.com/image/upload/'; // Base URL for i
 const props = defineProps<{
     id?: string; // Optional single image id
     alt?: string; // Optional alt text for single image
+    src?: string; // Optional direct src for the img tag, bypass sources
     images?: Array<{ id: string; alt?: string }>; // Array of image objects
     loading?: 'eager' | 'lazy'; // Defaults to lazy
     modifiers?: string[]; // General modifiers for images

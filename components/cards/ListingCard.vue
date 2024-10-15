@@ -1,6 +1,6 @@
 <template>
     <card-wrapper class="listing-card standard-card">
-        <swp-picture v-if="images" :images="images" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
+        <swp-picture v-if="images" :images="images" :src="images[0]" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
             <SvgIcon svg="heart" class="heart" />
             <div class="location">
                 <span class="fi fi-gb flag"></span>
@@ -29,7 +29,7 @@ const props = defineProps(['images', 'name', 'saleType', 'year', 'price', 'engin
 
 <style lang="scss">
 .listing-card {
-    width: 300px;
+    //  width: 300px;
     picture {
         @include aspect-ratio(3, 2);
     }

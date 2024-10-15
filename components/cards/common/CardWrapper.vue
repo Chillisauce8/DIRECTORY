@@ -64,19 +64,22 @@ export default {
 $card-border: 5px;
 
 .card-wrapper {
+    border-radius: var(--corner-outer);
+    box-shadow: var(--box-shadow);
     cursor: pointer;
-    &.Dark {
-        color: $CB-2;
-    }
-    &.Transparent {
-        background-color: transparent;
+    & .swp-picture,
+    .swp-picture picture,
+    .swp-picture img {
+        border-top-left-radius: var(--corner-outer);
+        border-top-right-radius: var(--corner-outer);
     }
     & header {
         position: relative;
     }
     position: relative; // For smooth Vue transition-group https://www.youtube.com/watch?v=DGI_aKld0Jg
     background: var(--surface-card);
-    padding: $card-border;
+    // background-color: var(--card-border-color);
+    border: var(--card-border);
     font-size: 12px;
     transition: all 1s ease;
     // margin: 0 auto;

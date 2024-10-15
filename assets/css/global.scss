@@ -9,28 +9,7 @@ main {
 @layer reset {
 @import 'reset';
 }
-@import 'transitions';
-@import 'layout';
+@import 'themes';
 @import 'font-family';
 
 
-/*
-//@import 'helpers';
-
-//@import 'body';
-
-// @import 'common';
-
-@import "button-wrapper";
-@import "user-form";
-@import "dialogs";
-@import "tooltip";
-@import "toasted";
-@import "text-color";
-@import "form-components";
-@import "context-menu";
-@import "headers";
-@import "spit-box";
-@import "location-section-card";
-@import "cards";
-*/

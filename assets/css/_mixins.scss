@@ -1,8 +1,22 @@
 // FUNCTIONS
 // General to strip the unit off a value.
 
-// NEW
+// SWP 
 @use 'sass:math';
+
+@mixin generate-shades($name, $h, $s, $l) {
+  // First loop: Iterate through values of `l` using the provided `s`
+  @for $i from 0 through 100 {
+    $current-l: $i + '%';
+    $current-s: $i + '%';
+    --#{$name}-shade-l-#{$i}: hsl(#{$h}, #{$s} + '%' , #{$current-l});
+    --#{$name}-shade-s-#{$i}: hsl(#{$h}, #{$current-s}, #{$l} + '%');
+  }
+
+}
+
+// NEW
+
 
 @function strip-units($number) {
   @return math.div($number, ($number * 0 + 1));
