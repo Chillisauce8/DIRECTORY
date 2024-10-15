@@ -26,7 +26,8 @@
             <img src="https://lipsum.app/id/64/200x150" width="200" height="150" />
         </a>
         <a data-fancybox="gallery" href="https://lipsum.app/id/65/1600x1200">
-            <img src="https://lipsum.app/id/65/200x150" width="200" height="150" />
+            <!--    <img src="https://lipsum.app/id/65/200x150" width="200" height="150" /> -->
+            <SwpPicture id="66365a43e70ac51006d4d811" widths="300:300" aspectRatio="3:2" />
         </a>
     </Fancybox>
 </template>
