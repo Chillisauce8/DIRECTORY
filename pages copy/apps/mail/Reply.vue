@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const content = ref({});
 const newMail = ref({});
@@ -30,17 +30,17 @@ watch(
     }
 );
 
-const updateContent = () => {
+function updateContent() {
     content.value = { ...props.mailDetail };
-};
+}
 
-const sendMail = () => {
+function sendMail() {
     const replyMail = setMailAction();
 
     emit('save', replyMail);
-};
+}
 
-const setMailAction = () => {
+function setMailAction() {
     return {
         ...content.value,
         ...newMail.value,
@@ -54,13 +54,13 @@ const setMailAction = () => {
         important: false,
         date: generateDate()
     };
-};
+}
 
-const toggleMessage = () => {
+function toggleMessage() {
     displayMessage.value = !displayMessage.value;
-};
+}
 
-const generateId = () => {
+function generateId() {
     let text = '';
     let possible = '0123456789';
 
@@ -69,11 +69,12 @@ const generateId = () => {
     }
 
     return text;
-};
+}
 
-const generateDate = () => {
+function generateDate() {
     return new Date().toDateString().split(' ').slice(1, 4).join(' ');
-};
+}
+
 watch(
     () => props.dialogVisible,
     (newValue) => {
@@ -89,35 +90,35 @@ watch(
 </script>
 
 <template>
-    <Dialog v-model:visible="localDialogVisible" header="New Message" modal class="mx-3 sm:mx-0 sm:w-full md:w-8 lg:w-6" contentClass="border-round-bottom border-top-1 surface-border p-0">
+    <Dialog v-model:visible="localDialogVisible" header="New Message" modal class="mx-4 sm:mx-0 sm:w-full md:w-8/12 lg:w-6/12" contentClass="rounded-b border-t border-surface-200 dark:border-surface-700 p-0">
         <div class="p-0 m-0">
-            <div class="surface-section grid grid-nogutter formgrid flex-column md:flex-row gap-6 p-5 border-round">
+            <div class="bg-surface-0 dark:bg-surface-950 grid grid-cols-12 grid-nogutter flex-col md:flex-row gap-12 p-8 rounded">
                 <div class="col">
-                    <label for="to" class="block text-900 font-semibold mb-3">To</label>
-                    <IconField iconPosition="left" class="w-full" style="height: 3.5rem">
+                    <label for="to" class="block text-surface-900 dark:text-surface-0 font-semibold mb-4">To</label>
+                    <IconField class="w-full" style="height: 3.5rem">
                         <InputIcon class="pi pi-user" style="left: 1.5rem" />
-                        <InputText id="to" type="text" class="w-full pl-7 text-900 font-semibold" style="height: 3.5rem" v-model="content.from" />
+                        <InputText id="to" type="text" class="w-full pl-16 text-surface-900 dark:text-surface-0 font-semibold" style="height: 3.5rem" v-model="content.from" />
                     </IconField>
                 </div>
                 <div class="col">
-                    <label for="Subject" class="block text-900 font-semibold mb-3">Subject</label>
-                    <IconField iconPosition="left" class="w-full" style="height: 3.5rem">
+                    <label for="Subject" class="block text-surface-900 dark:text-surface-0 font-semibold mb-4">Subject</label>
+                    <IconField class="w-full" style="height: 3.5rem">
                         <InputIcon class="pi pi-pencil" style="left: 1.5rem" />
-                        <InputText id="subject" type="text" placeholder="Subject" class="w-full pl-7 text-900 font-semibold" style="height: 3.5rem" v-model="content.title" />
+                        <InputText id="subject" type="text" placeholder="Subject" class="w-full pl-16 text-surface-900 dark:text-surface-0 font-semibold" style="height: 3.5rem" v-model="content.title" />
                     </IconField>
                 </div>
-                <div v-if="displayMessage" class="col-12 field">
-                    <div class="border-1 surface-border border-round p-4">{{ content.message }}</div>
+                <div v-if="displayMessage" class="col-span-12">
+                    <div class="border border-surface-200 dark:border-surface-700 rounded p-6">{{ content.message }}</div>
                 </div>
-                <div class="col-12 field">
-                    <span class="surface-ground cursor-pointer border-round px-2" @click="toggleMessage()" v-tooltip="displayMessage ? 'Hide content' : 'Show content'"><i class="pi pi-ellipsis-h"></i></span>
-                    <Editor :editorStyle="{ height: '250px' }" class="mt-3" v-model="newMail.message"></Editor>
+                <div class="col-span-12">
+                    <span class="bg-surface-50 dark:bg-surface-950 cursor-pointer rounded px-2" @click="toggleMessage()" v-tooltip="displayMessage ? 'Hide content' : 'Show content'"><i class="pi pi-ellipsis-h"></i></span>
+                    <Editor :editorStyle="{ height: '250px' }" class="mt-4" v-model="newMail.message"></Editor>
                 </div>
             </div>
-            <div class="flex column-gap-3 justify-content-end p-5 border-top-1 surface-border">
+            <div class="flex gap-x-4 justify-end p-8 border-t border-surface-200 dark:border-surface-700">
                 <Button type="button" outlined icon="pi pi-image"></Button>
                 <Button type="button" outlined icon="pi pi-paperclip"></Button>
-                <Button type="button" class="h-3rem" icon="pi pi-send" label="Send" @click="sendMail()"></Button>
+                <Button type="button" class="h-12" icon="pi pi-send" label="Send" @click="sendMail()"></Button>
             </div>
         </div>
     </Dialog>

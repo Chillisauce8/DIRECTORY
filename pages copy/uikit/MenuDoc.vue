@@ -82,24 +82,6 @@ const nestedMenuitems = ref([
 ]);
 const breadcrumbHome = ref({ icon: 'pi pi-home', to: '/' });
 const breadcrumbItems = ref([{ label: 'Computer' }, { label: 'Notebook' }, { label: 'Accessories' }, { label: 'Backpacks' }, { label: 'Item' }]);
-const nestedRouteItems = ref([
-    {
-        label: 'Personal',
-        to: '/uikit/menu'
-    },
-    {
-        label: 'Seat',
-        to: '/uikit/menu/seat'
-    },
-    {
-        label: 'Payment',
-        to: '/uikit/menu/payment'
-    },
-    {
-        label: 'Confirmation',
-        to: '/uikit/menu/confirmation'
-    }
-]);
 const tieredMenuItems = ref([
     {
         label: 'Customers',
@@ -430,98 +412,101 @@ const panelMenuitems = ref([
     }
 ]);
 
-const toggleMenu = (event) => {
+function toggleMenu(event) {
     menu.value.toggle(event);
-};
+}
 
-const onContextRightClick = (event) => {
+function onContextRightClick(event) {
     contextMenu.value.show(event);
-};
+}
 </script>
 
 <template>
-    <div class="grid p-fluid">
-        <div class="col-12">
-            <div class="card card-w-title">
-                <h5>Menubar</h5>
-                <Menubar :model="nestedMenuitems">
-                    <template #end>
-                        <IconField iconPosition="left">
-                            <InputIcon class="pi pi-search" />
-                            <InputText type="text" placeholder="Search" />
-                        </IconField>
-                    </template>
-                </Menubar>
-            </div>
-        </div>
+    <div class="card">
+        <div class="font-semibold text-xl mb-4">Menubar</div>
+        <Menubar :model="nestedMenuitems">
+            <template #end>
+                <IconField>
+                    <InputIcon class="pi pi-search" />
+                    <InputText type="text" placeholder="Search" />
+                </IconField>
+            </template>
+        </Menubar>
+    </div>
 
-        <div class="col-12">
-            <div class="card card-w-title">
-                <h5>Breadcrumb</h5>
-                <Breadcrumb :home="breadcrumbHome" :model="breadcrumbItems" />
-            </div>
-        </div>
+    <div class="card">
+        <div class="font-semibold text-xl mb-4">Breadcrumb</div>
+        <Breadcrumb :home="breadcrumbHome" :model="breadcrumbItems" />
+    </div>
 
-        <div class="col-12 md:col-6">
-            <div class="card card-w-title">
-                <h5>Steps</h5>
-                <p>Steps and TabMenu are integrated with the same child routes.</p>
-                <Steps :model="nestedRouteItems" :readonly="false" />
-                <router-view />
-            </div>
-        </div>
-
-        <div class="col-12 md:col-6">
-            <div class="card card-w-title">
-                <h5>TabMenu</h5>
-                <p>Steps and TabMenu are integrated with the same child routes.</p>
-                <TabMenu :model="nestedRouteItems" />
-                <router-view />
-            </div>
-        </div>
-
-        <div class="col-12 md:col-4">
+    <div class="flex flex-col md:flex-row gap-8">
+        <div class="md:w-1/2">
             <div class="card">
-                <h5>Tiered Menu</h5>
+                <div class="font-semibold text-xl mb-4">Steps</div>
+                <Stepper value="1">
+                    <StepList>
+                        <Step value="1">Header I</Step>
+                        <Step value="2">Header II</Step>
+                        <Step value="3">Header III</Step>
+                    </StepList>
+                </Stepper>
+            </div>
+        </div>
+        <div class="md:w-1/2">
+            <div class="card">
+                <div class="font-semibold text-xl mb-4">TabMenu</div>
+                <Tabs value="0">
+                    <TabList>
+                        <Tab value="0">Header I</Tab>
+                        <Tab value="1">Header II</Tab>
+                        <Tab value="2">Header III</Tab>
+                    </TabList>
+                </Tabs>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row gap-8 mt-6">
+        <div class="md:w-1/3">
+            <div class="card">
+                <div class="font-semibold text-xl mb-4">Tiered Menu</div>
                 <TieredMenu :model="tieredMenuItems" />
             </div>
         </div>
-
-        <div class="col-12 md:col-4">
+        <div class="md:w-1/3">
             <div class="card">
-                <h5>Plain Menu</h5>
+                <div class="font-semibold text-xl mb-4">Plain Menu</div>
                 <Menu :model="menuitems" />
             </div>
         </div>
-
-        <div class="col-12 md:col-4">
+        <div class="md:w-1/3">
             <div class="card">
-                <h5>Overlay Menu</h5>
-
+                <div class="font-semibold text-xl mb-4">Overlay Menu</div>
                 <Menu ref="menu" :model="overlayMenuItems" :popup="true" />
                 <Button type="button" label="Options" icon="pi pi-angle-down" @click="toggleMenu" style="width: auto" />
             </div>
 
             <div class="card" @contextmenu="onContextRightClick">
-                <h5>ContextMenu</h5>
+                <div class="font-semibold text-xl mb-4">Context Menu</div>
                 Right click to display.
                 <ContextMenu ref="contextMenu" :model="contextMenuItems" />
             </div>
         </div>
+    </div>
 
-        <div class="col-12 md:col-6">
+    <div class="flex flex-col md:flex-row gap-8 mt-8">
+        <div class="md:w-1/2">
             <div class="card">
-                <h5>MegaMenu - Horizontal</h5>
+                <div class="font-semibold text-xl mb-4">MegaMenu | Horizontal</div>
                 <MegaMenu :model="megamenuItems" />
 
-                <h5 style="margin-top: 1.55em">MegaMenu - Vertical</h5>
+                <div class="font-semibold text-xl mb-4 mt-8">MegaMenu | Vertical</div>
                 <MegaMenu :model="megamenuItems" orientation="vertical" />
             </div>
         </div>
-
-        <div class="col-12 md:col-6">
+        <div class="md:w-1/2">
             <div class="card">
-                <h5>PanelMenu</h5>
+                <div class="font-semibold text-xl mb-4">PanelMenu</div>
                 <PanelMenu :model="panelMenuitems" />
             </div>
         </div>

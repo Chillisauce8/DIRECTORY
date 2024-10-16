@@ -1,55 +1,45 @@
 <script setup>
-import { useLayout } from '../../layouts/composables/layout';
-import { computed, ref } from 'vue';
 import AppConfig from '../../layouts/AppConfig.vue';
+
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { usePrimeVue } from 'primevue/config';
-
-const $primevue = usePrimeVue();
-
-defineExpose({
-    $primevue
-});
 
 definePageMeta({
-    layout: false
+    layout: 'custom'
 });
 
 const router = useRouter();
 
+const { isDarkTheme } = useLayout();
+
 const isHidden = ref(false);
 
-const toggleHidden = () => {
+function toggleHidden() {
     isHidden.value = !isHidden.value;
-};
+}
 
-const { layoutConfig } = useLayout();
-
-const darkMode = computed(() => {
-    return layoutConfig.colorScheme.value !== 'light';
-});
-
-const smoothScroll = (id) => {
+function smoothScroll(id) {
     document.querySelector(id).scrollIntoView({
         behavior: 'smooth'
     });
-};
+}
 
-const navigateAndToggle = (id) => {
+function navigateAndToggle(id) {
     smoothScroll(id);
     toggleHidden();
-};
-const navigateToDashboard = () => {
+}
+
+function navigateToDashboard() {
     router.push('/');
-};
+}
 </script>
 
 <template>
-    <div class="relative overflow-hidden flex flex-column justify-content-center">
+    <div class="relative overflow-hidden flex flex-col justify-center">
         <div class="bg-circle opacity-50" :style="{ top: '-200px', left: '-700px' }"></div>
         <div class="bg-circle hidden lg:flex" :style="{ top: '50px', right: '-800px', transform: 'rotate(60deg)' }"></div>
         <div class="landing-wrapper">
-            <div class="flex align-items-center justify-content-between relative lg:static py-6 px-4 mx-0 md:px-7 lg:px-8 lg:py-6 lg:mx-8">
+            <div class="flex items-center justify-between relative lg:static py-12 px-6 mx-0 md:px-16 lg:px-20 lg:py-12 lg:mx-20">
                 <a class="cursor-pointer" @click="navigateToDashboard">
                     <svg width="124" height="22" viewBox="0 0 124 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10.4851 0L0 20.9465H3.53702L10.4856 6.07843L17.2944 20.9465H20.9715L10.4851 0Z" fill="var(--primary-color)" />
@@ -73,220 +63,222 @@ const navigateToDashboard = () => {
                     </svg>
                 </a>
 
-                <i
-                    v-styleclass="{
-                        selector: '@next',
-                        enterClass: 'hidden',
-                        leaveToClass: 'hidden',
-                        hideOnOutsideClick: true
-                    }"
-                    class="pi pi-bars text-4xl cursor-pointer block md:hidden text-700"
-                ></i>
+                <i v-styleclass="{ selector: '@next', enterClass: 'hidden', leaveToClass: 'hidden', hideOnOutsideClick: true }" class="pi pi-bars !text-4xl cursor-pointer block md:!hidden text-surface-700 dark:text-surface-100"></i>
 
-                <div class="align-items-center flex-grow-1 hidden md:flex absolute md:static w-full md:px-0 z-3 shadow-2 md:shadow-none fadein" :class="{ hidden: isHidden }" :style="{ top: '80px', right: '0%' }">
-                    <ul class="list-none p-3 md:p-0 m-0 ml-auto flex md:align-items-center select-none flex-column md:flex-row cursor-pointer surface-card md:surface-ground">
+                <div class="items-center flex-grow-1 hidden md:flex absolute md:static w-full md:px-0 z-30 shadow md:shadow-none animate-fadein" :class="{ hidden: isHidden }" :style="{ top: '80px', right: '0%' }">
+                    <ul class="list-none p-4 md:p-0 m-0 ml-auto flex md:items-center select-none flex-col md:flex-row cursor-pointer">
                         <li>
-                            <a @click="navigateAndToggle('#home')" v-ripple class="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
+                            <a @click="navigateAndToggle('#home')" class="flex m-0 md:ml-8 px-0 py-4 text-surface-900 dark:text-surface-0 font-medium leading-normal">
                                 <span>Home</span>
                             </a>
                         </li>
                         <li>
-                            <a @click="navigateAndToggle('#apps')" v-ripple class="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
+                            <a @click="navigateAndToggle('#apps')" class="flex m-0 md:ml-8 px-0 py-4 text-surface-900 dark:text-surface-0 font-medium leading-normal">
                                 <span>Apps</span>
                             </a>
                         </li>
                         <li>
-                            <a @click="navigateAndToggle('#pricing')" v-ripple class="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
+                            <a @click="navigateAndToggle('#pricing')" class="flex m-0 md:ml-8 px-0 py-4 text-surface-900 dark:text-surface-0 font-medium leading-normal">
                                 <span>Pricing</span>
                             </a>
                         </li>
                         <li>
-                            <a @click="navigateAndToggle('#features')" v-ripple class="p-ripple flex m-0 md:ml-5 px-0 py-3 text-900 font-medium line-height-3">
+                            <a @click="navigateAndToggle('#features')" class="flex m-0 md:ml-8 px-0 py-4 text-surface-900 dark:text-surface-0 font-medium leading-normal">
                                 <span>Features</span>
                             </a>
                         </li>
 
                         <li>
-                            <Button type="button" label="Buy Now" class="m-0 mt-3 md:mt-0 md:ml-5"></Button>
+                            <Button type="button" label="Buy Now" class="m-0 mt-4 md:mt-0 md:ml-8"></Button>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 z-2">
-                <div id="home" class="grid grid-nogutter justify-content-between align-items-center mb-6 py-6 md:mb-8 md:py-8">
-                    <div class="col-12 md:col-4 flex flex-column gap-4 flex-order-1 md:flex-order-0 align-items-center md:align-items-start text-center md:text-left">
-                        <span class="block text-900 font-bold text-4xl">Modern, stylish and clean</span>
-                        <span class="block text-700 text-lg">The ultimate collection of design-agnostic, flexible and accessible UI Components.</span>
-                        <ul class="flex flex-wrap gap-5 list-none p-0">
-                            <li class="flex align-items-center">
-                                <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
-                                <span class="text-900 font-semibold">Javascript</span>
+            <div class="py-6 px-6 mx-0 md:mx-12 lg:mx-20 lg:px-20 z-20">
+                <div id="home" class="grid grid-cols-12 gap-4 grid-nogutter justify-between items-center mb-12 py-12 md:mb-20 md:py-20">
+                    <div class="col-span-12 md:col-span-4 flex flex-col gap-6 order-1 md:order-none items-center md:items-start text-center md:text-left">
+                        <span class="block text-surface-900 dark:text-surface-0 font-bold text-4xl">Modern, stylish and clean</span>
+                        <span class="block text-surface-700 dark:text-surface-100 text-lg">The ultimate collection of design-agnostic, flexible and accessible UI Components.</span>
+                        <ul class="flex flex-wrap gap-8 list-none p-0">
+                            <li class="flex items-center">
+                                <div class="p-1 rounded-full bg-green-400 inline-block mr-2"></div>
+                                <span class="text-surface-900 dark:text-surface-0 font-semibold">Javascript</span>
                             </li>
-                            <li class="flex align-items-center">
-                                <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
-                                <span class="text-900 font-semibold">TypeScript</span>
+                            <li class="flex items-center">
+                                <div class="p-1 rounded-full bg-green-400 inline-block mr-2"></div>
+                                <span class="text-surface-900 dark:text-surface-0 font-semibold">TypeScript</span>
                             </li>
-                            <li class="flex align-items-center">
-                                <div class="p-1 border-circle bg-green-400 inline-block mr-2"></div>
-                                <span class="text-900 font-semibold">Vue</span>
+                            <li class="flex items-center">
+                                <div class="p-1 rounded-full bg-green-400 inline-block mr-2"></div>
+                                <span class="text-surface-900 dark:text-surface-0 font-semibold">Vue</span>
                             </li>
                         </ul>
-                        <Button type="button" label="Live Preview" icon="pi pi-arrow-right" iconPos="right" class="w-12rem" outlined></Button>
+                        <Button type="button" label="Live Preview" icon="pi pi-arrow-right" iconPos="right" class="w-48" outlined></Button>
                     </div>
 
-                    <div class="col-12 md:col-7 flex-order-0 md:flex-order-1 mb-6 md:mb-0 border-round">
-                        <img :src="`../demo/images/landing/${darkMode ? 'dashboard-dark' : 'dashboard-light'}.png`" alt="" class="w-full h-full border-round shadow-2 animation-duration-1000 fadeinright" />
-                    </div>
-                </div>
-
-                <div id="apps" class="my-6 md:my-8">
-                    <span class="text-900 block font-bold text-5xl mb-4 text-center">Apps</span>
-                    <span class="text-700 block text-xl mb-8 text-center line-height-3">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit numquam eligendi quos.</span>
-
-                    <div class="flex flex-column lg:flex-row align-items-center justify-content-between mt-8 gap-8">
-                        <div class="flex flex-column align-items-center">
-                            <img :src="`../demo/images/landing/${darkMode ? 'chat-dark' : 'chat-light'}.png`" alt="chat" class="w-full h-full border-round surface-border shadow-2 animation-duration-500 scalein origin-top" />
-                            <span class="block text-900 text-lg font-semibold mt-4">Chat</span>
-                        </div>
-                        <div class="flex flex-column align-items-center">
-                            <img :src="`../demo/images/landing/${darkMode ? 'mail-dark' : 'mail-light'}.png`" alt="chat" class="w-full h-full border-round surface-border shadow-2 animation-duration-500 scalein origin-top" />
-                            <span class="block text-900 text-lg font-semibold mt-4">Mail</span>
-                        </div>
+                    <div class="col-span-12 md:col-span-7 order-none md:order-1 mb-12 md:mb-0 rounded">
+                        <img :src="`/demo/images/landing/${isDarkTheme ? 'dashboard-dark' : 'dashboard-light'}.png`" alt="" class="w-full h-full rounded shadow animate-duration-1000 animate-fadeinright" />
                     </div>
                 </div>
 
-                <div id="pricing" class="my-6 py-6 md:my-8 md:py-8">
-                    <div class="text-900 font-bold text-5xl mb-4 text-center">Pricing Plans</div>
-                    <div class="text-700 text-xl mb-8 text-center line-height-3">Choose a plan that works best for you and your team.</div>
+                <div id="apps" class="my-12 md:my-20">
+                    <span class="text-surface-900 dark:text-surface-0 block font-bold text-5xl mb-6 text-center">Apps</span>
+                    <span class="text-surface-700 dark:text-surface-100 block text-xl mb-20 text-center leading-normal">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit numquam eligendi quos.</span>
 
-                    <div class="grid grid-nogutter justify-content-center mt-8">
-                        <div class="col-12 lg:col-6 xl:col-4">
-                            <div class="p-3 h-full">
-                                <div class="shadow-2 p-6 h-full flex flex-column surface-card" :style="{ borderRadius: '6px' }">
-                                    <span class="text-900 block font-medium text-xl mb-2 text-center">Basic Licence</span>
-                                    <span class="font-bold block text-2xl text-900 text-center">$29</span>
+                    <div class="flex flex-col lg:flex-row items-center justify-between mt-20 gap-20">
+                        <div class="flex flex-col items-center">
+                            <img
+                                :src="`/demo/images/landing/${isDarkTheme ? 'chat-dark' : 'chat-light'}.png`"
+                                alt="chat"
+                                class="w-full h-full rounded border-surface-200 dark:border-surface-700 shadow animate-duration-500 animate-scalein origin-top"
+                            />
+                            <span class="block text-surface-900 dark:text-surface-0 text-lg font-semibold mt-6">Chat</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <img
+                                :src="`/demo/images/landing/${isDarkTheme ? 'mail-dark' : 'mail-light'}.png`"
+                                alt="chat"
+                                class="w-full h-full rounded border-surface-200 dark:border-surface-700 shadow animate-duration-500 animate-scalein origin-top"
+                            />
+                            <span class="block text-surface-900 dark:text-surface-0 text-lg font-semibold mt-6">Mail</span>
+                        </div>
+                    </div>
+                </div>
 
-                                    <ul class="list-none p-0 m-0 flex-grow-1 mt-6">
-                                        <li class="flex align-items-center mb-3">
+                <div id="pricing" class="my-12 py-12 md:my-20 md:py-20">
+                    <div class="text-surface-900 dark:text-surface-0 font-bold text-5xl mb-6 text-center">Pricing Plans</div>
+                    <div class="text-surface-700 dark:text-surface-100 text-xl mb-20 text-center leading-normal">Choose a plan that works best for you and your team.</div>
+
+                    <div class="flex flex-col lg:flex-row gap-4 grid-nogutter justify-center mt-20">
+                        <div class="w-full lg:w-1/2 xl:w-1/3">
+                            <div class="p-4 h-full">
+                                <div class="shadow p-12 h-full flex flex-col bg-surface-0 dark:bg-surface-900" :style="{ borderRadius: '6px' }">
+                                    <span class="text-surface-900 dark:text-surface-0 block font-medium text-xl mb-2 text-center">Basic Licence</span>
+                                    <span class="font-bold block text-2xl text-surface-900 dark:text-surface-0 text-center">$29</span>
+
+                                    <ul class="list-none p-0 m-0 flex-grow-1 mt-12">
+                                        <li class="flex items-center mb-4">
                                             <i class="pi pi-check text-green-500 mr-2"></i>
                                             <span>Up to 10 Active Users</span>
                                         </li>
-                                        <li class="flex align-items-center mb-3">
+                                        <li class="flex items-center mb-4">
                                             <i class="pi pi-check text-green-500 mr-2"></i>
                                             <span>Up to 30 Project Integrations</span>
                                         </li>
-                                        <li class="flex align-items-center mb-3">
+                                        <li class="flex items-center mb-4">
                                             <i class="pi pi-check text-green-500 mr-2"></i>
                                             <span>Analytics Module</span>
                                         </li>
-                                        <li class="flex align-items-center mb-3">
+                                        <li class="flex items-center mb-4">
                                             <i class="pi pi-times text-red-500 mr-2"></i>
                                             <span>Finance Module</span>
                                         </li>
                                     </ul>
 
-                                    <Button label="Choose Plan" class="px-5 w-full mt-6" outlined icon="pi pi-arrow-right" iconPos="right"></Button>
+                                    <Button label="Choose Plan" class="px-8 w-full mt-12" outlined icon="pi pi-arrow-right" iconPos="right"></Button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 lg:col-6 xl:col-4">
-                            <div class="p-3 h-full">
-                                <div class="shadow-2 p-6 h-full flex flex-column surface-card" :style="{ borderRadius: '6px' }">
-                                    <span class="text-900 block font-medium text-xl mb-2 text-center">Extended Licence</span>
-                                    <span class="font-bold block text-2xl text-900 text-center">$49</span>
+                        <div class="w-full lg:w-1/2 xl:w-1/3">
+                            <div class="p-4 h-full">
+                                <div class="shadow p-12 h-full flex flex-col bg-surface-0 dark:bg-surface-900" :style="{ borderRadius: '6px' }">
+                                    <span class="text-surface-900 dark:text-surface-0 block font-medium text-xl mb-2 text-center">Extended Licence</span>
+                                    <span class="font-bold block text-2xl text-surface-900 dark:text-surface-0 text-center">$49</span>
 
-                                    <ul class="list-none p-0 m-0 flex-grow-1 mt-6">
-                                        <li class="flex align-items-center mb-3">
+                                    <ul class="list-none p-0 m-0 flex-grow-1 mt-12">
+                                        <li class="flex items-center mb-4">
                                             <i class="pi pi-check text-green-500 mr-2"></i>
                                             <span>Up to 10 Active Users</span>
                                         </li>
-                                        <li class="flex align-items-center mb-3">
+                                        <li class="flex items-center mb-4">
                                             <i class="pi pi-check text-green-500 mr-2"></i>
                                             <span>Up to 30 Project Integrations</span>
                                         </li>
-                                        <li class="flex align-items-center mb-3">
+                                        <li class="flex items-center mb-4">
                                             <i class="pi pi-check text-green-500 mr-2"></i>
                                             <span>Analytics Module</span>
                                         </li>
-                                        <li class="flex align-items-center mb-3">
+                                        <li class="flex items-center mb-4">
                                             <i class="pi pi-times text-red-500 mr-2"></i>
                                             <span>Finance Module</span>
                                         </li>
                                     </ul>
 
-                                    <Button label="Choose Plan" class="px-5 w-full mt-6" outlined icon="pi pi-arrow-right" iconPos="right"></Button>
+                                    <Button label="Choose Plan" class="px-8 w-full mt-12" outlined icon="pi pi-arrow-right" iconPos="right"></Button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="features" class="my-6 py-6 md:my-8 md:py-8">
-                    <span class="text-900 block font-bold text-5xl mb-4 text-center">Features</span>
-                    <span class="text-700 block text-xl mb-8 text-center line-height-3">PrimeTek Informatics is the author of PrimeVue, a UI Component vendor with well known vastly popular projects including PrimeFaces, PrimeNG and PrimeReact.</span>
+                <div id="features" class="my-12 py-12 md:my-20 md:py-20">
+                    <span class="text-surface-900 dark:text-surface-0 block font-bold text-5xl mb-6 text-center">Features</span>
+                    <span class="text-surface-700 dark:text-surface-100 block text-xl mb-20 text-center leading-normal"
+                        >PrimeTek Informatics is the author of PrimeVue, a UI Component vendor with well known vastly popular projects including PrimeFaces, PrimeNG and PrimeReact.</span
+                    >
 
-                    <div class="grid mt-8">
-                        <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                            <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                                <img :src="`../demo/images/landing/icon-components.svg`" alt="components icon" class="block mb-3" />
-                                <span class="text-900 block font-semibold mb-3 text-lg">90+ UI Components</span>
-                                <p class="m-0 text-secondary text-700">The ultimate set of UI Components to assist you with 90+ impressive Vue Components.</p>
+                    <div class="grid grid-cols-12 gap-4 mt-20">
+                        <div class="col-span-12 md:col-span-6 xl:col-span-3 flex justify-center p-4">
+                            <div class="box p-6 w-full bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700 border rounded">
+                                <img :src="`/demo/images/landing/icon-components.svg`" alt="components icon" class="block mb-4" />
+                                <span class="text-surface-900 dark:text-surface-0 block font-semibold mb-4 text-lg">90+ UI Components</span>
+                                <p class="m-0 text-secondary text-surface-700 dark:text-surface-100">The ultimate set of UI Components to assist you with 90+ impressive Vue Components.</p>
                             </div>
                         </div>
-                        <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                            <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                                <img :src="`../demo/images/landing/icon-community.svg`" alt="components icon" class="block mb-3" />
-                                <span class="text-900 block font-semibold mb-3 text-lg">Community</span>
-                                <p class="m-0 text-secondary text-700">Connect with the other open source community members, collaborate and have a voice in the project roadmap.</p>
+                        <div class="col-span-12 md:col-span-6 xl:col-span-3 flex justify-center p-4">
+                            <div class="box p-6 w-full bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700 border rounded">
+                                <img :src="`/demo/images/landing/icon-community.svg`" alt="components icon" class="block mb-4" />
+                                <span class="text-surface-900 dark:text-surface-0 block font-semibold mb-4 text-lg">Community</span>
+                                <p class="m-0 text-secondary text-surface-700 dark:text-surface-100">Connect with the other open source community members, collaborate and have a voice in the project roadmap.</p>
                             </div>
                         </div>
-                        <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                            <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                                <img :src="`../demo/images/landing/icon-productivity.svg`" alt="components icon" class="block mb-3" />
-                                <span class="text-900 block font-semibold mb-3 text-lg">Productivity</span>
-                                <p class="m-0 text-secondary text-700">Boost your productivity by achieving more in less time and accomplish amazing results.</p>
+                        <div class="col-span-12 md:col-span-6 xl:col-span-3 flex justify-center p-4">
+                            <div class="box p-6 w-full bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700 border rounded">
+                                <img :src="`/demo/images/landing/icon-productivity.svg`" alt="components icon" class="block mb-4" />
+                                <span class="text-surface-900 dark:text-surface-0 block font-semibold mb-4 text-lg">Productivity</span>
+                                <p class="m-0 text-secondary text-surface-700 dark:text-surface-100">Boost your productivity by achieving more in less time and accomplish amazing results.</p>
                             </div>
                         </div>
-                        <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                            <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                                <img :src="`../demo/images/landing/icon-accessibility.svg`" alt="components icon" class="block mb-3" />
-                                <span class="text-900 block font-semibold mb-3 text-lg">Accessibility</span>
-                                <p class="m-0 text-secondary text-700">The ultimate set of UI Components to assist you with 90+ impressive Vue Components.</p>
+                        <div class="col-span-12 md:col-span-6 xl:col-span-3 flex justify-center p-4">
+                            <div class="box p-6 w-full bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700 border rounded">
+                                <img :src="`/demo/images/landing/icon-accessibility.svg`" alt="components icon" class="block mb-4" />
+                                <span class="text-surface-900 dark:text-surface-0 block font-semibold mb-4 text-lg">Accessibility</span>
+                                <p class="m-0 text-secondary text-surface-700 dark:text-surface-100">The ultimate set of UI Components to assist you with 90+ impressive Vue Components.</p>
                             </div>
                         </div>
-                        <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                            <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                                <img :src="`../demo/images/landing/icon-support.svg`" alt="components icon" class="block mb-3" />
-                                <span class="text-900 block font-semibold mb-3 text-lg">Enterprise Support</span>
-                                <p class="m-0 text-secondary text-700">Exceptional support service featuring response within 1 business day and option to request enhancements and new features for the library.</p>
+                        <div class="col-span-12 md:col-span-6 xl:col-span-3 flex justify-center p-4">
+                            <div class="box p-6 w-full bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700 border rounded">
+                                <img :src="`/demo/images/landing/icon-support.svg`" alt="components icon" class="block mb-4" />
+                                <span class="text-surface-900 dark:text-surface-0 block font-semibold mb-4 text-lg">Enterprise Support</span>
+                                <p class="m-0 text-secondary text-surface-700 dark:text-surface-100">Exceptional support service featuring response within 1 business day and option to request enhancements and new features for the library.</p>
                             </div>
                         </div>
-                        <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                            <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                                <img :src="`../demo/images/landing/icon-mobile.svg`" alt="components icon" class="block mb-3" />
-                                <span class="text-900 block font-semibold mb-3 text-lg">Mobile</span>
-                                <p class="m-0 text-secondary text-700">First class support for responsive design led by touch optimized elements.</p>
+                        <div class="col-span-12 md:col-span-6 xl:col-span-3 flex justify-center p-4">
+                            <div class="box p-6 w-full bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700 border rounded">
+                                <img :src="`/demo/images/landing/icon-mobile.svg`" alt="components icon" class="block mb-4" />
+                                <span class="text-surface-900 dark:text-surface-0 block font-semibold mb-4 text-lg">Mobile</span>
+                                <p class="m-0 text-secondary text-surface-700 dark:text-surface-100">First class support for responsive design led by touch optimized elements.</p>
                             </div>
                         </div>
-                        <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                            <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                                <img :src="`../demo/images/landing/icon-theme.svg`" alt="components icon" class="block mb-3" />
-                                <span class="text-900 block font-semibold mb-3 text-lg">Themes</span>
-                                <p class="m-0 text-secondary text-700">Built on a design-agnostic api, choose from a vast amount of themes such as material, bootstrap, custom or develop your own.</p>
+                        <div class="col-span-12 md:col-span-6 xl:col-span-3 flex justify-center p-4">
+                            <div class="box p-6 w-full bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700 border rounded">
+                                <img :src="`/demo/images/landing/icon-theme.svg`" alt="components icon" class="block mb-4" />
+                                <span class="text-surface-900 dark:text-surface-0 block font-semibold mb-4 text-lg">Themes</span>
+                                <p class="m-0 text-secondary text-surface-700 dark:text-surface-100">Built on a design-agnostic api, choose from a vast amount of themes such as material, bootstrap, custom or develop your own.</p>
                             </div>
                         </div>
-                        <div class="col-12 md:col-6 xl:col-3 flex justify-content-center p-3">
-                            <div class="box p-4 w-full surface-card surface-border border-1 border-round">
-                                <img :src="`../demo/images/landing/icon-ts.svg`" alt="components icon" class="block mb-3" />
-                                <span class="text-900 block font-semibold mb-3 text-lg">Typescript</span>
-                                <p class="m-0 text-secondary text-700">Top-notch support for Typescript with types and tooling assistance.</p>
+                        <div class="col-span-12 md:col-span-6 xl:col-span-3 flex justify-center p-4">
+                            <div class="box p-6 w-full bg-surface-0 dark:bg-surface-900 border-surface-200 dark:border-surface-700 border rounded">
+                                <img :src="`/demo/images/landing/icon-ts.svg`" alt="components icon" class="block mb-4" />
+                                <span class="text-surface-900 dark:text-surface-0 block font-semibold mb-4 text-lg">Typescript</span>
+                                <p class="m-0 text-secondary text-surface-700 dark:text-surface-100">Top-notch support for Typescript with types and tooling assistance.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="grid justify-content-between my-6 pt-4 md:my-8">
-                    <div class="col-12 md:col-2 text-center md:text-left">
+                <div class="grid grid-cols-12 gap-4 justify-between my-12 pt-6 md:my-20">
+                    <div class="col-span-12 md:col-span-2 text-center md:text-left">
                         <a class="cursor-pointer" href="#">
                             <svg width="124" height="22" viewBox="0 0 124 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M10.4851 0L0 20.9465H3.53702L10.4856 6.07843L17.2944 20.9465H20.9715L10.4851 0Z" fill="var(--primary-color)" />
@@ -311,37 +303,37 @@ const navigateToDashboard = () => {
                         </a>
                     </div>
 
-                    <div class="col-12 md:col-10 lg:col-7">
-                        <div class="grid text-center md:text-left">
-                            <div class="col-12 md:col-3">
-                                <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Company</h4>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">About Us</a>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">News</a>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">Investor Relations</a>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">Careers</a>
-                                <a class="line-height-3 block cursor-pointer text-700">Media Kit</a>
+                    <div class="col-span-12 md:col-span-10 lg:col-span-7">
+                        <div class="grid grid-cols-12 gap-4 text-center md:text-left">
+                            <div class="col-span-12 md:col-span-3">
+                                <h4 class="font-medium text-xl leading-normal mb-4 text-surface-900 dark:text-surface-0">Company</h4>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">About Us</a>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">News</a>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Investor Relations</a>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Careers</a>
+                                <a class="leading-normal block cursor-pointer text-surface-700 dark:text-surface-100">Media Kit</a>
                             </div>
 
-                            <div class="col-12 md:col-3 mt-4 md:mt-0">
-                                <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Resources</h4>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">Get Started</a>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">Learn</a>
-                                <a class="line-height-3 block cursor-pointer text-700">Case Studies</a>
+                            <div class="col-span-12 md:col-span-3 mt-6 md:mt-0">
+                                <h4 class="font-medium text-xl leading-normal mb-4 text-surface-900 dark:text-surface-0">Resources</h4>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Get Started</a>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Learn</a>
+                                <a class="leading-normal block cursor-pointer text-surface-700 dark:text-surface-100">Case Studies</a>
                             </div>
 
-                            <div class="col-12 md:col-3 mt-4 md:mt-0">
-                                <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Community</h4>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">Discord</a>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">Events</a>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">FAQ</a>
-                                <a class="line-height-3 block cursor-pointer text-700">Blog</a>
+                            <div class="col-span-12 md:col-span-3 mt-6 md:mt-0">
+                                <h4 class="font-medium text-xl leading-normal mb-4 text-surface-900 dark:text-surface-0">Community</h4>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Discord</a>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Events</a>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">FAQ</a>
+                                <a class="leading-normal block cursor-pointer text-surface-700 dark:text-surface-100">Blog</a>
                             </div>
 
-                            <div class="col-12 md:col-3 mt-4 md:mt-0">
-                                <h4 class="font-medium text-xl line-height-3 mb-3 text-900">Legal</h4>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">Brand Policy</a>
-                                <a class="line-height-3 block cursor-pointer mb-2 text-700">Privacy Policy</a>
-                                <a class="line-height-3 block cursor-pointer text-700">Terms of Service</a>
+                            <div class="col-span-12 md:col-span-3 mt-6 md:mt-0">
+                                <h4 class="font-medium text-xl leading-normal mb-4 text-surface-900 dark:text-surface-0">Legal</h4>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Brand Policy</a>
+                                <a class="leading-normal block cursor-pointer mb-2 text-surface-700 dark:text-surface-100">Privacy Policy</a>
+                                <a class="leading-normal block cursor-pointer text-surface-700 dark:text-surface-100">Terms of Service</a>
                             </div>
                         </div>
                     </div>

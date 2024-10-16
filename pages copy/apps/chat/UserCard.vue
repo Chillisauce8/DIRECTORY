@@ -14,25 +14,21 @@ const lastmessage = computed(() => {
 </script>
 
 <template>
-    <div class="flex flex-nowrap justify-content-between align-items-center border-1 surface-border border-round p-3 cursor-pointer select-none hover:surface-hover transition-colors transition-duration-150" tabindex="0">
-        <div class="flex align-items-center">
-            <div class="relative md:mr-3">
-                <img :src="'/demo/images/avatar/' + user.image" alt="user" class="w-3rem h-3rem border-circle shadow-4" />
+    <div class="flex flex-nowrap justify-between items-center border border-surface-200 dark:border-surface-700 rounded p-4 cursor-pointer select-none hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-150" tabindex="0">
+        <div class="flex items-center">
+            <div class="relative md:mr-4">
+                <img :src="'/demo/images/avatar/' + user.image" alt="user" class="w-12 h-12 rounded-full shadow-lg" />
                 <span
-                    class="w-1rem h-1rem border-circle border-2 surface-border absolute"
-                    :class="{
-                        'bg-green-400': user.status === 'active',
-                        'bg-red-400': user.status === 'busy',
-                        'bg-yellow-400': user.status === 'away'
-                    }"
+                    class="w-4 h-4 rounded-full border-2 border-surface-200 dark:border-surface-700 absolute"
+                    :class="{ 'bg-green-400': user.status === 'active', 'bg-red-400': user.status === 'busy', 'bg-yellow-400': user.status === 'away' }"
                     style="bottom: 2px; right: 2px"
                 ></span>
             </div>
-            <div class="flex-column hidden md:flex">
-                <span class="text-900 font-semibold block">{{ user.name }}</span>
-                <span class="block text-600 text-overflow-ellipsis overflow-hidden white-space-nowrap w-10rem text-sm">{{ lastmessage }}</span>
+            <div class="flex-col hidden md:flex">
+                <span class="text-surface-900 dark:text-surface-0 font-semibold block">{{ user.name }}</span>
+                <span class="block text-surface-600 dark:text-surface-200 text-ellipsis overflow-hidden whitespace-nowrap w-40 text-sm">{{ lastmessage }}</span>
             </div>
         </div>
-        <span class="text-700 font-semibold ml-auto hidden md:inline">{{ user.lastSeen }}</span>
+        <span class="text-surface-700 dark:text-surface-100 font-semibold ml-auto hidden md:inline">{{ user.lastSeen }}</span>
     </div>
 </template>

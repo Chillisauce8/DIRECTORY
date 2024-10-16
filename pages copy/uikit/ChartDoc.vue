@@ -1,8 +1,7 @@
 <script setup>
-import { ref, watch, onMounted } from 'vue';
-import { useLayout } from '../../layouts/composables/layout';
+import { onMounted, ref, watch } from 'vue';
 
-const { layoutConfig } = useLayout();
+const { getPrimary, getSurface, isDarkTheme } = useLayout();
 const lineData = ref(null);
 const pieData = ref(null);
 const polarData = ref(null);
@@ -18,7 +17,7 @@ onMounted(() => {
     setColorOptions();
 });
 
-const setColorOptions = () => {
+function setColorOptions() {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
@@ -29,14 +28,14 @@ const setColorOptions = () => {
         datasets: [
             {
                 label: 'My First dataset',
-                backgroundColor: documentStyle.getPropertyValue('--primary-500'),
-                borderColor: documentStyle.getPropertyValue('--primary-500'),
+                backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
+                borderColor: documentStyle.getPropertyValue('--p-primary-500'),
                 data: [65, 59, 80, 81, 56, 55, 40]
             },
             {
                 label: 'My Second dataset',
-                backgroundColor: documentStyle.getPropertyValue('--primary-200'),
-                borderColor: documentStyle.getPropertyValue('--primary-200'),
+                backgroundColor: documentStyle.getPropertyValue('--p-primary-200'),
+                borderColor: documentStyle.getPropertyValue('--p-primary-200'),
                 data: [28, 48, 40, 19, 86, 27, 90]
             }
         ]
@@ -79,8 +78,8 @@ const setColorOptions = () => {
         datasets: [
             {
                 data: [540, 325, 702],
-                backgroundColor: [documentStyle.getPropertyValue('--indigo-500'), documentStyle.getPropertyValue('--purple-500'), documentStyle.getPropertyValue('--teal-500')],
-                hoverBackgroundColor: [documentStyle.getPropertyValue('--indigo-400'), documentStyle.getPropertyValue('--purple-400'), documentStyle.getPropertyValue('--teal-400')]
+                backgroundColor: [documentStyle.getPropertyValue('--p-indigo-500'), documentStyle.getPropertyValue('--p-purple-500'), documentStyle.getPropertyValue('--p-teal-500')],
+                hoverBackgroundColor: [documentStyle.getPropertyValue('--p-indigo-400'), documentStyle.getPropertyValue('--p-purple-400'), documentStyle.getPropertyValue('--p-teal-400')]
             }
         ]
     };
@@ -103,16 +102,16 @@ const setColorOptions = () => {
                 label: 'First Dataset',
                 data: [65, 59, 80, 81, 56, 55, 40],
                 fill: false,
-                backgroundColor: documentStyle.getPropertyValue('--primary-500'),
-                borderColor: documentStyle.getPropertyValue('--primary-500'),
+                backgroundColor: documentStyle.getPropertyValue('--p-primary-500'),
+                borderColor: documentStyle.getPropertyValue('--p-primary-500'),
                 tension: 0.4
             },
             {
                 label: 'Second Dataset',
                 data: [28, 48, 40, 19, 86, 27, 90],
                 fill: false,
-                backgroundColor: documentStyle.getPropertyValue('--primary-200'),
-                borderColor: documentStyle.getPropertyValue('--primary-200'),
+                backgroundColor: documentStyle.getPropertyValue('--p-primary-200'),
+                borderColor: documentStyle.getPropertyValue('--p-primary-200'),
                 tension: 0.4
             }
         ]
@@ -152,7 +151,7 @@ const setColorOptions = () => {
         datasets: [
             {
                 data: [11, 16, 7, 3],
-                backgroundColor: [documentStyle.getPropertyValue('--indigo-500'), documentStyle.getPropertyValue('--purple-500'), documentStyle.getPropertyValue('--teal-500'), documentStyle.getPropertyValue('--orange-500')],
+                backgroundColor: [documentStyle.getPropertyValue('--p-indigo-500'), documentStyle.getPropertyValue('--p-purple-500'), documentStyle.getPropertyValue('--p-teal-500'), documentStyle.getPropertyValue('--p-orange-500')],
                 label: 'My dataset'
             }
         ],
@@ -181,20 +180,20 @@ const setColorOptions = () => {
         datasets: [
             {
                 label: 'My First dataset',
-                borderColor: documentStyle.getPropertyValue('--indigo-400'),
-                pointBackgroundColor: documentStyle.getPropertyValue('--indigo-400'),
-                pointBorderColor: documentStyle.getPropertyValue('--indigo-400'),
+                borderColor: documentStyle.getPropertyValue('--p-indigo-400'),
+                pointBackgroundColor: documentStyle.getPropertyValue('--p-indigo-400'),
+                pointBorderColor: documentStyle.getPropertyValue('--p-indigo-400'),
                 pointHoverBackgroundColor: textColor,
-                pointHoverBorderColor: documentStyle.getPropertyValue('--indigo-400'),
+                pointHoverBorderColor: documentStyle.getPropertyValue('--p-indigo-400'),
                 data: [65, 59, 90, 81, 56, 55, 40]
             },
             {
                 label: 'My Second dataset',
-                borderColor: documentStyle.getPropertyValue('--purple-400'),
-                pointBackgroundColor: documentStyle.getPropertyValue('--purple-400'),
-                pointBorderColor: documentStyle.getPropertyValue('--purple-400'),
+                borderColor: documentStyle.getPropertyValue('--p-purple-400'),
+                pointBackgroundColor: documentStyle.getPropertyValue('--p-purple-400'),
+                pointBorderColor: documentStyle.getPropertyValue('--p-purple-400'),
                 pointHoverBackgroundColor: textColor,
-                pointHoverBorderColor: documentStyle.getPropertyValue('--purple-400'),
+                pointHoverBorderColor: documentStyle.getPropertyValue('--p-purple-400'),
                 data: [28, 48, 40, 19, 96, 27, 100]
             }
         ]
@@ -216,54 +215,50 @@ const setColorOptions = () => {
             }
         }
     };
-};
+}
 
-watch(layoutConfig.colorScheme, () => {
-    setColorOptions();
-});
-
-watch(layoutConfig.theme, () => {
+watch([getPrimary, getSurface, isDarkTheme], () => {
     setColorOptions();
 });
 </script>
 
 <template>
-    <div class="grid p-fluid">
-        <div class="col-12 xl:col-6">
+    <Fluid class="grid grid-cols-12 gap-8">
+        <div class="col-span-12 xl:col-span-6">
             <div class="card">
-                <h5>Linear Chart</h5>
+                <div class="font-semibold text-xl mb-4">Linear</div>
                 <Chart type="line" :data="lineData" :options="lineOptions"></Chart>
             </div>
         </div>
-        <div class="col-12 xl:col-6">
+        <div class="col-span-12 xl:col-span-6">
             <div class="card">
-                <h5>Bar Chart</h5>
+                <div class="font-semibold text-xl mb-4">Bar</div>
                 <Chart type="bar" :data="barData" :options="barOptions"></Chart>
             </div>
         </div>
-        <div class="col-12 xl:col-6">
-            <div class="card flex flex-column align-items-center">
-                <h5 class="text-left w-full">Pie Chart</h5>
+        <div class="col-span-12 xl:col-span-6">
+            <div class="card flex flex-col items-center">
+                <div class="font-semibold text-xl mb-4">Pie</div>
                 <Chart type="pie" :data="pieData" :options="pieOptions"></Chart>
             </div>
         </div>
-        <div class="col-12 xl:col-6">
-            <div class="card flex flex-column align-items-center">
-                <h5 class="text-left w-full">Doughnut Chart</h5>
+        <div class="col-span-12 xl:col-span-6">
+            <div class="card flex flex-col items-center">
+                <div class="font-semibold text-xl mb-4">Doughnut</div>
                 <Chart type="doughnut" :data="pieData" :options="pieOptions"></Chart>
             </div>
         </div>
-        <div class="col-12 xl:col-6">
-            <div class="card flex flex-column align-items-center">
-                <h5 class="text-left w-full">Polar Area Chart</h5>
+        <div class="col-span-12 xl:col-span-6">
+            <div class="card flex flex-col items-center">
+                <div class="font-semibold text-xl mb-4">Polar Area</div>
                 <Chart type="polarArea" :data="polarData" :options="polarOptions"></Chart>
             </div>
         </div>
-        <div class="col-12 xl:col-6">
-            <div class="card flex flex-column align-items-center">
-                <h5 class="text-left w-full">Radar Chart</h5>
+        <div class="col-span-12 xl:col-span-6">
+            <div class="card flex flex-col items-center">
+                <div class="font-semibold text-xl mb-4">Radar</div>
                 <Chart type="radar" :data="radarData" :options="radarOptions"></Chart>
             </div>
         </div>
-    </div>
+    </Fluid>
 </template>

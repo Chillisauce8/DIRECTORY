@@ -1,6 +1,6 @@
 <script setup>
-import { onBeforeUnmount, onUpdated, ref, onMounted } from 'vue';
-import { FilterMatchMode } from 'primevue/api';
+import { FilterMatchMode } from '@primevue/core/api';
+import { onBeforeUnmount, onMounted, onUpdated, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const emit = defineEmits(['spam', 'archive', 'trash', 'change:mail:type', 'reply']);
@@ -37,15 +37,16 @@ onBeforeUnmount(() => {
     setEventListenersOnRow('addEventListener');
 });
 
-const setEventListenersOnRow = (type) => {
+function setEventListenersOnRow(type) {
     const mailRowsRefs = [...mailTable.value.$el.querySelectorAll('tbody > tr')];
 
     mailRowsRefs.forEach((mailRow) => {
         mailRow[type]('mouseenter', (event) => actionButtonToggle(event, mailRow));
         mailRow[type]('mouseleave', (event) => actionButtonToggle(event, mailRow));
     });
-};
-const actionButtonToggle = (event, mailRow) => {
+}
+
+function actionButtonToggle(event, mailRow) {
     const actionButtonsRef = mailRow.querySelector('.action-buttons');
     const dateRef = mailRow.querySelector('.date-text');
 
@@ -58,9 +59,9 @@ const actionButtonToggle = (event, mailRow) => {
         actionButtonsRef.style.display = 'none';
         dateRef.style.display = 'flex';
     }
-};
+}
 
-const onSelectedMailsAction = (emitType) => {
+function onSelectedMailsAction(emitType) {
     if (selectedMails.value.length !== 0) {
         for (const mail of selectedMails.value) {
             clearMaileActions(mail);
@@ -69,35 +70,35 @@ const onSelectedMailsAction = (emitType) => {
         emit(emitType, selectedMails.value);
         selectedMails.value = [];
     }
-};
+}
 
-const onSingleMailAction = (emitType, mail) => {
+function onSingleMailAction(emitType, mail) {
     clearMaileActions(mail);
 
     emit(emitType, mail);
 
     selectedMails.value = [];
-};
+}
 
-const changeMailType = (mailType, mail) => {
+function changeMailType(mailType, mail) {
     emit('change:mail:type', mailType, mail, !mail[mailType]);
-};
+}
 
-const onReplyMail = (mail) => {
+function onReplyMail(mail) {
     emit('reply', mail);
-};
+}
 
-const onNavigateToDetailPage = (id) => {
+function onNavigateToDetailPage(id) {
     router.push({ name: 'mail-detail', params: { id } });
-};
+}
 
-const clearMaileActions = (mail) => {
+function clearMaileActions(mail) {
     Object.keys(mail).forEach((key) => {
         if (mail[key] === true) {
             mail[key] = false;
         }
     });
-};
+}
 </script>
 
 <template>
@@ -107,19 +108,19 @@ const clearMaileActions = (mail) => {
             <template #header>
                 <div class="flex -ml-2">
                     <Button type="button" icon="pi pi-refresh" text plain rounded></Button>
-                    <Button type="button" icon="pi pi-ellipsis-v" class="ml-3" text plain rounded @click="menuRef.toggle($event)"></Button>
-                    <Menu ref="menuRef" popup :model="menuItems" class="w-8rem"></Menu>
+                    <Button type="button" icon="pi pi-ellipsis-v" class="ml-4" text plain rounded @click="menuRef.toggle($event)"></Button>
+                    <Menu ref="menuRef" popup :model="menuItems" class="w-32"></Menu>
                 </div>
                 <div></div>
             </template>
             <template #body="{ data }">
-                <td v-if="!data.trash && !data.spam" class="w-4rem">
+                <td v-if="!data.trash && !data.spam" class="w-16">
                     <span class="cursor-pointer" @click="changeMailType('starred', data)">
                         <i class="pi pi-fw text-xl" :class="{ 'pi-star-fill': data.starred, 'pi-star': !data.starred }"></i>
                     </span>
                 </td>
-                <td v-if="!data.trash && !data.spam" class="w-4rem">
-                    <span class="cursor-pointer ml-3" @click="changeMailType('important', data)">
+                <td v-if="!data.trash && !data.spam" class="w-16">
+                    <span class="cursor-pointer ml-4" @click="changeMailType('important', data)">
                         <i class="pi pi-fw text-xl" :class="{ 'pi-bookmark-fill': data.important, 'pi-bookmark': !data.important }"></i>
                     </span>
                 </td>
@@ -133,33 +134,33 @@ const clearMaileActions = (mail) => {
         </Column>
         <Column style="min-width: 4rem">
             <template #body="{ data }">
-                <div @click="onNavigateToDetailPage(data.id)" :style="{ minWidth: '12rem' }" class="text-900 font-semibold cursor-pointer">{{ data.from || data.to }}</div>
+                <div @click="onNavigateToDetailPage(data.id)" :style="{ minWidth: '12rem' }" class="text-surface-900 dark:text-surface-0 font-semibold cursor-pointer">{{ data.from || data.to }}</div>
             </template>
         </Column>
         <Column style="min-width: 30rem">
             <template #body="{ data }">
-                <span @click="onNavigateToDetailPage(data.id)" class="font-medium white-space-nowrap overflow-hidden text-overflow-ellipsis block cursor-pointer" style="max-width: 30rem">
+                <span @click="onNavigateToDetailPage(data.id)" class="font-medium whitespace-nowrap overflow-hidden text-ellipsis block cursor-pointer" style="max-width: 30rem">
                     {{ data.title }}
                 </span>
             </template>
         </Column>
         <Column field="date">
             <template #header>
-                <IconField iconPosition="left" class="w-full">
+                <IconField class="w-full">
                     <InputIcon class="pi pi-search" />
                     <InputText type="text" placeholder="Search Mail" class="w-full sm:w-auto" v-model="filterTable.global.value" />
                 </IconField>
             </template>
             <template #body="{ data }">
                 <div :style="{ minWidth: '10rem' }">
-                    <div class="flex justify-content-end w-full px-0">
-                        <span ref="dateRef" class="date-text text-700 font-semibold white-space-nowrap">
+                    <div class="flex justify-end w-full px-0">
+                        <span ref="dateRef" class="date-text text-surface-700 dark:text-surface-100 font-semibold whitespace-nowrap">
                             {{ data.date }}
                         </span>
                         <div ref="actionRef" class="action-buttons" style="display: none">
-                            <Button @click="onSingleMailAction('archive', data)" type="button" icon="pi pi-inbox" class="h-2rem w-2rem mr-2" v-tooltip.top="'Archive'"></Button>
-                            <Button @click="onReplyMail(data)" type="button" icon="pi pi-reply" class="h-2rem w-2rem mr-2" severity="secondary" v-tooltip.top="'Reply'"></Button>
-                            <Button @click="onSingleMailAction('trash', data)" type="button" v-tooltip.top="'Trash'" icon="pi pi-trash" class="h-2rem w-2rem" severity="danger"></Button>
+                            <Button @click="onSingleMailAction('archive', data)" type="button" icon="pi pi-inbox" class="h-8 w-8 mr-2" v-tooltip.top="'Archive'"></Button>
+                            <Button @click="onReplyMail(data)" type="button" icon="pi pi-reply" class="h-8 w-8 mr-2" severity="secondary" v-tooltip.top="'Reply'"></Button>
+                            <Button @click="onSingleMailAction('trash', data)" type="button" v-tooltip.top="'Trash'" icon="pi pi-trash" class="h-8 w-8" severity="danger"></Button>
                         </div>
                     </div>
                 </div>

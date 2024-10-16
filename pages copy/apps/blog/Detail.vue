@@ -31,99 +31,99 @@ const comments = ref([
     }
 ]);
 
-const navigateToEdit = () => {
+function navigateToEdit() {
     router.push({ name: 'blog-edit' });
-};
+}
 </script>
 
 <template>
     <div class="card">
-        <div class="flex justify-content-between flex-column-reverse md:flex-row align-items-center">
+        <div class="flex justify-between flex-col-reverse md:flex-row items-center">
             <div>
-                <div class="text-xl text-900 mb-4 mt-4 md:mt-0 text-center md:text-left font-semibold md:pr-4">How To Get Started Tutorial</div>
-                <div class="flex flex-wrap justify-content-center md:justify-content-start gap-3">
-                    <span class="inline-flex align-items-center py-2 px-3 font-medium border-1 surface-border border-round">
+                <div class="text-xl text-surface-900 dark:text-surface-0 mb-6 mt-6 md:mt-0 text-center md:text-left font-semibold md:pr-6">How To Get Started Tutorial</div>
+                <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                    <span class="inline-flex items-center py-2 px-4 font-medium border border-surface-200 dark:border-surface-700 rounded">
                         <i class="pi pi-clock text-primary mr-2"></i>
-                        <span class="text-900">2d ago</span>
+                        <span class="text-surface-900 dark:text-surface-0">2d ago</span>
                     </span>
-                    <span class="inline-flex align-items-center py-2 px-3 font-medium border-1 surface-border border-round">
+                    <span class="inline-flex items-center py-2 px-4 font-medium border border-surface-200 dark:border-surface-700 rounded">
                         <i class="pi pi-comments text-primary mr-2"></i>
-                        <span class="text-900">24</span>
+                        <span class="text-surface-900 dark:text-surface-0">24</span>
                     </span>
-                    <span class="inline-flex align-items-center py-2 px-3 font-medium border-1 surface-border border-round">
+                    <span class="inline-flex items-center py-2 px-4 font-medium border border-surface-200 dark:border-surface-700 rounded">
                         <i class="pi pi-eye text-primary mr-2"></i>
-                        <span class="text-900">124</span>
+                        <span class="text-surface-900 dark:text-surface-0">124</span>
                     </span>
                 </div>
             </div>
-            <div class="flex flex-column align-items-center justify-content-center">
-                <img class="w-4rem h-4rem" src="/demo/images/avatar/circle/avatar-f-2@2x.png" alt="Avatar" />
-                <span class="mt-3 font-bold text-900 text-center white-space-nowrap">Jane Cooper</span>
+            <div class="flex flex-col items-center justify-center">
+                <img class="w-16 h-16" src="/demo/images/avatar/circle/avatar-f-2@2x.png" alt="Avatar" />
+                <span class="mt-4 font-bold text-surface-900 dark:text-surface-0 text-center whitespace-nowrap">Jane Cooper</span>
             </div>
         </div>
-        <div class="text-center my-6">
+        <div class="text-center my-12">
             <img src="/demo/images/blog/blogdetail.png" alt="Image" class="w-full" />
         </div>
-        <div class="text-2xl text-900 mb-4 font-semibold">Sodales massa, morbi convallis</div>
-        <p class="line-height-3 text-lg mb-4">
+        <div class="text-2xl text-surface-900 dark:text-surface-0 mb-6 font-semibold">Sodales massa, morbi convallis</div>
+        <p class="leading-normal text-lg mb-6">
             First, a disclaimer - the entire process of writing a blog post often takes more than a couple of hours, even if you can type eighty words per minute and your writing skills are sharp. From the seed of the idea to finally hitting
             “Publish,” you might spend several days or maybe even a week “writing” a blog post, but it&lsquo;s important to spend those vital hours planning your post and even thinking about Your Post(yes, thinking counts as working if you&lsquo;re a
             blogger) before you actually write it.
         </p>
-        <p class="line-height-3 text-lg mb-4">There&lsquo;s an old maxim that states, “No fun for the writer, no fun for the reader.”No matter what industry you&lsquo;re working in, as a blogger, you should live and die by this statement.</p>
-        <p class="line-height-3 text-lg mb-4">
+        <p class="leading-normal text-lg mb-6">There&lsquo;s an old maxim that states, “No fun for the writer, no fun for the reader.”No matter what industry you&lsquo;re working in, as a blogger, you should live and die by this statement.</p>
+        <p class="leading-normal text-lg mb-6">
             Before you do any of the following steps, be sure to pick a topic that actually interests you. Nothing - and I mean NOTHING- will kill a blog post more effectively than a lack of enthusiasm from the writer. You can tell when a writer is
             bored by their subject, and it&lsquo;s so cringe-worthy it&lsquo;s a little embarrassing.
         </p>
-        <p class="line-height-3 text-lg mb-4">
+        <p class="leading-normal text-lg mb-6">
             I can hear your objections already. “But Dan, I have to blog for a cardboard box manufacturing company.” I feel your pain, I really do. During the course of my career, I&lsquo;ve written content for dozens of clients in some
             less-than-thrilling industries (such as financial regulatory compliance and corporate housing), but the hallmark of a professional blogger is the ability to write well about any topic, no matter how dry it may be. Blogging is a lot
             easier, however, if you can muster at least a little enthusiasm for the topic at hand.
         </p>
-        <div class="text-2xl text-900 mb-4 font-semibold">Commodo ultrices orci tempus et fermentum, pellentesque ultricies.</div>
-        <ul class="text-xl p-0 my-0 ml-5">
-            <li class="mb-3 line-height-3">Fermentum neque odio laoreet morbi sit. Venenatis in quam ut non.</li>
-            <li class="mb-3 line-height-3">Enim in porta facilisi a vulputate fermentum, morbi. Consequat, id praesent tristique euismod pellentesque.</li>
-            <li class="mb-3 line-height-3">Implements This is an external link</li>
-            <li class="line-height-3">Scelerisque ultricies tincidunt lectus faucibus non morbi sed nibh varius. Quam a, habitasse egestaseleifend.</li>
+        <div class="text-2xl text-surface-900 dark:text-surface-0 mb-6 font-semibold">Commodo ultrices orci tempus et fermentum, pellentesque ultricies.</div>
+        <ul class="text-xl p-0 my-0 ml-8">
+            <li class="mb-4 leading-normal">Fermentum neque odio laoreet morbi sit. Venenatis in quam ut non.</li>
+            <li class="mb-4 leading-normal">Enim in porta facilisi a vulputate fermentum, morbi. Consequat, id praesent tristique euismod pellentesque.</li>
+            <li class="mb-4 leading-normal">Implements This is an external link</li>
+            <li class="leading-normal">Scelerisque ultricies tincidunt lectus faucibus non morbi sed nibh varius. Quam a, habitasse egestaseleifend.</li>
         </ul>
-        <div class="flex flex-column sm:flex-row my-8 w-full gap-3">
+        <div class="flex flex-col sm:flex-row my-20 w-full gap-4">
             <Button icon="pi pi-twitter" severity="secondary" label="Twitter"></Button>
             <Button icon="pi pi-facebook" severity="secondary" label="Facebook"></Button>
             <Button @click="navigateToEdit" icon="pi pi-pencil" class="sm:ml-auto" label="Edit Post"></Button>
         </div>
-        <div class="flex align-items-center mb-4 font-bold">
-            <span class="text-xl text-900 mr-4">Comments</span>
-            <span class="inline-flex align-items-center justify-content-center w-2rem h-2rem border-1 surface-border border-round">{{ comments.length }}</span>
+        <div class="flex items-center mb-6 font-bold">
+            <span class="text-xl text-surface-900 dark:text-surface-0 mr-6">Comments</span>
+            <span class="inline-flex items-center justify-center w-8 h-8 border border-surface-200 dark:border-surface-700 rounded">{{ comments.length }}</span>
         </div>
         <ul class="list-none p-0 m-0">
-            <li v-for="(comment, i) in comments" :key="{ i }" class="flex p-3 mb-3 border-1 surface-border border-round">
-                <img :src="comment.image" class="w-3rem h-3rem mr-3 flex-shrink-0" :alt="'Image' + i" />
+            <li v-for="(comment, i) in comments" :key="{ i }" class="flex p-4 mb-4 border border-surface-200 dark:border-surface-700 rounded">
+                <img :src="comment.image" class="w-12 h-12 mr-4 flex-shrink-0" :alt="'Image' + i" />
                 <div>
-                    <span class="font-semibold text-900">{{ comment.name }}</span>
-                    <p class="font-semibold text-600 m-0 text-sm">{{ comment.date }}</p>
-                    <p class="line-height-3 mb-0 my-3">{{ comment.description }}</p>
+                    <span class="font-semibold text-surface-900 dark:text-surface-0">{{ comment.name }}</span>
+                    <p class="font-semibold text-surface-600 dark:text-surface-200 m-0 text-sm">{{ comment.date }}</p>
+                    <p class="leading-normal mb-0 my-4">{{ comment.description }}</p>
                 </div>
             </li>
         </ul>
-        <div class="text-xl text-900 mb-4 font-bold mt-8">Post a Comment</div>
+        <div class="text-xl text-surface-900 dark:text-surface-0 mb-6 font-bold mt-20">Post a Comment</div>
 
-        <div class="mb-3 p-fluid">
-            <IconField iconPosition="left">
+        <Fluid class="mb-4">
+            <IconField>
                 <InputIcon class="pi pi-user" />
                 <InputText type="text" placeholder="Name" />
             </IconField>
-        </div>
-        <div class="mb-3 p-fluid">
-            <IconField iconPosition="left">
+        </Fluid>
+        <Fluid class="mb-4">
+            <IconField>
                 <InputIcon class="pi pi-envelope" />
                 <InputText type="text" placeholder="Email" />
             </IconField>
-        </div>
-        <div class="mb-3 p-fluid">
+        </Fluid>
+        <Fluid class="mb-4">
             <Textarea :rows="6" placeholder="Your comment"></Textarea>
-        </div>
-        <div class="flex justify-content-end">
+        </Fluid>
+        <div class="flex justify-end">
             <Button label="Post Comment"></Button>
         </div>
     </div>

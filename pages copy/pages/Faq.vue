@@ -1,11 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { usePrimeVue } from 'primevue/config';
-const $primevue = usePrimeVue();
-
-defineExpose({
-    $primevue
-});
 
 const activeIndex = ref(0);
 const items = ref([
@@ -31,29 +25,28 @@ const items = ref([
     }
 ]);
 
-const changeItem = (index) => {
+function changeItem(index) {
     activeIndex.value = index;
-};
+}
 </script>
 
 <template>
     <div>
         <div class="card">
-            <div class="text-900 font-bold text-xl mb-3">Frequently Asked Questions</div>
-            <p class="text-600 line-height-3">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+            <div class="text-surface-900 dark:text-surface-0 font-bold text-xl mb-4">Frequently Asked Questions</div>
+            <p class="text-surface-600 dark:text-surface-200 leading-normal">Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
         </div>
 
-        <div class="flex flex-column md:flex-row gap-5">
-            <div class="card mb-0 md:w-20rem">
-                <div class="text-900 block font-bold mb-3">Categories</div>
+        <div class="flex flex-col md:flex-row gap-8">
+            <div class="card mb-0 md:w-80">
+                <div class="text-surface-900 dark:text-surface-0 block font-bold mb-4">Categories</div>
                 <ul class="list-none m-0 p-0">
                     <li v-for="(item, i) in items" :key="i" @click="changeItem(i)" class="mb-2">
                         <a
-                            v-ripple
-                            class="p-ripple flex align-items-center cursor-pointer select-none p-3 transition-colors transition-duration-150 border-round"
+                            class="flex items-center cursor-pointer select-none p-4 transition-colors duration-150 rounded"
                             :class="{
-                                'bg-primary': activeIndex === i,
-                                'hover:surface-hover': activeIndex !== i
+                                'bg-primary text-primary-contrast': activeIndex === i,
+                                'hover:bg-surface-100 dark:hover:bg-surface-800': activeIndex !== i
                             }"
                         >
                             <i class="mr-2 text-lg" :class="item.icon"></i>
@@ -64,13 +57,16 @@ const changeItem = (index) => {
             </div>
             <div class="card flex-1">
                 <Accordion>
-                    <AccordionTab v-for="(question, i) in items[activeIndex].questions" :key="i" :header="question">
-                        <p class="line-height-3 m-0 p-0">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                            laborum.
-                        </p>
-                    </AccordionTab>
+                    <AccordionPanel v-for="(question, i) in items[activeIndex].questions" :key="i" :value="i">
+                        <AccordionHeader>{{ question }}</AccordionHeader>
+                        <AccordionContent>
+                            <p class="leading-normal m-0 p-0">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
+                                id est laborum.
+                            </p>
+                        </AccordionContent>
+                    </AccordionPanel>
                 </Accordion>
             </div>
         </div>

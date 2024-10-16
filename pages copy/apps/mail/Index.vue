@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue';
-import { useRoute } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import MailSidebar from './MailSidebar.vue';
 import Reply from './Reply.vue';
 
@@ -27,18 +27,18 @@ watch(
     }
 );
 
-const initMail = async (mails) => {
+async function initMail(mails) {
     setBadgeValues(mails);
-};
+}
 
-const getMails = async () => {
+async function getMails() {
     const response = await fetch('/demo/data/mail.json');
     const { data } = await response.json();
 
     return data;
-};
+}
 
-const setBadgeValues = (mails) => {
+function setBadgeValues(mails) {
     for (const mail of mails) {
         if (!mail.archived && !mail.trash && !mail.spam && !mail.sent) {
             setFilteredMails('inbox', mail);
@@ -49,62 +49,27 @@ const setBadgeValues = (mails) => {
             }
         });
     }
-};
+}
 
-const setFilteredMails = (type, mail) => {
+function setFilteredMails(type, mail) {
     if (!filteredMails.value[type]) {
         filteredMails.value[type] = [];
     } else {
         filteredMails.value[type].push(mail);
     }
-};
+}
 
 const sidebarItems = computed(() => {
     const mails = filteredMails.value;
 
     return [
-        {
-            label: 'Inbox',
-            icon: 'pi pi-inbox',
-            badge: mails.inbox?.length || 0,
-            routerLink: '/apps/mail/inbox'
-        },
-        {
-            label: 'Starred',
-            icon: 'pi pi-star',
-            badge: mails.starred?.length || 0,
-            routerLink: '/apps/mail/starred'
-        },
-        {
-            label: 'Spam',
-            icon: 'pi pi-ban',
-            badge: mails.spam?.length || 0,
-            routerLink: '/apps/mail/spam'
-        },
-        {
-            label: 'Important',
-            icon: 'pi pi-bookmark',
-            badge: mails.important?.length || 0,
-            routerLink: '/apps/mail/important'
-        },
-        {
-            label: 'Sent',
-            icon: 'pi pi-send',
-            badge: mails.sent?.length || 0,
-            routerLink: '/apps/mail/sent'
-        },
-        {
-            label: 'Archived',
-            icon: 'pi pi-book',
-            badge: mails.archived?.length || 0,
-            routerLink: '/apps/mail/archived'
-        },
-        {
-            label: 'Trash',
-            icon: 'pi pi-trash',
-            badge: mails.trash?.length || 0,
-            routerLink: '/apps/mail/trash'
-        }
+        { label: 'Inbox', icon: 'pi pi-inbox', badge: mails.inbox?.length || 0, routerLink: '/apps/mail/inbox' },
+        { label: 'Starred', icon: 'pi pi-star', badge: mails.starred?.length || 0, routerLink: '/apps/mail/starred' },
+        { label: 'Spam', icon: 'pi pi-ban', badge: mails.spam?.length || 0, routerLink: '/apps/mail/spam' },
+        { label: 'Important', icon: 'pi pi-bookmark', badge: mails.important?.length || 0, routerLink: '/apps/mail/important' },
+        { label: 'Sent', icon: 'pi pi-send', badge: mails.sent?.length || 0, routerLink: '/apps/mail/sent' },
+        { label: 'Archived', icon: 'pi pi-book', badge: mails.archived?.length || 0, routerLink: '/apps/mail/archived' },
+        { label: 'Trash', icon: 'pi pi-trash', badge: mails.trash?.length || 0, routerLink: '/apps/mail/trash' }
     ];
 });
 
@@ -114,12 +79,7 @@ const onDeleteMail = async (selectedMails) => {
 
     findAndApplyAction('trash', selectedMails);
 
-    toast.add({
-        severity: 'info',
-        summary: 'Info',
-        detail: toastDetail,
-        life: 3000
-    });
+    toast.add({ severity: 'info', summary: 'Info', detail: toastDetail, life: 3000 });
     initMail(allMails.value);
 };
 
@@ -187,12 +147,12 @@ const onChangeDialogVisibility = (isVisible) => {
 
 <template>
     <div class="card">
-        <div class="flex flex-column md:flex-row gap-4">
-            <div class="w-full md:w-3 xl:w-2 xl:p-3">
+        <div class="flex flex-col md:flex-row gap-6">
+            <div class="w-full md:w-3/12 xl:w-2/12 xl:p-4">
                 <MailSidebar :items="sidebarItems"></MailSidebar>
             </div>
-            <div class="md:w-9 xl:w-10 xl:p-3">
-                <router-view
+            <div class="md:w-9/12 xl:w-10/12 xl:p-4">
+                <NuxtPage
                     :allMails="allMails"
                     :mails="filteredMails[activeMailItem] || undefined"
                     @trash="onDeleteMail"
@@ -202,7 +162,7 @@ const onChangeDialogVisibility = (isVisible) => {
                     @reply="showReplyDialog"
                     @send:message="onSaveReplyMail"
                     @new:mail="onSendNewMail"
-                ></router-view>
+                ></NuxtPage>
             </div>
         </div>
     </div>

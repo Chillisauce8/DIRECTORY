@@ -1,80 +1,59 @@
 <template>
-    <div class="card docs">
-        <h2>Getting Started</h2>
-        <p>
-            Apollo is an application template and has 2 version in it. Vue 3 based on <a href="https://github.com/vuejs/create-vue" class="font-medium text-primary hover:underline">create-vue</a>, the recommended way to start a
-            <strong>Vite-powered</strong> Vue projects. Nuxt 3 based on <a href="https://nuxt.com/docs/getting-started/installation" class="font-medium text-primary hover:underline">nuxi</a>, the recommended way to start a <strong>Nuxt 3</strong> Vue
-            projects. To get started, extract the contents of the zip file, cd to the directory and install the dependencies with npm, yarn or pnpm.
-        </p>
-        <pre class="app-code"><code>npm install</code></pre>
-
-        <p>Next step is running the application using the serve script and navigate to <i>http://localhost:3000/</i> to view the application. That is it, you may now start with the development using the Apollo template.</p>
-
-        <pre class="app-code"><code>npm run dev</code></pre>
-
-        <h4>Structure</h4>
-        <p>Apollo consists of a couple folders, demos and layout have been separated so that you can easily remove what is not necessary for your application.</p>
-        <ul class="line-height-3">
-            <li><span class="text-primary font-medium">layouts</span>: Main layout files, need to be present</li>
-            <li><span class="text-primary font-medium">pages</span>: Demo pages</li>
-            <li><span class="text-primary font-medium">public/demo</span>: Assets used in demos</li>
-            <li><span class="text-primary font-medium">public/layout</span>: Assets used in layout</li>
-            <li><span class="text-primary font-medium">assets/demo</span>: Styles used in demos</li>
-            <li><span class="text-primary font-medium">assets/layout</span>: SCSS files of the main layout</li>
-        </ul>
-
-        <h4>Default Configuration</h4>
-        <p>
-            Initial layout configuration can be defined at the main app component by injecting the composable from
-            <span class="text-primary font-medium">layouts/composables/layout</span>, this step is optional and only necessary when customizing the defaults. Note that <span class="text-primary font-medium">theme</span> and
-            <span class="text-primary font-medium">scale</span> are not reactive at the moment since theme is configured outside of Vue. In Vite version at <strong class="font-semibold">main.js</strong> and In Nuxt version at
-            <strong class="font-semibold">nuxt.config.js</strong> by default and initial scale is defined with the <span class="text-primary font-medium">$scale</span> at <strong class="font-semibold">layout.scss</strong>. When default theme or scale
-            is changed at their files initially, it is required to configure the layout service with the matching values to avoid sync issues.
+    <div class="card">
+        <div class="font-semibold text-2xl mb-4">Documentation</div>
+        <p class="text-lg mb-4">
+            Apollo is an application template and has 2 versions; <strong>Vue</strong> and <strong>Nuxt</strong>. Nuxt version on the other hand is created with
+            <a href="https://nuxt.com/docs/getting-started/installation" class="font-medium text-primary hover:underline">Nuxt v3</a>.
         </p>
 
-        <h5>Vite</h5>
-        <pre class="app-code"><code>&lt;script setup&gt;
+        <Tabs value="1">
+            <TabList>
+                <Tab value="0">Vue</Tab>
+                <Tab value="1">Nuxt</Tab>
+            </TabList>
+            <TabPanels>
+                <TabPanel value="0">
+                    <div class="font-semibold text-xl mb-4">Get Started</div>
+                    <p class="text-lg mb-4">The Vue version is based on <a href="https://github.com/vuejs/create-vue" class="font-medium text-primary hover:underline">create-vue</a>, the recommended way to start a Vite-powered Vue projects.</p>
+                    <p class="text-lg mb-4">To get started, extract the contents of the zip file, cd to the directory and install the dependencies with npm, yarn or pnpm.</p>
+                    <pre class="app-code">
+<code>npm install
+npm run dev</code></pre>
+
+                    <p class="text-lg mb-4">Navigate to <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">http://localhost:5173/</i> to view the application in your local environment.</p>
+
+                    <div class="font-semibold text-xl mb-4">Structure</div>
+                    <p class="text-lg mb-4">Apollo consists of a couple folders, demos and layout have been separated so that you can easily remove what is not necessary for your application like the demos.</p>
+                    <ul class="leading-normal list-disc pl-8 text-lg mb-4">
+                        <li><span class="text-primary font-medium">src/layout</span>: Main layout files, needs to be present.</li>
+                        <li><span class="text-primary font-medium">src/views</span>: Demo pages like Dashboard.</li>
+                        <li><span class="text-primary font-medium">public/demo</span>: Publicly accessible assets used in demos</li>
+                        <li><span class="text-primary font-medium">public/layout</span>: Publicly accessible assets used in layout</li>
+                        <li><span class="text-primary font-medium">src/assets/demo</span>: Styles used in demos</li>
+                        <li><span class="text-primary font-medium">src/assets/layout</span>: Styles of the main layout</li>
+                    </ul>
+
+                    <div class="font-semibold text-xl my-4">Layout Composable</div>
+                    <p class="text-lg mb-4">
+                        The <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/layout/composables/layout.js</span> is a composable that manages the layout state changes including dark mode, PrimeVue theme, menu modes and
+                        states. Use this composable to change the initial configuration and handle changes reactively.
+                    </p>
+
+                    <pre class="app-code"><code>&lt;script setup&gt;
 import &#123; useLayout &#125; from '@/layout/composables/layout';
 
-const &#123; layoutConfig &#125; = useLayout();
-layoutConfig.menuMode.value = 'slim';
+const &#123; setMenuMode, toggleDarkMode &#125; = useLayout();
+    setMenuMode('slim');       // change to slim mode
+    toggleDarkMode();          // change color scheme
 &lt;/script&gt;
-
-&lt;template&gt;
-    &lt;router-view /&gt;
-&lt;/template&gt;
-
-&lt;style scoped&gt;&lt;/style&gt;
 </code></pre>
 
-        <h5>Nuxt</h5>
-        <pre class="app-code"><code>&lt;script setup&gt;
-import &#123; useLayout &#125; from '@/layout/composables/layout';
-
-const &#123; layoutConfig &#125; = useLayout();
-layoutConfig.menuMode.value = 'slim';
-&lt;/script&gt;
-
-&lt;template&gt;
-    &lt;NuxtLayout&gt;
-        &lt;NuxtPage /&gt;
-    &lt;/NuxtLayout&gt;
-&lt;/template&gt;
-
-&lt;style scoped&gt;&lt;/style&gt;
-</code></pre>
-
-        <h4>Menu</h4>
-        <p>
-            Main menu is located at
-            <span class="text-primary font-medium">layouts/AppMenu.vue</span> file. Update the <span class="text-primary font-medium">model</span> property to define the menu of your application using PrimeVue MenuModel API.
-        </p>
-        <pre class="app-code"><code>&lt;script setup&gt;
-import &#123; ref &#125; from 'vue';
-
-import AppSubMenu from './AppSubMenu.vue';
-
-const model = ref([
+                    <div class="font-semibold text-xl mb-4">Menu</div>
+                    <p class="text-lg mb-4">
+                        Main menu is defined at <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/layout/AppMenu.vue</span> file. Update the
+                        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">model</i> property to define your own menu items.
+                    </p>
+                    <pre class="app-code"><code>const model = ref([
     &#123;
         label: 'Dashboards',
         icon: 'pi pi-home',
@@ -94,91 +73,114 @@ const model = ref([
     //...
 </code></pre>
 
-        <h4>Breadcrumb</h4>
-        <p>
-            Breadcrumb component at the topbar section is dynamic and retrieves the path information from the router using the
-            <span class="text-primary font-medium">meta.breadcrumb</span> property.
-        </p>
+                    <div class="font-semibold text-xl mb-4">Breadcrumb</div>
+                    <p class="text-lg mb-4">
+                        Breadcrumb component at the topbar section is dynamic and retrieves the path information from the router using the
+                        <span class="text-primary font-medium">meta.breadcrumb</span> property.
+                    </p>
 
-        <pre class="app-code"><code>&#123;
+                    <pre class="app-code"><code>&#123;
     path: '/uikit/formlayout',
     name: 'formlayout',
     meta: {
         breadcrumb: ['UI Kit', 'Form Layout']
     },
-    component: () => import('@/views/uikit/FormLayoutDoc.vue')
+    component: () => import('@/views/uikit/FormLayout.vue')
 &#125;,</code></pre>
 
-        <h4>Integration with Existing Vite Applications</h4>
-        <p>Only the folders that are related to the layout needs to move in to your project. We've created a short tutorial with details. It is based on Sakai but flow is exactly the same with Apollo.</p>
+                    <div class="font-semibold text-xl mb-4">Learn More</div>
+                    <p class="text-lg mb-4">To learn more about how PrimeVue templates are implemented, visit the Sakai open source repository, Apollo utilizes a similar structure as Sakai.</p>
 
-        <div class="video-container">
-            <iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/AHeSjJFR3ZE" frameborder="0" allowfullscreen></iframe>
-        </div>
+                    <div class="video-container mb-4">
+                        <iframe class="video" width="560" height="315" src="https://www.youtube.com/embed/Ni_Yecfxv_g?si=11QMilH9sf06Xwi5" frameborder="0" allowfullscreen></iframe>
+                    </div>
 
-        <h4>PrimeVue Theme</h4>
-        <p>
-            Apollo provides 24 PrimeVue themes out of the box. Setup of a theme is simple by including the css of theme to your bundle that are located inside <span class="text-primary font-medium">public/layout/styles/theme/</span> folder such as
-            <span class="text-primary font-medium">public/layout/styles/theme/theme-light/indigo/theme.css</span>.
-        </p>
+                    <div class="font-semibold text-xl mb-4">Tailwind CSS</div>
+                    <p class="text-lg mb-4">The demo pages are developed using Tailwind CSS along with tailwind-primeui plugin, whereas the core application shell mainly uses custom CSS.</p>
 
-        <p>A custom theme can be developed by the following steps.</p>
-        <ul>
-            <li class="line-height-4">Choose a custom theme name such as "mytheme".</li>
-            <li class="line-height-4">
-                Create a folder named "mytheme" under
-                <span class="font-semibold">public/layout/styles/theme/theme-light/mytheme</span>
-                folder.
-            </li>
-            <li class="line-height-4">Create a file such as theme.scss inside your "mytheme" folder.</li>
-            <li class="line-height-4">Define the variables listed below in your file and import the dependencies.</li>
-            <li class="line-height-4">
-                Include the theme.scss in your application via an import in
-                <i>assets/styles.scss</i> or simply refer to the compiled css with a link tag. Note that if you choose the former, the theme will be bundled with the rest of your app.
-            </li>
-        </ul>
+                    <div class="font-semibold text-xl mb-4">Variables</div>
+                    <p class="text-lg mb-4">
+                        CSS variables used in the template derive their values from the PrimeVue styled mode presets, use the files under
+                        <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/assets/layout/_variables.scss</span> to customize according to your requirements.
+                    </p>
+                </TabPanel>
+                <TabPanel value="1">
+                    <div class="font-semibold text-xl mb-4">Get Started</div>
+                    <p class="text-lg mb-4">Nuxt version is created with <a href="https://nuxt.com/docs/getting-started/installation" class="font-medium text-primary hover:underline">Nuxt v3</a>.</p>
 
-        <p>Here are the variables required to create a theme.</p>
-        <pre class="app-code"><code>$primaryColor: #6366f1 !default;
-$primaryLightColor: #c7d2fe !default;
-$primaryDarkColor: #4f46e5 !default;
-$primaryDarkerColor: #4338ca !default;
-$primaryTextColor: #ffffff !default;
-$primary500: #6366f1 !default;
+                    <p class="text-lg mb-4">To get started, extract the contents of the zip file, cd to the directory and install the dependencies with npm, yarn or pnpm.</p>
+                    <pre class="app-code">
+<code>npm install
+npm run dev</code></pre>
 
-$highlightBg: #eef2ff !default;
-$highlightTextColor: $primaryDarkerColor !default;
-$highlightFocusBg: rgba($primaryColor, 0.24) !default;
+                    <p class="text-lg mb-4">Navigate to <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">http://localhost:3000/</i> to view the application in your local environment.</p>
 
-@import '../_variables';
-@import '../../theme-base/_components';
-@import '../_extensions';
+                    <div class="font-semibold text-xl mb-4">Structure</div>
+                    <p class="text-lg mb-4">Apollo follows the Nuxt folder structure, demos and layout have been separated so that you can easily remove what is not necessary for your application like the demos.</p>
+                    <ul class="leading-normal list-disc pl-8 text-lg mb-4">
+                        <li><span class="text-primary font-medium">layouts/</span>: Main layout, needs to be present.</li>
+                        <li><span class="text-primary font-medium">pages/</span>: Demo pages like Dashboard.</li>
+                        <li><span class="text-primary font-medium">public/demo</span>: Publicly accessible assets used in demos</li>
+                        <li><span class="text-primary font-medium">public/layout</span>: Publicly accessible assets used in layout</li>
+                        <li><span class="text-primary font-medium">src/assets/demo</span>: Styles used in demos</li>
+                        <li><span class="text-primary font-medium">src/assets/layout</span>: Styles of the main layout</li>
+                    </ul>
+
+                    <div class="font-semibold text-xl my-4">Layout Composable</div>
+                    <p class="text-lg mb-4">
+                        The <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">composables/use-layout.js</span> is a an auto-imported composable that manages the layout state changes including dark mode, PrimeVue theme, menu
+                        modes and states. Use this composable to change the initial configuration and handle changes reactively.
+                    </p>
+
+                    <pre class="app-code"><code>&lt;script setup&gt;
+const &#123; setMenuMode, toggleDarkMode &#125; = useLayout();
+    setMenuMode('slim');       // change to slim mode
+    toggleDarkMode();          // change color scheme
+&lt;/script&gt;
 </code></pre>
 
-        <h4>Theme Switcher</h4>
-        <p>
-            Dynamic theming is built-in to the template and implemented by including the theme via a link tag instead of bundling the theme along with a configurator component to switch it. In order to switch your theme dynamically as well, it needs
-            to be compiled to css. An example sass command to compile the css would be;
-        </p>
+                    <div class="font-semibold text-xl mb-4">Menu</div>
+                    <p class="text-lg mb-4">
+                        Main menu is defined at <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">layouts/AppMenu.vue</span> file. Update the
+                        <i class="bg-highlight px-2 py-1 rounded-border not-italic text-base">model</i> property to define your own menu items.
+                    </p>
+                    <pre class="app-code"><code>const model = ref([
+    &#123;
+        label: 'Dashboards',
+        icon: 'pi pi-home',
+        items: [
+            &#123;
+                label: 'E-Commerce',
+                icon: 'pi pi-fw pi-home',
+                to: '/'
+            &#125;,
+            &#123;
+                label: 'Banking',
+                icon: 'pi pi-fw pi-image',
+                to: '/dashboard-banking'
+            &#125;
+        ]
+    &#125;,
+    //...
+</code></pre>
 
-        <pre class="app-code"><code>sass --update public/layout/styles/assets/theme-light/mytheme.scss:public/layout/styles/assets/theme-light/mytheme.css</code></pre>
+                    <div class="font-semibold text-xl mb-4">Breadcrumb</div>
+                    <p class="text-lg mb-4">
+                        Breadcrumb component at the topbar section is dynamic and retrieves the path information from the router using the
+                        <span class="text-primary font-medium">meta.breadcrumb</span> property.
+                    </p>
 
-        <p class="text-sm">*Note: The sass command above is supported by Dart Sass. Please use Dart Sass instead of Ruby Sass.</p>
+                    <div class="font-semibold text-xl mb-4">Tailwind CSS</div>
+                    <p class="text-lg mb-4">The demo pages are developed using Tailwind CSS along with tailwind-primeui plugin, whereas the core application shell mainly uses custom CSS.</p>
 
-        <h4>Theme Designer</h4>
-        <p>
-            Apollo includes a simplified version of the
-            <a href="https://www.primefaces.org/designer/primevue">PrimeVue Theme Designer</a>
-            that only includes the main SASS structure. Full list of SASS variables to customize the components further is available at the
-            <a href="https://www.primefaces.org/designer/api/primevue/3.9.0/" class="font-medium text-primary hover:underline">SASS API</a>
-            docs.
-        </p>
-
-        <h4>Migration</h4>
-        <p>
-            Initial integration with an existing Vite application and the migration process is similar. During an update, only the layout folder and layout assets folder need to be updated, see the "Integration with Existing Vite Applications"
-            section for more information. Important changes are also documented at CHANGELOG.md file.
-        </p>
+                    <div class="font-semibold text-xl mb-4">Variables</div>
+                    <p class="text-lg mb-4">
+                        CSS variables used in the template derive their values from the PrimeVue styled mode presets, use the files under
+                        <span class="bg-highlight px-2 py-1 rounded-border not-italic text-base">src/assets/layout/_variables.scss</span> to customize according to your requirements.
+                    </p>
+                </TabPanel>
+            </TabPanels>
+        </Tabs>
     </div>
 </template>
 

@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { CountryService } from '@/service/CountryService';
+import { CountryService } from '../../service/CountryService';
+import { onMounted, ref } from 'vue';
 
 const value = ref('');
 const quantities = ref([1, 1, 1]);
@@ -8,91 +8,90 @@ const checked = ref(true);
 const checked2 = ref(true);
 const selectedCountry = ref(null);
 const countries = ref([]);
-const countryService = new CountryService();
 
 onMounted(() => {
-    countryService.getCountries().then((data) => (countries.value = data));
+    CountryService.getCountries().then((data) => (countries.value = data));
 });
 </script>
 
 <template>
     <div class="card">
-        <div class="grid grid-nogutter">
-            <div class="col-12 px-4 mt-4 md:mt-6 md:px-6">
-                <span class="text-900 block font-bold text-xl">Checkout</span>
+        <div class="grid grid-cols-12 gap-4 grid-nogutter">
+            <div class="col-span-12 px-6 mt-6 md:mt-12 md:px-12">
+                <span class="text-surface-900 dark:text-surface-0 block font-bold text-xl">Checkout</span>
             </div>
-            <div class="col-12 lg:col-6 h-full px-4 py-4 md:px-6">
-                <ul class="flex list-none flex-wrap p-0 mb-6">
-                    <li class="flex align-items-center text-primary mr-2">Cart <i class="pi pi-chevron-right text-500 text-xs ml-2"></i></li>
-                    <li class="flex align-items-center text-500 mr-2">Information<i class="pi pi-chevron-right text-500 text-xs ml-2"></i></li>
-                    <li class="flex align-items-center text-500 mr-2">Shipping<i class="pi pi-chevron-right text-500 text-xs ml-2"></i></li>
-                    <li class="flex align-items-center text-500 mr-2">Payment</li>
+            <div class="col-span-12 lg:col-span-6 h-full px-6 py-6 md:px-12">
+                <ul class="flex list-none flex-wrap p-0 mb-12">
+                    <li class="flex items-center text-primary mr-2">Cart <i class="pi pi-chevron-right text-surface-500 dark:text-surface-300 text-xs ml-2"></i></li>
+                    <li class="flex items-center text-surface-500 dark:text-surface-300 mr-2">Information<i class="pi pi-chevron-right text-surface-500 dark:text-surface-300 text-xs ml-2"></i></li>
+                    <li class="flex items-center text-surface-500 dark:text-surface-300 mr-2">Shipping<i class="pi pi-chevron-right text-surface-500 dark:text-surface-300 text-xs ml-2"></i></li>
+                    <li class="flex items-center text-surface-500 dark:text-surface-300 mr-2">Payment</li>
                 </ul>
-                <div class="grid formgrid">
-                    <div class="col-12 field mb-6">
-                        <span class="text-900 text-2xl block font-medium mb-5">Contact Information</span>
-                        <input id="email" placeholder="Email" type="text" class="p-inputtext w-full mb-4" />
-                        <div class="field-checkbox">
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12 mb-12">
+                        <span class="text-surface-900 dark:text-surface-0 text-2xl block font-medium mb-8">Contact Information</span>
+                        <input id="email" placeholder="Email" type="text" class="p-inputtext w-full mb-6" />
+                        <div class="flex items-center">
                             <Checkbox name="checkbox-1" v-model="checked" binary inputId="checkbox-1"></Checkbox>
-                            <label for="checkbox-1">Email me with news and offers</label>
+                            <label class="ml-2" for="checkbox-1">Email me with news and offers</label>
                         </div>
                     </div>
-                    <div class="col-12 field mb-4">
-                        <span class="text-900 text-2xl block font-medium mb-5">Shipping</span>
-                        <Dropdown :options="countries" v-model="selectedCountry" placeholder="Country / Region" optionLabel="name" showClear class="w-full"></Dropdown>
+                    <div class="col-span-12 mb-6">
+                        <span class="text-surface-900 dark:text-surface-0 text-2xl block font-medium mb-8">Shipping</span>
+                        <Select :options="countries" v-model="selectedCountry" placeholder="Country / Region" optionLabel="name" showClear class="w-full"></Select>
                     </div>
-                    <div class="col-12 lg:col-6 field mb-4">
+                    <div class="col-span-12 lg:col-span-6 mb-6">
                         <input id="name" placeholder="Name" type="text" class="p-inputtext w-full" />
                     </div>
-                    <div class="col-12 lg:col-6 field mb-4">
+                    <div class="col-span-12 lg:col-span-6 mb-6">
                         <input id="lastname" placeholder="Last Name" type="text" class="p-inputtext w-full" />
                     </div>
-                    <div class="col-12 field mb-4">
+                    <div class="col-span-12 mb-6">
                         <input id="address" placeholder="Address" type="text" class="p-inputtext w-full" />
                     </div>
-                    <div class="col-12 field mb-4">
+                    <div class="col-span-12 mb-6">
                         <input id="address2" placeholder="Apartment, suite, etc" type="text" class="p-inputtext w-full" />
                     </div>
-                    <div class="col-12 lg:col-6 field mb-4">
+                    <div class="col-span-12 lg:col-span-6 mb-6">
                         <input id="pc" placeholder="Postal Code" type="text" class="p-inputtext w-full" />
                     </div>
-                    <div class="col-12 lg:col-6 field mb-4">
+                    <div class="col-span-12 lg:col-span-6 mb-6">
                         <input id="city" placeholder="City" type="text" class="p-inputtext w-full" />
                     </div>
-                    <div class="col-12 lg:col-6 field mb-4">
-                        <div class="field-checkbox">
+                    <div class="col-span-12 lg:col-span-6 mb-6">
+                        <div class="flex items-center">
                             <Checkbox name="checkbox-2" v-model="checked2" binary inputId="checkbox-2"></Checkbox>
-                            <label for="checkbox-2">Save for next purchase</label>
+                            <label class="ml-2" for="checkbox-2">Save for next purchase</label>
                         </div>
                     </div>
-                    <div class="col-12 flex flex-column lg:flex-row justify-content-center align-items-center lg:justify-content-end my-6">
-                        <Button class="mt-3 lg:mt-0 w-full lg:w-auto flex-order-2 lg:flex-order-1 lg:mr-4" severity="secondary" outlined label="Return to Cart" icon="pi pi-fw pi-arrow-left"></Button>
-                        <Button class="w-full lg:w-auto flex-order-1 lg:flex-order-2" label="Continue to Shipping" icon="pi pi-fw pi-check"></Button>
+                    <div class="col-span-12 flex flex-col lg:flex-row justify-center items-center lg:justify-end my-12">
+                        <Button class="mt-4 lg:mt-0 w-full lg:w-auto order-2 lg:order-1 lg:mr-6" severity="secondary" outlined label="Return to Cart" icon="pi pi-fw pi-arrow-left"></Button>
+                        <Button class="w-full lg:w-auto order-1 lg:order-2" label="Continue to Shipping" icon="pi pi-fw pi-check"></Button>
                     </div>
                 </div>
             </div>
-            <div class="col-12 lg:col-6 px-4 py-4 md:px-6">
-                <div class="pb-3 surface-border">
-                    <span class="text-900 font-medium text-xl">Your Cart</span>
+            <div class="col-span-12 lg:col-span-6 px-6 py-6 md:px-12">
+                <div class="pb-4 border-surface-200 dark:border-surface-700">
+                    <span class="text-surface-900 dark:text-surface-0 font-medium text-xl">Your Cart</span>
                 </div>
-                <div class="flex flex-column lg:flex-row flex-wrap lg:align-items-center py-2 mt-3 surface-border">
-                    <img src="/demo/images/ecommerce/shop/shop-1.png" class="w-8rem h-8rem flex-shrink-0 mb-3" alt="product" />
-                    <div class="flex-auto lg:ml-3">
-                        <div class="flex align-items-center justify-content-between mb-3">
-                            <span class="text-900 font-bold">Product Name</span>
-                            <span class="text-900 font-bold">$123.00</span>
+                <div class="flex flex-col lg:flex-row flex-wrap lg:items-center py-2 mt-4 border-surface-200 dark:border-surface-700">
+                    <img src="/demo/images/ecommerce/shop/shop-1.png" class="w-32 h-32 flex-shrink-0 mb-4" alt="product" />
+                    <div class="flex-auto lg:ml-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-surface-900 dark:text-surface-0 font-bold">Product Name</span>
+                            <span class="text-surface-900 dark:text-surface-0 font-bold">$123.00</span>
                         </div>
-                        <div class="text-600 text-sm mb-3">Black | Large</div>
-                        <div class="flex flex-auto justify-content-between align-items-center">
+                        <div class="text-surface-600 dark:text-surface-200 text-sm mb-4">Black | Large</div>
+                        <div class="flex flex-auto justify-between items-center">
                             <InputNumber
                                 showButtons
                                 buttonLayout="horizontal"
                                 :min="0"
-                                inputClass="w-2rem text-center py-2 px-1 border-transparent outline-none shadow-none"
+                                inputClass="w-8 text-center py-2 px-1 border-transparent outline-0 shadow-none"
                                 v-model="quantities[0]"
-                                class="border-1 surface-border border-round"
-                                decrementButtonClass="p-button-text text-600 hover:text-primary py-1 px-1"
-                                incrementButtonClass="p-button-text text-600 hover:text-primary py-1 px-1"
+                                class="border border-surface-200 dark:border-surface-700 rounded"
+                                decrementButtonClass="p-button-text text-surface-600 dark:text-surface-200 hover:text-primary py-1 px-1"
+                                incrementButtonClass="p-button-text text-surface-600 dark:text-surface-200 hover:text-primary py-1 px-1"
                                 incrementButtonIcon="pi pi-plus"
                                 decrementButtonIcon="pi pi-minus"
                             ></InputNumber>
@@ -100,29 +99,29 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
-                <div class="py-2 mt-3 surface-border">
-                    <InputGroup class="mt-3">
+                <div class="py-2 mt-4 border-surface-200 dark:border-surface-700">
+                    <InputGroup class="mt-4">
                         <InputText type="text" v-model="value" placeholder="Promo code" class="w-full" />
                         <Button type="button" label="Apply" :disabled="!value"></Button>
                     </InputGroup>
                 </div>
-                <div class="py-2 mt-3">
-                    <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="text-900 font-medium">Subtotal</span>
-                        <span class="text-900">$123.00</span>
+                <div class="py-2 mt-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-surface-900 dark:text-surface-0 font-medium">Subtotal</span>
+                        <span class="text-surface-900 dark:text-surface-0">$123.00</span>
                     </div>
-                    <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="text-900 font-medium">Shipping</span>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-surface-900 dark:text-surface-0 font-medium">Shipping</span>
                         <span class="text-primary font-bold">Free</span>
                     </div>
-                    <div class="flex justify-content-between align-items-center mb-3">
-                        <span class="text-900 font-bold">Total</span>
-                        <span class="text-900 font-medium text-xl">$123.00</span>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-surface-900 dark:text-surface-0 font-bold">Total</span>
+                        <span class="text-surface-900 dark:text-surface-0 font-medium text-xl">$123.00</span>
                     </div>
                 </div>
-                <div class="py-2 mt-3 bg-yellow-100 flex align-items-center justify-content-center border-round">
+                <div class="py-2 mt-4 bg-yellow-100 flex items-center justify-center rounded">
                     <img src="/demo/images/ecommerce/shop/flag.png" class="mr-2" alt="Country Flag" />
-                    <span class="text-black-alpha-90 font-medium">No additional duties or taxes.</span>
+                    <span class="text-black/90 font-medium">No additional duties or taxes.</span>
                 </div>
             </div>
         </div>
