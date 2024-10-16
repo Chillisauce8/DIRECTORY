@@ -26,51 +26,53 @@ const categoryOptions = ['Sneakers', 'Apparel', 'Socks'];
 const fileUploaderRef = ref(null);
 const uploadFiles = ref([]);
 
-const onChooseUploadFiles = () => {
+function onChooseUploadFiles() {
     fileUploaderRef.value.choose();
-};
-const onSelectedFiles = (event) => {
-    uploadFiles.value = event.files;
-};
-const onRemoveFile = (removeFile) => {
-    uploadFiles.value = uploadFiles.value.filter((file) => file.name !== removeFile.name);
-};
+}
 
-const toggleColor = (color) => {
+function onSelectedFiles(event) {
+    uploadFiles.value = event.files;
+}
+function onRemoveFile(removeFile) {
+    uploadFiles.value = uploadFiles.value.filter((file) => file.name !== removeFile.name);
+}
+
+function toggleColor(color) {
     const index = product.value.colors.indexOf(color);
     if (index > -1) {
         product.value.colors.splice(index, 1);
     } else {
         product.value.colors.push(color);
     }
-};
-const onRemoveTags = (tag) => {
+}
+
+function onRemoveTags(tag) {
     product.value.tags = product.value.tags.filter((t) => t !== tag);
-};
+}
 </script>
 
 <template>
     <div class="card">
-        <span class="block text-900 font-bold text-xl mb-4">Create Product</span>
-        <div class="grid grid-nogutter flex-wrap gap-3 p-fluid">
-            <div class="col-12 lg:col-8">
-                <div class="grid formgrid">
-                    <div class="col-12 field">
+        <span class="block text-surface-900 dark:text-surface-0 font-bold text-xl mb-6">Create Product</span>
+        <Fluid class="grid grid-cols-12 gap-4 flex-wrap">
+            <div class="col-span-12 lg:col-span-8">
+                <div class="grid grid-cols-12 gap-4">
+                    <div class="col-span-12">
                         <InputText type="text" placeholder="Product Name" v-model="product.name" />
                     </div>
-                    <div class="col-12 lg:col-4 field">
+                    <div class="col-span-12 lg:col-span-4">
                         <InputText type="text" placeholder="Price" label="Price" v-model="product.price" />
                     </div>
-                    <div class="col-12 lg:col-4 field">
+                    <div class="col-span-12 lg:col-span-4">
                         <InputText type="text" placeholder="Product Code" label="Product Code" v-model="product.code" />
                     </div>
-                    <div class="col-12 lg:col-4 field">
+                    <div class="col-span-12 lg:col-span-4">
                         <InputText type="text" placeholder="Product SKU" label="SKU" v-model="product.sku" />
                     </div>
-                    <div class="col-12">
+                    <div class="col-span-12">
                         <Editor editorStyle="height: 320px"></Editor>
                     </div>
-                    <div class="col-12 mt-3">
+                    <div class="col-span-12 mt-4">
                         <FileUpload
                             ref="fileUploaderRef"
                             id="files-fileupload"
@@ -79,22 +81,22 @@ const onRemoveTags = (tag) => {
                             customUpload
                             multiple
                             auto
-                            class="border-1 surface-border surface-card p-0 border-round"
+                            class="border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-0 rounded"
                             :maxFileSize="1000000"
                             @select="onSelectedFiles"
                             :pt="{
-                                buttonbar: { class: 'hidden' },
+                                header: { class: '!hidden' },
                                 root: { style: { backgroundColor: 'rgba(255, 255, 255, 0.05)' } }
                             }"
                         >
                             <template v-if="uploadFiles.length > 0" #content>
-                                <div class="h-20rem m-1 border-round">
-                                    <div v-for="file in uploadFiles" :key="file.name" class="w-full h-full relative border-round p-0" :style="{ cursor: 'copy' }">
-                                        <div class="remove-file-wrapper h-full relative border-3 border-transparent border-round hover:bg-primary transition-duration-100 cursor-auto">
-                                            <img :src="file.objectURL" :alt="file.name" class="w-full h-full border-round" />
+                                <div class="h-80 m-1 rounded">
+                                    <div v-for="file in uploadFiles" :key="file.name" class="w-full h-full relative rounded p-0" :style="{ cursor: 'copy' }">
+                                        <div class="remove-file-wrapper h-full relative border-4 border-transparent rounded hover:bg-primary hover:text-primary-contrast duration-100 cursor-auto">
+                                            <img :src="file.objectURL" :alt="file.name" class="w-full h-full rounded" />
                                             <Button
                                                 icon="pi pi-times"
-                                                class="remove-button text-sm absolute justify-content-center align-items-center cursor-pointer"
+                                                class="remove-button text-sm absolute justify-center items-center cursor-pointer"
                                                 rounded
                                                 :style="{ top: '-10px', right: '-10px', display: 'none', width: '3rem' }"
                                                 @click="onRemoveFile(file)"
@@ -104,10 +106,10 @@ const onRemoveTags = (tag) => {
                                 </div>
                             </template>
                             <template #empty>
-                                <div v-if="uploadFiles.length < 1" class="h-20rem m-1 border-round">
-                                    <div @click="onChooseUploadFiles" class="flex flex-column w-full h-full justify-content-center align-items-center cursor-pointer" :style="{ cursor: 'copy' }">
+                                <div v-if="uploadFiles.length < 1" class="h-80 m-1 rounded">
+                                    <div @click="onChooseUploadFiles" class="flex flex-col w-full h-full justify-center items-center cursor-pointer" :style="{ cursor: 'copy' }">
                                         <i class="pi pi-fw pi-file text-4xl text-primary"></i>
-                                        <span class="block font-semibold text-900 text-lg mt-3">Drop or select a cover image</span>
+                                        <span class="block font-semibold text-surface-900 dark:text-surface-0 text-lg mt-4">Drop or select a cover image</span>
                                     </div>
                                 </div>
                             </template>
@@ -115,65 +117,73 @@ const onRemoveTags = (tag) => {
                     </div>
                 </div>
             </div>
-            <div class="flex-1 w-full lg:w-3 xl:w-4 flex flex-column row-gap-3">
-                <div class="border-1 surface-border border-round">
-                    <span class="text-900 font-bold block border-bottom-1 surface-border p-3">Publish</span>
-                    <div class="p-3">
-                        <div class="surface-100 py-2 px-3 flex align-items-center border-round">
-                            <span class="text-black-alpha-90 font-bold mr-3">Status:</span>
-                            <span class="text-black-alpha-60 font-semibold">Draft</span>
+            <div class="col-span-12 lg:col-span-4 flex flex-col gap-y-4">
+                <div class="border border-surface-200 dark:border-surface-700 rounded">
+                    <span class="text-surface-900 dark:text-surface-0 font-bold block border-b border-surface-200 dark:border-surface-700 p-4">Publish</span>
+                    <div class="p-4">
+                        <div class="bg-surface-100 dark:bg-surface-700 py-2 px-4 flex items-center rounded">
+                            <span class="text-black/90 font-bold mr-4">Status:</span>
+                            <span class="text-black/60 font-semibold">Draft</span>
                             <Button type="button" icon="pi pi-fw pi-pencil" class="ml-auto" text rounded></Button>
                         </div>
                     </div>
                 </div>
-                <div class="border-1 surface-border border-round">
-                    <span class="text-900 font-bold block border-bottom-1 surface-border p-3">Tags</span>
-                    <div class="p-3 flex flex-wrap gap-1">
-                        <Chip v-for="(tag, i) in product.tags" :key="i" :label="tag" class="mr-2 py-2 px-3 text-900 font-bold surface-card border-1 surface-border" style="border-radius: 20px">
-                            <span class="mr-3">{{ tag }}</span>
-                            <span class="flex align-items-center justify-content-center border-1 surface-border bg-gray-100 border-circle cursor-pointer" :style="{ width: '1.5rem', height: '1.5rem' }" @click="onRemoveTags(tag)">
-                                <i class="pi pi-fw pi-times text-black-alpha-60" :style="{ fontSize: '9px' }"></i> </span
+
+                <div class="border border-surface-200 dark:border-surface-700 rounded">
+                    <span class="text-surface-900 dark:text-surface-0 font-bold block border-b border-surface-200 dark:border-surface-700 p-4">Tags</span>
+                    <div class="p-4 flex flex-wrap gap-1">
+                        <Chip
+                            v-for="(tag, i) in product.tags"
+                            :key="i"
+                            :label="tag"
+                            class="mr-2 py-2 px-4 text-surface-900 dark:text-surface-0 font-bold bg-surface-0 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+                            style="border-radius: 20px"
+                        >
+                            <span class="mr-4">{{ tag }}</span>
+                            <span class="flex items-center justify-center border border-surface-200 dark:border-surface-700 bg-gray-100 rounded-full cursor-pointer" :style="{ width: '1.5rem', height: '1.5rem' }" @click="onRemoveTags(tag)">
+                                <i class="pi pi-fw pi-times text-black/60" :style="{ fontSize: '9px' }"></i> </span
                         ></Chip>
                     </div>
                 </div>
-                <div class="border-1 surface-border border-round">
-                    <span class="text-900 font-bold block border-bottom-1 surface-border p-3">Category</span>
-                    <div class="p-3">
-                        <Dropdown :options="categoryOptions" v-model="selectedCategory" placeholder="Select a category"></Dropdown>
+
+                <div class="border border-surface-200 dark:border-surface-700 rounded">
+                    <span class="text-surface-900 dark:text-surface-0 font-bold block border-b border-surface-200 dark:border-surface-700 p-4">Category</span>
+                    <div class="p-4">
+                        <Select :options="categoryOptions" v-model="selectedCategory" placeholder="Select a category"></Select>
                     </div>
                 </div>
 
-                <div class="border-1 surface-border border-round">
-                    <span class="text-900 font-bold block border-bottom-1 surface-border p-3">Colors</span>
-                    <div class="p-3 flex">
+                <div class="border border-surface-200 dark:border-surface-700 rounded">
+                    <span class="text-surface-900 dark:text-surface-0 font-bold block border-b border-surface-200 dark:border-surface-700 p-4">Colors</span>
+                    <div class="p-4 flex">
                         <div
                             v-for="(color, i) in colorOptions"
                             :key="i"
-                            class="w-2rem h-2rem mr-2 border-1 surface-border border-circle cursor-pointer flex justify-content-center align-items-center"
+                            class="w-8 h-8 mr-2 border border-surface-200 dark:border-surface-700 rounded-full cursor-pointer flex justify-center items-center"
                             :class="color.background"
                             @click="toggleColor(color.name)"
                         >
-                            <i v-if="product.colors.includes(color.name)" :key="i" class="pi pi-check text-sm text-white z-5"></i>
+                            <i v-if="product.colors.includes(color.name)" :key="i" class="pi pi-check text-sm text-white z-50"></i>
                         </div>
                     </div>
                 </div>
 
-                <div class="border-1 surface-border border-round">
-                    <span class="text-900 font-bold block border-bottom-1 surface-border p-3">Stock</span>
-                    <div class="p-3">
-                        <Dropdown :options="categoryOptions" v-model="selectedStock" placeholder="Select stock"></Dropdown>
+                <div class="border border-surface-200 dark:border-surface-700 rounded">
+                    <span class="text-surface-900 dark:text-surface-0 font-bold block border-b border-surface-200 dark:border-surface-700 p-4">Stock</span>
+                    <div class="p-4">
+                        <Select :options="categoryOptions" v-model="selectedStock" placeholder="Select stock"></Select>
                     </div>
                 </div>
-                <div class="border-1 surface-border flex justify-content-between align-items-center px-3 border-round">
-                    <span class="text-900 font-bold p-3">In stock</span>
-                    <InputSwitch v-model="product.inStock"></InputSwitch>
+                <div class="border border-surface-200 dark:border-surface-700 flex justify-between items-center px-4 rounded">
+                    <span class="text-surface-900 dark:text-surface-0 font-bold p-4">In stock</span>
+                    <ToggleSwitch v-model="product.inStock"></ToggleSwitch>
                 </div>
-                <div class="flex justify-content-between gap-3">
+                <div class="flex justify-between gap-4">
                     <Button class="flex-1" severity="danger" outlined label="Discard" icon="pi pi-fw pi-trash"></Button>
                     <Button class="flex-1" label="Publish" icon="pi pi-fw pi-check"></Button>
                 </div>
             </div>
-        </div>
+        </Fluid>
     </div>
 </template>
 

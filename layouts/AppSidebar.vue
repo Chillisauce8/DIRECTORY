@@ -1,32 +1,27 @@
 <script setup>
 import AppMenu from './AppMenu.vue';
-import { useLayout } from './composables/layout';
 
-const { layoutState } = useLayout();
+const { layoutState, onSidebarToggle, onAnchorToggle } = useLayout();
 
 let timeout = null;
 
-const onMouseEnter = () => {
-    if (!layoutState.anchored.value) {
+function onMouseEnter() {
+    if (!layoutState.anchored) {
         if (timeout) {
             clearTimeout(timeout);
             timeout = null;
         }
-        layoutState.sidebarActive.value = true;
+        onSidebarToggle(true);
     }
-};
+}
 
-const onMouseLeave = () => {
-    if (!layoutState.anchored.value) {
+function onMouseLeave() {
+    if (!layoutState.anchored) {
         if (!timeout) {
-            timeout = setTimeout(() => (layoutState.sidebarActive.value = false), 300);
+            timeout = setTimeout(() => onSidebarToggle(false), 300);
         }
     }
-};
-
-const anchor = () => {
-    layoutState.anchored.value = !layoutState.anchored.value;
-};
+}
 </script>
 
 <template>
@@ -58,9 +53,8 @@ const anchor = () => {
                     <path d="M13.8399 15.793L16.2076 21.0019H11.7681L13.8399 15.793Z" fill="var(--logo-color)" />
                     <path d="M9.04637 21.0019L6.67867 15.793L4.60693 21.0019H9.04637Z" fill="var(--logo-color)" />
                 </svg>
-
-                <button class="layout-sidebar-anchor p-link z-2 mb-2" type="button" @click="anchor()"></button>
             </router-link>
+            <button class="layout-sidebar-anchor z-20 mb-2" type="button" @click="onAnchorToggle"></button>
         </div>
         <div class="layout-menu-container">
             <AppMenu />

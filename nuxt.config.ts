@@ -4,7 +4,8 @@ import environment from './environment';
 
 export default defineNuxtConfig({
  //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
- modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration', 'nuxt-primevue', '@nuxt/image'],
+ modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration',
+   '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image'],
 
  primevue: {
    cssLayerOrder: 'reset, primevue',
@@ -32,6 +33,7 @@ export default defineNuxtConfig({
  css: [
   "@/assets/css/global.scss",
   "@/assets/styles.scss",
+   "@/assets/tailwind.css",
    "primeicons/primeicons.css"
 ],
 
@@ -366,23 +368,15 @@ export default defineNuxtConfig({
      pages.push({
        name: 'formlayout',
        path: '/uikit/formlayout/',
-       file: '@/pages/uikit/FormLayout.vue',
+       file: '@/pages/uikit/FormLayoutDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Form Layout']
        }
      });
      pages.push({
-       name: 'floatlabel',
-       path: '/uikit/floatlabel/',
-       file: '@/pages/uikit/FloatLabel.vue',
-       meta: {
-         breadcrumb: ['UI Kit', 'Float Label']
-       }
-     });
-     pages.push({
        name: 'Button',
        path: '/uikit/button/',
-       file: '@/pages/uikit/Button.vue',
+       file: '@/pages/uikit/ButtonDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Button']
        }
@@ -390,7 +384,7 @@ export default defineNuxtConfig({
      pages.push({
        name: 'table',
        path: '/uikit/table/',
-       file: '@/pages/uikit/Table.vue',
+       file: '@/pages/uikit/TableDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Table']
        }
@@ -398,7 +392,7 @@ export default defineNuxtConfig({
      pages.push({
        name: 'list',
        path: '/uikit/list/',
-       file: '@/pages/uikit/List.vue',
+       file: '@/pages/uikit/ListDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'List']
        }
@@ -406,7 +400,7 @@ export default defineNuxtConfig({
      pages.push({
        name: 'tree',
        path: '/uikit/tree/',
-       file: '@/pages/uikit/Tree.vue',
+       file: '@/pages/uikit/TreeDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Tree']
        }
@@ -414,15 +408,7 @@ export default defineNuxtConfig({
      pages.push({
        name: 'panel',
        path: '/uikit/panel/',
-       file: '@/pages/uikit/Panel.vue',
-       meta: {
-         breadcrumb: ['UI Kit', 'Panel']
-       }
-     });
-     pages.push({
-       name: 'panel',
-       path: '/uikit/panel/',
-       file: '@/pages/uikit/Panel.vue',
+       file: '@/pages/uikit/PanelsDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Panel']
        }
@@ -430,7 +416,7 @@ export default defineNuxtConfig({
      pages.push({
        name: 'overlay',
        path: '/uikit/overlay/',
-       file: '@/pages/uikit/Overlay.vue',
+       file: '@/pages/uikit/OverlayDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Overlay']
        }
@@ -438,7 +424,7 @@ export default defineNuxtConfig({
      pages.push({
        name: 'media',
        path: '/uikit/media/',
-       file: '@/pages/uikit/Media.vue',
+       file: '@/pages/uikit/MediaDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Media']
        }
@@ -446,7 +432,7 @@ export default defineNuxtConfig({
      pages.push({
        name: 'message',
        path: '/uikit/message/',
-       file: '@/pages/uikit/Message.vue',
+       file: '@/pages/uikit/MessagesDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Message']
        }
@@ -454,7 +440,7 @@ export default defineNuxtConfig({
      pages.push({
        name: 'file',
        path: '/uikit/file/',
-       file: '@/pages/uikit/File.vue',
+       file: '@/pages/uikit/FileDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'File']
        }
@@ -462,23 +448,15 @@ export default defineNuxtConfig({
      pages.push({
        name: 'misc',
        path: '/uikit/misc/',
-       file: '@/pages/uikit/Misc.vue',
+       file: '@/pages/uikit/MiscDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Misc']
        }
      });
      pages.push({
-       name: 'invalidstate',
-       path: '/uikit/invalidstate/',
-       file: '@/pages/uikit/InvalidState.vue',
-       meta: {
-         breadcrumb: ['UI Kit', 'Invalid State']
-       }
-     });
-     pages.push({
        name: 'input',
        path: '/uikit/input/',
-       file: '@/pages/uikit/Input.vue',
+       file: '@/pages/uikit/InputDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Input']
        }
@@ -486,7 +464,7 @@ export default defineNuxtConfig({
      pages.push({
        name: 'charts',
        path: '/uikit/charts/',
-       file: '@/pages/uikit/Chart.vue',
+       file: '@/pages/uikit/ChartDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Charts']
        }
@@ -494,32 +472,18 @@ export default defineNuxtConfig({
      pages.push({
        name: 'menu',
        path: '/uikit/menu/',
-       file: '@/pages/uikit/Menu.vue',
+       file: '@/pages/uikit/MenuDoc.vue',
        meta: {
          breadcrumb: ['UI Kit', 'Menu']
-       },
-       children: [
-         {
-           name: 'personal-demo',
-           path: '/uikit/menu/',
-           file: '@/pages/uikit/menu/PersonalDemo.vue'
-         },
-         {
-           name: 'seat-demo',
-           path: '/uikit/menu/seat',
-           file: '@/pages/uikit/menu/SeatDemo.vue'
-         },
-         {
-           name: 'payment-demo',
-           path: '/uikit/menu/payment',
-           file: '@/pages/uikit/menu/PaymentDemo.vue'
-         },
-         {
-           name: 'confirmation-demo',
-           path: '/uikit/menu/confirmation',
-           file: '@/pages/uikit/menu/ConfirmationDemo.vue'
-         }
-       ]
+       }
+     });
+     pages.push({
+       name: 'timeline',
+       path: '/uikit/timeline/',
+       file: '@/pages/uikit/TimelineDoc.vue',
+       meta: {
+         breadcrumb: ['UI Kit', 'Timeline']
+       }
      });
      pages.push({
        name: 'starred',

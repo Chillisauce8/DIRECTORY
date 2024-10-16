@@ -50,24 +50,24 @@ const products2 = ref([
 
 <template>
     <div class="card">
-        <div class="text-900 font-medium text-4xl mb-4">Popular Products</div>
-        <p class="mt-0 p-0 mb-5 text-700 text-2xl">Exclusive Selection</p>
-        <div class="grid -mt-3 -ml-3 -mr-3">
-            <div v-for="(product, i) in products" :key="i" class="col-12 md:col-6 lg:col-4">
+        <div class="text-surface-900 dark:text-surface-0 font-medium text-4xl mb-6">Popular Products</div>
+        <p class="mt-0 p-0 mb-8 text-surface-700 dark:text-surface-100 text-2xl">Exclusive Selection</p>
+        <div class="grid grid-cols-12 gap-4 -mt-4 -ml-4 -mr-4">
+            <div v-for="(product, i) in products" :key="i" class="col-span-12 md:col-span-6 lg:col-span-4">
                 <div class="p-2">
-                    <div class="shadow-2 p-4 surface-card border-round">
-                        <div class="relative mb-3">
-                            <span class="surface-card text-900 shadow-2 px-3 py-2 absolute border-round-3xl" :style="{ left: '1rem', top: '1rem' }"> Category </span>
+                    <div class="shadow p-6 bg-surface-0 dark:bg-surface-900 rounded">
+                        <div class="relative mb-4">
+                            <span class="bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 shadow px-4 py-2 absolute rounded-3xl" :style="{ left: '1rem', top: '1rem' }"> Category </span>
                             <img :src="product.image" class="w-full" :alt="i" />
                         </div>
-                        <div class="flex justify-content-between align-items-center mb-3">
-                            <span class="text-900 font-medium text-xl">Product Name</span>
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-surface-900 dark:text-surface-0 font-medium text-xl">Product Name</span>
                             <span>
                                 <i class="pi pi-star-fill text-yellow-500 mr-1"></i>
                                 <span class="font-medium">5.0</span>
                             </span>
                         </div>
-                        <p class="mt-0 mb-3 text-700 line-height-3">Enim nec dui nunc mattis enim ut tellus. Tincidunt arcu.</p>
+                        <p class="mt-0 mb-4 text-surface-700 dark:text-surface-100 leading-normal">Enim nec dui nunc mattis enim ut tellus. Tincidunt arcu.</p>
                         <span class="text-primary text-xl font-medium">{{ product.price }}</span>
                     </div>
                 </div>
@@ -76,45 +76,45 @@ const products2 = ref([
     </div>
 
     <div class="card">
-        <div class="grid -mt-3 -ml-3 -mr-3">
-            <div v-for="(product, i) in products2" :key="i" class="col-12 md:col-6 lg:col-3 mb-5 lg:mb-0">
-                <div class="mb-3 relative">
+        <div class="grid grid-cols-12 gap-4 -mt-4 -ml-4 -mr-4">
+            <div v-for="(product, i) in products2" :key="i" class="col-span-12 md:col-span-6 lg:col-span-3 mb-8 lg:mb-0">
+                <div class="mb-4 relative">
                     <img :src="product.image" class="w-full" :alt="i" />
                     <Button
                         type="button"
-                        class="border-1 border-white border-round py-2 px-3 absolute bg-black-alpha-30 text-white inline-flex align-items-center justify-content-center hover:bg-black-alpha-40 transition-colors transition-duration-300 cursor-pointer"
+                        class="border !border-white rounded py-2 px-4 !absolute !bg-black/30 !text-white inline-flex items-center justify-center hover:bg-black/40 transition-colors duration-300 cursor-pointer"
                         :style="{ bottom: '1rem', left: '1rem', width: 'calc(100% - 2rem)' }"
                     >
-                        <i class="pi pi-shopping-cart mr-3 text-base"></i>
+                        <i class="pi pi-shopping-cart mr-4 text-base"></i>
                         <span class="text-base">Add to Cart</span>
                     </Button>
                 </div>
-                <div class="flex flex-column align-items-center">
-                    <span class="text-xl text-900 font-medium mb-3">Product Name</span>
-                    <span class="text-xl text-900 mb-3">$150.00</span>
-                    <div class="flex align-items-center mb-3">
+                <div class="flex flex-col items-center">
+                    <span class="text-xl text-surface-900 dark:text-surface-0 font-medium mb-4">Product Name</span>
+                    <span class="text-xl text-surface-900 dark:text-surface-0 mb-4">$150.00</span>
+                    <div class="flex items-center mb-4">
                         <div
-                            class="w-2rem h-2rem flex-shrink-0 border-circle bg-bluegray-500 mr-3 cursor-pointer border-2 surface-border transition-all transition-duration-300"
-                            :style="{ 'box-shadow': product.color === 'Bluegray' ? '0 0 0 0.2rem var(--bluegray-500)' : null }"
+                            class="w-8 h-8 flex-shrink-0 rounded-full bg-slate-500 mr-4 cursor-pointer border-2 border-surface-200 dark:border-surface-700 transition-all duration-300"
+                            :style="{ 'box-shadow': product.color === 'Bluegray' ? '0 0 0 0.2rem var(--p-bluegray-500)' : null }"
                             @click="product.color = 'Bluegray'"
                         ></div>
                         <div
-                            class="w-2rem h-2rem flex-shrink-0 border-circle bg-indigo-500 hover:border-indigo-500 mr-3 cursor-pointer border-2 surface-border transition-all transition-duration-300"
-                            :style="{ 'box-shadow': product.color === 'Indigo' ? '0 0 0 0.2rem var(--indigo-500)' : null }"
+                            class="w-8 h-8 flex-shrink-0 rounded-full bg-indigo-500 hover:border-indigo-500 mr-4 cursor-pointer border-2 border-surface-200 dark:border-surface-700 transition-all duration-300"
+                            :style="{ 'box-shadow': product.color === 'Indigo' ? '0 0 0 0.2rem var(--p-indigo-500)' : null }"
                             @click="product.color = 'Indigo'"
                         ></div>
                         <div
-                            class="w-2rem h-2rem flex-shrink-0 border-circle bg-purple-500 hover:border-purple-500 mr-3 cursor-pointer border-2 surface-border transition-all transition-duration-300"
-                            :style="{ 'box-shadow': product.color === 'Purple' ? '0 0 0 0.2rem var(--purple-500)' : null }"
+                            class="w-8 h-8 flex-shrink-0 rounded-full bg-purple-500 hover:border-purple-500 mr-4 cursor-pointer border-2 border-surface-200 dark:border-surface-700 transition-all duration-300"
+                            :style="{ 'box-shadow': product.color === 'Purple' ? '0 0 0 0.2rem var(--p-purple-500)' : null }"
                             @click="product.color = 'Purple'"
                         ></div>
                         <div
-                            class="w-2rem h-2rem flex-shrink-0 border-circle bg-cyan-500 hover:border-cyan-500 cursor-pointer border-2 surface-border transition-all transition-duration-300"
-                            :style="{ 'box-shadow': product.color === 'Cyan' ? '0 0 0 0.2rem var(--cyan-500)' : null }"
+                            class="w-8 h-8 flex-shrink-0 rounded-full bg-cyan-500 hover:border-cyan-500 cursor-pointer border-2 border-surface-200 dark:border-surface-700 transition-all duration-300"
+                            :style="{ 'box-shadow': product.color === 'Cyan' ? '0 0 0 0.2rem var(--p-cyan-500)' : null }"
                             @click="product.color = 'Cyan'"
                         ></div>
                     </div>
-                    <span class="text-700">{{ product.color }}</span>
+                    <span class="text-surface-700 dark:text-surface-100">{{ product.color }}</span>
                 </div>
             </div>
         </div>

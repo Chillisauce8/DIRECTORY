@@ -106,7 +106,7 @@ const model = ref([
     meta: {
         breadcrumb: ['UI Kit', 'Form Layout']
     },
-    component: () => import('@/views/uikit/FormLayout.vue')
+    component: () => import('@/views/uikit/FormLayoutDoc.vue')
 &#125;,</code></pre>
 
         <h4>Integration with Existing Vite Applications</h4>

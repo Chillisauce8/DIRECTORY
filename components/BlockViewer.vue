@@ -71,7 +71,7 @@ async function copyCode(event) {
 
 .block-header {
     padding: 1rem 2rem;
-    background-color: var(--surface-section);
+    background-color: var(--surface-card);
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     border: 1px solid var(--surface-border);
@@ -87,7 +87,7 @@ async function copyCode(event) {
         .badge-free {
             border-radius: 4px;
             padding: 0.25rem 0.5rem;
-            background-color: var(--orange-500);
+            background-color: var(--p-orange-500);
             color: white;
             margin-left: 1rem;
             font-weight: 700;
@@ -118,7 +118,7 @@ async function copyCode(event) {
             }
 
             &:not(.block-action-disabled):hover {
-                background-color: var(--surface-c);
+                background-color: var(--surface-card);
             }
 
             &.block-action-active {
@@ -151,7 +151,8 @@ async function copyCode(event) {
     border-top: 0 none;
 }
 
-pre[class*='language-'] {
+pre.app-code {
+    background: var(--surface-card) !important;
     margin: 0 !important;
 
     &:before,
@@ -162,7 +163,7 @@ pre[class*='language-'] {
     code {
         border-left: 0 none !important;
         box-shadow: none !important;
-        background: var(--surface-e) !important;
+        background: var(--surface-card) !important;
         margin: 0;
         color: var(--text-color);
         font-size: 14px;

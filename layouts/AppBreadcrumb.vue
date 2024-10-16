@@ -1,11 +1,11 @@
 <script setup>
-import { useRoute } from 'vue-router';
 import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const breadcrumbRoutes = ref([]);
 
-const setBreadcrumbRoutes = () => {
+function setBreadcrumbRoutes() {
     if (route.meta.breadcrumb) {
         breadcrumbRoutes.value = route.meta.breadcrumb;
 
@@ -17,7 +17,7 @@ const setBreadcrumbRoutes = () => {
         .filter((item) => item !== '')
         .filter((item) => isNaN(Number(item)))
         .map((item) => item.charAt(0).toUpperCase() + item.slice(1));
-};
+}
 
 watch(
     route,

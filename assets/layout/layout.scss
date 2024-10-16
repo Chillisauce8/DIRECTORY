@@ -1,11 +1,12 @@
 $breakpoint: 992px !default;
+
 //$scale: 14px !default; 
 $scale: 16px !default; // MODIFIED
 
+@import './variables/_common';
+@import './variables/_light';
+@import './variables/_dark';
 @import './_fonts';
-@import './_layout_light';
-@import './_layout_dim';
-@import './_layout_dark';
 @import './_main';
 @import './_sidebar_vertical';
 @import './_sidebar_slim';
@@ -20,5 +21,4 @@ $scale: 16px !default; // MODIFIED
 @import './_profile';
 @import './_config';
 @import './_content';
-@import './_typography';
 @import './_utils';

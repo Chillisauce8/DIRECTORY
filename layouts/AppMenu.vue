@@ -155,16 +155,6 @@ const model = ref([
                 to: '/uikit/input'
             },
             {
-                label: 'Float Label',
-                icon: 'pi pi-fw pi-bookmark',
-                to: '/uikit/floatlabel'
-            },
-            {
-                label: 'Invalid State',
-                icon: 'pi pi-fw pi-exclamation-circle',
-                to: '/uikit/invalidstate'
-            },
-            {
                 label: 'Button',
                 icon: 'pi pi-fw pi-box',
                 to: '/uikit/button'
@@ -220,6 +210,11 @@ const model = ref([
                 to: '/uikit/charts'
             },
             {
+                label: 'Timeline',
+                icon: 'pi pi-fw pi-calendar',
+                to: '/uikit/timeline'
+            },
+            {
                 label: 'Misc',
                 icon: 'pi pi-fw pi-circle-off',
                 to: '/uikit/misc'
@@ -238,7 +233,7 @@ const model = ref([
             {
                 label: 'All Blocks',
                 icon: 'pi pi-fw pi-globe',
-                url: 'https://www.primefaces.org/primeblocks-vue',
+                url: 'https://blocks.primevue.org/',
                 target: '_blank'
             }
         ]
@@ -332,11 +327,6 @@ const model = ref([
                 to: '/pages/crud'
             },
             {
-                label: 'Timeline',
-                icon: 'pi pi-fw pi-calendar',
-                to: '/pages/timeline'
-            },
-            {
                 label: 'Invoice',
                 icon: 'pi pi-fw pi-dollar',
                 to: '/pages/invoice'
@@ -369,7 +359,7 @@ const model = ref([
             {
                 label: 'Contact Us',
                 icon: 'pi pi-fw pi-phone',
-                to: '/pages/contact'
+                to: '/pages/contactus'
             }
         ]
     },

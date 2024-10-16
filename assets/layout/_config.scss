@@ -14,7 +14,7 @@
     border-bottom-left-radius: var(--border-radius);
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    transition: background-color var(--transition-duration);
+    transition: background-color var(--layout-section-transition-duration);
     overflow: hidden;
     cursor: pointer;
     z-index: 999;
@@ -28,7 +28,7 @@
     .config-link:focus {
         outline: 0 none;
         outline-offset: 0;
-        box-shadow: 0 0 0 1px var(--focus-ring);
+        box-shadow: 0 0 0 1px var(--focus-ring-shadow);
     }
 
     i {
@@ -39,7 +39,7 @@
     }
 
     &:hover {
-        background: var(--primary-400);
+        background: var(--p-primary-400);
     }
 }
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, nextTick, onMounted } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import ChatBox from './ChatBox.vue';
 import ChatSidebar from './ChatSidebar.vue';
 
@@ -11,40 +11,40 @@ onMounted(async () => {
     scrollToLastMessage();
 });
 
-const getUserData = async () => {
+async function getUserData() {
     const response = await fetch('/demo/data/chat.json');
     const { data } = await response.json();
 
     return data;
-};
+}
 
-const changeActiveUser = (user) => {
+function changeActiveUser(user) {
     activeUserId.value = user.id;
     scrollToLastMessage();
-};
+}
 
-const sendMessage = (message) => {
+function sendMessage(message) {
     const activeUser = findActiveUser();
     activeUser.messages.push(message);
     scrollToLastMessage();
-};
+}
 
-const findActiveUser = () => {
-    return users.value.find((user) => user?.id === activeUserId.value) || {};
-};
+function findActiveUser() {
+    return users.value.find((user) => user.id === activeUserId.value) || {};
+}
 
-const scrollToLastMessage = async () => {
+async function scrollToLastMessage() {
     const element = document.querySelector('.user-message-container');
 
     await nextTick(() => {
         element.scroll({ top: element.scrollHeight });
     });
-};
+}
 </script>
 
 <template>
-    <div class="flex flex-column md:flex-row gap-5" style="min-height: 81vh">
-        <div class="md:w-25rem card p-0">
+    <div class="flex flex-col md:flex-row gap-8" style="min-height: 81vh">
+        <div class="md:w-[25rem] card p-0">
             <ChatSidebar @change:active:user="changeActiveUser" :users="users"></ChatSidebar>
         </div>
         <div class="flex-1 card p-0">

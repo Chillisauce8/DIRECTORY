@@ -39,7 +39,8 @@
                         border-radius: 50%;
                         border: 2px solid var(--logo-color);
                         background-color: transparent;
-                        transition: background-color var(--transition-duration),
+                        transition:
+                            background-color var(--layout-section-transition-duration),
                             transform 0.3s;
                     }
                 }
@@ -47,15 +48,14 @@
                     overflow: hidden;
                 }
 
-
                 .layout-menu {
                     .layout-root-menuitem {
-                        >.layout-menuitem-root-text {
-                            >span {
+                        > .layout-menuitem-root-text {
+                            > span {
                                 margin-right: auto;
                             }
 
-                            >.layout-menuitem-root-icon {
+                            > .layout-menuitem-root-icon {
                                 display: block;
                                 margin-right: 0.125rem;
                             }
@@ -112,7 +112,7 @@
                             .app-logo-normal {
                                 display: inline;
                             }
-                    
+
                             .app-logo-small {
                                 display: none;
                             }
@@ -123,12 +123,10 @@
                         }
                     }
 
-                 
-
                     .layout-menu {
                         .layout-root-menuitem {
-                            >.layout-menuitem-root-text {
-                                >.layout-menuitem-root-icon {
+                            > .layout-menuitem-root-text {
+                                > .layout-menuitem-root-icon {
                                     display: none;
                                 }
                             }
@@ -145,32 +143,32 @@
                             ul {
                                 overflow: hidden;
                                 border-radius: var(--border-radius);
-                
+
                                 li {
                                     a {
                                         padding-left: 2.5rem;
                                     }
-                
+
                                     li {
                                         a {
                                             padding-left: 3rem;
                                         }
-                
+
                                         li {
                                             a {
                                                 padding-left: 3.5rem;
                                             }
-                
+
                                             li {
                                                 a {
                                                     padding-left: 4rem;
                                                 }
-                
+
                                                 li {
                                                     a {
                                                         padding-left: 5.5rem;
                                                     }
-                
+
                                                     li {
                                                         a {
                                                             padding-left: 5rem;

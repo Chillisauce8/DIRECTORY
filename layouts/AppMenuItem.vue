@@ -1,11 +1,11 @@
 <script setup>
-import { ref, onBeforeMount, watch, nextTick } from 'vue';
+import { calculateScrollbarWidth, getViewport } from '@primeuix/utils/dom';
+import { nextTick, onBeforeMount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { useLayout } from './composables/layout';
-import { DomHandler } from 'primevue/utils';
+
 const route = useRoute();
 
-const { layoutConfig, layoutState, setActiveMenuItem, onMenuToggle, isHorizontal, isSlim, isSlimPlus, isDesktop } = useLayout();
+const { layoutConfig, layoutState, setActiveMenuItem, setMenuStates, setStaticMenuMobile, onMenuToggle, isHorizontal, isSlim, isSlimPlus, isDesktop } = useLayout();
 
 const props = defineProps({
     item: {
@@ -34,7 +34,7 @@ const menuItemRef = ref(null);
 onBeforeMount(() => {
     itemKey.value = props.parentItemKey ? props.parentItemKey + '-' + props.index : String(props.index);
 
-    const activeItem = layoutState.activeMenuItem.value;
+    const activeItem = layoutState.activeMenuItem;
 
     isActiveMenu.value = activeItem === itemKey.value || activeItem ? activeItem.startsWith(itemKey.value + '-') : false;
     handleRouteChange(route.path);
@@ -56,21 +56,21 @@ watch(
 );
 
 watch(
-    () => layoutState.activeMenuItem.value,
+    () => layoutState.activeMenuItem,
     (newVal) => {
         isActiveMenu.value = newVal === itemKey.value || newVal.startsWith(itemKey.value + '-');
     }
 );
 
 watch(
-    () => layoutConfig.menuMode.value,
+    () => layoutConfig.menuMode,
     () => {
         isActiveMenu.value = false;
     }
 );
 
 watch(
-    () => layoutState.overlaySubmenuActive.value,
+    () => layoutState.overlaySubmenuActive,
     (newValue) => {
         if (!newValue) {
             isActiveMenu.value = false;
@@ -90,15 +90,14 @@ watch(
         }
     }
 );
-const itemClick = async (event, item) => {
+
+async function itemClick(event, item) {
     if (item.disabled) {
         event.preventDefault();
         return;
     }
 
-    const { overlayMenuActive, staticMenuMobileActive } = layoutState;
-
-    if ((item.to || item.url) && (staticMenuMobileActive.value || overlayMenuActive.value)) {
+    if ((item.to || item.url) && (layoutState.staticMenuMobileActive || layoutState.overlayMenuActive)) {
         onMenuToggle();
     }
 
@@ -108,8 +107,7 @@ const itemClick = async (event, item) => {
 
     if (item.items) {
         if (props.root && isActiveMenu.value && (isSlim.value || isSlimPlus.value || isHorizontal.value)) {
-            layoutState.overlaySubmenuActive.value = false;
-            layoutState.menuHoverActive.value = false;
+            setMenuStates(false);
 
             return;
         }
@@ -117,27 +115,25 @@ const itemClick = async (event, item) => {
         setActiveMenuItem(isActiveMenu.value ? props.parentItemKey : itemKey);
 
         if (props.root && !isActiveMenu.value && (isSlim.value || isSlimPlus.value || isHorizontal.value)) {
-            layoutState.overlaySubmenuActive.value = true;
-            layoutState.menuHoverActive.value = true;
+            setMenuStates(true);
             isActiveMenu.value = true;
 
             removeAllTooltips();
         }
     } else {
         if (!isDesktop) {
-            layoutState.staticMenuMobileActive.value = !layoutState.staticMenuMobileActive.value;
+            setStaticMenuMobile();
         }
 
         if (isSlim.value || isSlimPlus.value || isHorizontal.value) {
-            layoutState.overlaySubmenuActive.value = false;
-            layoutState.menuHoverActive.value = false;
+            setMenuStates(false);
 
             return;
         }
 
         setActiveMenuItem(itemKey);
     }
-};
+}
 
 function handleRouteChange(newPath) {
     if (!(isSlim.value || isSlimPlus.value || isHorizontal.value) && props.item.to && props.item.to === newPath) {
@@ -147,25 +143,27 @@ function handleRouteChange(newPath) {
     }
 }
 
-const onMouseEnter = () => {
+function onMouseEnter() {
     if (props.root && (isSlim.value || isSlimPlus.value || isHorizontal.value) && isDesktop) {
-        if (!isActiveMenu.value && layoutState.menuHoverActive.value) {
+        if (!isActiveMenu.value && layoutState.menuHoverActive) {
             setActiveMenuItem(itemKey);
         }
     }
-};
-const removeAllTooltips = () => {
+}
+
+function removeAllTooltips() {
     const tooltips = document.querySelectorAll('.p-tooltip');
     tooltips.forEach((tooltip) => {
         tooltip.remove();
     });
-};
-const calculatePosition = (overlay, target) => {
+}
+
+function calculatePosition(overlay, target) {
     if (overlay) {
         const { left, top } = target.getBoundingClientRect();
-        const { width: vWidth, height: vHeight } = DomHandler.getViewport();
+        const { width: vWidth, height: vHeight } = getViewport();
         const [oWidth, oHeight] = [overlay.offsetWidth, overlay.offsetHeight];
-        const scrollbarWidth = DomHandler.calculateScrollbarWidth();
+        const scrollbarWidth = calculateScrollbarWidth();
 
         // reset
         overlay.style.top = overlay.style.left = '';
@@ -178,18 +176,16 @@ const calculatePosition = (overlay, target) => {
             overlay.style.top = vHeight < height ? `${top - (height - vHeight)}px` : `${top}px`;
         }
     }
-};
+}
 
-const checkActiveRoute = (item) => {
+function checkActiveRoute(item) {
     return route.path === item.to;
-};
+}
 </script>
 
 <template>
     <li ref="menuItemRef" :class="{ 'layout-root-menuitem': root, 'active-menuitem': isActiveMenu }">
-        <div v-if="root && item.visible !== false" class="layout-menuitem-root-text">
-            {{ item.label }}
-        </div>
+        <div v-if="root && item.visible !== false" class="layout-menuitem-root-text">{{ item.label }}</div>
         <a
             v-if="(!item.to || item.items) && item.visible !== false"
             :href="item.url"

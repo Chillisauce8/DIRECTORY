@@ -90,7 +90,9 @@
                 color: var(--menuitem-text-color);
                 cursor: pointer;
                 padding: 0.75rem 2rem;
-                transition: background-color var(--transition-duration), box-shadow var(--transition-duration);
+                transition:
+                    background-color var(--layout-section-transition-duration),
+                    box-shadow var(--layout-section-transition-duration);
 
                 .layout-menuitem-icon {
                     margin-right: 0.5rem;
@@ -100,7 +102,7 @@
                 .layout-submenu-toggler {
                     font-size: 75%;
                     margin-left: auto;
-                    transition: transform var(--transition-duration);
+                    transition: transform var(--layout-section-transition-duration);
                 }
 
                 &.active-route {

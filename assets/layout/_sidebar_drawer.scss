@@ -45,7 +45,9 @@
                         border-radius: 50%;
                         border: 2px solid var(--logo-color);
                         background-color: transparent;
-                        transition: background-color var(--transition-duration), transform 0.3s;
+                        transition:
+                            background-color var(--layout-section-transition-duration),
+                            transform 0.3s;
                     }
                 }
 
