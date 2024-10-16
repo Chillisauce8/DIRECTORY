@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+import InputText from 'primevue/inputtext';
 import { isString } from '~/service/utils';
 // @ts-ignore
 import { extend } from 'vue-extend-reactive';
@@ -145,7 +146,7 @@ function correctExistingValue() {
 
 function getDefaultValue(): any {
   const defaultValue = getDefaultValueBase();
-  if (defaultValue && props.description.component === 'Calendar') {
+  if (defaultValue && props.description.component === 'DatePicker') {
     if (isDate(defaultValue)) {
       return defaultValue;
     }
@@ -155,7 +156,7 @@ function getDefaultValue(): any {
 }
 
 function _prepareMinMaxValues() {
-  if (props.description.component === 'Calendar') {
+  if (props.description.component === 'DatePicker') {
     if (props.description['minimumDate']) {
       props.description.minimum = _parseDateString(props.description['minimumDate']);
     }
@@ -167,7 +168,7 @@ function _prepareMinMaxValues() {
 }
 
 function _parseDateString(value: string): Date|undefined {
-  if (props.description.component === 'Calendar' && value === 'today') {
+  if (props.description.component === 'DatePicker' && value === 'today') {
     return new Date();
   } else {
     return dateHelper.parseSaveDateFormat(value);

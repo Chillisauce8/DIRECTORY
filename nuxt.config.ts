@@ -1,5 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import environment from './environment';
+import Aura from "@primevue/themes/aura";
 
 
 export default defineNuxtConfig({
@@ -9,7 +10,16 @@ export default defineNuxtConfig({
 
  primevue: {
    cssLayerOrder: 'reset, primevue',
-   options: { ripple: true },
+   autoImport: true,
+   options: {
+     ripple: true,
+     theme: {
+       preset: Aura,
+       options: {
+         darkModeSelector: '.app-dark'
+       }
+     },
+   },
    components: {
      exclude: []
    },

@@ -144,7 +144,7 @@ function correctExistingValue() {
 }
 
 function _prepareMinMaxValues() {
-  if (props.description.component === 'Calendar') {
+  if (props.description.component === 'DatePicker') {
     if (props.description['minimumDate']) {
       props.description.minimum = _parseDateString(props.description['minimumDate']);
     }

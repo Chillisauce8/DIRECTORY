@@ -214,7 +214,7 @@ const onSortChange = (event) => {
 
 <template>
     <div class="card">
-        <DataView :value="vehicles" paginator :rows="7" layout="grid" :sortOrder="sortOrder" :sortField="sortField">
+        <Select :value="vehicles" paginator :rows="7" layout="grid" :sortOrder="sortOrder" :sortField="sortField">
             <template #header>
                 <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
                     <span class="text-xl text-900 font-semibold">Vehicles</span>
@@ -226,6 +226,6 @@ const onSortChange = (event) => {
                     <VehicleCard v-for="(item, index) in slotProps.items" :key="index" :name="item.name" :make="item.make" :year="item.year" :images="item.images" :nickname="item.nickname" />
                 </layout-grid>
             </template>
-        </DataView>
+        </Select>
     </div>
 </template>

@@ -11,7 +11,7 @@
             <template #header>
                 <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
                     <span class="text-xl text-900 font-semibold">Sub Markets</span>
-                    <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
+                    <Select v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
                 </div>
             </template>
             <template #grid="slotProps">
@@ -24,7 +24,7 @@
             <template #header>
                 <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
                     <span class="text-xl text-900 font-semibold">Listings</span>
-                    <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
+                    <Select v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
                 </div>
             </template>
             <template #grid="slotProps">

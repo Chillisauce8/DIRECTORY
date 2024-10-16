@@ -252,7 +252,7 @@ export class SchemaParser {
 
     if (item.type === 'number') {
       if ('enum' in item) {
-        return 'Dropdown';
+        return 'Select';
       }
 
       return 'InputNumber';
@@ -264,11 +264,11 @@ export class SchemaParser {
 
     if (item.type === 'string') {
       if (item.format === 'date') {
-        return 'Calendar';
+        return 'DatePicker';
       }
 
       if (item.format === 'time') {
-        return 'Calendar';
+        return 'DatePicker';
       }
 
       if (item.format === 'datetime') {
@@ -280,7 +280,7 @@ export class SchemaParser {
       }
 
       if (item.format === 'time24') {
-        return 'Calendar';
+        return 'DatePicker';
       }
 
       if (item.format === 'url') {
@@ -300,18 +300,18 @@ export class SchemaParser {
       // }
 
       if ('enum' in item) {
-        return 'Dropdown';
+        return 'Select';
       }
 
       if ('options' in item) {
-        return 'Dropdown';
+        return 'Select';
       }
 
       return 'InputText';
     }
 
     if (item.type === 'boolean') {
-      return 'InputSwitch';
+      return 'ToggleSwitch';
     }
 
     if (item.type === 'array') {
@@ -328,7 +328,7 @@ export class SchemaParser {
         (item.items && 'join' in item.items) ||
         'join' in item
       ) {
-        return 'Dropdown';
+        return 'Select';
       } else if (item.items) {
         return this.parseItemComponent(item.items);
       }
@@ -336,7 +336,7 @@ export class SchemaParser {
 
     if (item.type === 'object') {
       if (('_relator' in item) || ('join' in item)) {
-        return 'Dropdown';
+        return 'Select';
       }
     }
 

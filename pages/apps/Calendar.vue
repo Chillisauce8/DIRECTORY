@@ -203,7 +203,7 @@ const setEvents = () => {
               </div>
               <div class="col-12 field">
                 <label for="company-color" class="text-900 font-semibold">Color</label>
-                <Dropdown inputId="company-color" :options="tags" v-model="changedEvent.tag" optionLabel="name">
+                <Select inputId="company-color" :options="tags" v-model="changedEvent.tag" optionLabel="name">
                   <template #option="slotProps">
                     <div class="flex align-items-center">
                       <div :style="{ 'background-color': slotProps.option.color }" class="flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></div>
@@ -216,7 +216,7 @@ const setEvents = () => {
                       <div>{{ slotProps.value.name }}</div>
                     </div>
                   </template>
-                </Dropdown>
+                </Select>
               </div>
             </div>
           </div>

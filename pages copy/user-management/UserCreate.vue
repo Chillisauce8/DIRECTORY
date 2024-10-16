@@ -44,7 +44,7 @@ const selectedCountry = ref(null);
                     </div>
                     <div class="field mb-4 col-12 md:col-6">
                         <label for="country" class="font-medium text-900"> Country </label>
-                        <Dropdown v-model="selectedCountry" :options="countries" optionLabel="name" :filter="true" placeholder="Select a Country" :showClear="true">
+                        <Select v-model="selectedCountry" :options="countries" optionLabel="name" :filter="true" placeholder="Select a Country" :showClear="true">
                             <template #value="slotProps">
                                 <div class="flex align-items-center" v-if="slotProps.value">
                                     <span :class="`mr-2 flag flag-${selectedCountry.code.toLowerCase()}`" style="width: 18px; height: 12px" />
@@ -60,7 +60,7 @@ const selectedCountry = ref(null);
                                     <div>{{ slotProps.option.name }}</div>
                                 </div>
                             </template>
-                        </Dropdown>
+                        </Select>
                     </div>
                     <div class="field mb-4 col-12 md:col-6">
                         <label for="city" class="font-medium text-900"> City </label>

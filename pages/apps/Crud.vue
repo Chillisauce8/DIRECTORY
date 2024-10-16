@@ -268,7 +268,7 @@ const initFilters = () => {
 
                     <div class="field">
                         <label for="inventoryStatus" class="mb-3">Inventory Status</label>
-                        <Dropdown id="inventoryStatus" v-model="product.inventoryStatus" :options="statuses" optionLabel="label" placeholder="Select a Status">
+                        <Select id="inventoryStatus" v-model="product.inventoryStatus" :options="statuses" optionLabel="label" placeholder="Select a Status">
                             <template #value="slotProps">
                                 <div v-if="slotProps.value && slotProps.value.value">
                                     <span :class="'product-badge status-' + slotProps.value.value">{{ slotProps.value.label }}</span>
@@ -280,7 +280,7 @@ const initFilters = () => {
                                     {{ slotProps.placeholder }}
                                 </span>
                             </template>
-                        </Dropdown>
+                        </Select>
                     </div>
 
                     <div class="field">

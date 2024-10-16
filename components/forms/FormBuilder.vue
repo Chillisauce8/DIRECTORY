@@ -139,7 +139,7 @@ function getDefaults(value) {
             showDefault.props = {};
             showDefault.speedDial = true;
         } else if (value.items.type === 'boolean') {
-            showDefault.field = 'InputSwitch';
+            showDefault.field = 'ToggleSwitch';
             showDefault.props = {};
             showDefault.speedDial = true;
         } else if (value.items.type === 'object') {
@@ -153,7 +153,7 @@ function getDefaults(value) {
             showDefault.field = 'InputNumber';
             showDefault.props = {};
         } else if (value.type === 'boolean') {
-            showDefault.field = 'InputSwitch';
+            showDefault.field = 'ToggleSwitch';
             showDefault.props = {};
         }
     }

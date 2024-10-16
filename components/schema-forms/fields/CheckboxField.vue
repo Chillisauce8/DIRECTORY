@@ -31,7 +31,7 @@ vm = extend(vm, {
 });
 
 
-vm.componentName = vm.componentName || 'InputSwitch';
+vm.componentName = vm.componentName || 'ToggleSwitch';
 
 const componentProperties = {
   binary: true,

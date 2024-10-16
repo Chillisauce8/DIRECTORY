@@ -92,11 +92,11 @@ const componentInstance = computed(() => {
     case 'InputText': return TextField;
     case 'Textarea': return TextField;
     case 'InputNumber': return NumberField;
-    case 'Calendar': return CalendarField;
-    case 'InputSwitch': return CheckboxField;
+    case 'DatePicker': return CalendarField;
+    case 'ToggleSwitch': return CheckboxField;
     case 'Checkbox': return CheckboxField;
-    case 'Chips': return ChipsField;
-    case 'Dropdown': return DropdownField;
+    case 'InputChips': return ChipsField;
+    case 'Select': return DropdownField;
     case 'MultiSelect': return MultiselectField;
 
     default: return TextField;
@@ -149,7 +149,7 @@ function calculateComponentName(): string {
 
     if (props.description.xEnumValues || props.description.xOptionsValues) {
         if (props.description.component !== 'Multiselect' && props.description.component !== 'Autocomplete') {
-            return 'Dropdown';
+            return 'Select';
         }
     }
 

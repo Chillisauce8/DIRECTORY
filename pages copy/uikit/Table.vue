@@ -217,7 +217,7 @@ const calculateCustomerTotal = (name) => {
                             <Tag :severity="getSeverity(data.status)">{{ data.status.toUpperCase() }}</Tag>
                         </template>
                         <template #filter="{ filterModel }">
-                            <Dropdown v-model="filterModel.value" :options="statuses" placeholder="Any" class="p-column-filter" :showClear="true">
+                            <Select v-model="filterModel.value" :options="statuses" placeholder="Any" class="p-column-filter" :showClear="true">
                                 <template #value="slotProps">
                                     <Tag :severity="getSeverity(slotProps.value)" v-if="slotProps.value">{{ slotProps.value }} </Tag>
                                     <span v-else>{{ slotProps.placeholder }}</span>
@@ -225,7 +225,7 @@ const calculateCustomerTotal = (name) => {
                                 <template #option="slotProps">
                                     <Tag :severity="getSeverity(slotProps.option)">{{ slotProps.option.toUpperCase() }}</Tag>
                                 </template>
-                            </Dropdown>
+                            </Select>
                         </template>
                     </Column>
                     <Column field="activity" header="Activity" :showFilterMatchModes="false" style="min-width: 12rem">

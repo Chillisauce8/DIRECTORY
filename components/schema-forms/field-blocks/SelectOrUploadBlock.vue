@@ -60,9 +60,9 @@
                     </FloatLabel>
 
                     <FloatLabel>
-                      <Dropdown id="'rating-' + file.name + file.type + file.size"
+                      <Select id="'rating-' + file.name + file.type + file.size"
                                 v-model="filesMetadata.ratings[file.key]" :options="ratingItems">
-                      </Dropdown>
+                      </Select>
                       <label :for="'rating-' + file.name + file.type + file.size">Rating</label>
                     </FloatLabel>
 
