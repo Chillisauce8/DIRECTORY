@@ -422,6 +422,7 @@ function onContextRightClick(event) {
 </script>
 
 <template>
+  <div>
     <div class="card">
         <div class="font-semibold text-xl mb-4">Menubar</div>
         <Menubar :model="nestedMenuitems">
@@ -511,4 +512,5 @@ function onContextRightClick(event) {
             </div>
         </div>
     </div>
+  </div>
 </template>

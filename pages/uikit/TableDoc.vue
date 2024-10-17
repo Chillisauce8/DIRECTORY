@@ -142,6 +142,7 @@ function calculateCustomerTotal(name) {
 </script>
 
 <template>
+  <div>
     <div class="card">
         <div class="font-semibold text-xl mb-4">Filtering</div>
         <DataTable
@@ -378,6 +379,7 @@ function calculateCustomerTotal(name) {
             </template>
         </DataTable>
     </div>
+  </div>
 </template>
 
 <style scoped lang="scss">

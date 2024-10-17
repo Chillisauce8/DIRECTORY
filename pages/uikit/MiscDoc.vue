@@ -29,6 +29,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <div>
     <div class="card">
         <div class="font-semibold text-xl mb-4">ProgressBar</div>
         <div class="flex flex-col md:flex-row gap-4">
@@ -194,4 +195,5 @@ onBeforeUnmount(() => {
             </div>
         </div>
     </div>
+  </div>
 </template>
