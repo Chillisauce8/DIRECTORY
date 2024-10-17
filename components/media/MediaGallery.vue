@@ -27,7 +27,7 @@
     <SelectButton v-model="value" :options="options" aria-labelledby="basic" />
     <vue-horizontal v-if="value === 'Row'" class="media-gallery row-view">
         <div v-for="(image, index) of images" :key="index">
-            <PictureImage :id="image.id" :alt="image.alt" params="w_200,h_150" loading="lazy" @click="imageClick(index)" />
+<!--            <PictureImage :id="image.id" :alt="image.alt" params="w_200,h_150" loading="lazy" @click="imageClick(index)" />-->
         </div>
     </vue-horizontal>
     <div v-else-if="value === 'Grid'" class="media-gallery grid-view">
@@ -40,7 +40,7 @@
     </div>
 
     <div v-else-if="value === 'Test'" class="media-gallery test-view">
-        <PictureImage v-for="(image, index) of images" :key="index" :id="image.id" :alt="image.alt" params="w_200,h_150" @click="imageClick(index)" />
+<!--        <PictureImage v-for="(image, index) of images" :key="index" :id="image.id" :alt="image.alt" params="w_200,h_150" @click="imageClick(index)" />-->
     </div>
   </div>
 </template>

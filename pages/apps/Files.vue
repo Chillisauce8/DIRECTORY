@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FilterMatchMode } from 'primevue/api';
+import { FilterMatchMode } from '@primevue/core/api';
 import { ref, onMounted } from 'vue';
 import { usePrimeVue } from 'primevue/config';
 import { ProductService } from '~/service/ProductService';
@@ -47,7 +47,7 @@ const statuses = ref([
     { label: 'OUTOFSTOCK', value: 'outofstock' }
 ]);
 */
-const productService = new ProductService();
+// const productService = new ProductService();
 /*
 const getBadgeSeverity = (inventoryStatus) => {
     switch (inventoryStatus.toLowerCase()) {
