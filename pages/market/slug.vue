@@ -1,56 +1,58 @@
 <template>
-  <div class="card flex justify-center">
-    <Breadcrumb :home="home" :model="breadcrumb" />
-  </div>
-  <div class="card">
-    <h1>{{ market.name }}</h1>
-    <div>{{ market.classicDescription }}</div>
-  </div>
-  <div class="card">
-    <DataView v-if="marketList.length" :value="marketList" paginator :rows="9" layout="grid" :sortOrder="submarketSortOrder" :sortField="submarketSortField">
-      <template #header>
-        <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
-          <span class="text-xl text-900 font-semibold">Sub Markets</span>
-          <Select v-model="submarketSortKey" :options="submarketSortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
-        </div>
-      </template>
-      <template #grid="slotProps">
-        <layout-grid>
-          <ModelCard v-for="(item, index) in slotProps.items"
-                     :key="index"
-                     :name="item.name"
-                     :make="item.make"
-                     :years="item.years"
-                     :images="item.images"
-                     @click="navigateToSubmarket(item)"/>
-        </layout-grid>
-      </template>
-    </DataView>
-    <DataView v-if="listingList.length" :value="listingList" paginator :rows="7" layout="grid" :sortOrder="listingSortOrder" :sortField="listingSortField">
-      <template #header>
-        <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
-          <span class="text-xl text-900 font-semibold">Listings</span>
-          <Select v-model="listingSortKey" :options="listingSortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
-        </div>
-      </template>
-      <template #grid="slotProps">
-        <layout-grid>
-          <ListingCard
-            v-for="(item, index) in slotProps.items"
-            :key="index"
-            :name="item.content.name"
-            :make="item.spec.make"
-            :images="item.content.imageURLs"
-            :saleType="item.sale.saleType"
-            :price="item.sale.price"
-            :engine="item.spec.engine"
-            :odometer="item.spec.odometer"
-            :transmission="item.spec.transmission"
-            :stearingSide="item.spec.stearingSide"
-          />
-        </layout-grid>
-      </template>
-    </DataView>
+  <div>
+    <div class="card flex justify-center">
+      <Breadcrumb :home="home" :model="breadcrumb" />
+    </div>
+    <div class="card">
+      <h1>{{ market.name }}</h1>
+      <div>{{ market.classicDescription }}</div>
+    </div>
+    <div class="card">
+      <DataView v-if="marketList.length" :value="marketList" paginator :rows="9" layout="grid" :sortOrder="submarketSortOrder" :sortField="submarketSortField">
+        <template #header>
+          <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
+            <span class="text-xl text-900 font-semibold">Sub Markets</span>
+            <Select v-model="submarketSortKey" :options="submarketSortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
+          </div>
+        </template>
+        <template #grid="slotProps">
+          <layout-grid>
+            <ModelCard v-for="(item, index) in slotProps.items"
+                       :key="index"
+                       :name="item.name"
+                       :make="item.make"
+                       :years="item.years"
+                       :images="item.images"
+                       @click="navigateToSubmarket(item)"/>
+          </layout-grid>
+        </template>
+      </DataView>
+      <DataView v-if="listingList.length" :value="listingList" paginator :rows="7" layout="grid" :sortOrder="listingSortOrder" :sortField="listingSortField">
+        <template #header>
+          <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
+            <span class="text-xl text-900 font-semibold">Listings</span>
+            <Select v-model="listingSortKey" :options="listingSortOptions" optionLabel="label" placeholder="Sort By" class="w-full md:w-15rem" @change="onSortChange($event)" />
+          </div>
+        </template>
+        <template #grid="slotProps">
+          <layout-grid>
+            <ListingCard
+              v-for="(item, index) in slotProps.items"
+              :key="index"
+              :name="item.content.name"
+              :make="item.spec.make"
+              :images="item.content.imageURLs"
+              :saleType="item.sale.saleType"
+              :price="item.sale.price"
+              :engine="item.spec.engine"
+              :odometer="item.spec.odometer"
+              :transmission="item.spec.transmission"
+              :stearingSide="item.spec.stearingSide"
+            />
+          </layout-grid>
+        </template>
+      </DataView>
+    </div>
   </div>
 </template>
 

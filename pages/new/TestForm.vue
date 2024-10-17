@@ -1,6 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
+  <div class="card">
     <DataItem function="create" collection="test_form"
         title='Test Form Title'
         subtitle='This is where a subtitle would go which could explain a little bit more about the form below'>
@@ -27,6 +28,7 @@
 <!--            </ul>-->
 <!--        </DataItem>-->
 <!--    </div>-->
+  </div>
 </template>
 
 <script setup lang="ts"></script>

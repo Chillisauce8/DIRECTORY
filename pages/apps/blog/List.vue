@@ -88,6 +88,7 @@ function onSortChange(event) {
 </script>
 
 <template>
+  <div>
     <div class="card">
         <DataView :value="totalBlogs" paginator :rows="3" layout="grid" :sortOrder="sortOrder" :sortField="sortField">
             <template #header>
@@ -188,4 +189,5 @@ function onSortChange(event) {
             </div>
         </div>
     </div>
+  </div>
 </template>

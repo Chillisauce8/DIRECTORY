@@ -97,32 +97,33 @@ function reloadData() {
 </script>
 
 <template>
-  <div class="card" v-if="dataLoaded">
-    <div class="flex justify-content-between align-items-center mb-5">
-      <span class="text-900 text-xl font-semibold">Task List</span>
-      <Button class="font-semibold" outlined icon="pi pi-plus" label="Create Task" @click="openCreateDialog()"></Button>
-    </div>
+  <div class="card">
+    <template v-if="dataLoaded">
+      <div class="flex justify-content-between align-items-center mb-5">
+        <span class="text-900 text-xl font-semibold">Task List</span>
+        <Button class="font-semibold" outlined icon="pi pi-plus" label="Create Task" @click="openCreateDialog()"></Button>
+      </div>
 
-    <DataItem function="read" collection="events" :find="{'completed': {'$ne': true}}" v-slot="{items}"
-        @mounted="onDataItemMounted">
-      <List :task-list="items" title="ToDo" @checkbox:change="onCheckboxChange"
-            @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog">
-      </List>
-    </DataItem>
+      <DataItem function="read" collection="events" :find="{'completed': {'$ne': true}}" v-slot="{items}"
+          @mounted="onDataItemMounted">
+        <List :task-list="items" title="ToDo" @checkbox:change="onCheckboxChange"
+              @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog">
+        </List>
+      </DataItem>
 
-    <DataItem function="read" collection="events" :find="{'completed': true}" v-slot="{items}">
-      <List :task-list="items" title="Completed" @checkbox:change="onCheckboxChange"
-            @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog">
-      </List>
-    </DataItem>
+      <DataItem function="read" collection="events" :find="{'completed': true}" v-slot="{items}">
+        <List :task-list="items" title="Completed" @checkbox:change="onCheckboxChange"
+              @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog">
+        </List>
+      </DataItem>
+    </template>
+
+    <Dialog :header="dialogConfig.header || ''" v-model:visible="dialogConfig.visible" modal
+            :style="{ width: '50rem' }">
+      <CreateTaskDialogWithDb :selected-task-id="selectedTask?._doc"
+                              @close="onCloseDialog()" @save="onSaveDialog">
+      </CreateTaskDialogWithDb>
+    </Dialog>
   </div>
-
-  <Dialog :header="dialogConfig.header || ''" v-model:visible="dialogConfig.visible" modal
-          class="mx-3 sm:mx-0 sm:w-full md:w-8 lg:w-6"
-          contentClass="border-round-bottom border-top-1 surface-border p-0">
-    <CreateTaskDialogWithDb :selected-task-id="selectedTask?._doc"
-                            @close="onCloseDialog()" @save="onSaveDialog">
-    </CreateTaskDialogWithDb>
-  </Dialog>
 </template>
 

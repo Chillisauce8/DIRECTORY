@@ -34,17 +34,15 @@ const onSave = async () => {
 </script>
 
 <template>
-    <div class="p-4">
-        <div class="grid p-fluid formgrid">
-          <DataItem collection="events"
-                    :function="props.selectedTaskId ? 'update' : 'create'"
-                    @changed="dataChanged($event)"
-                    :id="props.selectedTaskId">
-          </DataItem>
-          <div class="col-12 flex justify-content-end mt-4">
-            <Button class="w-8rem mr-3" outlined icon="pi pi-times" label="Cancel" @click="onHide()"></Button>
-            <Button class="w-8rem" icon="pi pi-check" label="Save" @click="onSave()"></Button>
-          </div>
-        </div>
-    </div>
+  <div class="flex items-center gap-4 mb-4">
+      <DataItem collection="events"
+                :function="props.selectedTaskId ? 'update' : 'create'"
+                @changed="dataChanged($event)"
+                :id="props.selectedTaskId">
+      </DataItem>
+  </div>
+  <div class="flex justify-end gap-2">
+      <Button class="w-8rem mr-3" outlined icon="pi pi-times" label="Cancel" @click="onHide()"></Button>
+      <Button class="w-8rem" icon="pi pi-check" label="Save" @click="onSave()"></Button>
+  </div>
 </template>

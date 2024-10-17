@@ -1,4 +1,5 @@
 <template>
+  <div>
     <HeroHeader :props="heroHeaderProps" />
 
     <ContentBlock :title="content1.title" :text="content1.text" :images="content1.images" />
@@ -30,6 +31,7 @@
             <SwpPicture id="66365a43e70ac51006d4d811" widths="300:300" aspectRatio="3:2" />
         </a>
     </Fancybox>
+  </div>
 </template>
 
 <script setup lang="ts">

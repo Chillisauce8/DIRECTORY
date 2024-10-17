@@ -1,4 +1,5 @@
 <template>
+  <div>
     <Galleria
         v-model:activeIndex="activeIndex"
         v-model:visible="displayCustom"
@@ -41,6 +42,7 @@
     <div v-else-if="value === 'Test'" class="media-gallery test-view">
         <PictureImage v-for="(image, index) of images" :key="index" :id="image.id" :alt="image.alt" params="w_200,h_150" @click="imageClick(index)" />
     </div>
+  </div>
 </template>
 
 <script setup>

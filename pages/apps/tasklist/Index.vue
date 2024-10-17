@@ -82,15 +82,15 @@ function onSaveDialog(task) {
 
 <template>
     <div class="card">
-        <div class="flex justify-between items-center mb-8">
-            <span class="text-surface-900 dark:text-surface-0 text-xl font-semibold">Task List</span>
-            <Button class="font-semibold" outlined icon="pi pi-plus" label="Create Task" @click="openCreateDialog()"></Button>
-        </div>
-        <List :task-list="todo" title="ToDo" @checkbox:change="onCheckboxChange" @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog"></List>
-        <List :task-list="completed" title="Completed" @checkbox:change="onCheckboxChange" @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog"></List>
-    </div>
+      <div class="flex justify-between items-center mb-8">
+          <span class="text-surface-900 dark:text-surface-0 text-xl font-semibold">Task List</span>
+          <Button class="font-semibold" outlined icon="pi pi-plus" label="Create Task" @click="openCreateDialog()"></Button>
+      </div>
+      <List :task-list="todo" title="ToDo" @checkbox:change="onCheckboxChange" @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog"></List>
+      <List :task-list="completed" title="Completed" @checkbox:change="onCheckboxChange" @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog"></List>
 
-    <Dialog :header="dialogConfig.header || ''" v-model:visible="dialogConfig.visible" modal class="mx-4 sm:mx-0 sm:w-full md:w-8/12 lg:w-6/12" contentClass="rounded-b border-t border-surface-200 dark:border-surface-700 p-0">
+      <Dialog :header="dialogConfig.header || ''" v-model:visible="dialogConfig.visible" modal class="mx-4 sm:mx-0 sm:w-full md:w-8/12 lg:w-6/12" contentClass="rounded-b border-t border-surface-200 dark:border-surface-700 p-0">
         <CreateTaskDialog :selected-task="selectedTask" @close="onCloseDialog()" @save="onSaveDialog"></CreateTaskDialog>
-    </Dialog>
+      </Dialog>
+    </div>
 </template>

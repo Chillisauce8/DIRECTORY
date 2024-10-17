@@ -52,24 +52,26 @@ const groupedMarketList = Object.entries(alphabeticGroupedMarketMap)
 </script>
 
 <template>
-  <div class="card">
-    <h1>Markets</h1>
-  </div>
-  <div class="card">
-    <DataView :value="groupedMarketList" layout="grid">
-      <template #header>
-        <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
-          <span class="text-xl text-900 font-semibold">Available Markets</span>
-        </div>
-      </template>
-      <template #grid="slotProps">
-        <layout-grid>
-          <template v-for="group in slotProps.items">
-            <MarketListCard :header="group.header" :market-list="group.marketList"></MarketListCard>
-          </template>
-        </layout-grid>
-      </template>
-    </DataView>
+  <div>
+    <div class="card">
+      <h1>Markets</h1>
+    </div>
+    <div class="card">
+      <DataView :value="groupedMarketList" layout="grid">
+        <template #header>
+          <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
+            <span class="text-xl text-900 font-semibold">Available Markets</span>
+          </div>
+        </template>
+        <template #grid="slotProps">
+          <layout-grid>
+            <template v-for="group in slotProps.items">
+              <MarketListCard :header="group.header" :market-list="group.marketList"></MarketListCard>
+            </template>
+          </layout-grid>
+        </template>
+      </DataView>
+    </div>
   </div>
 </template>
 
