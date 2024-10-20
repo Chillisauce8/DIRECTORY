@@ -38,6 +38,7 @@
 const heroHeaderProps = {
     title: 'Rolls-Royce',
     subTitle: 'Phantom 2001',
+    widths: '400:2000',
     images: [
         {
             id: '66365a43e70ac51006d4d811',

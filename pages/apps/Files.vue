@@ -2,7 +2,6 @@
 import { FilterMatchMode } from '@primevue/core/api';
 import { ref, onMounted } from 'vue';
 import { usePrimeVue } from 'primevue/config';
-import { ProductService } from '~/service/ProductService';
 import { useToast } from 'primevue/usetoast';
 import { fileHelperService, FileType } from '~/service/file/file-helper-service';
 import EXIF from '~/service/file/exif';

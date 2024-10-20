@@ -533,6 +533,11 @@ export default defineNuxtConfig({
          file: '@/pages/new/calendar.vue',
        },
        {
+         name: 'Images Fetching',
+         path: '/new/images-fetching',
+         file: '@/pages/new/imagesfetching.vue',
+       },
+       {
          name: 'Market List',
          path: '/market',
          file: '@/pages/market/list.vue',

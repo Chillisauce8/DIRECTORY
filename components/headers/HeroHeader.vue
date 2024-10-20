@@ -1,6 +1,7 @@
 <template>
     <div class="hero-header">
-        <swp-picture :images="props.images" :sources="props.sources" loading="eager" class="darken">
+        <swp-picture :images="props.images" :sources="props.sources"
+                     :widths="props.widths" loading="eager" class="darken">
             <div class="content">
                 <h1 class="text-1">{{ props.title }}</h1>
                 <h2 class="text-2">

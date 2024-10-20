@@ -53,6 +53,11 @@ const model = ref([
                 label: 'Image Gallery Design',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/gallery'
+            },
+            {
+                label: 'Images Fetching',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/images-fetching'
             }
         ]
     },

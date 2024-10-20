@@ -5,6 +5,7 @@ definePageMeta({
 </script>
 
 <template>
+  <div>
     <svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" class="min-h-screen min-w-[100vw] fixed left-0" :style="{ bottom: '-10rem' }" preserveAspectRatio="none">
         <rect x="0" y="0" width="960px" height="540px" fill="var(--surface-ground)"></rect>
         <path
@@ -23,4 +24,5 @@ definePageMeta({
             </router-link>
         </div>
     </div>
+  </div>
 </template>

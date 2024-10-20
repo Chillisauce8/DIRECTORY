@@ -35,6 +35,7 @@ function navigateToDashboard() {
 </script>
 
 <template>
+  <div>
     <div class="relative overflow-hidden flex flex-col justify-center">
         <div class="bg-circle opacity-50" :style="{ top: '-200px', left: '-700px' }"></div>
         <div class="bg-circle hidden lg:flex" :style="{ top: '50px', right: '-800px', transform: 'rotate(60deg)' }"></div>
@@ -342,6 +343,7 @@ function navigateToDashboard() {
         </div>
     </div>
     <AppConfig simple />
+  </div>
 </template>
 
 <style scoped>
