@@ -29,6 +29,7 @@ function focus(event) {
 </script>
 
 <template>
+  <div>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" class="fixed left-0 top-0 min-h-screen min-w-[100vw]" preserveAspectRatio="none">
         <rect :fill="isDarkTheme ? 'var(--p-primary-900)' : 'var(--p-primary-500)'" width="1600" height="800" />
         <path
@@ -71,4 +72,5 @@ function focus(event) {
         </div>
     </div>
     <AppConfig simple />
+  </div>
 </template>

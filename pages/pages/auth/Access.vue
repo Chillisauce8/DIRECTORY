@@ -13,6 +13,7 @@ function navigateToDashboard() {
 </script>
 
 <template>
+  <div>
     <svg viewBox="0 0 960 540" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1" class="min-h-screen min-w-[100vw] fixed left-0" :style="{ bottom: '-10rem' }" preserveAspectRatio="none">
         <rect x="0" y="0" width="960" height="540" fill="var(--surface-ground)"></rect>
         <path
@@ -29,4 +30,5 @@ function navigateToDashboard() {
             <Button class="font-medium" severity="help" raised @click="navigateToDashboard"> Go to Dashboard </Button>
         </div>
     </div>
+  </div>
 </template>
