@@ -72,7 +72,6 @@ function searchCountry(event) {
 </script>
 
 <template>
-  <div>
     <Fluid class="flex flex-col md:flex-row gap-8">
         <div class="md:w-1/2">
             <div class="card flex flex-col gap-4">
@@ -246,5 +245,4 @@ function searchCountry(event) {
             </div>
         </div>
     </Fluid>
-  </div>
 </template>

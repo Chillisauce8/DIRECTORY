@@ -64,7 +64,6 @@ function getSeverity(status) {
 </script>
 
 <template>
-  <div>
     <div class="card">
         <div class="font-semibold text-xl mb-4">Carousel</div>
         <Carousel :value="products" :numVisible="3" :numScroll="3" :responsiveOptions="carouselResponsiveOptions">
@@ -107,5 +106,4 @@ function getSeverity(status) {
             </template>
         </Galleria>
     </div>
-  </div>
 </template>

@@ -14,7 +14,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
     <div class="card">
         <div class="font-semibold text-xl">Tree</div>
         <Tree :value="treeValue" selectionMode="checkbox" v-model:selectionKeys="selectedTreeValue"></Tree>
@@ -28,5 +27,4 @@ onMounted(() => {
             <Column field="type" header="Type"></Column>
         </TreeTable>
     </div>
-  </div>
 </template>

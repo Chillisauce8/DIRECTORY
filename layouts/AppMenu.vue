@@ -5,58 +5,6 @@ import AppSubMenu from './AppSubMenu.vue';
 
 const model = ref([
     {
-        label: 'NEW !',
-        icon: 'pi pi-home',
-        items: [
-            {
-              label: 'Calendar',
-              icon: 'pi pi-fw pi-calendar',
-              to: '/calendar'
-            },
-            {
-                label: 'Markets',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/market'
-            },
-            {
-                label: 'Vehicle Page Design',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/car'
-            },
-            {
-                label: 'Vehicle Card Design',
-                icon: 'pi pi-fw pi-image',
-                to: '/new/carddesign'
-            },
-
-            {
-                label: 'Market test',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/apps/market-test'
-            },
-            {
-                label: 'Task List to DB',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/apps/tasklisttest'
-            },
-            {
-                label: 'Test Form',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/testForm'
-            },
-            {
-                label: 'Test Form Field Layout',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/testFormLayout'
-            },
-            {
-                label: 'Image Gallery Design',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/gallery'
-            }
-        ]
-    },
-    {
         label: 'Dashboards',
         icon: 'pi pi-home',
         items: [
@@ -98,12 +46,7 @@ const model = ref([
                 ]
             },
             {
-                label: 'Calendar',
-                icon: 'pi pi-fw pi-calendar',
-                to: '/apps/calendar'
-            },
-            {
-                label: 'Messages',
+                label: 'Chat',
                 icon: 'pi pi-fw pi-comments',
                 to: '/apps/chat'
             },
@@ -242,22 +185,6 @@ const model = ref([
         label: 'Utilities',
         icon: 'pi pi-fw pi-compass',
         items: [
-            {
-                label: 'PrimeIcons',
-                icon: 'pi pi-fw pi-prime',
-                to: '/utilities/icons'
-            },
-            {
-                label: 'Colors',
-                icon: 'pi pi-fw pi-palette',
-                to: '/utilities/colors'
-            },
-            {
-                label: 'PrimeFlex',
-                icon: 'pi pi-fw pi-desktop',
-                url: 'https://www.primefaces.org/primeflex/',
-                target: '_blank'
-            },
             {
                 label: 'Figma',
                 icon: 'pi pi-fw pi-pencil',

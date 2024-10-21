@@ -146,7 +146,6 @@ const onChangeDialogVisibility = (isVisible) => {
 </script>
 
 <template>
-  <div>
     <div class="card">
         <div class="flex flex-col md:flex-row gap-6">
             <div class="w-full md:w-3/12 xl:w-2/12 xl:p-4">
@@ -167,7 +166,5 @@ const onChangeDialogVisibility = (isVisible) => {
             </div>
         </div>
     </div>
-    <Reply v-model:visible="dialogVisible" :mail-detail="mailDetail" @save="onSaveReplyMail"
-           @update:dialogVisible="onChangeDialogVisibility()"></Reply>
-  </div>
+    <Reply v-model:visible="dialogVisible" :mail-detail="mailDetail" @save="onSaveReplyMail" @update:dialogVisible="onChangeDialogVisibility()"></Reply>
 </template>
