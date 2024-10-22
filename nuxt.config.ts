@@ -38,17 +38,17 @@ const DefaultTheme = definePreset(Aura, {
             dark: {
                 surface: {
                     0: '#ffffff',
-                    50: '{zinc.50}',
-                    100: '{zinc.100}',
-                    200: '{zinc.200}',
-                    300: '{zinc.300}',
-                    400: '{zinc.400}',
-                    500: '{zinc.500}',
-                    600: '{zinc.600}',
-                    700: '{zinc.700}',
-                    800: '{zinc.800}',
-                    900: '{zinc.900}',
-                    950: '{zinc.950}'
+                    50: '{ocean.50}',
+                    100: '{ocean.100}',
+                    200: '{ocean.200}',
+                    300: '{ocean.300}',
+                    400: '{ocean.400}',
+                    500: '{ocean.500}',
+                    600: '{ocean.600}',
+                    700: '{ocean.700}',
+                    800: '{ocean.800}',
+                    900: '{ocean.900}',
+                    950: '{ocean.950}'
                 }
             }
         }
