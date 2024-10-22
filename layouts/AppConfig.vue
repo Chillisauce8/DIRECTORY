@@ -213,6 +213,8 @@ function onPresetChange() {
         }"
     >
         <div class="flex flex-col gap-4">
+            <ThemePicker />
+
             <div>
                 <span class="text-lg font-semibold">Primary</span>
                 <div class="pt-2 flex gap-2 flex-wrap">

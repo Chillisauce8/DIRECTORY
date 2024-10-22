@@ -1,11 +1,11 @@
 .card {
     background: var(--surface-card);
-    border: 1px solid var(--surface-border);
+    //  border: 1px solid var(--surface-border);
     padding: 2rem;
     margin-bottom: 2rem;
     box-shadow: var(--card-shadow);
-    border-radius: 12px;
-
+    border-radius: 5px;
+    //   opacity: 0.96;
     &:last-child {
         margin-bottom: 0;
     }

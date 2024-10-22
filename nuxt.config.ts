@@ -1,24 +1,75 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import environment from './environment';
-import Aura from "@primevue/themes/aura";
+import Aura from '@primevue/themes/aura';
+import { definePreset } from '@primevue/themes';
 
+const DefaultTheme = definePreset(Aura, {
+    semantic: {
+        primary: {
+            50: '{pink.50}',
+            100: '{pink.100}',
+            200: '{pink.200}',
+            300: '{pink.300}',
+            400: '{pink.400}',
+            500: '{pink.500}',
+            600: '{pink.600}',
+            700: '{pink.700}',
+            800: '{pink.800}',
+            900: '{pink.900}',
+            950: '{pink.950}'
+        },
+        colorScheme: {
+            light: {
+                surface: {
+                    0: '#ffffff',
+                    50: '{stone.50}',
+                    100: '{stone.100}',
+                    200: '{stone.200}',
+                    300: '{stone.300}',
+                    400: '{stone.400}',
+                    500: '{stone.500}',
+                    600: '{stone.600}',
+                    700: '{stone.700}',
+                    800: '{stone.800}',
+                    900: '{stone.900}',
+                    950: '{stone.950}'
+                }
+            },
+            dark: {
+                surface: {
+                    0: '#ffffff',
+                    50: '{zinc.50}',
+                    100: '{zinc.100}',
+                    200: '{zinc.200}',
+                    300: '{zinc.300}',
+                    400: '{zinc.400}',
+                    500: '{zinc.500}',
+                    600: '{zinc.600}',
+                    700: '{zinc.700}',
+                    800: '{zinc.800}',
+                    900: '{zinc.900}',
+                    950: '{zinc.950}'
+                }
+            }
+        }
+    }
+});
 
 export default defineNuxtConfig({
   //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
   modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration',
     '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image'],
 
-  primevue: {
-    cssLayerOrder: 'reset, primevue',
+   primevue: {
     autoImport: true,
     options: {
-      ripple: true,
+
       theme: {
-        preset: Aura,
+        preset: DefaultTheme,
         options: {
           darkModeSelector: '.app-dark'
         }
-      },
+      }
     },
     directives: {
       include: ['Tooltip']
@@ -32,10 +83,10 @@ export default defineNuxtConfig({
   ssr: environment.ssr ?? true,
 
   css: [
-    "@/assets/css/global.scss",
-    "@/assets/styles.scss",
-    "@/assets/tailwind.css",
-    "primeicons/primeicons.css"
+    '@/assets/css/global.scss',
+    '@/assets/styles.scss',
+    '@/assets/tailwind.css',
+    'primeicons/primeicons.css'
   ],
 
   image: {
@@ -49,7 +100,7 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       htmlAttrs: {
-        lang: 'en-gb',
+        lang: 'en-gb'
       },
       link: [
         // {
@@ -57,7 +108,7 @@ export default defineNuxtConfig({
         //   href: '/layout/styles/theme/theme-light/cyan/theme.css',
         //   id: 'theme-link'
         // },
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
         // {
         //   rel: 'preconnect',
         //   href: 'https://www.googletagmanager.com',
@@ -109,13 +160,13 @@ export default defineNuxtConfig({
 // f=false,w=window,d=document,v=d.querySelector('#vwoCode'),cK='_vwo_'+account_id+'_settings',cc={};try{var c=JSON.parse(localStorage.getItem('_vwo_'+account_id+'_config'));cc=c&&typeof c==='object'?c:{}}catch(e){}var stT=cc.stT==='session'?w.sessionStorage:w.localStorage;code={use_existing_jquery:function(){return typeof use_existing_jquery!=='undefined'?use_existing_jquery:undefined},library_tolerance:function(){return typeof library_tolerance!=='undefined'?library_tolerance:undefined},settings_tolerance:function(){return cc.sT||settings_tolerance},hide_element_style:function(){return'{'+(cc.hES||hide_element_style)+'}'},hide_element:function(){return typeof cc.hE==='string'?cc.hE:hide_element},getVersion:function(){return version},finish:function(){if(!f){f=true;var e=d.getElementById('_vis_opt_path_hides');if(e)e.parentNode.removeChild(e)}},finished:function(){return f},load:function(e){var t=this.getSettings(),n=d.createElement('script'),i=this;if(t){n.textContent=t;d.getElementsByTagName('head')[0].appendChild(n);if(!w.VWO||VWO.caE){stT.removeItem(cK);i.load(e)}}else{n.fetchPriority='high';n.src=e;n.type='text/javascript';n.onerror=function(){_vwo_code.finish()};d.getElementsByTagName('head')[0].appendChild(n)}},getSettings:function(){try{var e=stT.getItem(cK);if(!e){return}e=JSON.parse(e);if(Date.now()>e.e){stT.removeItem(cK);return}return e.s}catch(e){return}},init:function(){if(d.URL.indexOf('__vwo_disable__')>-1)return;var e=this.settings_tolerance();w._vwo_settings_timer=setTimeout(function(){_vwo_code.finish();stT.removeItem(cK)},e);var t=d.currentScript,n=d.createElement('style'),i=this.hide_element(),r=t&&!t.async&&i?i+this.hide_element_style():'',c=d.getElementsByTagName('head')[0];n.setAttribute('id','_vis_opt_path_hides');v&&n.setAttribute('nonce',v.nonce);n.setAttribute('type','text/css');if(n.styleSheet)n.styleSheet.cssText=r;else n.appendChild(d.createTextNode(r));c.appendChild(n);this.load('https://dev.visualwebsiteoptimizer.com/j.php?a='+account_id+'&u='+encodeURIComponent(d.URL)+'&vn='+version)}};w._vwo_code=code;code.init();})();
 //           `,
 //         },
-      ],
-    },
+      ]
+    }
   },
 
   build: {
     // transpile: ['@vuepic/vue-datepicker'],
-    analyze: true,
+    analyze: true
     // optimization: {
     //   runtimeChunk: 'single',
     // },
@@ -125,27 +176,26 @@ export default defineNuxtConfig({
     css: {
         preprocessorOptions: {
             scss: {
-                additionalData: '@use "@/assets/css/vars.scss" as *;',
-            },
-        },
+                additionalData: '@use "@/assets/css/vars.scss" as *;'
+            }
+        }
     },
     base: './',
     esbuild: environment.leaveDebuggers ? undefined : {
-      drop: ['debugger'],
+      drop: ['debugger']
     },
     optimizeDeps: {
-      exclude: ['fsevents'],
+      exclude: ['fsevents']
       noDiscovery: true,
       include: ['quill']
     },
     build: {
       rollupOptions: {
-        output: {
-
+        output: {}
+            }
         }
       }
-    },
-  },
+    ,
 
   delayHydration: {
       // enables nuxt-delay-hydration in dev mode for testing
@@ -156,10 +206,10 @@ export default defineNuxtConfig({
   },
 
   plugins: [
-       // {src: '~/plugins/clear-path-from-app-payload.ts', mode: 'server'},
+
        {src: '~/plugins/app.js'},
        {src: '~/plugins/default-http-interceptors.ts'},
-       {src: '~/plugins/js-extend.ts'},
+       {src: '~/plugins/js-extend.ts'}
   ],
 
   components: [
@@ -520,17 +570,17 @@ export default defineNuxtConfig({
       // pages.push({
       //     name: 'Calendar',
       //     path: '/new/calendar',
-      //     file: '@/pages/new/Calendar.vue',
-      // });
+                 //     file: '@/pages/new/Calendar.vue'
+               // });
       pages.push({
           name: 'Images Fetching',
           path: '/new/images-fetching',
-          file: '@/pages/new/imagesfetching.vue',
+          file: '@/pages/new/imagesfetching.vue'
       });
       pages.push({
           name: 'Market List',
           path: '/market',
-          file: '@/pages/market/list.vue',
+          file: '@/pages/market/list.vue'
       });
       pages.push({
         name: 'Market',
@@ -546,8 +596,8 @@ export default defineNuxtConfig({
 
   nitro: {
     devProxy: environment.devProxy ?? {},
-    routeRules: environment?.routeRules ?? {},
+    routeRules: environment?.routeRules ?? {}
   },
 
-  compatibilityDate: '2024-10-14',
-})
+  compatibilityDate: '2024-10-14'
+});
