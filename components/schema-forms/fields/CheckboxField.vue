@@ -6,9 +6,6 @@
 </template>
 
 <script setup lang="ts">
-
-// @ts-ignore
-import { extend } from 'vue-extend-reactive';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 import { getCurrentInstance } from 'vue';
@@ -26,10 +23,7 @@ let {
 } = baseFieldExport;
 
 
-vm = extend(vm, {
-  originalModel: undefined,
-});
-
+vm.originalModel = undefined;
 
 vm.componentName = vm.componentName || 'ToggleSwitch';
 

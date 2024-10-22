@@ -1,6 +1,9 @@
-import {HttpInterceptor, HttpInterceptorType} from '~/service/http/interceptor.composibles';
-import {UseFetchOptions} from '#app';
-import {AppConfig} from '@nuxt/schema';
+import {
+  HttpInterceptor,
+  type HttpInterceptorFetchOptions,
+  HttpInterceptorType
+} from '~/service/http/interceptor.composibles';
+import type {AppConfig} from '@nuxt/schema';
 
 
 export class AppConfigHeadersInterceptor extends HttpInterceptor {
@@ -12,7 +15,7 @@ export class AppConfigHeadersInterceptor extends HttpInterceptor {
     return HttpInterceptorType.request;
   }
 
-  intercept(options: UseFetchOptions<any>): UseFetchOptions<any> {
+  intercept(options: HttpInterceptorFetchOptions<any>): HttpInterceptorFetchOptions<any> {
     return {
       ...options,
       headers: {

@@ -11,7 +11,7 @@ const model = ref([
             {
               label: 'Calendar',
               icon: 'pi pi-fw pi-calendar',
-              to: '/calendar'
+              to: '/new/calendar'
             },
             {
                 label: 'Markets',

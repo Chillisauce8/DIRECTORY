@@ -1,15 +1,10 @@
 import { schemaFormsProcessingHelper } from '~/service/schema-forms/schemaFormsProcessing.service';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits, ComponentRefs } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 import { isEqual, isObject, isUndefined, difference, differenceWith, uniqBy, uniq } from '~/service/utils';
-// @ts-ignore
-import { extend } from 'vue-extend-reactive';
 
 
-export default function useBaseSelectableControl(props: BaseControlProps, emits: BaseFieldEmits): any {
-
-  // @ViewChild('controlModel') public controlModel: NgModel;
+export default function useBaseSelectableControl(props: BaseControlProps, emits: BaseControlEmits): any {
 
   const baseFieldExport = useBaseControl(props, emits);
 
@@ -30,13 +25,9 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
   const processXOptionsForModelChangesBase = sharedFunctions.processXOptionsForModelChanges;
 
 
-  vm = extend(vm, {
-    filteredSelectValues: []
-  });
+  vm.filteredSelectValues = [];
 
-  im = extend(im, {
-    cachedPossibleValues: []
-  });
+  im.cachedPossibleValues = [];
 
 
   function initField() {

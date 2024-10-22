@@ -72,8 +72,6 @@
 import useBaseArrayFieldControl from '~/composables/schema-forms/useBaseArrayFieldControl';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import { uniqWith } from '~/service/utils';
-// @ts-ignore
-import { extend } from 'vue-extend-reactive';
 import { getCurrentInstance } from 'vue';
 import { BlockComponents } from '~/service/schema-forms/blockComponents';
 
@@ -90,13 +88,11 @@ const addRowAfterBase = sharedFunctions.addRowAfter;
 const addFirstRowBase = sharedFunctions.addFirstRow;
 const onRowsDescriptionChangedBase = sharedFunctions.onRowsDescriptionChanged;
 
-vm = extend(vm, {
-    isSelectionMode: false,
-    selectionValues: [],
-    linesForRows: [],
-    selectedSelectionValue: undefined,
-    selectionRowIndex: -1
-});
+vm.isSelectionMode = false;
+vm.selectionValues = [];
+vm.linesForRows = [];
+vm.selectedSelectionValue = undefined;
+vm.selectionRowIndex = -1;
 
 watch(
     () => props?.model,

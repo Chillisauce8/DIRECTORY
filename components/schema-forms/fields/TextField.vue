@@ -7,10 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import InputText from 'primevue/inputtext';
 import { isString } from '~/service/utils';
-// @ts-ignore
-import { extend } from 'vue-extend-reactive';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { useVuelidate } from '@vuelidate/core';
@@ -36,11 +33,7 @@ const emits = defineEmits<BaseControlEmits>();
 let {vm, sharedFunctions} = useBaseControl(props, emits);
 
 
-vm = extend(vm, {
-  originalModel: undefined,
-});
-
-
+vm.originalModel = undefined;
 vm.componentName = vm.componentName || 'InputText';
 
 const componentProperties = {

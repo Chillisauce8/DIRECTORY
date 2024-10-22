@@ -140,125 +140,42 @@ const saveEvent = async () => {
     <div class="grid">
         <div class="col-12">
             <div class="card">
-                <h5>Calendar</h5>
+              <h5>Calendar</h5>
               <InputText type="text" placeholder="TEST"  />
 
-                <FullCalendar :events="events" :options="options" />
+              <FullCalendar :events="events" :options="options" />
 
-                <Dialog
-                    v-model:visible="showDialog"
-                    :breakpoints="{ '960px': '75vw', '640px': '90vw' }"
-                    :style="{
-                        width: '36rem'
-                    }"
-                    modal
-                    closable
-                    @onHide="view = ''"
-                >
-                    <template #header>
-                        <span class="text-900 font-semibold text-xl">{{ view === 'display' ? changedEvent.title : view === 'new' ? 'New Event' : 'Edit Event' }}</span>
-                    </template>
+              <Dialog
+                  v-model:visible="showDialog"
+                  :breakpoints="{ '960px': '75vw', '640px': '90vw' }"
+                  :style="{
+                      width: '36rem'
+                  }"
+                  modal
+                  closable
+                  @onHide="view = ''"
+              >
+                  <template #header>
+                      <span class="text-900 font-semibold text-xl">{{ view === 'display' ? changedEvent.title : view === 'new' ? 'New Event' : 'Edit Event' }}</span>
+                  </template>
 
-                    <div v-if="view === 'display'">
-                      <DataItem function="read" collection="events" :id="changedEvent._doc" :defaultView="true">
-                      </DataItem>
-<!--                        <span class="text-900 font-semibold block mb-2">Description</span>-->
-<!--                        <span class="block mb-3">{{ changedEvent.description }}</span>-->
+                  <div v-if="view === 'display'">
+                    <DataItem function="read" collection="events" :id="changedEvent._doc" :defaultView="true">
+                    </DataItem>
+                  </div>
+                  <div v-if="view !== 'display'">
+                    <DataItem function="create" collection="events"
+                              @mounted="onDataItemMounted"
+                              @changed="eventChanged"
+                              :initialData="{start: changedEvent.start, end: changedEvent.end}">
+                    </DataItem>
+                  </div>
 
-<!--                        <div class="grid">-->
-<!--                            <div class="col-6">-->
-<!--                                <div class="text-900 font-semibold mb-2">Start</div>-->
-<!--                                <p class="flex align-items-center m-0">-->
-<!--                                    <i class="pi pi-fw pi-clock text-700 mr-2"></i>-->
-<!--                                    <span>{{ changedEvent.start.toISOString().slice(0, 10) }}</span>-->
-<!--                                </p>-->
-<!--                            </div>-->
-<!--                            <div class="col-6">-->
-<!--                                <div class="text-900 font-semibold mb-2">End</div>-->
-<!--                                <p class="flex align-items-center m-0">-->
-<!--                                    <i class="pi pi-fw pi-clock text-700 mr-2"></i>-->
-<!--                                    <span>{{ changedEvent.end.toISOString().slice(0, 10) }}</span>-->
-<!--                                </p>-->
-<!--                            </div>-->
-<!--                            <div class="col-12">-->
-<!--                                <div class="text-900 font-semibold mb-2">Location</div>-->
-<!--                                <p class="flex align-items-center m-0">-->
-<!--                                    <i class="pi pi-fw pi-clock text-700 mr-2"></i>-->
-<!--                                    <span>{{ changedEvent.location }}</span>-->
-<!--                                </p>-->
-<!--                            </div>-->
-<!--                            <div class="col-12">-->
-<!--                                <div class="text-900 font-semibold mb-2">Color</div>-->
-<!--                                <p class="flex align-items-center m-0">-->
-<!--                                    <span :style="{ 'background-color': changedEvent.color }" class="inline-flex flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></span>-->
-<!--                                    <span>{{ changedEvent.tag?.name }}</span>-->
-<!--                                </p>-->
-<!--                            </div>-->
-<!--                        </div>-->
-                    </div>
-                    <div v-if="view !== 'display'">
-                      <DataItem function="create" collection="events"
-                                @mounted="onDataItemMounted"
-                                @changed="eventChanged"
-                                :initialData="{start: changedEvent.start, end: changedEvent.end}">
-                      </DataItem>
-
-<!--                        <div class="grid p-fluid formgrid">-->
-<!--                            <div class="col-12 md:col-6 field">-->
-<!--                                <label for="title" class="text-900 font-semibold">Name</label>-->
-<!--                                <IconField iconPosition="left">-->
-<!--                                    <InputIcon class="pi pi-pencil" />-->
-<!--                                    <InputText id="title" type="text" placeholder="Name" -->
-<!--                                               v-model="changedEvent.name" />-->
-<!--                                </IconField>-->
-<!--                            </div>-->
-<!--                            <div class="col-12 md:col-6 field">-->
-<!--                                <label for="location" class="text-900 font-semibold">Location</label>-->
-<!--                                <IconField iconPosition="left">-->
-<!--                                    <InputIcon class="pi pi-map-marker" />-->
-<!--                                    <InputText id="location" type="text" placeholder="Location" -->
-<!--                                               v-model="changedEvent.location" />-->
-<!--                                </IconField>-->
-<!--                            </div>-->
-<!--                            <div class="col-12 field">-->
-<!--                                <label for="description" class="text-900 font-semibold">Event Description</label>-->
-<!--                                <Textarea id="description" type="text" :rows="5" v-model="changedEvent.description" style="resize: none"></Textarea>-->
-<!--                            </div>-->
-
-<!--                            <div class="col-12 md:col-6 field">-->
-<!--                                <label for="start" class="text-900 font-semibold">Start Date</label>-->
-<!--                                <Calendar dateFormat="mm-dd-yy" :max-date="changedEvent.end" showTime required inputId="start" v-model="changedEvent.start"></Calendar>-->
-<!--                            </div>-->
-<!--                            <div class="col-12 md:col-6 field">-->
-<!--                                <label for="start" class="text-900 font-semibold">End Date</label>-->
-<!--                                <Calendar dateFormat="mm-dd-yy" :minDate="changedEvent.start" showTime required inputId="end" v-model="changedEvent.end"></Calendar>-->
-<!--                            </div>-->
-<!--                            <div class="col-12 field">-->
-<!--                                <label for="company-color" class="text-900 font-semibold">Color</label>-->
-
-<!--                              <Dropdown v-if="changedEvent.tag" inputId="company-color" :options="tags" v-model="changedEvent.tag" optionLabel="name">-->
-<!--                                    <template #option="slotProps">-->
-<!--                                        <div class="flex align-items-center">-->
-<!--                                            <div :style="{ 'background-color': slotProps.option.color }" class="flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></div>-->
-<!--                                            <div>{{ slotProps.option.name }}</div>-->
-<!--                                        </div>-->
-<!--                                    </template>-->
-<!--                                    <template #value="slotProps">-->
-<!--                                        <div class="flex align-items-center">-->
-<!--                                            <div :style="{ 'background-color': slotProps.value.color }" class="flex-shrink-0 w-1rem h-1rem mr-2 border-circle"></div>-->
-<!--                                            <div>{{ slotProps.value.name }}</div>-->
-<!--                                        </div>-->
-<!--                                    </template>-->
-<!--                                </Dropdown>-->
-<!--                            </div>-->
-<!--                        </div>-->
-                    </div>
-
-                    <template #footer>
-                        <Button v-if="view === 'display'" label="Edit" icon="pi pi-pencil" @click="onEditClick"></Button>
-                        <Button v-if="view === 'new' || view === 'edit'" label="Save" icon="pi pi-check" @click="handleSave()" :disabled="!changedEvent.start || !changedEvent.end"></Button>
-                    </template>
-                </Dialog>
+                  <template #footer>
+                      <Button v-if="view === 'display'" label="Edit" icon="pi pi-pencil" @click="onEditClick"></Button>
+                      <Button v-if="view === 'new' || view === 'edit'" label="Save" icon="pi pi-check" @click="handleSave()" :disabled="!changedEvent.start || !changedEvent.end"></Button>
+                  </template>
+              </Dialog>
             </div>
         </div>
     </div>

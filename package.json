@@ -43,7 +43,6 @@
     "sass": "^1.75.0",
     "v-calendar": "^3.1.2",
     "vue": "^3.4.29",
-    "vue-extend-reactive": "^1.1.4",
     "vue-horizontal": "^1.0.2",
     "vue-router": "4.3.3",
     "tailwindcss-primeui": "^0.3.4"

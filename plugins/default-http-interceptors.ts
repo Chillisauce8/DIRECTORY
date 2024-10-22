@@ -3,8 +3,5 @@ import appConfigHeadersInterceptor from '~/service/http/interceptors/app-config-
 
 
 export default defineNuxtPlugin(() => {
-  
   useHttpInterceptor(appConfigHeadersInterceptor());
-
-
 });

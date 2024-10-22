@@ -1,7 +1,6 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import { isUndefined, isEqual, isNumber, cloneDeep, uniq } from '~/service/utils';
-import { extend } from 'vue-extend-reactive';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 
@@ -16,13 +15,11 @@ export default function useBaseArrayFieldControl(props: BaseFieldProps, emits: B
     initDone,
   } = baseFieldExport;
 
-  vm = extend(vm, {
-    initialDescription: undefined,
-    rowDescriptions: [],
-    needCheckUniq: false,
-    defaultMinimum: undefined,
-    defaultMaximum: undefined,
-  });
+  vm.initialDescription = undefined;
+  vm.rowDescriptions = [];
+  vm.needCheckUniq = false;
+  vm.defaultMinimum = undefined;
+  vm.defaultMaximum = undefined;
 
   const doOnMountedBase = sharedFunctions.doOnMounted;
   const initFieldBase = sharedFunctions.initField;

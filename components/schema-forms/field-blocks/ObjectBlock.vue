@@ -36,8 +36,6 @@ import { onMounted, getCurrentInstance } from 'vue';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import { isObject } from '~/service/utils';
-// @ts-ignore
-import { extend } from 'vue-extend-reactive';
 import DynamicFieldBlock from '~/components/schema-forms/DynamicFieldBlock.vue';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
 import { BlockComponents } from '~/service/schema-forms/blockComponents';
@@ -52,9 +50,7 @@ let { vm, sharedFunctions } = useBaseField(props, emits);
 
 const initFieldBase = sharedFunctions.initField;
 
-vm = extend(vm, {
-    lines: []
-});
+vm.lines = [];
 
 sharedFunctions.initField = initField;
 

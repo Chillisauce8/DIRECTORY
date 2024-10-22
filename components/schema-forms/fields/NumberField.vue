@@ -9,8 +9,6 @@
 
 <script setup lang="ts">
 import { isNumber } from '~/service/utils';
-// @ts-ignore
-import { extend } from 'vue-extend-reactive';
 import useBaseControl from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { useVuelidate } from '@vuelidate/core';
@@ -37,9 +35,7 @@ let {
 } = baseFieldExport;
 
 
-vm = extend(vm, {
-  allowDecimals: undefined,
-});
+vm.allowDecimals = undefined;
 
 
 const componentProperties = {

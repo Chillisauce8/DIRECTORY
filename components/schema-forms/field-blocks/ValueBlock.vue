@@ -8,14 +8,13 @@
 </template>
 
 <script setup lang="ts">
-// @ts-ignore
-import { extend } from 'vue-extend-reactive';
 import type { BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
 import { getCurrentInstance } from 'vue';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
+
 
 export interface ValueFieldProps extends BaseFieldProps {
     showTitle?: boolean;
@@ -26,15 +25,13 @@ const props = defineProps<ValueFieldProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
-let { im, vm, sharedFunctions } = useBaseField(props, emits);
+let { vm, sharedFunctions } = useBaseField(props, emits);
 
 const processXFeaturesBase = sharedFunctions.processXFeatures;
 const doOnMountedBase = sharedFunctions.doOnMounted;
 
-vm = extend(vm, {
-    descriptionText: '',
-    showTitle: props.showTitle
-});
+vm.descriptionText = '';
+vm.showTitle = props.showTitle;
 
 const shouldFieldBeConstructed = ref(false);
 
