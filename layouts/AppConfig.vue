@@ -237,9 +237,10 @@ function onPresetChange() {
                         :key="surface.name"
                         type="button"
                         @click="updateColors('surface', surface)"
+                        v-tooltip.bottom="surface.name"
                         :class="[
                             'cursor-pointer w-6 h-6 rounded-full flex flex-shrink-0 items-center justify-center p-0 outline-none outline-offset-1',
-                            { 'outline-primary': layoutConfig.surface ? layoutConfig.surface === surface.name : isDarkTheme ? surface.name === 'zinc' : surface.name === 'slate' }
+                            { 'outline-primary': layoutConfig.surface === surface.name }
                         ]"
                         :style="{ backgroundColor: `${surface.palette['500']}` }"
                     ></button>
