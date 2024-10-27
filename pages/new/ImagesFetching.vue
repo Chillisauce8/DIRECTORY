@@ -28,15 +28,18 @@
     const lines = vm.rawUrls.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
-      const url = lines[i].trim();
+      const line = lines[i].trim();
+
+      const parts = line.split(';');
+      const url = parts[0].trim();
 
       if (!isValidHttpUrl(url)) {
         continue;
       }
 
       const type = FileType.Image;
-      const extension = fileHelperService.getFileExtension(url);
-      const name = url.split('#')[0].split('?')[0].split('/').pop() || 'loaded-image';
+      let extension = fileHelperService.getFileExtension(parts[1] || url);
+      let name = parts[1] || url.split('#')[0].split('?')[0].split('/').pop() || 'loaded-image';
 
       // const originalType = file.type || extension;
       // const medialProperties = fileHelperService.getMediaFileProperties(file);
@@ -65,15 +68,13 @@
         aspectRation
       }
 
-      let metadata = {
-        type: `image/${extension}`,
-      };
-
       let fileData: any;
+      let contentType: string;
 
       try {
         const response = await fetch(url);
         fileData = await response.blob();
+        contentType = response.headers.get('content-type');
       } catch(ex) {
         toast.add({severity: 'error', summary: 'Error', detail: `${name} Upload Failed`, life: 3000});
         continue;
@@ -82,6 +83,10 @@
       if (!fileData) {
         // fileData = fileHelperService.getBlobByImageEl(image);
       }
+
+      let metadata = {
+        type: contentType,
+      };
 
       const file = new File([fileData], name, metadata);
 
