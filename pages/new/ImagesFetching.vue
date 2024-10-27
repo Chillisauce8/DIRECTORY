@@ -1,33 +1,120 @@
 <script setup lang="ts">
 
-import { fileHelperService, FileType } from '~/service/file/file-helper-service';
+  import { fileHelperService, FileType } from '~/service/file/file-helper-service';
+  import { fileUploaderService } from '~/service/file/file-uploader-service';
+  import { useToast } from 'primevue/usetoast';
+  import EXIF from '~/service/file/exif';
+
+  const toast = useToast();
+
 
   const vm = reactive({
     rawUrls: ''
   });
 
+  async function loadImage(src: string) {
+    const img = new Image();
+    img.width = 100;
+    img.height = 100;
+    //img.setAttribute('crossorigin', 'anonymous');
+    img.src = src;
+    await img.decode();
+    return img;
+  }
+
   async function onSave() {
+    const thumbnailEl: any = document.getElementById('thumbnail');
+
     const lines = vm.rawUrls.split('\n');
 
-    for (const url of lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const url = lines[i].trim();
+
       if (!isValidHttpUrl(url)) {
         continue;
       }
 
       const type = FileType.Image;
       const extension = fileHelperService.getFileExtension(url);
-      const originalType = file.type || extension;
+      const name = url.split('#')[0].split('?')[0].split('/').pop() || 'loaded-image';
 
-      const medialProperties = fileHelperService.getMediaFileProperties(file);
+      // const originalType = file.type || extension;
+      // const medialProperties = fileHelperService.getMediaFileProperties(file);
 
-      let response = await fetch(url);
-      let data = await response.blob();
+
+      const image = await loadImage(url);
+      // image.src = url;
+      // image.id = "img-" + i;
+      // image.width = 100;
+      // image.height = 100;
+
+      const divEl = document.createElement("div");
+      divEl.classList.add('col');
+      divEl.appendChild(image);
+
+      thumbnailEl.appendChild(image);
+      // const imgEl: any = document.getElementById("img-" + i);
+
+      const w = image.naturalWidth;
+      const h = image.naturalHeight;
+      const aspectRation = fileHelperService.calculateAspectRatio(w, h);
+
+      const imageInfo = {
+        width: w,
+        height: h,
+        aspectRation
+      }
+
       let metadata = {
-        type: "image/png",
+        type: `image/${extension}`,
       };
 
-      const file = new File([data], "app-logo.png", metadata);
+      let fileData: any;
+
+      try {
+        const response = await fetch(url);
+        fileData = await response.blob();
+      } catch(ex) {
+        toast.add({severity: 'error', summary: 'Error', detail: `${name} Upload Failed`, life: 3000});
+        continue;
+      }
+
+      if (!fileData) {
+        // fileData = fileHelperService.getBlobByImageEl(image);
+      }
+
+      const file = new File([fileData], name, metadata);
+
+      const originalType = file.type || extension;
+
+      const data = await fileHelperService.prepareFileToUploadWithExif(file, {
+        name,
+        originalType,
+        type,
+        extension,
+        size: file.size,
+        imageInfo,
+      });
+
+
+      const config: any = {
+        url: '/api/files',
+        data: data,
+        method: 'POST',
+        // headers: { [headerName: string]: string; },
+        // withCredentials: true,
+      }
+
+      // const result = await fileUploaderService.upload(config);
+      //
+      // if (result) {
+      //   toast.add({severity: 'info', summary: 'Success', detail: `${name} Uploaded`, life: 3000});
+      // } else {
+      //   toast.add({severity: 'error', summary: 'Error', detail: `${name} Upload Failed`, life: 3000});
+      // }
     }
+
+    toast.add({ severity: 'info', summary: 'Process finished', detail: 'Uploading finished', life: 3000 });
   }
 
   function isValidHttpUrl(urlStr: string) {
@@ -49,6 +136,8 @@ import { fileHelperService, FileType } from '~/service/file/file-helper-service'
     <div class="flex items-center gap-4 mb-4">
       <label for="urls" class="text-900 font-semibold">Input urls</label>
       <Textarea id="urls" type="text" :rows="5" :cols="20" fluid v-model="vm.rawUrls" autoResize></Textarea>
+    </div>
+    <div class="grid" id="thumbnail">
     </div>
     <div class="flex justify-end gap-2">
       <Button class="w-8rem" icon="pi pi-check" label="Save" @click="onSave()"></Button>

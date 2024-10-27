@@ -1,3 +1,4 @@
+import EXIF from '~/service/file/exif';
 
 interface IFileSizeConfig {
   min?: string;
@@ -118,7 +119,10 @@ export class FileHelperService {
     const splitRes = fileName.split('.');
 
     if (splitRes.length > 1) {
-      return splitRes[splitRes.length - 1];
+      const ext = splitRes[splitRes.length - 1];
+      if (ext && ext.length <= 5) {
+        return ext;
+      }
     }
 
     return null;
@@ -225,6 +229,35 @@ export class FileHelperService {
         this.downloadFile(value, type, name);
       }
     }
+  }
+
+  async prepareFileToUploadWithExif(file: File, modelData: any) {
+    return new Promise((resolve) => {
+      const exif = new EXIF();
+      exif.getData(file, function () {
+        const metadata = exif.getAllTags(this);
+
+        const data: any = {
+          model: {
+            ...modelData,
+            data: metadata,
+          },
+          file,
+        };
+
+        resolve(data);
+      });
+    });
+  }
+
+  getBlobByImageEl(imageElement: HTMLImageElement) {
+    const canvas = document.createElement('canvas');
+    canvas.width = imageElement.naturalWidth;
+    canvas.height = imageElement.naturalHeight;
+    const context = canvas.getContext("2d");
+    context.drawImage(imageElement, 0, 0);
+    const blob = canvas.toDataURL('image/jpg');
+    return blob.replace(/^data:image\/(png|jpg);base64,/, "");
   }
 }
 

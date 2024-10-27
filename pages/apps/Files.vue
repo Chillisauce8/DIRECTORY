@@ -189,9 +189,7 @@ const customUploader = async (event: {files: File[]}) => {
         } else if (imgEl) {
           const w = imgEl.naturalWidth;
           const h = imgEl.naturalHeight;
-          const r = gcd (w, h);
-
-          const aspectRation = w/r + ":" + h/r;
+          const aspectRation = fileHelperService.calculateAspectRatio(w, h);
 
           imageInfo = {
             width: w,
