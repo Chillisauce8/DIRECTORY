@@ -40,16 +40,12 @@
       const type = FileType.Image;
       let extension = fileHelperService.getFileExtension(parts[1] || url);
       let name = parts[1] || url.split('#')[0].split('?')[0].split('/').pop() || 'loaded-image';
+      const rating = parts[2] || 0;
 
       // const originalType = file.type || extension;
       // const medialProperties = fileHelperService.getMediaFileProperties(file);
 
-
       const image = await loadImage(url);
-      // image.src = url;
-      // image.id = "img-" + i;
-      // image.width = 100;
-      // image.height = 100;
 
       const divEl = document.createElement("div");
       divEl.classList.add('col');
@@ -97,6 +93,7 @@
         originalType,
         type,
         extension,
+        rating,
         size: file.size,
         imageInfo,
       });
@@ -110,15 +107,16 @@
         // withCredentials: true,
       }
 
-      // const result = await fileUploaderService.upload(config);
-      //
-      // if (result) {
-      //   toast.add({severity: 'info', summary: 'Success', detail: `${name} Uploaded`, life: 3000});
-      // } else {
-      //   toast.add({severity: 'error', summary: 'Error', detail: `${name} Upload Failed`, life: 3000});
-      // }
+      const result = await fileUploaderService.upload(config);
+
+      if (result) {
+        toast.add({severity: 'info', summary: 'Success', detail: `${name} Uploaded`, life: 3000});
+      } else {
+        toast.add({severity: 'error', summary: 'Error', detail: `${name} Upload Failed`, life: 3000});
+      }
     }
 
+    thumbnailEl.innerHTML = '';
     toast.add({ severity: 'info', summary: 'Process finished', detail: 'Uploading finished', life: 3000 });
   }
 
