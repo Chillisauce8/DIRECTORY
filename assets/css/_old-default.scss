@@ -1,0 +1,275 @@
+/*
+RESET STYLES : https://perishablepress.com/a-killer-collection-of-global-css-reset-styles/
+*/
+
+
+
+html,
+body {
+  @include font-size(0);
+  scroll-behavior: smooth;
+  font-family: $ff1;
+  color: $ct;
+  line-height: $fc-font-line-height;
+  background-color: var(--bg-color--3);
+  address {
+    font-size: inherit;
+  }
+}
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 1rem;
+}
+
+h1,
+h2:not(h1 ~ *),
+h3:not(h2 ~ *),
+h4:not(h3 ~ *),
+h5:not(h4 ~ *),
+h6:not(h5 ~ *) {
+  font-size: 1rem;
+  font-family: $ff2;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+h1 ~ h2, h2 ~ h3, h3 ~ h4, h4 ~ h5, h5 ~ h6{
+  font-weight: normal;
+}
+// IMAGES - MOVE TO THE IMAGE CONTAINER !!
+
+
+
+ul {
+  list-style: none;
+}
+ol {
+  list-style-type: decimal;
+}
+caption,
+th {
+  text-align: left;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+
+  &:link,
+  :visited,
+  :active,
+  :hover {
+    color: inherit;
+  }
+}
+p > a {
+  // Only apply to links in copy.
+  @include links($link-color, $link-color-hover);
+}
+button {
+  cursor: pointer;
+ // margin: 5px;
+}
+
+// WIDTHS
+
+.W1 {
+  width: clamp(0%, 640px, 95%);
+  margin: 0 auto;
+  @include mobile {
+    width: clamp(0%, 640px, 95%);
+  }
+}
+.W2 {
+  width: clamp(0%, 960px, 95%);
+  margin: 0 auto;
+  @include mobile {
+    width: clamp(0%, 640px, 95%);
+  }
+}
+.W3 {
+  width: clamp(0%, 1280px, 95%);
+  margin: 0 auto;
+  @include mobile {
+    width: clamp(0%, 640px, 95%);
+  }
+}
+.W4 {
+  width: clamp(0%, 1600px, 95%);
+  margin: 0 auto;
+  @include mobile {
+    width: clamp(0%, 640px, 95%);
+  }
+}
+.W5 {
+  width: clamp(0%, 1920px, 95%);
+  margin: 0 auto;
+  @include mobile {
+    width: clamp(0%, 640px, 95%);
+  }
+}
+
+main {
+  background-color: $CB;
+  width: 100%;
+  & > section,
+  > header {
+ //   margin: 0 auto 5rem auto; Removed - stop gaps in section wrapper?
+  }
+  & blockquote {
+    border-left: solid 5px $C1;
+    quotes: '“' '”' '‘' '’';
+    padding-left: 20px;
+    font-size: 1.2em;
+    font-weight: lighter;
+    font-style: italic;
+    & .author {
+      display: block;
+      font-weight: bolder;
+      font-size: 0.8em;
+
+      &:before {
+        content: ' ~ ';
+      }
+    }
+  }
+
+  & q {
+    quotes: '“' '”' '‘' '’';
+    font-style: italic;
+    &:before {
+      content: open-quote;
+    }
+    &:after {
+      content: close-quote;
+    }
+  }
+  & strong,
+  & b {
+    font-weight: bold;
+  }
+  & em,
+  & i {
+    font-style: italic;
+  }
+  & mark {
+    background-color: inherit;
+    color: $C1;
+    font-weight: bold;
+  }
+
+  & dl {
+    & dt {
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      &:after {
+        content: ' : ';
+      }
+    }
+    & dd:first-letter {
+      text-transform: uppercase;
+    }
+  }
+  // LISTS
+  & ul:not(.card-wrapper *, .section-wrapper *),
+  & ol {
+    list-style-position: outside;
+    margin-left: 2em;
+    & li:first-letter {
+      text-transform: uppercase;
+    }
+  }
+  & ul:not(.card-wrapper *, .section-wrapper *) {
+    list-style-type: disc;
+  }
+  & .Contents {
+    display: contents;
+  }
+
+  & .Split {
+    @include desktop() {
+      display: flex;
+      flex-direction: row;
+ //     justify-content: center; // Removed as it was effecting the product header alignment. 
+      & > * {
+        padding: 0 2.5%;
+        max-width: 50%;
+      }
+      &.Alternate {
+        &:nth-child(even) {
+          flex-direction: row-reverse;
+        }
+      }
+    }
+    @include mobile() {
+      & > * {
+        margin: 0 auto 7.5% auto;
+      }
+    }
+  }
+
+  & .Copy {
+    &
+      :is(blockquote, details, div, dl, h1, h2, h3, h4, h5, h6, hr, ol, section, table):not(.group
+        > *):not(:last-child) {
+      margin-bottom: calc(1rem + 0.2em);
+    }
+    & dt:not(:first-child) {
+      margin-top: calc(1rem + 0.2em);
+    }
+    & dd,
+    li {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    & p {
+      margin-bottom: 1.5rem;
+    }
+    &  *:first-child{ // Added to add a margin to the top of the first element after Copy
+      margin-top: calc(1rem + 0.2em);
+    }
+    &
+      :is(blockquote, details, div, dl, hr, ol, section, table, ul, p)
+      + :is(h1, h2, h3, h4, h5, h6) {
+      padding-top: calc(1.5rem);
+    }
+    & :is(h1, h2, h3, h4, h5, h6) {
+      @include font-style('header');
+    }
+    & h1 {
+      @include font-size(6);
+    }
+    & h2 {
+      @include font-size(5);
+    }
+    & h3 {
+      @include font-size(4);
+    }
+    & h4 {
+      @include font-size(3);
+    }
+    & h5 {
+      @include font-size(2);
+    }
+    & h6 {
+      @include font-size(1);
+    }
+  }
+}
+
+div.toasted.custom-toast.info{
+
+  font-family: $ff2;
+  font-weight: 500;
+  background-color: black;
+  button{
+    font-size: 140%;
+  }
+}

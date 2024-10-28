@@ -1,0 +1,105 @@
+
+//   Check https://coolors.co/
+$CB: white;
+$ct: rgb(33, 33, 33);
+
+// $C1: #ff0363;
+// $C1: #ff033e;
+//$C1: #e91e63;
+$C1: #E61959; // Slightly Darker
+$C2: #00b7eb;
+$C3: #5cc8ff;
+$C4: #00fcfc;
+
+$C2: #CED3BF; // Celeste
+$C2: #CDF5F3; // Pale Turquise
+$C2: #5DE8D1; // Turquise Blue
+$C2: #37D1CC; // Medium Turquise
+$C2: #00D4D0; // Dark Turquise
+//$C2: #31F7C5; // Bright Turquise
+
+
+
+$TP-1: #00b67a;
+$TP-2: #00b67a;
+
+$C11: mix(white, $C1, 20%);
+$C1-1: mix(black, $C1, 20%);
+
+$C21: mix(white, $C2, 20%);
+$C2-1: mix(black, $C2, 20%);
+
+$C31: mix(white, $C3, 20%);
+$C3-1: mix(black, $C3, 20%);
+
+$C41: mix(white, $C4, 20%);
+$C4-1: mix(black, $C4, 20%);
+
+$CB-05: mix(black, $CB, 5%);
+$CB-1: mix(black, $CB, 10%);
+$CB-2: mix(black, $CB, 20%);
+$CB-3: mix(black, $CB, 30%);
+$CB-4: mix(black, $CB, 40%);
+$CB-5: mix(black, $CB, 50%);
+$CB-6: mix(black, $CB, 60%);
+$CB-7: mix(black, $CB, 70%);
+$CB-8: mix(black, $CB, 80%);
+$CB-9: mix(black, $CB, 90%);
+
+
+$GBC-1: linear-gradient(to left, #2C5364, #203A43, #0F2027); 
+$GBC-2: linear-gradient(90deg, rgba(0,79,89,1) 0%, rgba(18,155,172,1) 100%);
+$GBC-3: linear-gradient(to right, #86c1d0, #b1cbd0);
+$GBC-4: linear-gradient(to right, #48b1bf, #06beb6);
+$GBC-5: linear-gradient(to right,#a2bfba, #c8e7e1);
+$GBC-6: linear-gradient(90deg, rgba(0,9,7,1) 0%, rgba(0,138,133,1) 100%);
+$GBC-7: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,55,52,1) 100%);
+$GBC-8: linear-gradient(90deg, rgba(32,38,38,1) 0%, rgba(72,105,103,1) 100%);
+$GBC-9: linear-gradient(90deg, rgba(106,138,147,1) 0%, rgba(169,185,189,1) 100%);
+
+
+$link-color: $C2;
+$link-color-hover: $C21;
+
+
+// Breakpoints */
+$dt: 960px;
+
+
+
+//FONTS
+// $ff1: 'EuclidCircularA', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$ff1: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$ff2: 'EuclidFlex', 'Oswald', sans-serif;
+$ff3: 'EuclidCircularA', 'Oswald', sans-serif;
+$ff4: 'EuclidCircularB', 'Oswald', sans-serif;
+$ff5: 'EuclidSquare', 'Oswald', sans-serif;
+$ff6: 'EuclidTriangle', 'Oswald', sans-serif;
+
+$ff2: 'EuclidFlex', 'Oswald', sans-serif;
+// $ff2: 'Oswald', sans-serif;
+
+
+
+$orange: #FF4E31;
+$aqua: #00b8d4;
+$silver: #999;
+$green: #34c184;
+$blue: #29abe2;
+$red: #ed1c24;
+
+
+/* Form components variables */
+$fc-font-line-height: 1.6;
+$fc-font-size: 0.85rem;
+$fc-font-color: $ct;
+$fc-font-color-error: $C1;
+$fc-font-color-disabled: $CB-4;
+$fc-background-color-highlight: $C2;
+$fc-border-color: $CB-6;
+$fc-border-color-disabled: $fc-font-color-disabled;
+$fc-input-padding-x: 0px;
+$fc-input-padding-y: 0px;
+$fc-input-margin-x: 5px;
+$fc-input-margin-y: 0px;
+$fc-placeholder-floating-text-size: .6em;

@@ -1,0 +1,28 @@
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  vertical-align: baseline;
+  font-family: inherit;
+  font-style: inherit;
+//  font-weight: normal;
+  text-transform: inherit;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  text-rendering: optimizeLegibility;
+  background-color: transparent;
+  border-spacing: 0;
+}
+*:focus {
+  /* Stop ugly blue border appearing in chrome */
+  outline: none;
+}
+
+/* BODY */
+html{
+  overflow-x: hidden; // Effects position sticky on some elements - EG Split Box. Done for stopping x- flow on mobile
+  position: relative;
+}
