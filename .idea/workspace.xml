@@ -1,0 +1,697 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7f22a6ff-4bca-4a66-9b66-2143c584b3b4" name="Changes" comment="Build Files Tool and Add File to Node Control (in progress)" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Single File Component" />
+        <option value="package.json" />
+        <option value="TypeScript File" />
+        <option value="JavaScript File" />
+        <option value="Vue Composition API Component" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="design" />
+                <branch-info repo="$PROJECT_DIR$" source="import-development" />
+                <branch-info repo="$PROJECT_DIR$" source="main" />
+                <branch-info repo="$PROJECT_DIR$" source="schema-forms-vue" />
+                <branch-info repo="$PROJECT_DIR$" source="primevue-v4" />
+                <branch-info repo="$PROJECT_DIR$" source="primevue-v4-temlate" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="primevue-v4-temlate" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;mordvin-denis&quot;
+  }
+}</component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="6e66d368-4e10-47dc-9da5-3ec1c2dcb810" />
+  </component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Chillisauce8/car.git&quot;,
+    &quot;accountId&quot;: &quot;6e66d368-4e10-47dc-9da5-3ec1c2dcb810&quot;
+  }
+}</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2f5UHiLwLh9FONyFPBYwoxKs3Es" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Denis/WebstormProjects/car&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\Denis\\WebstormProjects\\car\\node_modules\\prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2022.3.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;vue.recent.templates&quot;: [
+      &quot;Vue Composition API Component&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Denis\WebstormProjects\car" />
+      <recent name="C:\Users\Denis\WebstormProjects\car\pages copy" />
+      <recent name="C:\Users\Denis\WebstormProjects\car\assets" />
+      <recent name="C:\Users\Denis\WebstormProjects\car\public" />
+      <recent name="C:\Users\Denis\WebstormProjects\car\service" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Denis\WebstormProjects\car" />
+      <recent name="C:\Users\Denis\WebstormProjects\car\pages\apps\tasklist" />
+      <recent name="C:\Users\Denis\WebstormProjects\car\pages\apps" />
+      <recent name="C:\Users\Denis\WebstormProjects\car\pages" />
+      <recent name="C:\Users\Denis\WebstormProjects\car\pages\dashboards" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.18034.50" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7f22a6ff-4bca-4a66-9b66-2143c584b3b4" name="Changes" comment="" />
+      <created>1713090346769</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1713090346769</updated>
+      <workItem from="1713090349293" duration="690000" />
+      <workItem from="1713177899391" duration="3576000" />
+      <workItem from="1713191322227" duration="1997000" />
+      <workItem from="1713352055937" duration="2175000" />
+      <workItem from="1713358424409" duration="1421000" />
+      <workItem from="1713360495723" duration="275000" />
+      <workItem from="1713515176623" duration="458000" />
+      <workItem from="1713516026830" duration="3177000" />
+      <workItem from="1713943421692" duration="633000" />
+      <workItem from="1713950843628" duration="5153000" />
+      <workItem from="1714042970369" duration="1981000" />
+      <workItem from="1714119356585" duration="1291000" />
+      <workItem from="1714142031277" duration="1559000" />
+      <workItem from="1714144728557" duration="11016000" />
+      <workItem from="1714273630092" duration="10965000" />
+      <workItem from="1714384394168" duration="1346000" />
+      <workItem from="1715257537134" duration="2302000" />
+      <workItem from="1715272385062" duration="1680000" />
+      <workItem from="1715323162648" duration="12175000" />
+      <workItem from="1715352933415" duration="4803000" />
+      <workItem from="1715506326124" duration="2150000" />
+      <workItem from="1715587860072" duration="24653000" />
+      <workItem from="1715755875077" duration="1196000" />
+      <workItem from="1715856202060" duration="594000" />
+      <workItem from="1715927369106" duration="593000" />
+      <workItem from="1716008131668" duration="3394000" />
+      <workItem from="1716027243876" duration="14597000" />
+      <workItem from="1716276781795" duration="75105000" />
+      <workItem from="1716719485893" duration="4340000" />
+      <workItem from="1716790868494" duration="28118000" />
+      <workItem from="1716892681339" duration="330000" />
+      <workItem from="1716895039654" duration="20335000" />
+      <workItem from="1717062153133" duration="21706000" />
+      <workItem from="1717392418489" duration="39790000" />
+      <workItem from="1717654566520" duration="22485000" />
+      <workItem from="1717767463299" duration="2437000" />
+      <workItem from="1717913537666" duration="14153000" />
+      <workItem from="1718003503913" duration="194000" />
+      <workItem from="1718099943292" duration="240000" />
+      <workItem from="1718104191682" duration="13830000" />
+      <workItem from="1718173672690" duration="6787000" />
+      <workItem from="1718263996903" duration="4361000" />
+      <workItem from="1718344521408" duration="16342000" />
+      <workItem from="1718542875354" duration="3747000" />
+      <workItem from="1718712944701" duration="17094000" />
+      <workItem from="1718944890694" duration="21885000" />
+      <workItem from="1719517962819" duration="847000" />
+      <workItem from="1719570812121" duration="199000" />
+      <workItem from="1719577860713" duration="634000" />
+      <workItem from="1719822947466" duration="47649000" />
+      <workItem from="1720185938959" duration="6532000" />
+      <workItem from="1720261017505" duration="21645000" />
+      <workItem from="1720780744311" duration="642000" />
+      <workItem from="1722594483826" duration="721000" />
+      <workItem from="1722604194760" duration="154000" />
+      <workItem from="1722671061860" duration="233000" />
+      <workItem from="1722685410230" duration="594000" />
+      <workItem from="1722757156870" duration="593000" />
+      <workItem from="1722858977142" duration="331000" />
+      <workItem from="1723365147297" duration="852000" />
+      <workItem from="1723378432535" duration="147000" />
+      <workItem from="1723382773582" duration="1590000" />
+      <workItem from="1723477604297" duration="691000" />
+      <workItem from="1723986196149" duration="5144000" />
+      <workItem from="1724676734709" duration="750000" />
+      <workItem from="1724750046180" duration="19598000" />
+      <workItem from="1724827579881" duration="1414000" />
+      <workItem from="1724829128292" duration="25852000" />
+      <workItem from="1724935052997" duration="4047000" />
+      <workItem from="1724947161250" duration="2362000" />
+      <workItem from="1724998400680" duration="22942000" />
+      <workItem from="1725260198076" duration="12000" />
+      <workItem from="1725260222722" duration="190000" />
+      <workItem from="1725267464722" duration="10776000" />
+      <workItem from="1725379148935" duration="600000" />
+      <workItem from="1725431294848" duration="4909000" />
+      <workItem from="1725547004073" duration="5146000" />
+      <workItem from="1725606980647" duration="42097000" />
+      <workItem from="1725966017493" duration="5681000" />
+      <workItem from="1726050655026" duration="10252000" />
+      <workItem from="1726149235523" duration="20888000" />
+      <workItem from="1726393693073" duration="2362000" />
+      <workItem from="1726396102988" duration="25381000" />
+      <workItem from="1726754906869" duration="5016000" />
+      <workItem from="1726827468565" duration="32486000" />
+      <workItem from="1727078381970" duration="18553000" />
+      <workItem from="1727168024779" duration="856000" />
+      <workItem from="1727171805189" duration="1374000" />
+      <workItem from="1727264653054" duration="3391000" />
+      <workItem from="1727333288365" duration="594000" />
+      <workItem from="1727933101358" duration="10000" />
+      <workItem from="1727946007557" duration="36945000" />
+      <workItem from="1728207915720" duration="594000" />
+      <workItem from="1728381749089" duration="588000" />
+      <workItem from="1728404349050" duration="1425000" />
+      <workItem from="1728463279448" duration="9730000" />
+      <workItem from="1728541136135" duration="22251000" />
+      <workItem from="1728636785036" duration="26641000" />
+      <workItem from="1728917599929" duration="3784000" />
+      <workItem from="1728984248381" duration="181000" />
+      <workItem from="1728985999339" duration="1012000" />
+      <workItem from="1728989133671" duration="186000" />
+      <workItem from="1728992819710" duration="38683000" />
+      <workItem from="1729239286280" duration="3098000" />
+      <workItem from="1729251230477" duration="8061000" />
+      <workItem from="1729420401232" duration="20331000" />
+      <workItem from="1729582112696" duration="13270000" />
+      <workItem from="1729665432694" duration="1385000" />
+      <workItem from="1729700410015" duration="3286000" />
+      <workItem from="1729760428629" duration="12351000" />
+      <workItem from="1729779851505" duration="9544000" />
+      <workItem from="1729841604492" duration="23090000" />
+      <workItem from="1730096051123" duration="1965000" />
+    </task>
+    <task id="LOCAL-00001" summary="Initial commit">
+      <created>1713185907332</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1713185907332</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Merge commit">
+      <created>1713192860556</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1713192860556</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Merge commit 2">
+      <created>1713193357660</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1713193357660</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Merge commit 2">
+      <created>1713193370991</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1713193370991</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Fix to import components for nuxt">
+      <created>1713353518311</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1713353518311</updated>
+    </task>
+    <task id="LOCAL-00006" summary="cloudinary services added">
+      <created>1713360214673</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1713360214673</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Animate intersection added">
+      <created>1713520682965</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1713520682965</updated>
+    </task>
+    <task id="LOCAL-00008" summary="PageNav added">
+      <created>1713956719763</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1713956719764</updated>
+    </task>
+    <task id="LOCAL-00009" summary="vueuse added">
+      <created>1714043757101</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1714043757101</updated>
+    </task>
+    <task id="LOCAL-00010" summary="vueuse added (fix)">
+      <created>1714045433332</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1714045433332</updated>
+    </task>
+    <task id="LOCAL-00011" summary="nuxt-ui removed from config">
+      <created>1714120266373</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1714120266373</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Work on primevue">
+      <created>1714157956575</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1714157956575</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Apollo template added">
+      <created>1714384596991</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1714384596991</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Work on images gallery sample">
+      <created>1715259862850</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1715259862850</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Work on vue version of schema forms">
+      <created>1715618392222</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1715618392222</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Work on vue version of schema forms">
+      <created>1716013753145</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1716013753145</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Work on vue version of schema forms">
+      <created>1716825445734</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1716825445734</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Work on vue version of schema forms">
+      <created>1716892056409</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1716892056409</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Work on vue version of schema forms">
+      <created>1716962866551</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1716962866551</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Revert original Task List + Test Task List">
+      <created>1716970647517</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1716970647517</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Merge">
+      <created>1716970834667</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1716970834667</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Work on test form">
+      <created>1716971924544</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1716971924544</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Work on test form (2)">
+      <created>1717070097648</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1717070097648</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Work on test form (3)">
+      <created>1717073686651</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1717073686651</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Work on test form (4)">
+      <created>1717089665718</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1717089665718</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Work on test form (5)">
+      <created>1717092199284</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1717092199284</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Work on test form (validation)">
+      <created>1717423612307</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1717423612307</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Work on test form (x-features)">
+      <created>1717437132056</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1717437132056</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Work on test form (x-features)">
+      <created>1717437211627</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1717437211627</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Work on test form (fixes)">
+      <created>1717491000147</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1717491000147</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Work on test form (refs fixes)">
+      <created>1717496661942</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1717496661943</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Work on test form (upload file)">
+      <created>1717585976163</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1717585976163</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Work on test form (work on form saving)">
+      <created>1717594304360</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1717594304360</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Auto Forms Part 2 (1)">
+      <created>1717696603684</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1717696603684</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Auto Forms Part 2 (2)">
+      <created>1717914921334</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1717914921334</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Auto Forms Part 2 (3)">
+      <created>1717917441554</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1717917441554</updated>
+    </task>
+    <task id="LOCAL-00037" summary="Auto Forms Part 2 (4)">
+      <created>1717951507040</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1717951507040</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Auto Forms Part 2 (5)">
+      <created>1718001078266</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1718001078266</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Auto Forms Part 2 (6)">
+      <created>1718183698394</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1718183698394</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Auto Forms Part 2 (7)">
+      <created>1718281221457</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1718281221457</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Auto Forms Part 2 (8)">
+      <created>1718774802820</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1718774802820</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Auto Forms Part 2 (9)">
+      <created>1718957292487</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1718957292487</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Auto Forms Part 2 (10)">
+      <created>1718991995676</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1718991995676</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Auto Forms Part 2 (11)">
+      <created>1719042110772</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1719042110772</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Build Files Tool and Add File to Node Control (1)">
+      <created>1720187694295</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1720187694295</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Merge fixes">
+      <created>1720246269075</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1720246269075</updated>
+    </task>
+    <task id="LOCAL-00047" summary="Build Files Tool and Add File to Node Control (2)">
+      <created>1720468750399</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1720468750399</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Build Files Tool and Add File to Node Control (3)">
+      <created>1720517526280</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1720517526280</updated>
+    </task>
+    <task id="LOCAL-00096" summary="Build Files Tool and Add File to Node Control (in progress)">
+      <option name="closed" value="true" />
+      <created>1730024633026</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1730024633026</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="Schema-forms - updates to look like FormBuilder results (2)" />
+    <MESSAGE value="Schema-forms - updates for structure" />
+    <MESSAGE value="Schema-forms - updates for arrays" />
+    <MESSAGE value="Schema-forms - test for arrays" />
+    <MESSAGE value="Schema-forms - updates for structure and array of objects (2)" />
+    <MESSAGE value="Build Files Tool and Add File to Node Control (fix)" />
+    <MESSAGE value="Build Files Tool and Add File to Node Control (fix 2)" />
+    <MESSAGE value="Build Files Tool and Add File to Node Control (fix 3)" />
+    <MESSAGE value="Improve DataItem - (get JSON Schema) (1)" />
+    <MESSAGE value="Improve DataItem - (get JSON Schema) (2)" />
+    <MESSAGE value="Improve DataItem - (get JSON Schema) (2.1)" />
+    <MESSAGE value="Work on Select or update field" />
+    <MESSAGE value="Build Calendar Tool (in progress)" />
+    <MESSAGE value="Pimevue v4 in progress" />
+    <MESSAGE value="Primevue v4 and new updated template" />
+    <MESSAGE value="Primevue v4 (pages copy)" />
+    <MESSAGE value="Primevue v4 (fixes)" />
+    <MESSAGE value="Primevue v4 (fixes 2)" />
+    <MESSAGE value="Primevue v4 (fixes 3)" />
+    <MESSAGE value="Primevue v4 (fixes 4)" />
+    <MESSAGE value="Primevue v4 Template only" />
+    <MESSAGE value="Primevue v4 (fixes 5)" />
+    <MESSAGE value="Work on Check Set-Up of Style Customisation" />
+    <MESSAGE value="Work on Check Set-Up of Style Customisation (2)" />
+    <MESSAGE value="Build Files Tool and Add File to Node Control (in progress)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Build Files Tool and Add File to Node Control (in progress)" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/service/schema-forms/schemaFormsBuildHelper.factory.ts</url>
+          <line>94</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/composables/schema-forms/useBaseField.ts</url>
+          <line>198</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/composables/schema-forms/useBaseField.ts</url>
+          <line>348</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/composables/schema-forms/useBaseField.ts</url>
+          <line>252</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/composables/schema-forms/useBaseField.ts</url>
+          <line>66</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/composables/schema-forms/useBaseField.ts</url>
+          <line>535</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/composables/schema-forms/useBaseField.ts</url>
+          <line>550</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/composables/schema-forms/useBaseField.ts</url>
+          <line>566</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/composables/schema-forms/useBaseField.ts</url>
+          <line>592</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/components/schema-forms/field-blocks/SelectOrUploadBlock.vue</url>
+          <line>414</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/layouts/AppLayout.vue</url>
+          <line>43</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

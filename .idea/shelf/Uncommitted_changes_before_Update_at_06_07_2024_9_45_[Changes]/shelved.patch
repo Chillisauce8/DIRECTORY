@@ -1,0 +1,21 @@
+Index: environment.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import type {EnvironmentConfiguration} from '~/environment.example';\r\n\r\n\r\nexport const serverURL = 'http://localhost:2999';\r\n// export const serverURL = 'https://test.skunkworksproject.com';\r\n\r\n\r\nconst pageCacheRule = {\r\n  // cache: {maxAge: 86400, staleMaxAge: 86400 * 2},\r\n  headers: {'cache-control': `public,max-age=${86400},s-maxage=${86400},stale-while-revalidate=${2*86400}`}\r\n};\r\n\r\nconst staticCacheRule = {\r\n  // cache: {maxAge: 86400, staleMaxAge: 86400 * 2},\r\n  headers: {'cache-control': `public, max-age=31536000, immutable`}\r\n};\r\n\r\nconst noSsrRule = {\r\n  ssr: false,\r\n  headers: {'cache-control': `private, no-cache, no-store, must-revalidate`}\r\n}\r\n\r\nconst appId = 'car';\r\nconst environment = 'development';\r\n\r\nconst env: EnvironmentConfiguration =  {\r\n  appId,\r\n  environment,\r\n  ssr: false,\r\n  http: {\r\n    serverBaseURL: serverURL,\r\n    headers: {\r\n      'x-app-id': appId,\r\n      'x-app-environment': environment,\r\n    },\r\n  },\r\n  routeRules: {\r\n    '/_nuxt/**': staticCacheRule,\r\n  },\r\n  devProxy: {\r\n    '/api': {target: `${serverURL}/api`, changeOrigin: true, secure: false},\r\n  },\r\n  IS_LOCAL: true,\r\n  IS_LIVE: false,\r\n  // ST_SITE_REFERENCE: 'test_chillisaucelimited97423',\r\n};\r\n\r\n\r\nexport default env;\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/environment.ts b/environment.ts
+--- a/environment.ts	(revision bb7731c05d3eedc413a23eb8a21ad1e86b9bccb6)
++++ b/environment.ts	(date 1720244684802)
+@@ -1,8 +1,8 @@
+ import type {EnvironmentConfiguration} from '~/environment.example';
+ 
+ 
+-export const serverURL = 'http://localhost:2999';
+-// export const serverURL = 'https://test.skunkworksproject.com';
++// export const serverURL = 'http://localhost:2999';
++export const serverURL = 'https://test.skunkworksproject.com';
+ 
+ 
+ const pageCacheRule = {
