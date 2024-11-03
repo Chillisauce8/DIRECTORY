@@ -190,6 +190,11 @@ html {
   --card-border: var(--card-without-border);
 }
 
+/*
+FONTS TO CONSIDER
+Brandon Grotesque - https://fonts.adobe.com/fonts/brandon-grotesque 
+
+*/
 @font-face {
   font-family: "EuclidFlex";
   font-display: swap;

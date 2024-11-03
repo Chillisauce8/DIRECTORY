@@ -1,5 +1,5 @@
 <template>
-    <card-wrapper class="listing-card standard-card">
+    <card-wrapper class="listing-card">
         <swp-picture v-if="images" :images="images" :src="images[0]" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
             <SvgIcon svg="heart" class="heart" />
             <div class="location">

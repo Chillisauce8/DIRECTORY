@@ -1,5 +1,5 @@
 <template>
-    <card-wrapper class="model-card standard-card">
+    <card-wrapper class="model-card">
         <swp-picture v-if="images" :images="images" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
         <card-text-wrapper>
             <h1 class="name">

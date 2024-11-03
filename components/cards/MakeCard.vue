@@ -1,5 +1,5 @@
 <template>
-    <card-wrapper class="make-card standard-card">
+    <card-wrapper class="make-card">
         <swp-picture v-if="images" :images="images" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
             <!--
       <SvgIcon svg="heart" class="heart" />

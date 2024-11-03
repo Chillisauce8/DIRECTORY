@@ -198,6 +198,8 @@ const block4 = ref(`
     </div>
   </div>`);
 
+/*
+
 const block5 = ref(`
   <div class="bg-slate-900 text-gray-100 p-4 flex justify-between lg:justify-center items-center flex-wrap">
     <div class="font-bold mr-20">🔥 Hot Deals!</div>
@@ -211,7 +213,7 @@ const block5 = ref(`
         <i class="pi pi-times"></i>
     </a>
   </div>`);
-
+*/
 const block6 = ref(`
   <div class="bg-surface-0 dark:bg-surface-950 px-6 py-8 md:px-12 lg:px-20">
     <ul class="list-none p-0 m-0 flex items-center font-medium mb-4">
@@ -618,7 +620,7 @@ const checked = ref(false);
                 </div>
             </div>
         </BlockViewer>
-
+        <!--
         <BlockViewer header="Banner" :code="block5" containerClass="bg-surface-0 dark:bg-surface-950 py-20" free>
             <div class="bg-slate-900 text-gray-100 p-4 flex justify-between lg:justify-center items-center flex-wrap">
                 <div class="font-bold mr-20">🔥 Hot Deals!</div>
@@ -633,7 +635,7 @@ const checked = ref(false);
                 </a>
             </div>
         </BlockViewer>
-
+    -->
         <div class="block-category-title">Application UI</div>
         <BlockViewer header="Page Heading" :code="block6" free>
             <div class="bg-surface-0 dark:bg-surface-950 px-6 py-8 md:px-12 lg:px-20">

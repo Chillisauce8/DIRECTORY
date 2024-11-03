@@ -6,45 +6,43 @@
             </div>
             <div class="right">
                 <h2 :class="titleClass">{{ title }}</h2>
-                <p v-for="(paragragh, index) in text" :key="index">{{ paragragh }}</p>
+                <p v-for="(paragraph, index) in text" :key="index">{{ paragraph }}</p>
             </div>
         </div>
     </section>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['title', 'text', 'images']);
+const props = defineProps<{
+    title: string;
+    text: string[];
+    images: { id: string; alt: string }[];
+}>();
+
 const imageCount = props.images.length;
 const titleLength = props.title.length;
 const textLength = props.text.length;
+
 console.log(imageCount);
 console.log(titleLength);
 console.log(textLength);
 
-const getTitleClass = (titleLength) => {
-    if (titleLength >= 100) {
-        return 'xl';
-    } else {
-        return 'xxl';
-    }
+const getTitleClass = (titleLength: number) => {
+    return titleLength >= 100 ? 'xl' : 'xxl';
 };
 const titleClass = getTitleClass(titleLength);
 
-const getImageClass = (imageCount) => {
-    if (imageCount < 10) {
-        return 'images-' + imageCount;
-    } else {
-        return 'images-10-plus';
-    }
+const getImageClass = (imageCount: number) => {
+    return imageCount < 10 ? `images-${imageCount}` : 'images-10-plus';
 };
 const imageClass = getImageClass(imageCount);
 
-const getLayoutClass = (imageCount) => {
+const getLayoutClass = (imageCount: number) => {
     if (imageCount > 1) {
         return 'layout-column';
-    } else if ((imageCount = 1)) {
+    } else if (imageCount === 1) {
         return 'layout-row';
-    } else if ((imageCount = 0)) {
+    } else if (imageCount === 0) {
         return 'layout-text';
     }
 };

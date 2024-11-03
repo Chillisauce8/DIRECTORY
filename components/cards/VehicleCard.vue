@@ -1,5 +1,5 @@
 <template>
-    <card-wrapper class="vehicle-card standard-card">
+    <card-wrapper class="vehicle-card">
         <swp-picture v-if="images" :images="images" widths="290:870" :increment="145" aspectRatio="3:2" loading="lazy"> </swp-picture>
         <card-text-wrapper>
             <div v-if="nickname" class="nickname">"{{ nickname }}"</div>

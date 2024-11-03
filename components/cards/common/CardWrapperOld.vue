@@ -20,8 +20,8 @@ const props = defineProps({
         default: false
     },
     link: {
-        type: String as () => string | null,
-        default: null
+        type: [String, Object] as PropType<string | { path: string }>,
+        default: ''
     },
     clickable: {
         type: Boolean,
@@ -50,13 +50,11 @@ watch(
 
 function handleClick(event: MouseEvent) {
     if (props.clickable && props.mode === 'select') {
-        event.preventDefault();
-        event.stopPropagation();
-        onSelect();
+        onSelect(event);
     }
 }
 
-function onSelect() {
+function onSelect(event: MouseEvent) {
     selectedInternalValue.value = !selectedInternalValue.value;
     emit('selected', selectedInternalValue.value);
 }

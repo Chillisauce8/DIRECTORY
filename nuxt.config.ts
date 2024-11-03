@@ -5,40 +5,84 @@ import { definePreset } from '@primevue/themes';
 
 const DefaultTheme = definePreset(Aura, {
     primitive: {
-      ocean: { 0: '#ffffff', 50: '#fbfcfc', 100: '#F7F9F8', 200: '#EFF3F2', 300: '#DADEDD', 400: '#B1B7B6', 500: '#828787', 600: '#5F7274', 700: '#415B61', 800: '#29444E', 900: '#183240', 950: '#0c1920' }
+        ocean: { 0: '#ffffff', 50: '#fbfcfc', 100: '#F7F9F8', 200: '#EFF3F2', 300: '#DADEDD', 400: '#B1B7B6', 500: '#828787', 600: '#5F7274', 700: '#415B61', 800: '#29444E', 900: '#183240', 950: '#0c1920' },
+        cspink: {
+            50: '#FDE8EE',
+            100: '#FAD1DE',
+            200: '#F5A3BD',
+            300: '#F0759C',
+            400: '#EB477B',
+            500: '#E61959',
+            600: '#B81448',
+            700: '#8A0F36',
+            800: '#5C0A24',
+            900: '#2E0512',
+            950: '#170209'
+        },
+        pampas: {
+            50: '#FAF8F5',
+            100: '#F3EFE9',
+            200: '#E0D6C7',
+            300: '#CEBEA6',
+            400: '#BBA482',
+            500: '#A98C61',
+            600: '#876F4A',
+            700: '#665438',
+            800: '#453926',
+            900: '#211B12',
+            950: '#100D09'
+        }
     },
     semantic: {
         primary: {
-            50: '{pink.50}',
-            100: '{pink.100}',
-            200: '{pink.200}',
-            300: '{pink.300}',
-            400: '{pink.400}',
-            500: '{pink.500}',
-            600: '{pink.600}',
-            700: '{pink.700}',
-            800: '{pink.800}',
-            900: '{pink.900}',
-            950: '{pink.950}'
+            50: '{cspink.50}',
+            100: '{cspink.100}',
+            200: '{cspink.200}',
+            300: '{cspink.300}',
+            400: '{cspink.400}',
+            500: '{cspink.500}',
+            600: '{cspink.600}',
+            700: '{cspink.700}',
+            800: '{cspink.800}',
+            900: '{cspink.900}',
+            950: '{cspink.950}'
         },
         colorScheme: {
             light: {
+                primary: {
+                    color: '{primary.500}',
+                    contrastColor: '#ffffff',
+                    hoverColor: '{primary.600}',
+                    activeColor: '{primary.700}'
+                },
+                highlight: {
+                    background: '{primary.50}',
+                    focusBackground: '{primary.100}',
+                    color: '{primary.700}',
+                    focusColor: '{primary.800}'
+                },
                 surface: {
                     0: '#ffffff',
-                    50: '{stone.50}',
-                    100: '{stone.100}',
-                    200: '{stone.200}',
-                    300: '{stone.300}',
-                    400: '{stone.400}',
-                    500: '{stone.500}',
-                    600: '{stone.600}',
-                    700: '{stone.700}',
-                    800: '{stone.800}',
-                    900: '{stone.900}',
-                    950: '{stone.950}'
+                    50: '{pampas.50}',
+                    100: '{pampas.100}',
+                    200: '{pampas.200}',
+                    300: '{pampas.300}',
+                    400: '{pampas.400}',
+                    500: '{pampas.500}',
+                    600: '{pampas.600}',
+                    700: '{pampas.700}',
+                    800: '{pampas.800}',
+                    900: '{pampas.900}',
+                    950: '{pampas.950}'
                 }
             },
             dark: {
+                primary: {
+                    color: '{primary.400}',
+                    contrastColor: '{surface.900}',
+                    hoverColor: '{primary.300}',
+                    activeColor: '{primary.200}'
+                },
                 surface: {
                     0: '#ffffff',
                     50: '{ocean.50}',
