@@ -72,15 +72,6 @@ function onSelect() {
     border-radius: var(--corner-outer);
     box-shadow: var(--box-shadow);
     cursor: pointer;
-    & header {
-        position: relative;
-        padding: 5%;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        align-items: stretch;
-    }
     img {
         transition: all 0.7s ease;
     }

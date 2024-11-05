@@ -12,7 +12,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1961,
             yearToo: 1967,
-            filters: [2, 5, 8]
+            albums: [2, 5, 8]
         },
         {
             images: [{ id: '654663d2c302c20f899089c3', alt: 'Chevrolet Corvette C2' }],
@@ -26,7 +26,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1963,
             yearToo: 1967,
-            filters: [1, 4]
+            albums: [1, 4]
         },
         {
             images: [{ id: '654663afc302c20f899089ba', alt: 'Ferrari 250 GT Berlinetta' }],
@@ -40,7 +40,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1956,
             yearToo: 1962,
-            filters: [3, 7, 9, 10]
+            albums: [3, 7, 9, 10]
         },
         {
             images: [{ id: '654663d2c302c20f899089c3', alt: 'Mercedes-Benz 300SL Gullwing' }],
@@ -54,7 +54,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1954,
             yearToo: 1957,
-            filters: [2, 6]
+            albums: [2, 6]
         },
         {
             images: [{ id: '65465d4bc302c20f899081e6', alt: 'Aston Martin DB5' }],
@@ -68,7 +68,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1963,
             yearToo: 1965,
-            filters: [1, 5, 7]
+            albums: [1, 5, 7]
         },
         {
             images: [{ id: '65466480afa7da0f9649fd1f', alt: 'Lotus Elan Sprint' }],
@@ -82,7 +82,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1971,
             yearToo: 1973,
-            filters: [3, 8]
+            albums: [3, 8]
         },
         {
             images: [{ id: '654664e4afa7da0f9649fd3c', alt: 'BMW 507 Roadster' }],
@@ -96,7 +96,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1956,
             yearToo: 1959,
-            filters: [4, 6, 9]
+            albums: [4, 6, 9]
         },
         {
             images: [{ id: '65466453afa7da0f9649c2d0', alt: 'Maserati 3500 GT' }],
@@ -110,7 +110,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1957,
             yearToo: 1964,
-            filters: [1, 3, 7]
+            albums: [1, 3, 7]
         },
         {
             images: [{ id: '6546652cafa7da0f9649fdbb', alt: 'Alfa Romeo Giulia Sprint GTA' }],
@@ -124,7 +124,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1963,
             yearToo: 1968,
-            filters: [2, 5]
+            albums: [2, 5]
         },
         {
             images: [{ id: 'e59a1b1780fcd3d9b176', alt: 'Jaguar XK120' }],
@@ -138,7 +138,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1948,
             yearToo: 1954,
-            filters: [6, 8, 10]
+            albums: [6, 8, 10]
         },
         {
             images: [{ id: '66365818e70ac51006d4d762', alt: 'MG MGA Roadster' }],
@@ -152,7 +152,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1955,
             yearToo: 1962,
-            filters: [4, 9]
+            albums: [4, 9]
         },
         {
             images: [{ id: '6636584c44688d10012094ee', alt: 'Porsche 356 Speedster' }],
@@ -166,7 +166,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1954,
             yearToo: 1959,
-            filters: [5, 7, 10]
+            albums: [5, 7, 10]
         },
         {
             images: [{ id: '6636586de70ac51006d4d787', alt: 'Triumph TR3' }],
@@ -180,7 +180,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1955,
             yearToo: 1962,
-            filters: [2, 6]
+            albums: [2, 6]
         },
         {
             images: [{ id: '6636589087fa1f24532a3582', alt: 'Austin Mini Cooper S' }],
@@ -194,7 +194,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1961,
             yearToo: 1967,
-            filters: [1, 3, 9]
+            albums: [1, 3, 9]
         },
         {
             images: [{ id: '66365b5ee70ac51006d4d845', alt: 'Bentley Continental S2' }],
@@ -208,7 +208,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1959,
             yearToo: 1962,
-            filters: [5, 7]
+            albums: [5, 7]
         },
         {
             images: [{ id: '66365bc7e70ac51006d4d857', alt: 'Rolls-Royce Silver Cloud' }],
@@ -222,7 +222,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1955,
             yearToo: 1966,
-            filters: [3, 8]
+            albums: [3, 8]
         },
         {
             images: [{ id: '6636591d44688d10012094fd', alt: 'Alfa Romeo 2600 Spider' }],
@@ -236,7 +236,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1961,
             yearToo: 1968,
-            filters: [1, 4, 9]
+            albums: [1, 4, 9]
         },
         {
             images: [{ id: '6636595944688d1001209505', alt: 'Lancia Aurelia B20' }],
@@ -250,7 +250,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1951,
             yearToo: 1958,
-            filters: [2, 6, 8]
+            albums: [2, 6, 8]
         },
         {
             images: [{ id: '6636597ae70ac51006d4d7dd', alt: 'Sunbeam Tiger' }],
@@ -264,7 +264,7 @@ export default function useListings() {
             stearingSide: 'RHD',
             yearFrom: 1964,
             yearToo: 1967,
-            filters: [4, 7]
+            albums: [4, 7]
         },
         {
             images: [{ id: '66365998e70ac51006d4d7e6', alt: 'Shelby Cobra 427' }],
@@ -278,7 +278,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1965,
             yearToo: 1967,
-            filters: [5, 9]
+            albums: [5, 9]
         },
         {
             images: [{ id: '66365a9b87fa1f24532a35d0', alt: 'Ford Mustang Fastback' }],
@@ -292,7 +292,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1965,
             yearToo: 1968,
-            filters: [3, 6, 8]
+            albums: [3, 6, 8]
         },
         {
             images: [{ id: '661fec4e622206049c762a44', alt: 'Datsun 240Z' }],
@@ -306,7 +306,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1969,
             yearToo: 1973,
-            filters: [2, 5, 9]
+            albums: [2, 5, 9]
         },
         {
             images: [{ id: '6636566a01ec8110073b9bfb', alt: 'Pontiac GTO' }],
@@ -320,7 +320,7 @@ export default function useListings() {
             stearingSide: 'LHD',
             yearFrom: 1964,
             yearToo: 1974,
-            filters: [1, 4, 10]
+            albums: [1, 4, 10]
         }
     ];
 }

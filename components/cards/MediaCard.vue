@@ -1,8 +1,9 @@
 <template>
     <card-wrapper class="media-card" v-bind="mode === 'view' ? { 'data-fancybox': gallery, 'data-caption': name, link: src } : {}" :mode="mode">
         <swp-picture v-if="id" :id="id" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" />
-        <card-text-wrapper>
-            <h1 class="name">{{ name }}</h1>
+        <card-text-wrapper :class="{ show: !!show, hide: !show }">
+            <h1 class="name" :class="{ visible: show === 'name', hidden: show !== 'name' }">{{ name }}</h1>
+            <h1 class="albums" :class="{ visible: show === 'albums', hidden: show !== 'albums' }">{{ albumNames }}</h1>
         </card-text-wrapper>
     </card-wrapper>
 </template>
@@ -16,6 +17,10 @@ const props = defineProps({
     name: {
         type: String,
         default: ''
+    },
+    albums: {
+        type: Array as () => number[],
+        default: () => []
     },
     gallery: {
         type: String,
@@ -40,26 +45,51 @@ const props = defineProps({
     loved: {
         type: Boolean,
         default: false
+    },
+    show: {
+        type: String as () => 'name' | 'albums' | null
     }
 });
 
+const albumList = useAlbums();
 const src = ref<string>('');
+
+// Computed property to transform album IDs to names
+const albumNames = computed(() => {
+    return props.albums
+        .map((id) => albumList.find((album) => album.id === id)?.name)
+        .filter(Boolean)
+        .join(', ');
+});
 </script>
 
 <style lang="scss">
 .media-card {
-    //  width: 300px;
     picture {
         @include aspect-ratio(3, 2);
     }
-    header {
-        @include aspect-ratio(5, 1);
-        //     min-height: 150px;
-    }
-    .name {
+
+    .name,
+    .albums {
         font-family: $ff2;
         font-size: 15px;
         font-weight: 100;
+        transition: opacity 0.5s ease;
+        opacity: 0; // Default hidden state
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .visible {
+        opacity: 1;
+        z-index: 1;
+        position: relative;
+    }
+
+    .hidden {
+        opacity: 0;
+        z-index: 0;
     }
 }
 </style>
