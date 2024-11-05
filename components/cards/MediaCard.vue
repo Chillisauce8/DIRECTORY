@@ -2,8 +2,8 @@
     <card-wrapper class="media-card" v-bind="mode === 'view' ? { 'data-fancybox': gallery, 'data-caption': name, link: src } : {}" :mode="mode">
         <swp-picture v-if="id" :id="id" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" />
         <card-text-wrapper :class="{ show: !!show, hide: !show }">
-            <h1 class="name" :class="{ visible: show === 'name', hidden: show !== 'name' }">{{ name }}</h1>
-            <h1 class="albums" :class="{ visible: show === 'albums', hidden: show !== 'albums' }">{{ albumNames }}</h1>
+            <h1 class="name" :class="{ visible: show && show.includes('name'), hidden: !show || !show.includes('name') }">{{ name }}</h1>
+            <h1 class="albums" :class="{ visible: show && show.includes('albums'), hidden: !show || !show.includes('albums') }">{{ albumNames }}</h1>
         </card-text-wrapper>
     </card-wrapper>
 </template>
@@ -47,7 +47,7 @@ const props = defineProps({
         default: false
     },
     show: {
-        type: String as () => 'name' | 'albums' | null
+        type: [Array, null] as () => string[] | null
     }
 });
 
@@ -82,14 +82,11 @@ const albumNames = computed(() => {
     }
 
     .visible {
-        opacity: 1;
-        z-index: 1;
-        position: relative;
+        display: block;
     }
 
     .hidden {
-        opacity: 0;
-        z-index: 0;
+        display: none;
     }
 }
 </style>
