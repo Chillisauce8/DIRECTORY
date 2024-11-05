@@ -1,7 +1,7 @@
 <!-- SvgIcon.vue -->
 
 <template>
-    <i class="icon Row Center">
+    <i class="icon">
         <svg v-if="svg === 'hamburger'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g stroke-linecap="round" stroke-linejoin="round">
                 <path d="M23 4H1M23 12H1M23 20H1" />
@@ -1204,10 +1204,12 @@ export default {
 </script>
 
 <style lang="scss">
-i.icon {
-    display: block;
-    height: 1.1em;
-    width: 1.1em;
+.icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 1em;
+    width: 1em;
     &.draw {
         & path {
             animation: draw-svg-icon 10s ease-in-out 0s;

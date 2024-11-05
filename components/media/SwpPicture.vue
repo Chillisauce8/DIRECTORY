@@ -9,9 +9,13 @@
             <img :src="src || constructSrcSet(normalizedSources[0], image.id).split(',')[0].split(' ')[0]" :alt="image.alt || ''" :loading="loading || 'lazy'" />
         </picture>
 
-        <div v-if="$slots.default || loveable || mode === 'select'" class="overlay">
+        <div v-if="$slots.default || loveable || mode" class="overlay">
             <slot />
-            <SvgIcon v-if="mode === 'select'" svg="check-circle" class="tick" />
+            <div v-if="mode" class="mode-icons">
+                <SvgIcon v-if="mode === 'select'" svg="check-circle" class="select" />
+                <SvgIcon v-if="mode === 'edit'" svg="edit" class="edit" />
+                <SvgIcon v-if="mode === 'view'" svg="eye" class="view" />
+            </div>
             <SvgIcon v-if="loveable" svg="heart" class="heart" :class="{ loved: isLoved }" @click="toggleLoved" />
         </div>
     </div>
@@ -25,7 +29,7 @@ const baseUrl = 'https://media.chillisauce.com/image/upload/';
 const props = defineProps<{
     loveable?: boolean;
     loved?: boolean;
-    mode?: 'view' | 'select';
+    mode?: 'view' | 'select' | 'edit';
     selected?: boolean;
     id?: string;
     alt?: string;

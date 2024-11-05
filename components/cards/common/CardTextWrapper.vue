@@ -1,12 +1,11 @@
 <template>
-    <header :class="{ 'card-text-wrapper': true, show: isVisible, hide: !isVisible }">
+    <header class="card-text-wrapper">
         <slot />
     </header>
 </template>
 
 <script setup>
 // Set up a reactive variable to control visibility
-const isVisible = ref(true);
 
 // You can toggle this variable in your component logic to show/hide the wrapper
 </script>
@@ -25,7 +24,7 @@ const isVisible = ref(true);
 
     &.show {
         opacity: 1;
-        max-height: 150px; // Set to the desired max height of the content
+        max-height: 300px; // Set to the desired max height of the content
     }
 
     &.hide {
