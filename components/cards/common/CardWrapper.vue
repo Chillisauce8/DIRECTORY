@@ -1,25 +1,21 @@
 <template>
-    <nuxt-link v-if="link" :to="link" class="card-wrapper" :class="{ searchhide: searchHide }">
+    <nuxt-link v-if="link" :to="link" class="card-wrapper">
         <article :data-search="searchTerms">
             <slot />
         </article>
     </nuxt-link>
-    <article v-else class="card-wrapper" :class="{ searchhide: searchHide, selected: selectedInternalValue, editable: isEditable }" :data-search="searchTerms" @click="handleClick">
+    <article v-else class="card-wrapper" :class="{ selected: selected }" :data-search="searchTerms" @click="handleClick">
         <slot />
     </article>
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { defineProps, defineModel } from 'vue';
 
-const { mode, selected, link, clickable, searchHide, searchTerms } = defineProps({
+const props = defineProps({
     mode: {
         type: String as () => 'view' | 'select' | 'edit',
         default: 'view'
-    },
-    selected: {
-        type: Boolean,
-        default: false
     },
     link: {
         type: String as () => string | null,
@@ -29,38 +25,21 @@ const { mode, selected, link, clickable, searchHide, searchTerms } = defineProps
         type: Boolean,
         default: true
     },
-    searchHide: {
-        type: Boolean,
-        default: false
-    },
     searchTerms: {
         type: String,
         default: ''
     }
 });
 
-const emit = defineEmits<{ (e: 'selected', value: boolean): void; (e: 'editable', value: boolean): void }>();
-const selectedInternalValue = ref(selected);
-const isEditable = ref(false);
+const selected = defineModel('selected', {
+    type: Boolean,
+    default: false
+});
 
-function handleClick(event: MouseEvent) {
-    if (clickable) {
-        if (mode === 'select') {
-            onSelect();
-        } else if (mode === 'edit') {
-            toggleEditable();
-        }
+function handleClick() {
+    if (props.clickable && (props.mode === 'select' || props.mode === 'edit')) {
+        selected.value = !selected.value;
     }
-}
-
-function onSelect() {
-    selectedInternalValue.value = !selectedInternalValue.value;
-    emit('selected', selectedInternalValue.value);
-}
-
-function toggleEditable() {
-    isEditable.value = !isEditable.value;
-    emit('editable', isEditable.value);
 }
 </script>
 
