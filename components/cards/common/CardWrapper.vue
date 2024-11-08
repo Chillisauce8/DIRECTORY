@@ -96,27 +96,14 @@ function handleClick() {
             }
         }
     }
-
-    & .swp-picture,
-    .swp-picture picture,
-    .swp-picture img {
+    &:has(.card-text-wrapper.hide) {
+        .swp-picture img {
+            border-radius: var(--corner-outer);
+        }
+    }
+    & .swp-picture img {
         border-top-left-radius: var(--corner-outer);
         border-top-right-radius: var(--corner-outer);
-    }
-    &.searchhide {
-        animation: search-hide 3s ease 0.4s forwards;
-    }
-}
-
-@keyframes search-hide {
-    0% {
-        position: absolute;
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-        position: absolute;
-        transform: translateY(1000vh);
     }
 }
 </style>

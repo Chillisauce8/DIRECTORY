@@ -157,7 +157,11 @@ export default {
                 'red-flag',
                 'gearstick',
                 'solidtick',
-                'roundtick'
+                'roundtick',
+                'cardsmall',
+                'cardsbig',
+                'cardsmall-fill',
+                'cardsbig-fill'
             ]
         };
     }
