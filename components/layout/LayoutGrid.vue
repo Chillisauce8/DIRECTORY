@@ -9,7 +9,7 @@
 <style lang="scss">
 .layout-grid {
     --grid-gap: 20px;
-    // --grid-background-color: var(--color-light);
+
     --grid-item-min: 300px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(var(--grid-item-min), 1fr));

@@ -1,6 +1,7 @@
 <template>
-    <div class="media-gallery">
-        <div>{{ selectedSize }}</div>
+    <div :class="['media-gallery', selectedSize?.display || '']">
+        <div>{{ selectedSize.label }}</div>
+        <!-- This will display the selected size label, like "Big Cards" -->
         <div class="media-gallery-controls">
             <div class="flex flex-col md:flex-row gap-4">
                 <SelectButton v-model="mode" :options="['view', 'select', 'edit', 'move']" :allowEmpty="false" />
@@ -36,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
 const props = defineProps({
@@ -47,6 +48,10 @@ const props = defineProps({
     minSearchLength: {
         type: Number,
         default: 1
+    },
+    initialSize: {
+        type: String,
+        default: 'Big Cards' // Default selection if prop is not passed
     }
 });
 
@@ -55,11 +60,14 @@ interface Album {
     id: number;
 }
 
-const selectedSize = ref(null);
 const cardSizes = ref([
-    { label: 'Small', icon: 'cardsmall', class: 'cards-small' },
-    { label: 'Big', icon: 'cardsbig', class: 'cards-big' }
+    { label: 'Small Cards', icon: 'cardsmall', display: 'display-small-cards' },
+    { label: 'Big Cards', icon: 'cardsbig', display: 'display-big-cards' },
+    { label: 'List', icon: 'list', display: 'display-list' }
 ]);
+
+// Find the option in cardSizes that matches initialSize's label and set it as the default selectedSize
+const selectedSize = ref(cardSizes.value.find((option) => option.label === props.initialSize) || cardSizes.value[0]);
 
 const albums = useAlbums();
 const mode = ref<'view' | 'select' | 'edit' | 'move'>('view');
@@ -84,15 +92,12 @@ const filteredListings = computed(() => {
     return result;
 });
 
-// Separate ref for draggable listings, initially populated with filteredListings
 const draggableListings = ref([...filteredListings.value]);
 
-// Sync draggableListings with filteredListings when filtering changes
 watch(filteredListings, (newFilteredListings) => {
     draggableListings.value = [...newFilteredListings];
 });
 
-// Drag event handlers
 function onStart() {
     console.log('start drag');
 }
@@ -113,13 +118,21 @@ function onEnd() {
             width: 24px;
             height: 24px;
         }
+        .p-togglebutton-label {
+            text-transform: capitalize;
+        }
+        .p-iconfield .p-inputtext:not(:last-child) {
+            width: 100%; // NEEDED FOR BUG IN PRIME VUE???
+        }
+        .p-selectbutton {
+            &:has(.icon) {
+                button {
+                    padding: 8px;
+                }
+            }
+        }
     }
-    .p-togglebutton-label {
-        text-transform: capitalize;
-    }
-    .p-iconfield .p-inputtext:not(:last-child) {
-        width: 100%; // NEEDED FOR BUG IN PRIME VUE???
-    }
+
     .card-sizes {
         .icon {
             width: 24px;
