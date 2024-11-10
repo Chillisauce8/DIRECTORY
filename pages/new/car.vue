@@ -3,7 +3,7 @@
         <HeroHeader :props="heroHeaderProps" />
         <ContentBlock :title="content1.title" :text="content1.text" :images="content1.images" />
         <ContentBlock :title="content2.title" :text="content2.text" :images="content2.images" />
-        <MediaGallery />
+        <CardGallery />
     </div>
 </template>
 

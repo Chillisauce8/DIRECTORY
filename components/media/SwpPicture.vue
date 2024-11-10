@@ -1,20 +1,20 @@
 <template>
     <div class="swp-picture">
+        <!-- Loop over images, rendering a <picture> tag for each -->
         <picture v-for="(image, index) in normalizedImages" :key="index" :class="'image-' + (index + 1)">
-            <!-- Conditionally render sources only if src prop is not provided -->
+            <!-- Render sources only if `src` prop is not provided -->
             <template v-if="!src">
                 <source v-for="(source, srcIndex) in normalizedSources" :key="srcIndex" :media="source.media" :srcset="constructSrcSet(source, image.id)" :sizes="sizes || source.sizes || defaultSizes(source.widths)" />
             </template>
-            <!-- Fallback image src -->
+            <!-- Fallback image with src from prop or constructed srcset -->
             <img :src="src || constructSrcSet(normalizedSources[0], image.id).split(',')[0].split(' ')[0]" :alt="image.alt || ''" :loading="loading || 'lazy'" />
         </picture>
 
+        <!-- Overlay with slot and optional icons based on mode and loveable props -->
         <div v-if="$slots.default || loveable || mode" class="overlay">
             <slot />
             <div v-if="mode" class="mode-icons">
-                <SvgIcon v-if="mode === 'select'" svg="check-circle" class="select" />
-                <SvgIcon v-if="mode === 'edit'" svg="edit" class="edit" />
-                <SvgIcon v-if="mode === 'view'" svg="eye" class="view" />
+                <SvgIcon :svg="modeIcon" :class="mode" />
             </div>
             <SvgIcon v-if="loveable" svg="heart" class="heart" :class="{ loved: isLoved }" @click="toggleLoved" />
         </div>
@@ -24,12 +24,14 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 
+// Base URL for image resources
 const baseUrl = 'https://media.chillisauce.com/image/upload/';
 
+// Define component props
 const props = defineProps<{
     loveable?: boolean;
     loved?: boolean;
-    mode?: 'view' | 'select' | 'edit';
+    mode?: 'view' | 'select' | 'edit' | 'order';
     selected?: boolean;
     id?: string;
     alt?: string;
@@ -50,63 +52,44 @@ const props = defineProps<{
     }>;
 }>();
 
+// Emit events to parent component
 const emit = defineEmits(['update:src', 'update:loved']);
 
-// Track local "loved" state
+// Track "loved" state locally and sync with prop
 const isLoved = ref(props.loved ?? false);
-
-// Watch for changes in the prop and update local state accordingly
 watch(
     () => props.loved,
-    (newVal) => {
-        isLoved.value = newVal ?? false;
-    }
+    (newVal) => (isLoved.value = newVal ?? false)
 );
 
-// Toggle the "loved" state and emit an event to inform the parent component
+// Toggle "loved" state and emit updated value
 const toggleLoved = () => {
     isLoved.value = !isLoved.value;
     emit('update:loved', isLoved.value);
 };
 
-// Hardcoded modifiers for the full-size image
-const fullSizeImageModifiers = ['c_fill', 'q_auto', 'f_auto'];
-
-// Construct the full-size src URL without using any props for modifiers
-const fullSizeSrc = computed(() => {
-    if (props.id) {
-        return `${baseUrl}${fullSizeImageModifiers.join(',')}/${props.id}`;
-    }
-    return '';
+// Computed property for selecting the icon based on mode
+const modeIcon = computed(() => {
+    const icons: Record<string, string> = { select: 'check-circle', edit: 'edit', view: 'eye', order: 'move' };
+    return props.mode && icons[props.mode] ? icons[props.mode] : '';
 });
 
-// Emit the full-size src to the parent component
-emit('update:src', fullSizeSrc.value);
-
+// Return the default `sizes` value based on width range
 const defaultSizes = (widthRange: string): string => `${widthRange.split(':')[0]}px`;
 
+// Normalize images array; use props if images prop is empty
 const normalizedImages = computed(() => (props.images?.length ? props.images : [{ id: props.id!, alt: props.alt }]));
 
-const normalizedSources = computed(() =>
-    props.sources?.length
-        ? props.sources
-        : [
-              {
-                  media: '',
-                  sizes: defaultSizes(props.widths),
-                  widths: props.widths,
-                  modifiers: [],
-                  aspectRatio: props.aspectRatio ?? '',
-                  increment: props.increment ?? 200
-              }
-          ]
-);
+// Normalize sources array; default to one source if sources prop is empty
+const normalizedSources = computed(() => (props.sources?.length ? props.sources : [{ media: '', sizes: defaultSizes(props.widths), widths: props.widths, modifiers: [], aspectRatio: props.aspectRatio ?? '', increment: props.increment ?? 200 }]));
 
+// Helper function to combine default and source-specific modifiers
 const mergeModifiers = (source: { modifiers?: string[]; aspectRatio?: string }): string[] => {
     const defaultModifiers = ['c_fill', 'q_auto', 'f_auto', 'dpr_1'];
     return [...defaultModifiers, ...(source.modifiers ?? []), ...(source.aspectRatio ? [`ar_${source.aspectRatio}`] : [])];
 };
 
+// Construct the srcset based on widths, modifiers, and increments
 const constructSrcSet = (source: { widths: string; modifiers?: string[]; aspectRatio?: string; increment?: number }, imageId: string): string => {
     const [minWidth, maxWidth] = source.widths.split(':').map(Number);
     const step = source.increment || props.increment || 200;
@@ -114,6 +97,13 @@ const constructSrcSet = (source: { widths: string; modifiers?: string[]; aspectR
         .map((width) => `${baseUrl}${[`w_${width}`, ...mergeModifiers(source)].join(',')}/${imageId} ${width}w`)
         .join(', ');
 };
+
+// Compute the full-size image src for the fallback img tag
+const fullSizeImageModifiers = ['c_fill', 'q_auto', 'f_auto'];
+const fullSizeSrc = computed(() => (props.id ? `${baseUrl}${fullSizeImageModifiers.join(',')}/${props.id}` : ''));
+
+// Emit full-size src to parent component on mount
+emit('update:src', fullSizeSrc.value);
 </script>
 
 <style lang="scss">

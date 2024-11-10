@@ -14,7 +14,7 @@ import { defineProps, defineModel } from 'vue';
 
 const props = defineProps({
     mode: {
-        type: String as () => 'view' | 'select' | 'edit',
+        type: String as () => 'view' | 'select' | 'edit' | 'order',
         default: 'view'
     },
     link: {
@@ -56,9 +56,13 @@ function handleClick() {
     img {
         transition: all 0.7s ease;
     }
+    &.order {
+        cursor: move;
+    }
     &.select,
     &.view,
-    &.edit {
+    &.edit,
+    &.order {
         .mode-icons {
             display: flex;
             width: 100%;

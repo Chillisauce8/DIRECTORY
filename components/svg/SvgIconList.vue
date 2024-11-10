@@ -161,7 +161,9 @@ export default {
                 'cardsmall',
                 'cardsbig',
                 'cardsmall-fill',
-                'cardsbig-fill'
+                'cardsbig-fill',
+                'move',
+                'move2'
             ]
         };
     }

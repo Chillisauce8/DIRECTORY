@@ -36,7 +36,7 @@ const props = defineProps({
         default: 'gallery'
     },
     mode: {
-        type: String as () => 'view' | 'select' | 'edit' | 'move',
+        type: String as () => 'view' | 'select' | 'edit' | 'order',
         default: 'view'
     },
     loveable: {

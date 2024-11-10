@@ -3,4 +3,10 @@
     --sidebar-shadow: none;
     --sidebar-border: 1px solid var(--surface-border);
     --card-shadow: none;
+
+    // Added
+    --background: var(--p-surface-950);
+    --color: var(--p-surface-100);
+    --background-inverted: var(--p-surface-100);
+    --color-inverted: var(--p-surface-950);
 }
