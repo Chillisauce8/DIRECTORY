@@ -37,9 +37,12 @@
         </div>
         <div v-if="mode === 'select'" class="select-controls">
             <ToggleButton v-model="selectAll" class="select-all" onLabel="Deselect All" offLabel="Select All" onIcon="pi pi-check-circle" offIcon="pi pi-circle" aria-label="Do you confirm" />
-            <Select v-model="categoryFunction" class="category-function" :options="categoryFunctionOptions" showClear optionLabel="label" placeholder="Choose Category Function" />
 
-            <Button label="Delete Selected" class="delete-selected" icon="pi pi-trash" outlined raised />
+            <!-- Conditionally display these components if there is at least one selected card -->
+            <template v-if="hasSelectedCards">
+                <Select v-model="categoryFunction" class="category-function" :options="categoryFunctionOptions" showClear optionLabel="label" placeholder="Choose Category Function" />
+                <Button label="Delete Selected" class="delete-selected" icon="pi pi-trash" outlined raised />
+            </template>
         </div>
     </div>
 </template>
@@ -56,7 +59,8 @@ const props = defineProps({
     showCardSizeControl: { type: Boolean, default: true },
     functionControlOptions: { type: Array as PropType<string[]>, default: () => ['view', 'select', 'edit', 'order'] },
     categoryOptions: { type: Array as PropType<{ name: string; id: number }[]>, default: () => [] },
-    cardSizeIcons: { type: Array as PropType<string[]>, default: () => ['cardssmall', 'cardsbig', 'list'] }
+    cardSizeIcons: { type: Array as PropType<string[]>, default: () => ['cardssmall', 'cardsbig', 'list'] },
+    selectedItems: { type: Array as PropType<string[]>, default: () => [] } // Prop for selected items
 });
 
 // Event emitter for select-all action
@@ -88,4 +92,7 @@ const categoryFunctionOptions = ref([
 ]);
 
 const filteredCardSizes = computed(() => cardSizes.value.filter((size) => props.cardSizeIcons.includes(size.icon)));
+
+// Computed property to check if there are selected cards
+const hasSelectedCards = computed(() => props.selectedItems.length > 0);
 </script>

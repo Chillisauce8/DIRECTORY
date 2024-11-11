@@ -15,6 +15,7 @@
             v-model:show="show"
             v-model:searchQuery="searchQuery"
             v-model:selectedSize="selectedSize"
+            :selectedItems="selectedItems"
             @select-all="toggleSelectAll"
         />
         <fancybox v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
@@ -68,13 +69,11 @@ import { ref, computed, watch } from 'vue';
 import type { PropType } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
-// Define Album interface for type safety
 interface Album {
     name: string;
     id: number;
 }
 
-// Define the card sizes with explicit types
 const cardSizes = ref<{ label: string; icon: string; display: string }[]>([
     { label: 'Small Cards', icon: 'cardssmall', display: 'display-small-cards' },
     { label: 'Big Cards', icon: 'cardsbig', display: 'display-big-cards' },
