@@ -38,6 +38,7 @@
         <div v-if="mode === 'select'" class="select-controls">
             <ToggleButton
                 v-model="selectAll"
+                class="select-all"
                 onLabel="Deselect All"
                 offLabel="Select All"
                 onIcon="pi pi-check-circle
@@ -45,9 +46,9 @@
                 offIcon="pi pi-circle"
                 aria-label="Do you confirm"
             />
-            <Select v-model="categoryFunction" :options="categoryFunctionOptions" showClear optionLabel="label" placeholder="Choose Category Function" />
+            <Select v-model="categoryFunction" class="category-function" :options="categoryFunctionOptions" showClear optionLabel="label" placeholder="Choose Category Function" />
 
-            <Button label="Delete Selected" icon="pi pi-trash" outlined raised />
+            <Button label="Delete Selected" class="delete-selected" icon="pi pi-trash" outlined raised />
         </div>
     </div>
 </template>
