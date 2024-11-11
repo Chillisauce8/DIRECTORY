@@ -10,39 +10,22 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineModel } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 
 const props = defineProps({
-    id: {
-        type: String,
-        required: true
-    },
-    mode: {
-        type: String as () => 'view' | 'select' | 'edit' | 'order',
-        default: 'view'
-    },
-    link: {
-        type: String as () => string | null,
-        default: null
-    },
-    clickable: {
-        type: Boolean,
-        default: true
-    },
-    searchTerms: {
-        type: String,
-        default: ''
-    }
+    id: { type: String, required: true },
+    mode: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
+    link: { type: String as () => string | null, default: null },
+    clickable: { type: Boolean, default: true },
+    searchTerms: { type: String, default: '' },
+    selected: { type: Boolean, default: false }
 });
 
-const selected = defineModel('selected', {
-    type: Boolean,
-    default: false
-});
+const emit = defineEmits(['update:selected']); // Define emit for two-way binding
 
 function handleClick() {
     if (props.clickable && (props.mode === 'select' || props.mode === 'edit')) {
-        selected.value = !selected.value;
+        emit('update:selected', !props.selected); // Emit selection change
     }
 }
 </script>

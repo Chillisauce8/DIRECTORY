@@ -17,13 +17,47 @@
             v-model:selectedSize="selectedSize"
         />
         <fancybox v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
-            <MediaCard v-for="(listing, index) in filteredListings" :key="index" :imageId="listing.images[0].id" :id="listing.id" :name="listing.images[0].alt" :albums="listing.albums" :gallery="gallery" :mode="mode" :show="show" />
+            <MediaCard
+                v-for="(listing, index) in filteredListings"
+                :key="index"
+                :imageId="listing.images[0].id"
+                :id="listing.id"
+                :name="listing.images[0].alt"
+                :albums="listing.albums"
+                :gallery="gallery"
+                :mode="mode"
+                :show="show"
+                :selected.sync="selectedItems.includes(listing.id)"
+                @update:selected="updateSelectedItems(listing.id, $event)"
+            />
         </fancybox>
         <vue-draggable v-else-if="mode === 'order'" class="gallery-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <MediaCard v-for="(listing, index) in draggableListings" :key="index" :imageId="listing.images[0].id" :id="listing.id" :name="listing.images[0].alt" :albums="listing.albums" :mode="mode" :show="show" />
+            <MediaCard
+                v-for="(listing, index) in draggableListings"
+                :key="index"
+                :imageId="listing.images[0].id"
+                :id="listing.id"
+                :name="listing.images[0].alt"
+                :albums="listing.albums"
+                :mode="mode"
+                :show="show"
+                :selected.sync="selectedItems.includes(listing.id)"
+                @update:selected="updateSelectedItems(listing.id, $event)"
+            />
         </vue-draggable>
         <div v-else class="gallery-grid">
-            <MediaCard v-for="(listing, index) in filteredListings" :key="index" :imageId="listing.images[0].id" :id="listing.id" :name="listing.images[0].alt" :albums="listing.albums" :mode="mode" :show="show" />
+            <MediaCard
+                v-for="(listing, index) in filteredListings"
+                :key="index"
+                :imageId="listing.images[0].id"
+                :id="listing.id"
+                :name="listing.images[0].alt"
+                :albums="listing.albums"
+                :mode="mode"
+                :show="show"
+                :selected.sync="selectedItems.includes(listing.id)"
+                @update:selected="updateSelectedItems(listing.id, $event)"
+            />
         </div>
     </div>
 </template>
@@ -71,6 +105,15 @@ const cardSizes = ref([
     { label: 'List', icon: 'list', display: 'display-list' }
 ]);
 
+const selectedItems = ref<string[]>([]); // Track selected items
+
+function updateSelectedItems(id: string, isSelected: boolean) {
+    if (isSelected) {
+        if (!selectedItems.value.includes(id)) selectedItems.value.push(id);
+    } else {
+        selectedItems.value = selectedItems.value.filter((item) => item !== id);
+    }
+}
 // Initialize component state based on default props
 const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSizeControl) || cardSizes.value[0]);
 const mode = ref<'view' | 'select' | 'edit' | 'order'>(props.defaultFunctionControl);
