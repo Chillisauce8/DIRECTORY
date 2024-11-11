@@ -15,6 +15,7 @@
             v-model:show="show"
             v-model:searchQuery="searchQuery"
             v-model:selectedSize="selectedSize"
+            @select-all="toggleSelectAll"
         />
         <fancybox v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
             <MediaCard
@@ -67,45 +68,38 @@ import { ref, computed, watch } from 'vue';
 import type { PropType } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
-// Gallery Controls Props
+// Define Album interface for type safety
+interface Album {
+    name: string;
+    id: number;
+}
+
+// Define the card sizes with explicit types
+const cardSizes = ref<{ label: string; icon: string; display: string }[]>([
+    { label: 'Small Cards', icon: 'cardssmall', display: 'display-small-cards' },
+    { label: 'Big Cards', icon: 'cardsbig', display: 'display-big-cards' },
+    { label: 'List', icon: 'list', display: 'display-list' }
+]);
+
 const props = defineProps({
-    // Toggle entire gallery controls and individual controls
     showGalleryControls: { type: Boolean, default: true },
     showFunctionControl: { type: Boolean, default: true },
     showCategoryControl: { type: Boolean, default: true },
     showShowControl: { type: Boolean, default: true },
     showSearchControl: { type: Boolean, default: true },
     showCardSizeControl: { type: Boolean, default: true },
-
-    // Default options for controls
     functionControlOptions: { type: Array as PropType<string[]>, default: () => ['view', 'select', 'edit', 'order'] },
     defaultFunctionControl: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
     defaultShowControl: { type: Array as PropType<string[]>, default: () => ['name'] },
     cardSizeIcons: { type: Array as PropType<string[]>, default: () => ['cardssmall', 'cardsbig', 'list'] },
     defaultCardSizeControl: { type: String, default: 'Big Cards' },
-
-    // Category control setup
-    categoryControlOptions: { type: Array, default: () => [] }, // Defaults to albums if not set
-
-    // General Component Settings
+    categoryControlOptions: { type: Array as PropType<Album[]>, default: () => [] },
     gallery: { type: String, default: 'gallery' },
     minSearchLength: { type: Number, default: 1 },
     initialSize: { type: String, default: 'Big Cards' }
 });
 
-// Interfaces and Data Initialization
-interface Album {
-    name: string;
-    id: number;
-}
-
-const cardSizes = ref([
-    { label: 'Small Cards', icon: 'cardssmall', display: 'display-small-cards' },
-    { label: 'Big Cards', icon: 'cardsbig', display: 'display-big-cards' },
-    { label: 'List', icon: 'list', display: 'display-list' }
-]);
-
-const selectedItems = ref<string[]>([]); // Track selected items
+const selectedItems = ref<string[]>([]);
 
 function updateSelectedItems(id: string, isSelected: boolean) {
     if (isSelected) {
@@ -114,20 +108,27 @@ function updateSelectedItems(id: string, isSelected: boolean) {
         selectedItems.value = selectedItems.value.filter((item) => item !== id);
     }
 }
-// Initialize component state based on default props
+
+function toggleSelectAll(selectAll: boolean) {
+    if (selectAll) {
+        selectedItems.value = filteredListings.value.map((listing) => listing.id);
+    } else {
+        selectedItems.value = selectedItems.value.filter((id) => !filteredListings.value.some((listing) => listing.id === id));
+    }
+}
+
 const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSizeControl) || cardSizes.value[0]);
 const mode = ref<'view' | 'select' | 'edit' | 'order'>(props.defaultFunctionControl);
 const show = ref<string[]>(props.defaultShowControl);
 
 const albums = useAlbums();
-const categories = ref<Album[]>(props.categoryControlOptions.length ? (props.categoryControlOptions as Album[]) : albums);
+const categories = ref<Album[]>(props.categoryControlOptions.length ? props.categoryControlOptions : albums);
 const selectedCategories = ref<Album[]>([]);
-const selectedCategoryIds = computed(() => selectedCategories.value.map((category) => category.id));
+const selectedCategoryIds = computed(() => selectedCategories.value.map((category: Album) => category.id));
 
 const listings = useListings();
 const searchQuery = ref('');
 
-// Filter listings based on category and search input
 const filteredListings = computed(() => {
     let result = listings;
 
@@ -146,7 +147,6 @@ const filteredListings = computed(() => {
 const draggableListings = ref([...filteredListings.value]);
 const filteredCardSizes = computed(() => cardSizes.value.filter((size) => props.cardSizeIcons.includes(size.icon)));
 
-// Watchers and Event Handlers
 watch(filteredListings, (newFilteredListings) => {
     draggableListings.value = [...newFilteredListings];
 });
