@@ -122,12 +122,26 @@ function onEnd() {
     --grid-gap: 20px;
     border-radius: var(--border-radius);
     background-color: var(--surface-overlay);
-    padding: var(--grid-gap);
+    // padding: var(--grid-gap);
     .gallery-controls {
-        padding-bottom: var(--grid-gap);
+        animation: fill-background linear;
+        animation-timeline: scroll();
+        background-color: transparent;
+        backdrop-filter: none;
+        box-shadow: none;
+        padding: calc(var(--grid-gap) / 2) var(--grid-gap);
         position: sticky;
-        top: calc(var(--grid-gap) / 2);
+        top: 0px;
         z-index: 1;
+        .select-controls {
+            padding-top: calc(var(--grid-gap) / 2);
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+        + .gallery-grid {
+            padding-top: calc(var(--grid-gap) / 2);
+        }
         .icon {
             width: 24px;
             height: 24px;
@@ -162,7 +176,7 @@ function onEnd() {
         transition: all 0.4s ease-in-out;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(var(--grid-item-min), 1fr));
-        // padding: var(--grid-gap);
+        padding: var(--grid-gap);
         gap: var(--grid-gap);
         grid-auto-flow: dense; // https://www.w3schools.com/cssref/tryit.php?filename=trycss_grid-auto-flow2
         //   background-color: var(--grid-background-color);
@@ -173,6 +187,21 @@ function onEnd() {
     }
     .p-selectbutton button {
         overflow: visible;
+    }
+}
+
+@keyframes fill-background {
+    0% {
+        backdrop-filter: none;
+        background-color: none;
+    }
+    10% {
+        backdrop-filter: blur(5px);
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    100% {
+        backdrop-filter: blur(5px);
+        background-color: rgba(0, 0, 0, 0.7);
     }
 }
 </style>
