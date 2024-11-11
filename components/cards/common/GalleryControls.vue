@@ -35,7 +35,7 @@
 
             <Button label="Add" icon="pi pi-plus" outlined raised />
         </div>
-        <div class="select-controls">
+        <div v-if="mode === 'select'" class="select-controls">
             <ToggleButton
                 v-model="selectAll"
                 onLabel="Deselect All"
