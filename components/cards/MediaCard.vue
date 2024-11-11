@@ -1,6 +1,6 @@
 <template>
-    <card-wrapper class="media-card" :class="mode" v-bind="mode === 'view' ? { 'data-fancybox': gallery, 'data-caption': name, link: src } : {}" :mode="mode" v-model:selected="selected">
-        <swp-picture v-if="id" :id="id" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" />
+    <card-wrapper class="media-card" :class="mode" :id="id" v-bind="mode === 'view' ? { 'data-fancybox': gallery, 'data-caption': name, link: src } : {}" :mode="mode" v-model:selected="selected">
+        <swp-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" />
         <card-text-wrapper :class="getCardTextWrapperClass()">
             <!-- Add classes from 'show' to 'card-details' -->
             <div class="card-details" :class="props.show">
@@ -20,6 +20,10 @@
 <script setup lang="ts">
 const props = defineProps({
     id: {
+        type: String,
+        required: true
+    },
+    imageId: {
         type: String,
         required: true
     },

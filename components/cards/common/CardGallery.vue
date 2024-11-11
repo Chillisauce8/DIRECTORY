@@ -17,13 +17,13 @@
             v-model:selectedSize="selectedSize"
         />
         <fancybox v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
-            <MediaCard v-for="(listing, index) in filteredListings" :key="index" :id="listing.images[0].id" :name="listing.images[0].alt" :albums="listing.albums" :gallery="gallery" :mode="mode" :show="show" />
+            <MediaCard v-for="(listing, index) in filteredListings" :key="index" :imageId="listing.images[0].id" :id="listing.id" :name="listing.images[0].alt" :albums="listing.albums" :gallery="gallery" :mode="mode" :show="show" />
         </fancybox>
         <vue-draggable v-else-if="mode === 'order'" class="gallery-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <MediaCard v-for="(listing, index) in draggableListings" :key="index" :id="listing.images[0].id" :name="listing.images[0].alt" :albums="listing.albums" :mode="mode" :show="show" />
+            <MediaCard v-for="(listing, index) in draggableListings" :key="index" :imageId="listing.images[0].id" :id="listing.id" :name="listing.images[0].alt" :albums="listing.albums" :mode="mode" :show="show" />
         </vue-draggable>
         <div v-else class="gallery-grid">
-            <MediaCard v-for="(listing, index) in filteredListings" :key="index" :id="listing.images[0].id" :name="listing.images[0].alt" :albums="listing.albums" :mode="mode" :show="show" />
+            <MediaCard v-for="(listing, index) in filteredListings" :key="index" :imageId="listing.images[0].id" :id="listing.id" :name="listing.images[0].alt" :albums="listing.albums" :mode="mode" :show="show" />
         </div>
     </div>
 </template>

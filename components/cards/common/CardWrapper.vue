@@ -1,10 +1,10 @@
 <template>
-    <nuxt-link v-if="link" :to="link" class="card-wrapper">
+    <nuxt-link v-if="link" :to="link" class="card-wrapper" :id="id">
         <article :data-search="searchTerms">
             <slot />
         </article>
     </nuxt-link>
-    <article v-else class="card-wrapper" :class="{ selected: selected }" :data-search="searchTerms" @click="handleClick">
+    <article v-else class="card-wrapper" :class="{ selected: selected }" :id="id" :data-search="searchTerms" @click="handleClick">
         <slot />
     </article>
 </template>
@@ -13,6 +13,10 @@
 import { defineProps, defineModel } from 'vue';
 
 const props = defineProps({
+    id: {
+        type: String,
+        required: true
+    },
     mode: {
         type: String as () => 'view' | 'select' | 'edit' | 'order',
         default: 'view'
