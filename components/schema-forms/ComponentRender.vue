@@ -3,14 +3,14 @@
       <component :is="props.componentName"
                  v-model="props.model" @update:modelValue="onModelChange($event)"
                  v-bind="props.componentProperties"
-                 :invalid="validator?.$error"
+                 :invalid="props.validator?.$error"
                  :class="[props.validator?.$error ? 'p-invalid' : '', isEmpty() ? 'empty-field' : '',
                   props.componentProperties.readonly ? 'view-mode' : '']">
       </component>
     </div>
     <FieldError class="error-message"
                 v-if="props.validator"
-                :vuelidate-field="props.validator.vuelidateField">
+                :vuelidate-field="props.validator.model">
     </FieldError>
 </template>
 

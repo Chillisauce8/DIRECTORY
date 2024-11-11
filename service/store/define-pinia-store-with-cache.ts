@@ -1,11 +1,13 @@
 import {
-  _GettersTree,
   defineStore,
+} from 'pinia';
+import type {
+  _GettersTree,
   DefineStoreOptions,
   StateTree,
   StoreDefinition,
 } from 'pinia';
-import {setStoreDefinition} from '~/services/store/pinia-store-definition-service-locator';
+import {setStoreDefinition} from '~/service/store/pinia-store-definition-service-locator';
 
 
 export interface PiniaStoreOptionsMeta {

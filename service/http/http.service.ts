@@ -1,9 +1,6 @@
 import {AsyncData} from '#app';
-import {AppConfig} from '@nuxt/schema';
-import {getHttpInterceptorListByType, HttpInterceptorType, HttpInterceptorFetchOptions}
-  from './interceptor.composibles';
-import {getWindowSafe} from '../browser/browser.helpers';
-// import {CurrentUser} from '../user-common/current-user.service';
+import {getHttpInterceptorListByType, HttpInterceptorType} from './interceptor.composibles';
+import type {HttpInterceptorFetchOptions} from './interceptor.composibles';
 import { isUndefined } from '../utils';
 import { serverURL } from '~/environment';
 // @ts-ignore

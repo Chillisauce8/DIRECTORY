@@ -1,5 +1,5 @@
 <template>
-  <p class="p-error" v-if="inputValidationHasError()">{{ getInputValidationErrorMessage() }}</p>
+  <p class="cs-form-text-error" v-if="inputValidationHasError()">{{ getInputValidationErrorMessage() }}</p>
 </template>
 
 <script setup lang="ts">

@@ -396,6 +396,48 @@ export default defineNuxtConfig({
                 path: '/auth/access',
                 file: '@/pages/pages/auth/Access.vue'
             });
+
+            pages.push({
+              name: 'error-new',
+              path: '/new/auth/error',
+              file: '@/pages/new/auth/Error.vue'
+            });
+            pages.push({
+              name: 'forgotpassword-new',
+              path: '/new/auth/forgotpassword',
+              file: '@/pages/new/auth/ForgotPassword.vue'
+            });
+            pages.push({
+              name: 'lockscreen-new',
+              path: '/new/auth/lockscreen',
+              file: '@/pages/new/auth/LockScreen.vue'
+            });
+            pages.push({
+              name: 'login-new',
+              path: '/new/auth/login',
+              file: '@/pages/new/auth/Login.vue'
+            });
+            pages.push({
+              name: 'newpassword-new',
+              path: '/new/auth/newpassword',
+              file: '@/pages/new/auth/NewPassword.vue'
+            });
+            pages.push({
+              name: 'register-new',
+              path: '/new/auth/register',
+              file: '@/pages/new/auth/Register.vue'
+            });
+            pages.push({
+              name: 'verification-new',
+              path: '/new/auth/verification',
+              file: '@/pages/new/auth/Verification.vue'
+            });
+            pages.push({
+              name: 'accessDenied-new',
+              path: '/new/auth/access',
+              file: '@/pages/new/auth/Access.vue'
+            });
+
             pages.push({
                 name: 'productoverview',
                 path: '/ecommerce/product-overview',

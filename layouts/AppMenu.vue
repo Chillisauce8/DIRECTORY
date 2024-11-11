@@ -28,7 +28,6 @@ const model = ref([
                 icon: 'pi pi-fw pi-image',
                 to: '/new/carddesign'
             },
-
             {
                 label: 'Market test',
                 icon: 'pi pi-fw pi-check-square',
@@ -58,7 +57,53 @@ const model = ref([
                 label: 'Images Fetching',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/images-fetching'
-            }
+            },
+            {
+              label: 'Auth',
+              icon: 'pi pi-fw pi-user',
+              items: [
+                {
+                  label: 'Login',
+                  icon: 'pi pi-fw pi-sign-in',
+                  to: '/new/auth/login'
+                },
+                {
+                  label: 'Error',
+                  icon: 'pi pi-fw pi-times-circle',
+                  to: '/new/auth/error'
+                },
+                {
+                  label: 'Access Denied',
+                  icon: 'pi pi-fw pi-lock',
+                  to: '/new/auth/access'
+                },
+                {
+                  label: 'Register',
+                  icon: 'pi pi-fw pi-user-plus',
+                  to: '/new/auth/register'
+                },
+                {
+                  label: 'Forgot Password',
+                  icon: 'pi pi-fw pi-question',
+                  to: '/new/auth/forgotpassword'
+                },
+                {
+                  label: 'New Password',
+                  icon: 'pi pi-fw pi-cog',
+                  to: '/new/auth/newpassword'
+                },
+                {
+                  label: 'Verification',
+                  icon: 'pi pi-fw pi-envelope',
+                  to: '/new/auth/verification'
+                },
+                {
+                  label: 'Lock Screen',
+                  icon: 'pi pi-fw pi-eye-slash',
+                  to: '/new/auth/lockscreen'
+                }
+              ]
+            },
         ]
     },
     {
