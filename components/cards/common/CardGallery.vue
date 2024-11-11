@@ -17,6 +17,7 @@
             v-model:selectedSize="selectedSize"
             :selectedItems="selectedItems"
             @select-all="toggleSelectAll"
+            @delete-selected="deleteSelectedItems"
         />
         <fancybox v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
             <MediaCard
@@ -69,9 +70,26 @@ import { ref, computed, watch } from 'vue';
 import type { PropType } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
+// Define Album interface for type safety
 interface Album {
     name: string;
     id: number;
+}
+
+interface Listing {
+    id: string;
+    images: { id: string; alt: string }[];
+    saleType: string;
+    name: string;
+    year: string;
+    price: string;
+    engine: string;
+    odometer: string;
+    transmission: string;
+    stearingSide: string;
+    yearFrom: number;
+    yearToo: number;
+    albums: number[];
 }
 
 const cardSizes = ref<{ label: string; icon: string; display: string }[]>([
@@ -116,6 +134,14 @@ function toggleSelectAll(selectAll: boolean) {
     }
 }
 
+// Ensure listings is a ref to make it reactive
+const listings = ref<Listing[]>(useListings());
+
+function deleteSelectedItems() {
+    listings.value = listings.value.filter((listing) => !selectedItems.value.includes(listing.id));
+    selectedItems.value = []; // Clear selected items after deletion
+}
+
 const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSizeControl) || cardSizes.value[0]);
 const mode = ref<'view' | 'select' | 'edit' | 'order'>(props.defaultFunctionControl);
 const show = ref<string[]>(props.defaultShowControl);
@@ -125,11 +151,10 @@ const categories = ref<Album[]>(props.categoryControlOptions.length ? props.cate
 const selectedCategories = ref<Album[]>([]);
 const selectedCategoryIds = computed(() => selectedCategories.value.map((category: Album) => category.id));
 
-const listings = useListings();
 const searchQuery = ref('');
 
 const filteredListings = computed(() => {
-    let result = listings;
+    let result = listings.value;
 
     if (selectedCategoryIds.value.length > 0) {
         result = result.filter((listing) => listing.albums.some((albumId) => selectedCategoryIds.value.includes(albumId)));

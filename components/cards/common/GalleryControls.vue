@@ -41,7 +41,7 @@
             <!-- Conditionally display these components if there is at least one selected card -->
             <template v-if="hasSelectedCards">
                 <Select v-model="categoryFunction" class="category-function" :options="categoryFunctionOptions" showClear optionLabel="label" placeholder="Choose Category Function" />
-                <Button label="Delete Selected" class="delete-selected" icon="pi pi-trash" outlined raised />
+                <Button label="Delete Selected" class="delete-selected" icon="pi pi-trash" outlined raised @click="emit('delete-selected')" />
             </template>
         </div>
     </div>
@@ -60,11 +60,11 @@ const props = defineProps({
     functionControlOptions: { type: Array as PropType<string[]>, default: () => ['view', 'select', 'edit', 'order'] },
     categoryOptions: { type: Array as PropType<{ name: string; id: number }[]>, default: () => [] },
     cardSizeIcons: { type: Array as PropType<string[]>, default: () => ['cardssmall', 'cardsbig', 'list'] },
-    selectedItems: { type: Array as PropType<string[]>, default: () => [] } // Prop for selected items
+    selectedItems: { type: Array as PropType<string[]>, default: () => [] }
 });
 
-// Event emitter for select-all action
-const emit = defineEmits(['select-all']);
+// Define emits with both "select-all" and "delete-selected"
+const emit = defineEmits(['select-all', 'delete-selected']);
 
 // Define models for two-way binding using defineModel
 const modelMode = defineModel<'view' | 'select' | 'edit' | 'order'>('mode', { default: 'view' });
