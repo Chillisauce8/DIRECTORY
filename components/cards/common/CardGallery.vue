@@ -1,5 +1,5 @@
 <template>
-    <div :class="['card-gallery', selectedSize?.display || '']">
+    <div :class="['card-gallery', selectedSize?.display || '', mode]">
         <GalleryControls
             :showControls="showGalleryControls"
             :showFunctionControl="showFunctionControl"
@@ -146,7 +146,7 @@ const selectedSize = ref(cardSizes.value.find((option) => option.label === props
 const mode = ref<'view' | 'select' | 'edit' | 'order'>(props.defaultFunctionControl);
 const show = ref<string[]>(props.defaultShowControl);
 
-const albums = useAlbums();
+const albums = useCategories();
 const categories = ref<Album[]>(props.categoryControlOptions.length ? props.categoryControlOptions : albums);
 const selectedCategories = ref<Album[]>([]);
 const selectedCategoryIds = computed(() => selectedCategories.value.map((category: Album) => category.id));

@@ -58,6 +58,11 @@ const getCardTextWrapperClass = () => {
     picture {
         @include aspect-ratio(3, 2);
     }
+    &.edit.selected {
+        .card-details {
+            display: none;
+        }
+    }
     .card-details {
         &:not(.albums) .albums,
         &:not(.name) .name {

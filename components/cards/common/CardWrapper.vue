@@ -1,10 +1,10 @@
 <template>
-    <nuxt-link v-if="link" :to="link" class="card-wrapper" :id="id">
+    <nuxt-link v-if="link" :to="link" class="card-wrapper" :class="mode" :id="id">
         <article :data-search="searchTerms">
             <slot />
         </article>
     </nuxt-link>
-    <article v-else class="card-wrapper" :class="{ selected: selected }" :id="id" :data-search="searchTerms" @click="handleClick">
+    <article v-else class="card-wrapper" :class="{ selected: selected, mode }" :id="id" :data-search="searchTerms" @click="handleClick">
         <slot />
     </article>
 </template>
