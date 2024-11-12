@@ -1,5 +1,5 @@
 <template>
-    <card-wrapper class="media-card" :class="mode" :id="id" v-bind="mode === 'view' ? { 'data-fancybox': gallery, 'data-caption': name, link: src } : {}" :mode="mode" v-model:selected="selected">
+    <card-wrapper class="media-card" :class="mode" :id="id" v-bind="mode === 'view' ? { 'data-fancybox': gallery, 'data-caption': name, link: fullSizeSrc } : {}" :mode="mode" v-model:selected="selected">
         <swp-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" />
         <card-text-wrapper :class="getCardTextWrapperClass()">
             <div class="card-details" :class="props.show">
@@ -31,6 +31,7 @@ const props = defineProps({
     show: { type: Array as PropType<string[]>, default: () => [] },
     selected: { type: Boolean, default: false } // Selected prop for two-way binding
 });
+const fullSizeSrc = computed(() => `https://media.chillisauce.com/image/upload/c_fill,q_auto,f_auto/${props.imageId}`);
 
 const selected = defineModel('selected', { type: Boolean, default: false }); // Two-way binding model
 
