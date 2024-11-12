@@ -4,11 +4,11 @@
         <card-text-wrapper :class="getCardTextWrapperClass()">
             <div class="card-details" :class="props.show">
                 <h1 class="name">{{ name }}</h1>
-                <h1 class="albums">{{ albumNames }}</h1>
+                <h1 class="categories">{{ categoryNames }}</h1>
             </div>
             <form class="form" v-if="mode === 'edit' && selected" @click.stop>
                 <InputText type="text" v-model="editableName" />
-                <MultiSelect v-model="selectedAlbums" display="chip" :options="albumList" optionLabel="name" optionValue="id" filter placeholder="Select an Album" :maxSelectedLabels="1" />
+                <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
                 <Button type="submit" severity="secondary" label="Submit" />
             </form>
         </card-text-wrapper>
@@ -16,30 +16,33 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue';
+import { defineProps, defineModel, type PropType } from 'vue';
+
 const props = defineProps({
     id: { type: String, required: true },
     imageId: { type: String, required: true },
     name: { type: String, default: '' },
-    albums: { type: Array as PropType<number[]>, default: () => [] },
+    categories: { type: Array as PropType<{ id: number; name: string }[]>, default: () => [] }, // Updated to accept array of category objects
     gallery: { type: String, default: 'gallery' },
     mode: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
     loveable: { type: Boolean, default: false },
     loved: { type: Boolean, default: false },
     show: { type: Array as PropType<string[]>, default: () => [] },
-    selected: { type: Boolean, default: false } // Add selected prop
+    selected: { type: Boolean, default: false } // Selected prop for two-way binding
 });
 
-const selected = defineModel('selected', { type: Boolean, default: false }); // Use two-way binding
+const selected = defineModel('selected', { type: Boolean, default: false }); // Two-way binding model
 
 const editableName = ref(props.name);
-const selectedAlbums = ref<number[]>(props.albums);
-const albumList = useAlbums();
+const selectedCategoryIds = ref<number[]>(props.categories.map((category) => category.id)); // Extract category IDs
+const categoryList = useCategories(); // Get full list of categories
 const src = ref<string>('');
 
-// Transform album IDs to names for display
-const albumNames = computed(() => {
-    return selectedAlbums.value
-        .map((id) => albumList.find((album) => album.id === id)?.name)
+// Transform category objects to a list of names for display
+const categoryNames = computed(() => {
+    return selectedCategoryIds.value
+        .map((id) => categoryList.find((category) => category.id === id)?.name)
         .filter(Boolean)
         .join(', ');
 });

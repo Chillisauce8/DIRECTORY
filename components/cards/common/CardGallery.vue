@@ -26,7 +26,7 @@
                 :imageId="listing.images[0].id"
                 :id="listing.id"
                 :name="listing.images[0].alt"
-                :albums="listing.albums"
+                :categories="listing.categories"
                 :gallery="gallery"
                 :mode="mode"
                 :show="show"
@@ -41,7 +41,7 @@
                 :imageId="listing.images[0].id"
                 :id="listing.id"
                 :name="listing.images[0].alt"
-                :albums="listing.albums"
+                :categories="listing.categories"
                 :mode="mode"
                 :show="show"
                 :selected.sync="selectedItems.includes(listing.id)"
@@ -55,7 +55,7 @@
                 :imageId="listing.images[0].id"
                 :id="listing.id"
                 :name="listing.images[0].alt"
-                :albums="listing.albums"
+                :categories="listing.categories"
                 :mode="mode"
                 :show="show"
                 :selected.sync="selectedItems.includes(listing.id)"
@@ -70,8 +70,8 @@ import { ref, computed, watch } from 'vue';
 import type { PropType } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
-// Define Album interface for type safety
-interface Album {
+// Define Category interface for type safety
+interface Category {
     name: string;
     id: number;
 }
@@ -89,7 +89,7 @@ interface Listing {
     stearingSide: string;
     yearFrom: number;
     yearToo: number;
-    albums: number[];
+    categories: Category[];
 }
 
 const cardSizes = ref<{ label: string; icon: string; display: string }[]>([
@@ -110,7 +110,7 @@ const props = defineProps({
     defaultShowControl: { type: Array as PropType<string[]>, default: () => ['name'] },
     cardSizeIcons: { type: Array as PropType<string[]>, default: () => ['cardssmall', 'cardsbig', 'list'] },
     defaultCardSizeControl: { type: String, default: 'Big Cards' },
-    categoryControlOptions: { type: Array as PropType<Album[]>, default: () => [] },
+    categoryControlOptions: { type: Array as PropType<Category[]>, default: () => [] },
     gallery: { type: String, default: 'gallery' },
     minSearchLength: { type: Number, default: 1 },
     initialSize: { type: String, default: 'Big Cards' }
@@ -134,7 +134,7 @@ function toggleSelectAll(selectAll: boolean) {
     }
 }
 
-// Ensure listings is a ref to make it reactive
+// Initialize listings directly using categories
 const listings = ref<Listing[]>(useListings());
 
 function deleteSelectedItems() {
@@ -146,10 +146,9 @@ const selectedSize = ref(cardSizes.value.find((option) => option.label === props
 const mode = ref<'view' | 'select' | 'edit' | 'order'>(props.defaultFunctionControl);
 const show = ref<string[]>(props.defaultShowControl);
 
-const albums = useCategories();
-const categories = ref<Album[]>(props.categoryControlOptions.length ? props.categoryControlOptions : albums);
-const selectedCategories = ref<Album[]>([]);
-const selectedCategoryIds = computed(() => selectedCategories.value.map((category: Album) => category.id));
+const categories = ref<Category[]>(props.categoryControlOptions.length ? props.categoryControlOptions : useCategories());
+const selectedCategories = ref<Category[]>([]);
+const selectedCategoryIds = computed(() => selectedCategories.value.map((category: Category) => category.id));
 
 const searchQuery = ref('');
 
@@ -157,7 +156,7 @@ const filteredListings = computed(() => {
     let result = listings.value;
 
     if (selectedCategoryIds.value.length > 0) {
-        result = result.filter((listing) => listing.albums.some((albumId) => selectedCategoryIds.value.includes(albumId)));
+        result = result.filter((listing) => listing.categories.some((category) => selectedCategoryIds.value.includes(category.id)));
     }
 
     if (searchQuery.value.length >= props.minSearchLength) {
@@ -264,11 +263,11 @@ function onEnd() {
     }
     10% {
         backdrop-filter: blur(5px);
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: var(--background-glass);
     }
     100% {
         backdrop-filter: blur(5px);
-        background-color: rgba(0, 0, 0, 0.7);
+        background-color: var(--background-glass);
     }
 }
 </style>

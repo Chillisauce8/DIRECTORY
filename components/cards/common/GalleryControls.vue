@@ -18,7 +18,7 @@
             />
 
             <!-- Show Control -->
-            <SelectButton v-if="showShowControl" v-model="modelShow" :options="['name', 'albums']" multiple class="show-control" />
+            <SelectButton v-if="showShowControl" v-model="modelShow" :options="['name', 'categories']" multiple class="show-control" />
 
             <!-- Search Control -->
             <icon-field v-if="showSearchControl" class="search-control">
