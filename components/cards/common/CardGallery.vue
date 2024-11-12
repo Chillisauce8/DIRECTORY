@@ -19,8 +19,8 @@
             @select-all="toggleSelectAll"
             @delete-selected="deleteSelectedItems"
         />
-        <fancybox v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
-            <MediaCard
+        <fancy-box v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
+            <CardContainer
                 v-for="(listing, index) in filteredListings"
                 :key="index"
                 :imageId="listing.images[0].id"
@@ -32,10 +32,14 @@
                 :show="show"
                 :selected.sync="selectedItems.includes(listing.id)"
                 @update:selected="updateSelectedItems(listing.id, $event)"
-            />
-        </fancybox>
+            >
+                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" />
+            </CardContainer>
+        </fancy-box>
+
+        <!-- Draggable Grid Section (Order Mode) -->
         <vue-draggable v-else-if="mode === 'order'" class="gallery-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <MediaCard
+            <CardContainer
                 v-for="(listing, index) in draggableListings"
                 :key="index"
                 :imageId="listing.images[0].id"
@@ -46,10 +50,14 @@
                 :show="show"
                 :selected.sync="selectedItems.includes(listing.id)"
                 @update:selected="updateSelectedItems(listing.id, $event)"
-            />
+            >
+                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" />
+            </CardContainer>
         </vue-draggable>
+
+        <!-- Default Grid Section (Non-View, Non-Order Modes) -->
         <div v-else class="gallery-grid">
-            <MediaCard
+            <CardContainer
                 v-for="(listing, index) in filteredListings"
                 :key="index"
                 :imageId="listing.images[0].id"
@@ -60,7 +68,9 @@
                 :show="show"
                 :selected.sync="selectedItems.includes(listing.id)"
                 @update:selected="updateSelectedItems(listing.id, $event)"
-            />
+            >
+                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" />
+            </CardContainer>
         </div>
     </div>
 </template>

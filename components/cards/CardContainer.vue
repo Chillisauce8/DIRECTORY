@@ -8,15 +8,16 @@
         :class="{ selected: selected, [mode]: true }"
         :id="id"
         :data-search="searchTerms"
-        @click.prevent.stop="handleClick"
+        @click="handleConditionalClick"
     >
-        <TestCard :imageId="imageId" :name="name" :mode="mode" :loveable="loveable" :selected="selected" :show="show" />
+        <slot />
+        <!--   <TestCard :imageId="imageId" :name="name" :mode="mode" :loveable="loveable" :selected="selected" :show="show" />
+-->
     </component>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-
 import { defineProps, defineEmits, defineModel, type PropType } from 'vue';
 
 const props = defineProps({
@@ -39,6 +40,15 @@ const selected = defineModel('selected', { type: Boolean, default: false });
 function handleClick() {
     if (props.clickable) {
         emit('update:selected', !props.selected);
+    }
+}
+
+// Conditional click handler to apply prevent/stop only when mode is not 'view'
+function handleConditionalClick(event: Event) {
+    if (props.mode !== 'view') {
+        event.preventDefault();
+        event.stopPropagation();
+        handleClick();
     }
 }
 

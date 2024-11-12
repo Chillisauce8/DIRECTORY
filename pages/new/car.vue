@@ -4,6 +4,11 @@
         <ContentBlock :title="content1.title" :text="content1.text" :images="content1.images" />
         <ContentBlock :title="content2.title" :text="content2.text" :images="content2.images" />
         <CardGallery />
+        <fancy-box :options="{ Carousel: { infinite: true } }">
+            <a href="https://media.chillisauce.com/image/upload/c_fill,q_auto,f_auto/654663d2c302c20f899089c3" data-fancybox="gallery">
+                <img src="https://media.chillisauce.com/image/upload/c_fill,q_auto,f_auto/654663d2c302c20f899089c3" alt="Thumbnail" />
+            </a>
+        </fancy-box>
     </div>
 </template>
 
