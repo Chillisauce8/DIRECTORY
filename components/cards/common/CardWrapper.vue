@@ -4,7 +4,7 @@
             <slot />
         </article>
     </nuxt-link>
-    <article v-else class="card-wrapper" :class="{ selected: selected, mode }" :id="id" :data-search="searchTerms" @click="handleClick">
+    <article v-else class="card-wrapper" :class="{ selected: selected, [mode]: true }" :id="id" :data-search="searchTerms" @click="handleClick">
         <slot />
     </article>
 </template>
@@ -21,11 +21,11 @@ const props = defineProps({
     selected: { type: Boolean, default: false }
 });
 
-const emit = defineEmits(['update:selected']); // Define emit for two-way binding
+const emit = defineEmits(['update:selected']);
 
 function handleClick() {
     if (props.clickable && (props.mode === 'select' || props.mode === 'edit')) {
-        emit('update:selected', !props.selected); // Emit selection change
+        emit('update:selected', !props.selected);
     }
 }
 </script>

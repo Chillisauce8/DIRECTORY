@@ -25,7 +25,7 @@
                 :key="index"
                 :imageId="listing.images[0].id"
                 :id="listing.id"
-                :name="listing.images[0].alt"
+                :name="listing.name"
                 :categories="listing.categories"
                 :gallery="gallery"
                 :mode="mode"
@@ -40,7 +40,7 @@
                 :key="index"
                 :imageId="listing.images[0].id"
                 :id="listing.id"
-                :name="listing.images[0].alt"
+                :name="listing.name"
                 :categories="listing.categories"
                 :mode="mode"
                 :show="show"
@@ -54,7 +54,7 @@
                 :key="index"
                 :imageId="listing.images[0].id"
                 :id="listing.id"
-                :name="listing.images[0].alt"
+                :name="listing.name"
                 :categories="listing.categories"
                 :mode="mode"
                 :show="show"
@@ -70,7 +70,6 @@ import { ref, computed, watch } from 'vue';
 import type { PropType } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 
-// Define Category interface for type safety
 interface Category {
     name: string;
     id: number;
@@ -134,12 +133,11 @@ function toggleSelectAll(selectAll: boolean) {
     }
 }
 
-// Initialize listings directly using categories
 const listings = ref<Listing[]>(useListings());
 
 function deleteSelectedItems() {
     listings.value = listings.value.filter((listing) => !selectedItems.value.includes(listing.id));
-    selectedItems.value = []; // Clear selected items after deletion
+    selectedItems.value = [];
 }
 
 const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSizeControl) || cardSizes.value[0]);
@@ -148,7 +146,7 @@ const show = ref<string[]>(props.defaultShowControl);
 
 const categories = ref<Category[]>(props.categoryControlOptions.length ? props.categoryControlOptions : useCategories());
 const selectedCategories = ref<Category[]>([]);
-const selectedCategoryIds = computed(() => selectedCategories.value.map((category: Category) => category.id));
+const selectedCategoryIds = computed(() => selectedCategories.value.map((category) => category.id));
 
 const searchQuery = ref('');
 

@@ -23,7 +23,7 @@ const props = defineProps({
     id: { type: String, required: true },
     imageId: { type: String, required: true },
     name: { type: String, default: '' },
-    categories: { type: Array as PropType<{ id: number; name: string }[]>, default: () => [] }, // Updated to accept array of category objects
+    categories: { type: Array as PropType<{ id: number; name: string }[]>, default: () => [] }, // Array of category objects
     gallery: { type: String, default: 'gallery' },
     mode: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
     loveable: { type: Boolean, default: false },
@@ -77,7 +77,7 @@ const getCardTextWrapperClass = () => {
             font-weight: 100;
             margin: 5px 0;
         }
-        .albums {
+        .categories {
             font-family: $ff2;
             font-size: 12px;
             font-weight: 500;
