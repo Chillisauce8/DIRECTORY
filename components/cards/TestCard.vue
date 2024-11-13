@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { defineProps } from 'vue';
 
 // Props passed down to ArticleContent
@@ -24,23 +24,72 @@ const props = defineProps({
     mode: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
     loveable: { type: Boolean, default: false },
     selected: { type: Boolean, default: false },
-    show: { type: Array as PropType<string[]>, default: () => [] }
+    show: { type: Array as PropType<string[]>, default: () => [] },
+    categories: { type: Array as PropType<{ id: number; name: string }[]>, default: () => [] }
 });
 
 // Reactive data and computed properties
 const editableName = ref(props.name);
-const selectedCategoryIds = ref<number[]>([]);
+const selectedCategoryIds = ref(props.categories.map((cat) => cat.id));
 const categoryList = useCategories(); // Assumed external function for category list
 const src = ref<string>('');
 
+// Update computed to use props.categories directly
 const categoryNames = computed(() => {
-    return selectedCategoryIds.value
-        .map((id) => categoryList.find((category) => category.id === id)?.name)
-        .filter(Boolean)
-        .join(', ');
+    return props.categories.map((category) => category.name).join(', ');
 });
+
+// Add watch to keep selectedCategoryIds in sync with props
+watch(
+    () => props.categories,
+    (newCategories) => {
+        selectedCategoryIds.value = newCategories.map((cat) => cat.id);
+    },
+    { immediate: true }
+);
 
 const getCardTextWrapperClass = () => {
     return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
 };
 </script>
+<style lang="scss">
+.test-card {
+    picture {
+        @include aspect-ratio(3, 2);
+    }
+    &.edit.selected {
+        .card-details {
+            display: none;
+        }
+    }
+    .card-details {
+        &:not(.categories) .categories,
+        &:not(.name) .name {
+            display: none;
+        }
+        .name {
+            font-family: $ff2;
+            font-size: 15px;
+            font-weight: 100;
+            margin: 5px 0;
+        }
+        .categories {
+            font-family: $ff2;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+    }
+    .form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        > *:not(:last-child) {
+            margin-bottom: 10px;
+        }
+        .p-inputtext {
+            font-size: 12px;
+        }
+    }
+}
+</style>

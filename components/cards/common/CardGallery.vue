@@ -33,7 +33,7 @@
                 :selected.sync="selectedItems.includes(listing.id)"
                 @update:selected="updateSelectedItems(listing.id, $event)"
             >
-                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" />
+                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" :categories="listing.categories" />
             </CardContainer>
         </fancy-box>
 
@@ -51,7 +51,7 @@
                 :selected.sync="selectedItems.includes(listing.id)"
                 @update:selected="updateSelectedItems(listing.id, $event)"
             >
-                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" />
+                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" :categories="listing.categories" />
             </CardContainer>
         </vue-draggable>
 
@@ -69,7 +69,7 @@
                 :selected.sync="selectedItems.includes(listing.id)"
                 @update:selected="updateSelectedItems(listing.id, $event)"
             >
-                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" />
+                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" :categories="listing.categories" />
             </CardContainer>
         </div>
     </div>

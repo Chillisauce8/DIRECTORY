@@ -4,15 +4,13 @@
         v-if="isWrapperVisible"
         :href="mode === 'view' ? fullSizeSrc : null"
         :data-fancybox="mode === 'view' ? gallery : null"
-        class="card-wrapper media-card"
+        class="card-container test-card"
         :class="{ selected: selected, [mode]: true }"
         :id="id"
         :data-search="searchTerms"
         @click="handleConditionalClick"
     >
         <slot />
-        <!--   <TestCard :imageId="imageId" :name="name" :mode="mode" :loveable="loveable" :selected="selected" :show="show" />
--->
     </component>
 </template>
 
@@ -57,7 +55,7 @@ const isWrapperVisible = computed(() => props.mode === 'view' || props.clickable
 </script>
 
 <style lang="scss">
-.media-card {
+.test-card {
     picture {
         @include aspect-ratio(3, 2);
     }
@@ -96,7 +94,7 @@ const isWrapperVisible = computed(() => props.mode === 'view' || props.clickable
         }
     }
 }
-.card-wrapper {
+.card-container {
     position: relative; // For smooth Vue transition-group https://www.youtube.com/watch?v=DGI_aKld0Jg
     background: var(--surface-card);
     border: var(--card-border);
