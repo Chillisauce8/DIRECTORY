@@ -71,9 +71,7 @@ const toggleLoved = () => {
 // Computed property for selecting the icon based on mode
 const modeIcon = computed(() => {
     const icons: Record<string, string> = { select: 'check-circle', edit: 'edit', view: 'eye', order: 'move' };
-    const selectedIcons: Record<string, string> = { ...icons, edit: 'check-circle' };
-    const iconsToUse = props.selected ? selectedIcons : icons;
-    return props.mode && iconsToUse[props.mode] ? iconsToUse[props.mode] : '';
+    return props.mode && icons[props.mode] ? icons[props.mode] : '';
 });
 
 // Return the default `sizes` value based on width range

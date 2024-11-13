@@ -2,14 +2,15 @@
     <div :class="['card-gallery', selectedSize?.display || '', mode]">
         <GalleryControls
             :showControls="showGalleryControls"
-            :showFunctionControl="showFunctionControl"
+            :functionControlDisplay="functionControlDisplay"
+            :visibleFunctionControls="visibleFunctionControls"
+            :defaultFunctionControl="defaultFunctionControl"
             :showCategoryControl="showCategoryControl"
             :showShowControl="showShowControl"
             :showSearchControl="showSearchControl"
-            :showCardSizeControl="showCardSizeControl"
             :functionControlOptions="functionControlOptions"
             :categoryOptions="categories"
-            :cardSizeIcons="cardSizeIcons"
+            :visibleCardSizes="visibleCardSizes"
             v-model:mode="mode"
             v-model:selectedCategories="selectedCategories"
             v-model:show="show"
@@ -18,6 +19,9 @@
             :selectedItems="selectedItems"
             @select-all="toggleSelectAll"
             @delete-selected="deleteSelectedItems"
+            @add-selected="addSelectedItems"
+            @add-categories-to-selected="addCategoriesToSelected"
+            @remove-categories-from-selected="removeFromSelected"
         />
         <fancy-box v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
             <CardContainer
@@ -107,18 +111,35 @@ const cardSizes = ref<{ label: string; icon: string; display: string }[]>([
     { label: 'List', icon: 'list', display: 'display-list' }
 ]);
 
+type FunctionMode = 'view' | 'select' | 'edit' | 'order';
+
 const props = defineProps({
     showGalleryControls: { type: Boolean, default: true },
-    showFunctionControl: { type: Boolean, default: true },
+    functionControlDisplay: {
+        type: String as PropType<'text' | 'icon'>,
+        default: 'text'
+    },
+    visibleFunctionControls: {
+        type: Array as PropType<FunctionMode[] | null>,
+        default: () => ['view', 'select', 'edit', 'order'] as FunctionMode[]
+    },
+    defaultFunctionControl: {
+        type: String as PropType<FunctionMode>,
+        default: 'view'
+    },
     showCategoryControl: { type: Boolean, default: true },
     showShowControl: { type: Boolean, default: true },
     showSearchControl: { type: Boolean, default: true },
-    showCardSizeControl: { type: Boolean, default: true },
     functionControlOptions: { type: Array as PropType<string[]>, default: () => ['view', 'select', 'edit', 'order'] },
-    defaultFunctionControl: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
     defaultShowControl: { type: Array as PropType<string[]>, default: () => ['name'] },
-    cardSizeIcons: { type: Array as PropType<string[]>, default: () => ['cardssmall', 'cardsbig', 'list'] },
-    defaultCardSizeControl: { type: String, default: 'Big Cards' },
+    visibleCardSizes: {
+        type: Array as PropType<string[] | null>,
+        default: () => ['Small Cards', 'Big Cards', 'List']
+    },
+    defaultCardSize: {
+        type: String,
+        default: 'Big Cards'
+    },
     categoryControlOptions: { type: Array as PropType<Category[]>, default: () => [] },
     gallery: { type: String, default: 'gallery' },
     minSearchLength: { type: Number, default: 1 },
@@ -150,8 +171,8 @@ function deleteSelectedItems() {
     selectedItems.value = [];
 }
 
-const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSizeControl) || cardSizes.value[0]);
-const mode = ref<'view' | 'select' | 'edit' | 'order'>(props.defaultFunctionControl);
+const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSize) || cardSizes.value[0]);
+const mode = ref<FunctionMode>(props.defaultFunctionControl);
 const show = ref<string[]>(props.defaultShowControl);
 
 const categories = ref<Category[]>(props.categoryControlOptions.length ? props.categoryControlOptions : useCategories());
@@ -176,7 +197,6 @@ const filteredListings = computed(() => {
 });
 
 const draggableListings = ref([...filteredListings.value]);
-const filteredCardSizes = computed(() => cardSizes.value.filter((size) => props.cardSizeIcons.includes(size.icon)));
 
 watch(filteredListings, (newFilteredListings) => {
     draggableListings.value = [...newFilteredListings];
@@ -189,6 +209,42 @@ function onStart() {
 function onEnd() {
     console.log('end drag');
 }
+
+function addSelectedItems() {
+    // Pass the array of selected items to parent component
+    emit('add-selected', selectedItems.value);
+}
+
+// Add category management functions
+function addCategoriesToSelected(categoriesToAdd: Category[]) {
+    listings.value = listings.value.map((listing) => {
+        if (selectedItems.value.includes(listing.id)) {
+            const existingCategoryIds = listing.categories.map((c) => c.id);
+            const newCategories = categoriesToAdd.filter((c) => !existingCategoryIds.includes(c.id));
+            return {
+                ...listing,
+                categories: [...listing.categories, ...newCategories]
+            };
+        }
+        return listing;
+    });
+}
+
+function removeFromSelected(categoriesToRemove: Category[]) {
+    const categoryIdsToRemove = categoriesToRemove.map((c) => c.id);
+    listings.value = listings.value.map((listing) => {
+        if (selectedItems.value.includes(listing.id)) {
+            return {
+                ...listing,
+                categories: listing.categories.filter((c) => !categoryIdsToRemove.includes(c.id))
+            };
+        }
+        return listing;
+    });
+}
+
+// Add emit definition at the top level
+const emit = defineEmits(['add-selected']);
 </script>
 
 <style lang="scss">
@@ -246,6 +302,13 @@ function onEnd() {
             --grid-item-min: 300px;
         }
     }
+    &.display-list {
+        .gallery-grid {
+            --grid-gap: 20px;
+            --grid-item-min: 300px;
+            max-width: 600px;
+        }
+    }
     .gallery-grid {
         transition: all 0.4s ease-in-out;
         display: grid;
@@ -269,7 +332,7 @@ function onEnd() {
         backdrop-filter: none;
         background-color: none;
     }
-    10% {
+    2% {
         backdrop-filter: blur(5px);
         background-color: var(--background-glass);
     }

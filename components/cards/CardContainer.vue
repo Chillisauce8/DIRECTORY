@@ -135,7 +135,8 @@ const isWrapperVisible = computed(() => props.mode === 'view' || props.clickable
             }
         }
     }
-    &.select.selected {
+    &.select.selected,
+    &.edit.selected {
         img {
             filter: brightness(40%);
         }

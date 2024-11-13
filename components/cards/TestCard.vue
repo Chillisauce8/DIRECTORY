@@ -1,5 +1,5 @@
 <template>
-    <swp-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" />
+    <swp-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" :selected />
     <card-text-wrapper :class="getCardTextWrapperClass()">
         <div class="card-details" :class="props.show">
             <h1 class="name">{{ name }}</h1>
