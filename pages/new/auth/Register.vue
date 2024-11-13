@@ -99,45 +99,52 @@ async function register() {
                 <span class="text-surface-600 dark:text-surface-200 font-medium">Let&lsquo;s get started</span>
             </div>
             <div class="flex flex-col">
-                <IconField class="w-full mb-6">
-                    <InputIcon class="pi pi-envelope" />
-                    <InputText id="email" type="text" class="w-full md:w-[25rem]" placeholder="Email"
-                               v-model="vm.email"
-                               :invalid="$v.email?.$error" :required="true" />
-                    <FieldError class="error-message" :vuelidate-field="$v.email"></FieldError>
-                </IconField>
-                <IconField class="w-full mb-6">
+              <IconField class="w-full mb-6">
+                <InputIcon class="pi pi-user" />
+                <InputText id="name" type="text" class="w-full md:w-[25rem]" placeholder="Name"
+                           v-model="vm.name"
+                           :invalid="$v.name?.$error" :required="true" />
+                <FieldError class="error-message" :vuelidate-field="$v.name"></FieldError>
+              </IconField>
+              <IconField class="w-full mb-6">
                   <InputIcon class="pi pi-envelope" />
-                  <InputText id="phone" type="text" class="w-full md:w-[25rem]" placeholder="Phone"
+                  <InputText id="email" type="text" class="w-full md:w-[25rem]" placeholder="Email"
                              v-model="vm.email"
-                             :invalid="$v.phone?.$error" :required="true" />
-                  <FieldError class="error-message" :vuelidate-field="$v.phone"></FieldError>
-                </IconField>
-                <IconField class="w-full mb-6">
-                    <InputIcon class="pi pi-lock z-20" />
-                    <Password id="password" placeholder="Password" class="w-full"
-                              :inputStyle="{ paddingLeft: '2.5rem' }" inputClass="w-full md:w-[25rem]"
-                              toggleMask
-                              v-model="vm.password"
-                              :invalid="$v.password?.$error" :required="true">
-                    </Password>
-                    <FieldError class="error-message"
-                                :vuelidate-field="$v.password">
-                    </FieldError>
-                </IconField>
-                <div class="mb-6 flex flex-wrap">
-                    <Checkbox name="checkbox" v-model="confirmed" class="mr-2" binary></Checkbox>
-                    <label for="checkbox" class="text-surface-900 dark:text-surface-0 font-medium mr-2"> I have read the </label>
-                    <a class="text-surface-600 dark:text-surface-200 hover:text-primary cursor-pointer">Terms and Conditions</a>
-                </div>
-                <Button label="Sign Up" class="w-full mb-6" @click="register"></Button>
-                <span class="font-medium text-surface-600 dark:text-surface-200">
-                    Already have an account?
-                  <a class="font-semibold cursor-pointer text-surface-900 dark:text-surface-0 hover:text-primary transition-colors duration-300"
-                     @click="navigateToLogin">
-                    Login
-                  </a>
-                </span>
+                             :invalid="$v.email?.$error" :required="true" />
+                  <FieldError class="error-message" :vuelidate-field="$v.email"></FieldError>
+              </IconField>
+              <IconField class="w-full mb-6">
+                <InputIcon class="pi pi-phone" />
+                <InputText id="phone" type="text" class="w-full md:w-[25rem]" placeholder="Phone"
+                           v-model="vm.phone"
+                           :invalid="$v.phone?.$error" :required="true" />
+                <FieldError class="error-message" :vuelidate-field="$v.phone"></FieldError>
+              </IconField>
+              <IconField class="w-full mb-6">
+                  <InputIcon class="pi pi-lock z-20" />
+                  <Password id="password" placeholder="Password" class="w-full"
+                            :inputStyle="{ paddingLeft: '2.5rem' }" inputClass="w-full md:w-[25rem]"
+                            toggleMask
+                            v-model="vm.password"
+                            :invalid="$v.password?.$error" :required="true">
+                  </Password>
+                  <FieldError class="error-message"
+                              :vuelidate-field="$v.password">
+                  </FieldError>
+              </IconField>
+              <div class="mb-6 flex flex-wrap">
+                <Checkbox name="checkbox" v-model="confirmed" class="mr-2" binary></Checkbox>
+                <label for="checkbox" class="text-surface-900 dark:text-surface-0 font-medium mr-2"> I have read the </label>
+                <a class="text-surface-600 dark:text-surface-200 hover:text-primary cursor-pointer">Terms and Conditions</a>
+              </div>
+              <Button label="Sign Up" class="w-full mb-6" @click="register"></Button>
+              <span class="font-medium text-surface-600 dark:text-surface-200">
+                  Already have an account?
+                <a class="font-semibold cursor-pointer text-surface-900 dark:text-surface-0 hover:text-primary transition-colors duration-300"
+                   @click="navigateToLogin">
+                  Login
+                </a>
+              </span>
             </div>
         </div>
     </div>

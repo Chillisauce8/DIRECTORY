@@ -1,12 +1,17 @@
 <script setup>
+import { useCurrentUser } from '~/service/user-common/current-user.factory';
+
 const { layoutState } = useLayout();
+
+const currentUser = useCurrentUser();
+
 </script>
 
 <template>
     <Drawer v-model:visible="layoutState.profileSidebarVisible" position="right" class="layout-profile-sidebar w-full sm:w-[25rem]">
         <div class="flex flex-col mx-auto md:mx-0">
             <span class="mb-2 font-semibold">Welcome</span>
-            <span class="text-surface-500 dark:text-surface-400 font-medium mb-8">Isabella Andolini</span>
+            <span class="text-surface-500 dark:text-surface-400 font-medium mb-8">{{currentUser.getFullName()}}</span>
 
             <ul class="list-none m-0 p-0">
                 <li>

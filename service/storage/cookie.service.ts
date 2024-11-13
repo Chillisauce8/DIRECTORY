@@ -1,12 +1,11 @@
-import VueCookies from 'vue-cookies';
 
 
 export class CookieService {
   // @ts-ignore
-  private internalService: typeof VueCookies.VueCookies;
+  private internalService;
 
   constructor() {
-    this.internalService = VueCookies as any;
+    // this.internalService = nuxtApp.$cookies;
   }
 
   set(keyName: string, value: any, expires?: string | number | Date,
@@ -21,25 +20,4 @@ export class CookieService {
   remove(keyName: string, path?: string, domain?: string): boolean {
     return this.internalService.remove(keyName, path, domain);
   }
-
-  isKey(keyName: string): boolean {
-    return this.internalService.isKey(keyName);
-  }
-
-  keys(): string[] {
-    return this.internalService.keys();
-  }
-}
-
-
-let cookieServiceInstance: CookieService | undefined = undefined;
-
-export function cookieServiceFabric() {
-  if (cookieServiceInstance) {
-    return cookieServiceInstance;
-  }
-
-  cookieServiceInstance = new CookieService();
-
-  return cookieServiceInstance;
 }

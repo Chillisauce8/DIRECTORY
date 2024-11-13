@@ -315,13 +315,12 @@ export class UserService {
       throw new Error(reason);
     }
 
-    this.currentUser.resetPreviousStaff();
     this.currentUser.set(user);
 
     await this.fetchRolesForCurrentUser();
     await this.notifyUserHasLoggedIn(loginMethod);
 
-    this.rememberLastUserType();
+    // this.rememberLastUserType();
     // this.rememberUserWasRegistered();
 
     return user;
@@ -345,15 +344,6 @@ export class UserService {
   public async updateAccount(accountData: Object): Promise<any> {
     return this.httpService.update<UserData>(this.getUserAPIUrl(), accountData)
       .then(({data: userData}) => {
-
-          if (this.currentUser.isHiddenStaff()) {
-            userData.roles = this.currentUser.getHiddenStaffData()?.roles;
-
-            this.currentUser.setPreviousStaffData(userData);
-
-            return;
-          }
-
           const roles = this.currentUser.getRoles();
           this.currentUser.set(userData);
           this.currentUser.setRoles(roles);
@@ -413,10 +403,6 @@ export class UserService {
     }
 
     if (!this.currentUser.wasRegistered()) {
-      return false;
-    }
-
-    if (!this.getLastUserType()) {
       return false;
     }
 

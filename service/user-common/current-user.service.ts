@@ -6,7 +6,6 @@ import {
   PermissionsHelperService,
   PermissionView
 } from '~/service/user-common/permissions-helper.service';
-import {CookieService} from '~/service/storage/cookie.service';
 import type {CurrentUserStore} from '~/store/current-user';
 import { isString } from '~/service/utils';
 
@@ -17,7 +16,6 @@ export class CurrentUser {
   private _isLoggedIn = false;
 
   constructor(protected permissionsHelperService: PermissionsHelperService,
-              private cookieService: CookieService,
               private currentUserStore: CurrentUserStore) {
 
     this.userData = this.currentUserStore.user;
@@ -258,7 +256,7 @@ export class CurrentUser {
       return false;
     }
 
-    return !!this.cookieService.get(this.getCSRFTokenCookieName());
+    return !!useCookie(this.getCSRFTokenCookieName());
   }
 
   wasRegistered(): boolean {
@@ -266,7 +264,7 @@ export class CurrentUser {
       return false;
     }
 
-    return !!this.cookieService.get(this.getRegisteredCookieName());
+    return !!useCookie(this.getRegisteredCookieName());
   }
 
   isIpBlocked(): boolean|null {

@@ -1,7 +1,9 @@
 <script setup>
 import AppBreadcrumb from './AppBreadcrumb.vue';
+import { useCurrentUser } from '~/service/user-common/current-user.factory';
 
 const { onMenuToggle, onProfileSidebarToggle, onConfigSidebarToggle } = useLayout();
+const currentUser = useCurrentUser();
 
 function showProfileSidebar() {
     onProfileSidebarToggle();
@@ -29,7 +31,7 @@ function showProfileSidebar() {
                 <li class="ml-4">
                     <Button icon="pi pi-cog" text rounded severity="secondary" @click="onConfigSidebarToggle"></Button>
                 </li>
-                <li class="topbar-profile">
+                <li class="topbar-profile" v-if="currentUser.isLoggedIn()">
                     <Button type="button" class="topbar-sidebarbutton" @click="showProfileSidebar">
                         <img src="/demo/images/avatar/avatar.png" alt="Profile" />
                     </Button>

@@ -104,7 +104,8 @@ const DefaultTheme = definePreset(Aura, {
 
 export default defineNuxtConfig({
     //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
-    modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image'],
+    modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration',
+      '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image'],
 
     primevue: {
         autoImport: true,
@@ -245,7 +246,13 @@ export default defineNuxtConfig({
         replayClick: true
     },
 
-    plugins: [{ src: '~/plugins/app.js' }, { src: '~/plugins/default-http-interceptors.ts' }, { src: '~/plugins/js-extend.ts' }],
+    plugins: [
+      { src: '~/plugins/app.js' },
+      { src: '~/plugins/composible-instance-store-init.ts' },
+      { src: '~/plugins/default-http-interceptors.ts' },
+      { src: '~/plugins/js-extend.ts' },
+      { src: '~/plugins/check-auth.ts' }
+    ],
 
     components: [
         {

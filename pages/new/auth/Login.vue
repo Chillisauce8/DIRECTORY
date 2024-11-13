@@ -89,7 +89,7 @@ async function doLogin() {
                 <div class="text-surface-900 dark:text-surface-0 text-xl font-bold mb-2">Log in</div>
                 <span class="text-surface-600 dark:text-surface-200 font-medium">Please enter your details</span>
                 <p v-if="vm.error" class="cs-form-text-error font-medium">
-                      Error: {{ vm.error }}
+                      Error: {{ vm.error?.message || vm.error }}
                 </p>
             </div>
             <div class="flex flex-col">

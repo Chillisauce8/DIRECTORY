@@ -1,6 +1,7 @@
 import { UserTypes } from '~/service/user-common/user.service';
 import type { DbNode } from '~/service/db-node.typings';
 
+
 export enum UserCustomCollections {
   staffs = 'staffs',
   customers = 'customers',
@@ -10,14 +11,14 @@ export enum UserCustomCollections {
 
 export interface UserData {
   [field: string]: any;
-  id: string;
+  id?: string;
   type: UserTypes;
   name: string;
   firstName: string;
   lastName: string;
   email?: string;
   phone?: string;
-  isSwp: boolean;
+  isSwp?: boolean;
   ipList?: string[];
   ipBlocked?: boolean;
   roles?: any[];
@@ -36,4 +37,5 @@ export interface BaseUserDbNode extends DbNode {
   roles?: any[];
   userType?: UserTypes;
   phone?: string;
+  type: UserTypes;
 }
