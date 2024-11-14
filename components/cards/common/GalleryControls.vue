@@ -208,13 +208,13 @@ const selectAll = ref(false);
 watch(selectAll, (newValue) => {
     emit('select-all', newValue); // Emit select-all event with the new value
 });
-
+/*
 const categoryFunction = ref();
 const categoryFunctionOptions = ref([
     { label: 'Add To Selected Categories', function: 'addToSelectedCategories' },
     { label: 'Remove From Selected Categories', function: 'removeFromSelectedCategories' }
 ]);
-
+*/
 // Add computed properties for function controls
 const showFunctionSelector = computed(() => Array.isArray(props.visibleFunctionControls) && props.visibleFunctionControls.length > 1);
 
