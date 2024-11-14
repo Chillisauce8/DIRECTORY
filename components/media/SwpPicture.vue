@@ -10,29 +10,21 @@
             <img :src="src || constructSrcSet(normalizedSources[0], image.id).split(',')[0].split(' ')[0]" :alt="image.alt || ''" :loading="loading || 'lazy'" />
         </picture>
 
-        <!-- Overlay with slot and optional icons based on mode and loveable props -->
-        <div v-if="$slots.default || loveable || mode" class="overlay">
+        <!-- Overlay with slot -->
+        <div v-if="$slots.default" class="overlay">
             <slot />
-            <div v-if="mode" class="mode-icons">
-                <SvgIcon :svg="modeIcon" :class="mode" />
-            </div>
-            <SvgIcon v-if="loveable" svg="heart" class="heart" :class="{ loved: isLoved }" @click="toggleLoved" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { computed } from 'vue';
 
 // Base URL for image resources
 const baseUrl = 'https://media.chillisauce.com/image/upload/';
 
 // Define component props
 const props = defineProps<{
-    loveable?: boolean;
-    loved?: boolean;
-    mode?: 'view' | 'select' | 'edit' | 'order';
-    selected?: boolean;
     id?: string;
     alt?: string;
     src?: string;
@@ -53,28 +45,7 @@ const props = defineProps<{
 }>();
 
 // Emit events to parent component
-const emit = defineEmits(['update:src', 'update:loved']);
-
-// Track "loved" state locally and sync with prop
-const isLoved = ref(props.loved ?? false);
-watch(
-    () => props.loved,
-    (newVal) => (isLoved.value = newVal ?? false)
-);
-
-// Toggle "loved" state and emit updated value
-const toggleLoved = () => {
-    isLoved.value = !isLoved.value;
-    emit('update:loved', isLoved.value);
-};
-
-// Computed property for selecting the icon based on mode
-const modeIcon = computed(() => {
-    const icons: Record<string, string> = { select: 'check-circle', edit: 'edit', view: 'eye', order: 'move' };
-    const selectedIcons: Record<string, string> = { ...icons, edit: 'check-circle' };
-    const iconsToUse = props.selected ? selectedIcons : icons;
-    return props.mode && iconsToUse[props.mode] ? iconsToUse[props.mode] : '';
-});
+const emit = defineEmits(['update:src']);
 
 // Return the default `sizes` value based on width range
 const defaultSizes = (widthRange: string): string => `${widthRange.split(':')[0]}px`;

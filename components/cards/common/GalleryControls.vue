@@ -1,5 +1,7 @@
 <template>
     <div v-if="showControls" class="gallery-controls">
+        <Toast />
+        <ConfirmDialog />
         <div class="filter-controls flex flex-col md:flex-row gap-4">
             <!-- Function Control -->
             <SelectButton v-if="showFunctionSelector" v-model="modelMode" :options="filteredFunctionControls" optionValue="value" optionLabel="label" dataKey="value" :allowEmpty="false" class="function-control">
@@ -16,7 +18,7 @@
                 :options="categoryOptions"
                 optionLabel="name"
                 filter
-                placeholder="Select a Category"
+                placeholder="Filter by Category"
                 :maxSelectedLabels="2"
                 class="category-control w-full md:w-80"
             />
@@ -45,13 +47,13 @@
             <template v-if="hasSelectedCards">
                 <Button v-if="mode === 'select'" label="Add Selected" class="add-selected" icon="pi pi-plus-circle" outlined raised @click="emit('add-selected')" />
                 <template v-if="mode === 'edit'">
-                    <Button label="Delete Selected" class="delete-selected" icon="pi pi-trash" outlined raised @click="emit('delete-selected')" />
+                    <Button label="Delete Selected" class="delete-selected" icon="pi pi-trash" outlined raised @click="confirmDelete" />
 
                     <multi-select v-if="editCategoryControl" v-model="editCategories" display="chip" :options="categoryOptions" optionLabel="name" filter placeholder="Edit Categories" :maxSelectedLabels="2" class="edit-categories w-full md:w-80">
                         <template #footer>
                             <div class="p-3 flex justify-between">
-                                <Button label="Add To Selected" class="add-to-selected" severity="secondary" text size="small" icon="pi pi-plus" @click="addCategoriesToSelected" />
-                                <Button label="Remove From Selected" class="remove-from-selected" severity="danger" text size="small" icon="pi pi-times" @click="removeFromSelected" />
+                                <Button label="Add To Selected" class="add-to-selected" severity="secondary" text size="small" icon="pi pi-plus" @click="confirmAddCategories" />
+                                <Button label="Remove From Selected" class="remove-from-selected" severity="danger" text size="small" icon="pi pi-times" @click="confirmRemoveCategories" />
                             </div>
                         </template>
                     </multi-select>
@@ -63,6 +65,88 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, defineEmits, defineModel, type PropType } from 'vue';
+import { useConfirm } from 'primevue/useconfirm';
+import { useToast } from 'primevue/usetoast';
+import ConfirmDialog from 'primevue/confirmdialog';
+import Toast from 'primevue/toast';
+
+const confirm = useConfirm();
+const toast = useToast();
+
+// Update confirmDelete function to show toast after deletion
+const confirmDelete = () => {
+    confirm.require({
+        header: 'Confirm Delete',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Delete',
+            severity: 'danger'
+        },
+        accept: () => {
+            emit('delete-selected');
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Selected items have been deleted',
+                life: 3000
+            });
+        }
+    });
+};
+
+// Add confirmRemoveCategories function
+const confirmRemoveCategories = () => {
+    confirm.require({
+        header: 'Remove Categories',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Remove',
+            severity: 'danger'
+        },
+        accept: () => {
+            removeFromSelected();
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Categories have been removed from selected items',
+                life: 3000
+            });
+        }
+    });
+};
+
+// Add confirmAddCategories function
+const confirmAddCategories = () => {
+    confirm.require({
+        header: 'Add Categories',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Add',
+            severity: 'secondary'
+        },
+        accept: () => {
+            addCategoriesToSelected();
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Categories have been added to selected items',
+                life: 3000
+            });
+        }
+    });
+};
 
 type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 
@@ -200,6 +284,7 @@ function addCategoriesToSelected() {
     emit('add-categories-to-selected', editCategories.value);
 }
 
+// Update removeFromSelected function
 function removeFromSelected() {
     emit('remove-categories-from-selected', editCategories.value);
 }

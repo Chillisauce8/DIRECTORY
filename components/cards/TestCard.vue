@@ -1,5 +1,7 @@
 <template>
-    <swp-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" :selected />
+    <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" :selected="selected">
+        <!-- Slot content if any -->
+    </card-picture>
     <card-text-wrapper :class="getCardTextWrapperClass()">
         <div class="card-details" :class="props.show">
             <h1 class="name">{{ name }}</h1>
@@ -16,6 +18,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { defineProps } from 'vue';
+import CardPicture from '../media/CardPicture.vue';
 
 // Props passed down to ArticleContent
 const props = defineProps({
