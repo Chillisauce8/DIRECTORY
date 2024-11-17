@@ -1,6 +1,6 @@
 <template>
     <div :class="['card-gallery', selectedSize?.display || '', mode]">
-        <GalleryControls
+        <ListControls
             :showControls="showGalleryControls"
             :functionControlDisplay="functionControlDisplay"
             :visibleFunctionControls="visibleFunctionControls"
@@ -16,6 +16,9 @@
             v-model:show="show"
             v-model:searchQuery="searchQuery"
             v-model:selectedSize="selectedSize"
+            v-model:sort="sort"
+            :ref:gridSearch="gridSearch"
+            :ref:gridSort="gridSort"
             :selectedItems="selectedItems"
             @select-all="toggleSelectAll"
             @delete-selected="deleteSelectedItems"
@@ -37,7 +40,7 @@
                 :selected.sync="selectedItems.includes(listing.id)"
                 @update:selected="updateSelectedItems(listing.id, $event)"
             >
-                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" :categories="listing.categories" />
+                <slot name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
             </CardContainer>
         </fancy-box>
 
@@ -55,7 +58,7 @@
                 :selected.sync="selectedItems.includes(listing.id)"
                 @update:selected="updateSelectedItems(listing.id, $event)"
             >
-                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" :categories="listing.categories" />
+                <slot name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
             </CardContainer>
         </vue-draggable>
 
@@ -73,7 +76,7 @@
                 :selected.sync="selectedItems.includes(listing.id)"
                 @update:selected="updateSelectedItems(listing.id, $event)"
             >
-                <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selectedItems.includes(listing.id)" :show="show" :categories="listing.categories" />
+                <slot name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
             </CardContainer>
         </div>
     </div>
@@ -83,6 +86,13 @@
 import { ref, computed, watch } from 'vue';
 import type { PropType } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
+
+// Add refs for grid components
+const gridSearch = ref();
+const gridSort = ref();
+
+// Add sort model
+const sort = ref<{ label: string; sort: string; order: 'asc' | 'desc' } | null>(null);
 
 interface Category {
     name: string;
@@ -188,9 +198,28 @@ const filteredListings = computed(() => {
         result = result.filter((listing) => listing.categories.some((category) => selectedCategoryIds.value.includes(category.id)));
     }
 
-    if (searchQuery.value.length >= props.minSearchLength) {
-        const query = searchQuery.value.toLowerCase();
-        result = result.filter((listing) => listing.images[0].alt.toLowerCase().includes(query));
+    // Apply search if GridSearch ref exists
+    if (gridSearch.value) {
+        result = gridSearch.value.searchItems(result);
+    }
+
+    // Apply sort if sort value exists
+    if (sort.value) {
+        const { sort: sortField, order } = sort.value as { sort: keyof Listing; order: 'asc' | 'desc' };
+        result = [...result].sort((a, b) => {
+            const aVal = a[sortField];
+            const bVal = b[sortField];
+
+            if (order === 'asc') {
+                return aVal > bVal ? 1 : -1;
+            }
+            return aVal < bVal ? 1 : -1;
+        });
+    }
+
+    // Apply sort if GridSort ref exists
+    if (gridSort.value) {
+        result = gridSort.value.sortItems(result);
     }
 
     return result;

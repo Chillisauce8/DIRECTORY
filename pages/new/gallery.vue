@@ -1,5 +1,5 @@
 <template>
-    <CardGallery :mode :show :selectedAlbumIds />
+    <MediaGallery />
 </template>
 
 <script setup lang="ts"></script>

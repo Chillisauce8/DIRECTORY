@@ -11,7 +11,7 @@
             </SelectButton>
 
             <!-- Category Control -->
-            <MultiSelect
+            <MultiSelectFilter
                 v-if="showCategoryControl"
                 v-model="modelSelectedCategories"
                 display="chip"
@@ -20,17 +20,26 @@
                 filter
                 placeholder="Filter by Category"
                 :maxSelectedLabels="2"
-                class="category-control w-full md:w-80"
+                className="category-control w-full md:w-80"
             />
 
             <!-- Show Control -->
             <SelectButton v-if="showShowControl" v-model="modelShow" :options="['name', 'categories']" multiple class="show-control" />
 
+            <!-- Sort Control -->
+            <ListSort
+                v-model="modelSort"
+                :sortOptions="[
+                    { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
+                    { label: 'Name (Z-A)', sort: 'name', order: 'desc' },
+                    { label: 'Newest First', sort: 'created', order: 'desc' },
+                    { label: 'Oldest First', sort: 'created', order: 'asc' }
+                ]"
+                ref="gridSort"
+            />
+
             <!-- Search Control -->
-            <icon-field v-if="showSearchControl" class="search-control">
-                <InputText type="text" class="search" placeholder="Search" v-model="modelSearchQuery" />
-                <InputIcon class="pi pi-search" />
-            </icon-field>
+            <ListSearch v-if="showSearchControl" v-model:searchQuery="modelSearchQuery" :searchFields="searchFields" :minSearchLength="minSearchLength" ref="gridSearch" />
 
             <!-- Card Size Control -->
             <select-button v-if="showCardSizeSelector" v-model="modelSelectedSize" :options="filteredCardSizes" optionLabel="label" dataKey="label" aria-labelledby="card-size-selector" :allowEmpty="false" class="card-size-control">
@@ -69,6 +78,9 @@ import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from 'primevue/toast';
+import MultiSelectFilter from '../controls/MultiSelectFilter.vue';
+import GridSearch from '../controls/ListSearch.vue';
+import GridSort from '../controls/ListSort.vue';
 
 const confirm = useConfirm();
 const toast = useToast();
@@ -150,14 +162,27 @@ const confirmAddCategories = () => {
 
 type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 
-// Define available function controls
+// Update the function controls definition with correct icon names
 const functionControls = ref([
     { label: 'View', icon: 'eye', value: 'view' as FunctionMode },
-    { label: 'Select', icon: 'check', value: 'select' as FunctionMode },
-    { label: 'Edit', icon: 'pencil', value: 'edit' as FunctionMode },
-    { label: 'Order', icon: 'bars', value: 'order' as FunctionMode }
+    { label: 'Select', icon: 'check-circle', value: 'select' as FunctionMode }, // Changed from 'checkbox'
+    { label: 'Edit', icon: 'edit', value: 'edit' as FunctionMode }, // Changed from 'pencil'
+    { label: 'Order', icon: 'move', value: 'order' as FunctionMode } // Changed from 'bars'
 ]);
 
+// Add interfaces
+interface Category {
+    name: string;
+    id: number;
+}
+
+interface Listing {
+    id: string;
+    categories: Category[];
+    [key: string]: any; // For other potential listing properties
+}
+
+// Update props definition
 const props = defineProps({
     showControls: { type: Boolean, default: true },
     functionControlDisplay: {
@@ -184,18 +209,37 @@ const props = defineProps({
         type: String,
         default: 'Big Cards'
     },
-    selectedItems: { type: Array as PropType<string[]>, default: () => [] }
+    selectedItems: { type: Array as PropType<string[]>, default: () => [] },
+    searchFields: {
+        type: Array as PropType<{ field: string; label: string }[]>,
+        default: () => [{ field: 'name', label: 'Name' }]
+    },
+    minSearchLength: { type: Number, default: 1 },
+    listings: {
+        type: Array as PropType<Listing[]>,
+        default: () => []
+    }
 });
 
-// Define emits with both "select-all" and "delete-selected"
-const emit = defineEmits(['select-all', 'delete-selected', 'add-selected', 'add-categories-to-selected', 'remove-categories-from-selected']);
+// Add missing selectedCategoryIds computed property
+const selectedCategoryIds = computed(() => modelSelectedCategories.value.map((category) => category.id));
+
+// Update emit type definition with proper types
+const emit = defineEmits<{
+    'select-all': [boolean];
+    'delete-selected': [];
+    'add-selected': [];
+    'add-categories-to-selected': [Category[]];
+    'remove-categories-from-selected': [Category[]];
+}>();
 
 // Define models for two-way binding using defineModel
 const modelMode = defineModel<FunctionMode>('mode', { default: 'view' });
 const modelSelectedCategories = defineModel<{ name: string; id: number }[]>('selectedCategories', { default: () => [] });
 const modelShow = defineModel<string[]>('show', { default: () => ['name'] });
-const modelSearchQuery = defineModel<string | null>('searchQuery', { default: '' });
+const modelSearchQuery = defineModel<string | undefined>('searchQuery', { default: undefined });
 const modelSelectedSize = defineModel<{ label: string; icon: string; display: string } | null>('selectedSize', { default: null });
+const modelSort = defineModel<{ label: string; sort: string; order: 'asc' | 'desc' } | null>('sort', { default: null });
 
 const cardSizes = ref([
     { label: 'Small Cards', icon: 'cardssmall', display: 'display-small-cards' },
@@ -291,4 +335,8 @@ function removeFromSelected() {
 
 // Add computed for edit control visibility
 const editCategoryControl = computed(() => modelMode.value === 'edit' && hasSelectedCards.value);
+
+// Add ref for GridSearch component
+const gridSearch = ref();
+const gridSort = ref();
 </script>
