@@ -4,10 +4,10 @@
         <ConfirmDialog />
         <div class="filter-controls flex flex-col md:flex-row gap-4">
             <!-- Function Control -->
-            <ListFunctionControl v-model="modelMode" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
+            <FunctionControl v-model="modelMode" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
 
             <!-- Category Control -->
-            <MultiSelectFilter
+            <FilterControl
                 v-if="showCategoryControl"
                 v-model="modelSelectedCategories"
                 display="chip"
@@ -20,10 +20,10 @@
             />
 
             <!-- Show Control -->
-            <ListShowControl v-if="showShowControl" v-model="modelShow" />
+            <ShowControl v-if="showShowControl" v-model="modelShow" />
 
             <!-- Sort Control -->
-            <ListSort
+            <SortControl
                 v-model="modelSort"
                 :sortOptions="[
                     { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
@@ -35,12 +35,12 @@
             />
 
             <!-- Search Control -->
-            <ListSearch v-if="showSearchControl" :searchQuery="modelSearchQuery" @update:searchQuery="(value) => (modelSearchQuery = value)" :searchFields="searchFields" :minSearchLength="minSearchLength" ref="gridSearch" />
+            <SearchControl v-if="showSearchControl" :searchQuery="modelSearchQuery" @update:searchQuery="(value: string) => (modelSearchQuery = value)" :searchFields="searchFields" :minSearchLength="minSearchLength" ref="gridSearch" />
 
             <!-- Display Control -->
-            <ListDisplayControl v-model="modelSelectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
+            <DisplayControl v-model="modelSelectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
 
-            <Button label="Add" icon="pi pi-plus" outlined raised />
+            <AddControl />
         </div>
         <div v-if="mode === 'edit' || mode === 'select'" class="select-controls">
             <ToggleButton v-model="selectAll" class="select-all" onLabel="Deselect All" offLabel="Select All" onIcon="pi pi-check-circle" offIcon="pi pi-circle" aria-label="Do you confirm" />
@@ -66,16 +66,11 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, defineEmits, defineModel, type PropType } from 'vue';
-import ListFunctionControl from '../controls/ListFunctionControl.vue';
-import ListShowControl from '../controls/ListShowControl.vue';
-import ListDisplayControl from '../controls/ListDisplayControl.vue';
+
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from 'primevue/toast';
-import MultiSelectFilter from '../controls/MultiSelectFilter.vue';
-import ListSearch from '../controls/ListSearch.vue';
-import ListSort from '../controls/ListSort.vue';
 
 const confirm = useConfirm();
 const toast = useToast();
