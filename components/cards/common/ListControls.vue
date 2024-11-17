@@ -4,11 +4,7 @@
         <ConfirmDialog />
         <div class="filter-controls flex flex-col md:flex-row gap-4">
             <!-- Function Control -->
-            <SelectButton v-if="showFunctionSelector" v-model="modelMode" :options="filteredFunctionControls" optionValue="value" optionLabel="label" dataKey="value" :allowEmpty="false" class="function-control">
-                <template v-if="functionControlDisplay === 'icon'" #option="slotProps">
-                    <SvgIcon :svg="slotProps.option.icon" :label="slotProps.option.label" labelPosition="hover" />
-                </template>
-            </SelectButton>
+            <ListFunctionControl v-model="modelMode" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
 
             <!-- Category Control -->
             <MultiSelectFilter
@@ -24,7 +20,7 @@
             />
 
             <!-- Show Control -->
-            <SelectButton v-if="showShowControl" v-model="modelShow" :options="['name', 'categories']" multiple class="show-control" />
+            <ListShowControl v-if="showShowControl" v-model="modelShow" />
 
             <!-- Sort Control -->
             <ListSort
@@ -39,14 +35,10 @@
             />
 
             <!-- Search Control -->
-            <ListSearch v-if="showSearchControl" v-model:searchQuery="modelSearchQuery" :searchFields="searchFields" :minSearchLength="minSearchLength" ref="gridSearch" />
+            <ListSearch v-if="showSearchControl" :searchQuery="modelSearchQuery" @update:searchQuery="(value) => (modelSearchQuery = value)" :searchFields="searchFields" :minSearchLength="minSearchLength" ref="gridSearch" />
 
-            <!-- Card Size Control -->
-            <select-button v-if="showCardSizeSelector" v-model="modelSelectedSize" :options="filteredCardSizes" optionLabel="label" dataKey="label" aria-labelledby="card-size-selector" :allowEmpty="false" class="card-size-control">
-                <template #option="slotProps">
-                    <SvgIcon :svg="slotProps.option.icon" :label="slotProps.option.label" labelPosition="hover" />
-                </template>
-            </select-button>
+            <!-- Display Control -->
+            <ListDisplayControl v-model="modelSelectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
 
             <Button label="Add" icon="pi pi-plus" outlined raised />
         </div>
@@ -74,13 +66,16 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, defineEmits, defineModel, type PropType } from 'vue';
+import ListFunctionControl from '../controls/ListFunctionControl.vue';
+import ListShowControl from '../controls/ListShowControl.vue';
+import ListDisplayControl from '../controls/ListDisplayControl.vue';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from 'primevue/toast';
 import MultiSelectFilter from '../controls/MultiSelectFilter.vue';
-import GridSearch from '../controls/ListSearch.vue';
-import GridSort from '../controls/ListSort.vue';
+import ListSearch from '../controls/ListSearch.vue';
+import ListSort from '../controls/ListSort.vue';
 
 const confirm = useConfirm();
 const toast = useToast();
@@ -162,14 +157,6 @@ const confirmAddCategories = () => {
 
 type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 
-// Update the function controls definition with correct icon names
-const functionControls = ref([
-    { label: 'View', icon: 'eye', value: 'view' as FunctionMode },
-    { label: 'Select', icon: 'check-circle', value: 'select' as FunctionMode }, // Changed from 'checkbox'
-    { label: 'Edit', icon: 'edit', value: 'edit' as FunctionMode }, // Changed from 'pencil'
-    { label: 'Order', icon: 'move', value: 'order' as FunctionMode } // Changed from 'bars'
-]);
-
 // Add interfaces
 interface Category {
     name: string;
@@ -234,69 +221,22 @@ const emit = defineEmits<{
 }>();
 
 // Define models for two-way binding using defineModel
-const modelMode = defineModel<FunctionMode>('mode', { default: 'view' });
+const modelMode = defineModel<FunctionMode>('mode', { default: 'view' as FunctionMode });
 const modelSelectedCategories = defineModel<{ name: string; id: number }[]>('selectedCategories', { default: () => [] });
 const modelShow = defineModel<string[]>('show', { default: () => ['name'] });
 const modelSearchQuery = defineModel<string | undefined>('searchQuery', { default: undefined });
 const modelSelectedSize = defineModel<{ label: string; icon: string; display: string } | null>('selectedSize', { default: null });
 const modelSort = defineModel<{ label: string; sort: string; order: 'asc' | 'desc' } | null>('sort', { default: null });
 
-const cardSizes = ref([
-    { label: 'Small Cards', icon: 'cardssmall', display: 'display-small-cards' },
-    { label: 'Big Cards', icon: 'cardsbig', display: 'display-big-cards' },
-    { label: 'List', icon: 'list', display: 'display-list' }
-]);
-
 const selectAll = ref(false);
 
 watch(selectAll, (newValue) => {
     emit('select-all', newValue); // Emit select-all event with the new value
 });
-/*
-const categoryFunction = ref();
-const categoryFunctionOptions = ref([
-    { label: 'Add To Selected Categories', function: 'addToSelectedCategories' },
-    { label: 'Remove From Selected Categories', function: 'removeFromSelectedCategories' }
-]);
-*/
-// Add computed properties for function controls
-const showFunctionSelector = computed(() => Array.isArray(props.visibleFunctionControls) && props.visibleFunctionControls.length > 1);
 
-const filteredFunctionControls = computed(() => {
-    if (!Array.isArray(props.visibleFunctionControls) || props.visibleFunctionControls.length === 0) {
-        const defaultFunction = functionControls.value.find((func) => func.value === props.defaultFunctionControl);
-        return defaultFunction ? [defaultFunction] : [functionControls.value[0]];
-    }
-    return functionControls.value.filter((func) => props.visibleFunctionControls?.includes(func.value) ?? false);
-});
-
-// Update modelMode initialization
-const defaultFunction = computed(() => {
-    const availableFunctions = filteredFunctionControls.value;
-    if (availableFunctions.length === 1) return availableFunctions[0].value;
-    return availableFunctions.find((func) => func.value === props.defaultFunctionControl)?.value || availableFunctions[0].value;
-});
-
-// Initialize modelMode with computed default
-watch(
-    () => defaultFunction.value,
-    (newValue) => {
-        if (!modelMode.value && newValue) {
-            modelMode.value = newValue as FunctionMode;
-        }
-    },
-    { immediate: true }
-);
-
-// Update computed properties to handle null case and defaults
-const showCardSizeSelector = computed(() => Array.isArray(props.visibleCardSizes) && props.visibleCardSizes.length > 1);
-
+// Computed property to filter card sizes
 const filteredCardSizes = computed(() => {
-    if (!Array.isArray(props.visibleCardSizes) || props.visibleCardSizes.length === 0) {
-        const defaultSize = cardSizes.value.find((size) => size.label === props.defaultCardSize);
-        return defaultSize ? [defaultSize] : [cardSizes.value[0]];
-    }
-    return cardSizes.value.filter((size) => props.visibleCardSizes?.includes(size.label) ?? false);
+    return props.visibleCardSizes?.map((size) => ({ label: size, icon: '', display: size })) || [];
 });
 
 // Set initial selected size
@@ -339,4 +279,10 @@ const editCategoryControl = computed(() => modelMode.value === 'edit' && hasSele
 // Add ref for GridSearch component
 const gridSearch = ref();
 const gridSort = ref();
+
+// Expose the gridSearch ref to parent components
+defineExpose({
+    gridSearch,
+    gridSort
+});
 </script>

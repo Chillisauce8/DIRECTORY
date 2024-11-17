@@ -1,13 +1,15 @@
 <template>
-    <icon-field class="search-control">
-        <InputText type="text" class="search" :placeholder="placeholder" v-model="modelValue" />
-        <InputIcon class="pi pi-search" />
-    </icon-field>
+    <span class="p-input-icon-left p-input-icon-right search-control">
+        <i class="pi pi-search" />
+        <InputText v-model="localSearchQuery" type="text" :placeholder="`Search by ${searchFieldLabels}`" class="w-full" @input="handleInput" />
+        <i v-if="localSearchQuery" class="pi pi-times" @click="clearSearch" style="cursor: pointer" />
+    </span>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, watch, computed } from 'vue';
 import type { PropType } from 'vue';
+import InputText from 'primevue/inputtext';
 
 interface SearchField {
     field: string;
@@ -15,13 +17,10 @@ interface SearchField {
 }
 
 const props = defineProps({
+    searchQuery: String,
     searchFields: {
         type: Array as PropType<SearchField[]>,
         default: () => [{ field: 'name', label: 'Name' }]
-    },
-    placeholder: {
-        type: String,
-        default: 'Search'
     },
     minSearchLength: {
         type: Number,
@@ -29,25 +28,51 @@ const props = defineProps({
     }
 });
 
-const modelValue = defineModel<string>('searchQuery');
+const emit = defineEmits(['update:searchQuery']);
 
-// Expose search method for parent components
-const searchItems = (items: any[]) => {
-    if (!modelValue.value || modelValue.value.length < props.minSearchLength) {
-        return items;
+const localSearchQuery = ref(props.searchQuery || '');
+
+// Update search when local value changes
+watch(localSearchQuery, (newValue) => {
+    if (newValue.length >= props.minSearchLength || newValue.length === 0) {
+        emit('update:searchQuery', newValue);
     }
+});
 
-    const searchTerm = modelValue.value.toLowerCase();
-    return items.filter((item) => {
-        return props.searchFields.some((field) => {
+// Update local search when prop changes
+watch(
+    () => props.searchQuery,
+    (newValue) => {
+        if (newValue !== localSearchQuery.value) {
+            localSearchQuery.value = newValue || '';
+        }
+    }
+);
+
+const searchFieldLabels = computed(() => props.searchFields.map((field) => field.label).join(', '));
+
+function handleInput() {
+    // Add any specific logic for handling input if needed
+}
+
+function clearSearch() {
+    localSearchQuery.value = '';
+    emit('update:searchQuery', '');
+}
+
+// Update the search function to be more robust
+function searchItems<T extends Record<string, any>>(items: T[]): T[] {
+    if (!localSearchQuery.value) return items;
+
+    const searchTerm = localSearchQuery.value.toLowerCase().trim();
+    return items.filter((item) =>
+        props.searchFields.some((field) => {
             const value = item[field.field];
-            if (!value) return false;
-            return String(value).toLowerCase().includes(searchTerm);
-        });
-    });
-};
+            return value != null && String(value).toLowerCase().includes(searchTerm);
+        })
+    );
+}
 
-// Expose the search function to parent components
 defineExpose({
     searchItems
 });
@@ -56,6 +81,30 @@ defineExpose({
 <style lang="scss" scoped>
 .search-control {
     width: 100%;
+    display: inline-flex;
+    position: relative;
+
+    .p-inputtext {
+        width: 100%;
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+    }
+
+    i {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-color-secondary);
+
+        &.pi-search {
+            left: 0.75rem;
+        }
+
+        &.pi-times {
+            right: 0.75rem;
+        }
+    }
+
     @media (min-width: 768px) {
         width: 300px;
     }

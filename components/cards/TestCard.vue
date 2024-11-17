@@ -1,6 +1,6 @@
 <template>
     <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" :selected="selected">
-        <!-- Slot content if any -->
+        <!-- Always show image regardless of mode -->
     </card-picture>
     <card-text-wrapper :class="getCardTextWrapperClass()">
         <div class="card-details" :class="props.show">

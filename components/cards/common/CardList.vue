@@ -17,8 +17,11 @@
             v-model:searchQuery="searchQuery"
             v-model:selectedSize="selectedSize"
             v-model:sort="sort"
-            :ref:gridSearch="gridSearch"
-            :ref:gridSort="gridSort"
+            ref="listControls"
+            :searchFields="[
+                { field: 'name', label: 'Name' },
+                { field: 'saleType', label: 'Type' }
+            ]"
             :selectedItems="selectedItems"
             @select-all="toggleSelectAll"
             @delete-selected="deleteSelectedItems"
@@ -27,7 +30,7 @@
             @remove-categories-from-selected="removeFromSelected"
         />
         <fancy-box v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
-            <CardContainer
+            <card-wrapper
                 v-for="(listing, index) in filteredListings"
                 :key="index"
                 :imageId="listing.images[0].id"
@@ -41,12 +44,12 @@
                 @update:selected="updateSelectedItems(listing.id, $event)"
             >
                 <slot name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
-            </CardContainer>
+            </card-wrapper>
         </fancy-box>
 
         <!-- Draggable Grid Section (Order Mode) -->
         <vue-draggable v-else-if="mode === 'order'" class="gallery-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <CardContainer
+            <CardWrapper
                 v-for="(listing, index) in draggableListings"
                 :key="index"
                 :imageId="listing.images[0].id"
@@ -59,12 +62,12 @@
                 @update:selected="updateSelectedItems(listing.id, $event)"
             >
                 <slot name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
-            </CardContainer>
+            </CardWrapper>
         </vue-draggable>
 
         <!-- Default Grid Section (Non-View, Non-Order Modes) -->
         <div v-else class="gallery-grid">
-            <CardContainer
+            <CardWrapper
                 v-for="(listing, index) in filteredListings"
                 :key="index"
                 :imageId="listing.images[0].id"
@@ -77,7 +80,7 @@
                 @update:selected="updateSelectedItems(listing.id, $event)"
             >
                 <slot name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
-            </CardContainer>
+            </CardWrapper>
         </div>
     </div>
 </template>
@@ -86,10 +89,10 @@
 import { ref, computed, watch } from 'vue';
 import type { PropType } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
+import CardWrapper from './CardWrapper.vue';
 
-// Add refs for grid components
-const gridSearch = ref();
-const gridSort = ref();
+// Update the ref to point to ListControls component
+const listControls = ref();
 
 // Add sort model
 const sort = ref<{ label: string; sort: string; order: 'asc' | 'desc' } | null>(null);
@@ -113,6 +116,7 @@ interface Listing {
     yearFrom: number;
     yearToo: number;
     categories: Category[];
+    [key: string]: any; // Add index signature
 }
 
 const cardSizes = ref<{ label: string; icon: string; display: string }[]>([
@@ -194,32 +198,24 @@ const searchQuery = ref('');
 const filteredListings = computed(() => {
     let result = listings.value;
 
+    // Apply category filter
     if (selectedCategoryIds.value.length > 0) {
         result = result.filter((listing) => listing.categories.some((category) => selectedCategoryIds.value.includes(category.id)));
     }
 
-    // Apply search if GridSearch ref exists
-    if (gridSearch.value) {
-        result = gridSearch.value.searchItems(result);
+    // Apply search filter using the gridSearch ref from ListControls
+    if (searchQuery.value && listControls.value?.gridSearch) {
+        result = listControls.value.gridSearch.searchItems(result);
     }
 
     // Apply sort if sort value exists
     if (sort.value) {
-        const { sort: sortField, order } = sort.value as { sort: keyof Listing; order: 'asc' | 'desc' };
+        const { sort: sortField, order } = sort.value;
         result = [...result].sort((a, b) => {
             const aVal = a[sortField];
             const bVal = b[sortField];
-
-            if (order === 'asc') {
-                return aVal > bVal ? 1 : -1;
-            }
-            return aVal < bVal ? 1 : -1;
+            return order === 'asc' ? (aVal > bVal ? 1 : -1) : aVal < bVal ? 1 : -1;
         });
-    }
-
-    // Apply sort if GridSort ref exists
-    if (gridSort.value) {
-        result = gridSort.value.sortItems(result);
     }
 
     return result;
