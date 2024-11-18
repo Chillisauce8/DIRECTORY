@@ -56,3 +56,14 @@ export const classNameProp = {
 export interface ShowProps {
     show: string[];
 }
+
+export interface CardWrapperProps {
+    id: string;
+    mode: string;
+    clickable: boolean;
+    searchTerms: string;
+    selected: boolean;
+    imageId?: string;
+    gallery: string;
+    show: string[];
+}

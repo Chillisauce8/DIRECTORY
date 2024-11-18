@@ -23,51 +23,17 @@
         </div>
 
         <fancy-box v-if="mode === 'view'" class="list-grid" :options="{ Carousel: { infinite: true } }">
-            <card-wrapper
-                v-for="(listing, index) in filteredListings"
-                :key="index"
-                :imageId="listing.images[0].id"
-                :id="listing.id"
-                :gallery="gallery"
-                :mode="mode"
-                :show="show"
-                :selected.sync="selectedItems.includes(listing.id)"
-                @update:selected="updateSelectedItems(listing.id, $event)"
-            >
-                <slot name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
-            </card-wrapper>
+            <slot v-for="(listing, index) in filteredListings" :key="index" name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
         </fancy-box>
 
         <!-- Draggable Grid Section (Order Mode) -->
         <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <CardWrapper
-                v-for="(listing, index) in draggableListings"
-                :key="index"
-                :imageId="listing.images[0].id"
-                :id="listing.id"
-                :mode="mode"
-                :show="show"
-                :selected.sync="selectedItems.includes(listing.id)"
-                @update:selected="updateSelectedItems(listing.id, $event)"
-            >
-                <slot name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
-            </CardWrapper>
+            <slot v-for="(listing, index) in draggableListings" :key="index" name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
         </vue-draggable>
 
         <!-- Default Grid Section (Non-View, Non-Order Modes) -->
         <div v-else class="list-grid">
-            <CardWrapper
-                v-for="(listing, index) in filteredListings"
-                :key="index"
-                :imageId="listing.images[0].id"
-                :id="listing.id"
-                :mode="mode"
-                :show="show"
-                :selected.sync="selectedItems.includes(listing.id)"
-                @update:selected="updateSelectedItems(listing.id, $event)"
-            >
-                <slot name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
-            </CardWrapper>
+            <slot v-for="(listing, index) in filteredListings" :key="index" name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
         </div>
     </div>
 </template>
@@ -80,7 +46,20 @@ import type { Category, SortOption } from '@/composables/useListControls';
 // Type definitions for update functions
 type UpdateFunction = (items: any[]) => void;
 
-// Only define these functions once
+// Core state management - SINGLE SOURCE OF TRUTH
+const searchResults = ref<any[]>([]);
+const sortedItems = ref<any[]>([]);
+const showFields = ref<string[]>(['name', 'categories']);
+const listings = ref<Listing[]>(useListings());
+const show = ref<string[]>(['name', 'categories']);
+const selectedItems = ref<string[]>([]);
+
+// Models
+const sort = defineModel<SortOption | null>('sort', { default: null });
+const searchQuery = defineModel<string>('searchQuery', { default: '' });
+const selectedCategories = defineModel<Category[]>('selectedCategories', { default: () => [] });
+
+// Update functions - SINGLE DEFINITIONS
 const updateSort: UpdateFunction = (items) => {
     sortedItems.value = items;
 };
@@ -93,20 +72,36 @@ const updateShow = (fields: string[]) => {
     show.value = fields;
 };
 
-// Remove duplicate sort definition and consolidate state
-const sort = defineModel<SortOption | null>('sort', { default: null });
-const searchQuery = defineModel<string>('searchQuery', { default: '' });
-const selectedCategories = defineModel<Category[]>('selectedCategories', { default: () => [] });
-
-// Type the refs properly
-const show = ref<string[]>(['name', 'categories']);
-const searchResults = ref<any[]>([]);
-const sortedItems = ref<any[]>([]);
-
-// Provide the update functions
+// Provide update functions once
 provide('updateSort', updateSort);
 provide('updateSearch', updateSearch);
 provide('updateShow', updateShow);
+
+// Single filteredListings computed property
+const filteredListings = computed(() => {
+    let result = listings.value;
+
+    if (searchResults.value.length) {
+        result = searchResults.value;
+    }
+
+    if (sortedItems.value.length) {
+        result = sortedItems.value;
+    }
+
+    if (props.filters?.length) {
+        props.filters.forEach((filter) => {
+            if (filter.selected.length) {
+                result = result.filter((item) => {
+                    const fieldValues = item[filter.field]?.map((i: any) => i.id) || [];
+                    return filter.selected.some((selected) => fieldValues.includes(selected.id));
+                });
+            }
+        });
+    }
+
+    return result;
+});
 
 interface LocalCategory {
     name: string;
@@ -206,8 +201,6 @@ const props = defineProps({
     }
 });
 
-const selectedItems = ref<string[]>([]);
-
 function updateSelectedItems(id: string, isSelected: boolean) {
     if (isSelected) {
         if (!selectedItems.value.includes(id)) selectedItems.value.push(id);
@@ -224,8 +217,6 @@ function toggleSelectAll(selectAll: boolean) {
     }
 }
 
-const listings = ref<Listing[]>(useListings());
-
 function deleteSelectedItems() {
     listings.value = listings.value.filter((listing) => !selectedItems.value.includes(listing.id));
     selectedItems.value = [];
@@ -234,60 +225,6 @@ function deleteSelectedItems() {
 const filters = ref<FilterConfig[]>(props.filters);
 const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSize) || cardSizes.value[0]);
 const mode = ref<FunctionMode>(props.defaultFunctionControl);
-
-const filteredListings = computed(() => {
-    let result = listings.value;
-
-    // Apply filters - generic filtering for any field
-    if (props.filters?.length) {
-        props.filters.forEach((filter: FilterConfig) => {
-            if (filter.selected.length > 0) {
-                result = result.filter((listing) => {
-                    const fieldValues = listing[filter.field]?.map((item: { id: number }) => item.id) || [];
-                    return filter.selected.some((selected: { id: number }) => fieldValues.includes(selected.id));
-                });
-            }
-        });
-    }
-
-    // Apply search filter
-    if (searchQuery.value) {
-        result = result.filter((listing) => listing.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
-    }
-
-    // Apply sort
-    if (sort.value) {
-        const { sort: sortField, order } = sort.value;
-        result = [...result].sort((a, b) => {
-            const aVal = a[sortField];
-            const bVal = b[sortField];
-            return order === 'asc' ? (aVal > bVal ? 1 : -1) : aVal < bVal ? 1 : -1;
-        });
-    }
-
-    // Use search results if available
-    if (searchResults.value.length) {
-        result = searchResults.value;
-    } else if (searchQuery.value) {
-        // Fallback to basic search if no results from SearchControl
-        result = result.filter((listing) => listing.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
-    }
-
-    // Use sorted items if available
-    if (sortedItems.value.length) {
-        result = sortedItems.value;
-    } else if (sort.value) {
-        // Fallback to basic sort if no results from SortControl
-        const { sort: sortField, order } = sort.value;
-        result = [...result].sort((a, b) => {
-            const aVal = a[sortField];
-            const bVal = b[sortField];
-            return order === 'asc' ? (aVal > bVal ? 1 : -1) : aVal < bVal ? 1 : -1;
-        });
-    }
-
-    return result;
-});
 
 const draggableListings = ref([...filteredListings.value]);
 

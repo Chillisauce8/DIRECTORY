@@ -22,7 +22,7 @@
         </template>
 
         <template #card="{ listing, mode, selected, show }">
-            <TestCard :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selected" :show="show" :categories="listing.categories" />
+            <TestCard :id="listing.id" :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selected" :show="show" :categories="listing.categories" />
         </template>
 
         <template #edit-controls>
@@ -32,23 +32,16 @@
 </template>
 
 <script setup lang="ts">
-// Only selectedCategories needs to be managed at this level
-// because it's core business logic specific to this gallery
 const selectedCategories = ref([]);
-const show = ref(['name', 'categories']);
-const sort = ref(null);
-const searchQuery = ref('');
-
-// These could be moved to their respective components with defaults
-// and only overridden here if needed
 const categoryOptions = useCategories();
 
-// Configuration objects
+// Simple configuration objects
 const mediaShowOptions = ['name', 'categories'];
-const mediaSortOptions: { label: string; sort: string; order: 'asc' | 'desc' }[] = [
+const mediaSortOptions = [
     { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
     { label: 'Name (Z-A)', sort: 'name', order: 'desc' }
-];
+] as { label: string; sort: string; order: 'asc' | 'desc' }[]; // Remove the as const
+
 const filterControlConfig = {
     display: 'chip',
     optionLabel: 'name',
@@ -57,21 +50,9 @@ const filterControlConfig = {
     maxSelectedLabels: 2,
     className: 'category-control md:w-60'
 } as const;
+
 const searchFields = [
     { field: 'name', label: 'Name' },
     { field: 'categories', label: 'Categories' }
 ];
-
-// Handle emitted results from controls
-function updateShow(fields: string[]) {
-    // Handle show fields update
-}
-
-function updateSortedItems(items: any[]) {
-    // Handle sorted items
-}
-
-function updateSearchResults(results: any[]) {
-    // Handle search results
-}
 </script>

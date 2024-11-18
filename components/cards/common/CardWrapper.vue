@@ -11,7 +11,6 @@
         @click="handleConditionalClick"
     >
         <slot :src="fullSizeSrc" />
-        <!-- Pass src to slot -->
     </component>
 </template>
 
@@ -38,7 +37,6 @@ function handleClick() {
     }
 }
 
-// Conditional click handler to apply prevent/stop only when mode is not 'view'
 function handleConditionalClick(event: Event) {
     if (props.mode !== 'view') {
         event.preventDefault();

@@ -1,46 +1,53 @@
 <template>
-    <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" :selected="selected">
-        <!-- Always show image regardless of mode -->
-    </card-picture>
-    <card-text-wrapper :class="getCardTextWrapperClass()">
-        <div class="card-details" :class="show">
-            <h1 class="name">{{ name }}</h1>
-            <h1 class="categories">{{ categoryNames }}</h1>
-        </div>
-        <form class="form" v-if="mode === 'edit' && selected" @click.stop>
-            <InputText type="text" v-model="editableName" />
-            <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
-            <Button type="submit" severity="secondary" label="Submit" />
-        </form>
-    </card-text-wrapper>
+    <card-wrapper v-bind="$props" @update:selected="updateSelected">
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
+        <card-text-wrapper :class="getCardTextWrapperClass()">
+            <div class="card-details" :class="show">
+                <h1 class="name">{{ name }}</h1>
+                <h1 class="categories">{{ categoryNames }}</h1>
+            </div>
+            <form class="form" v-if="mode === 'edit' && selected" @click.stop>
+                <InputText type="text" v-model="editableName" />
+                <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
+                <Button type="submit" severity="secondary" label="Submit" />
+            </form>
+        </card-text-wrapper>
+    </card-wrapper>
 </template>
 
 <script setup lang="ts">
-// Remove Vue imports as Nuxt handles them
+import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, selectedProp, showProp, categoriesProp } from '@/types/props';
+import CardWrapper from './common/CardWrapper.vue';
 
+// Keep all the props as they are - they'll be passed to CardWrapper
 const props = defineProps({
+    id: { type: String, required: true },
     imageId: imageIdProp,
     name: nameProp,
     mode: modeProp,
     loveable: loveableProp,
     selected: selectedProp,
     show: showProp,
-    categories: categoriesProp
+    categories: categoriesProp,
+    clickable: { type: Boolean, default: true },
+    searchTerms: { type: String, default: '' },
+    gallery: { type: String, default: 'gallery' }
 });
 
-// Reactive data and computed properties
+const emit = defineEmits(['update:selected']);
+const selected = defineModel('selected', { type: Boolean, default: false });
+
+// TestCard specific logic
 const editableName = ref(props.name);
 const selectedCategoryIds = ref(props.categories.map((cat) => cat.id));
 const categoryList = useCategories(); // Assumed external function for category list
 const src = ref<string>('');
 
-// Update computed to use props.categories directly
 const categoryNames = computed(() => {
     return props.categories.map((category) => category.name).join(', ');
 });
 
-// Add watch to keep selectedCategoryIds in sync with props
 watch(
     () => props.categories,
     (newCategories) => {
@@ -49,7 +56,6 @@ watch(
     { immediate: true }
 );
 
-// Add watch to debug show prop changes
 watch(
     () => props.show,
     (newShow) => {
@@ -61,7 +67,12 @@ watch(
 const getCardTextWrapperClass = () => {
     return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
 };
+
+function updateSelected(newSelected: boolean) {
+    emit('update:selected', newSelected);
+}
 </script>
+
 <style lang="scss">
 .test-card {
     picture {
@@ -100,6 +111,73 @@ const getCardTextWrapperClass = () => {
         .p-inputtext {
             font-size: 12px;
         }
+    }
+}
+.card-wrapper {
+    position: relative; // For smooth Vue transition-group https://www.youtube.com/watch?v=DGI_aKld0Jg
+    background: var(--surface-card);
+    border: var(--card-border);
+    font-size: 12px;
+    transition: all 1s ease;
+    border-radius: var(--corner-outer);
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
+    img {
+        transition: all 0.7s ease;
+    }
+    &.order {
+        cursor: move;
+    }
+    &.select,
+    &.view,
+    &.edit,
+    &.order {
+        .mode-icons {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: flex-end;
+            padding: 5px;
+            opacity: 0;
+            transition: all 1s ease;
+            .icon {
+                width: 24px;
+                height: 24px;
+            }
+        }
+        :hover {
+            img {
+                filter: brightness(80%);
+            }
+            .mode-icons {
+                opacity: 0.8;
+            }
+        }
+    }
+    &.select.selected,
+    &.edit.selected {
+        img {
+            filter: brightness(40%);
+        }
+        .mode-icons {
+            opacity: 1;
+            .icon {
+                background-color: var(--primary-color);
+                border-radius: 50%;
+                svg {
+                    stroke: white;
+                }
+            }
+        }
+    }
+    &:has(.card-text-wrapper.hide) {
+        .swp-picture img {
+            border-radius: var(--corner-outer);
+        }
+    }
+    & .swp-picture img {
+        border-top-left-radius: var(--corner-outer);
+        border-top-right-radius: var(--corner-outer);
     }
 }
 </style>

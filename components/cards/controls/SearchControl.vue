@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, inject } from 'vue';
+import { ref, watch, computed, inject, onMounted } from 'vue';
 import type { PropType } from 'vue';
 import InputText from 'primevue/inputtext';
 
@@ -43,8 +43,25 @@ const emit = defineEmits<{
     'search-results': [Record<string, any>[]];
 }>();
 
+// Add initialization
+onMounted(() => {
+    // Ensure initial state is properly set
+    if (props.items.length > 0) {
+        handleInput();
+    }
+});
+
+// Modify handleInput to be more robust
 function handleInput() {
+    if (!searchValue.value) {
+        // If search is cleared, reset to original items
+        emit('search-results', props.items);
+        updateSearch(props.items);
+        return;
+    }
+
     const results = searchItems(props.items);
+    emit('search-results', results);
     updateSearch(results);
 }
 
@@ -64,6 +81,17 @@ function searchItems<T extends Record<string, any>>(items: T[]): T[] {
         })
     );
 }
+
+// Add items watcher to ensure search is updated when items change
+watch(
+    () => props.items,
+    (newItems) => {
+        if (searchValue.value) {
+            handleInput();
+        }
+    },
+    { deep: true }
+);
 
 // Expose search functionality
 defineExpose({
