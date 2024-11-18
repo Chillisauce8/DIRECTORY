@@ -5,12 +5,12 @@
         :href="mode === 'view' ? fullSizeSrc : undefined"
         :data-fancybox="mode === 'view' ? gallery : undefined"
         class="card-wrapper test-card"
-        :class="{ selected: selected, [mode]: true, show }"
+        :class="{ selected: modelValue, [mode]: true, show }"
         :id="id"
         :data-search="searchTerms"
         @click="handleConditionalClick"
     >
-        <slot :src="fullSizeSrc" />
+        <slot :src="fullSizeSrc" :selected="modelValue" />
     </component>
 </template>
 
@@ -22,18 +22,31 @@ const props = defineProps({
     mode: modeProp,
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
-    selected: selectedProp,
+    selected: { type: Boolean, required: true },
     imageId: imageIdProp,
     gallery: { type: String, default: 'gallery' },
     show: showProp
 });
 
+// Use both model and emit for two-way binding
+const modelValue = defineModel<boolean>();
 const emit = defineEmits(['update:selected']);
-const selected = defineModel('selected', { type: Boolean, default: false });
+
+// Watch for external prop changes
+watch(
+    () => props.selected,
+    (newVal) => {
+        if (modelValue.value !== newVal) {
+            modelValue.value = newVal;
+        }
+    }
+);
 
 function handleClick() {
     if (props.clickable) {
-        emit('update:selected', !props.selected);
+        const newValue = !modelValue.value;
+        modelValue.value = newValue;
+        emit('update:selected', newValue);
     }
 }
 

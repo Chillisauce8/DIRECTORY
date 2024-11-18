@@ -57,10 +57,20 @@ const toggleLoved = () => {
 
 // Computed property for selecting the icon based on mode and selected
 const modeIcon = computed(() => {
-    const icons: Record<string, string> = { select: 'check-circle', edit: 'edit', view: 'eye', order: 'move' };
-    const selectedIcons: Record<string, string> = { ...icons, edit: 'check-circle' };
-    const iconsToUse = props.selected ? selectedIcons : icons;
-    return props.mode && iconsToUse[props.mode] ? iconsToUse[props.mode] : '';
+    const baseIcons: Record<string, string> = {
+        select: 'check-circle',
+        edit: 'edit',
+        view: 'eye',
+        order: 'move'
+    };
+
+    // If selected and in edit mode, always show check-circle
+    if (props.selected && props.mode === 'edit') {
+        return 'check-circle';
+    }
+
+    // Otherwise use the base icon
+    return props.mode ? baseIcons[props.mode] : '';
 });
 </script>
 

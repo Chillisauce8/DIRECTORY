@@ -23,17 +23,15 @@
         </div>
 
         <fancy-box v-if="mode === 'view'" class="list-grid" :options="{ Carousel: { infinite: true } }">
-            <slot v-for="(listing, index) in filteredListings" :key="index" name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
+            <slot v-for="(listing, index) in filteredListings" :key="index" name="card" v-bind="getCardProps(listing)" />
         </fancy-box>
 
-        <!-- Draggable Grid Section (Order Mode) -->
         <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <slot v-for="(listing, index) in draggableListings" :key="index" name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
+            <slot v-for="(listing, index) in draggableListings" :key="index" name="card" v-bind="getCardProps(listing)" />
         </vue-draggable>
 
-        <!-- Default Grid Section (Non-View, Non-Order Modes) -->
         <div v-else class="list-grid">
-            <slot v-for="(listing, index) in filteredListings" :key="index" name="card" :listing="listing" :mode="mode" :selected="selectedItems.includes(listing.id)" :show="show" />
+            <slot v-for="(listing, index) in filteredListings" :key="index" name="card" v-bind="getCardProps(listing)" />
         </div>
     </div>
 </template>
@@ -369,6 +367,27 @@ function handleSearchResults(results: any[]) {
 
 function handleSortedItems(items: any[]) {
     sortedItems.value = items;
+}
+
+function getCardProps(listing: Listing) {
+    const isSelected = selectedItems.value.includes(listing.id);
+    return {
+        listing,
+        mode: unref(mode),
+        selected: isSelected,
+        show: show.value,
+        onUpdateSelected: (selected: boolean) => handleItemSelection(listing.id, selected)
+    };
+}
+
+function handleItemSelection(id: string, selected: boolean): void {
+    if (selected) {
+        if (!selectedItems.value.includes(id)) {
+            selectedItems.value = [...selectedItems.value, id];
+        }
+    } else {
+        selectedItems.value = selectedItems.value.filter((item) => item !== id);
+    }
 }
 </script>
 

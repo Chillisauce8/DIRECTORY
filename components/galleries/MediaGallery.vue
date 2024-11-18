@@ -21,8 +21,8 @@
             <SearchControl :search-fields="searchFields" :items="items" />
         </template>
 
-        <template #card="{ listing, mode, selected, show }">
-            <TestCard :id="listing.id" :imageId="listing.images[0].id" :name="listing.name" :mode="mode" :loveable="listing.loveable" :selected="selected" :show="show" :categories="listing.categories" />
+        <template #card="{ listing, mode: cardMode, selected, show }">
+            <TestCard :id="listing.id" :imageId="listing.images[0].id" :name="listing.name" :mode="cardMode" :loveable="listing.loveable" :selected="selected" :show="show" :categories="listing.categories" />
         </template>
 
         <template #edit-controls>

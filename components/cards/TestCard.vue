@@ -1,42 +1,51 @@
 <template>
-    <card-wrapper v-bind="$props" @update:selected="updateSelected">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
-        <card-text-wrapper :class="getCardTextWrapperClass()">
-            <div class="card-details" :class="show">
-                <h1 class="name">{{ name }}</h1>
-                <h1 class="categories">{{ categoryNames }}</h1>
-            </div>
-            <form class="form" v-if="mode === 'edit' && selected" @click.stop>
-                <InputText type="text" v-model="editableName" />
-                <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
-                <Button type="submit" severity="secondary" label="Submit" />
-            </form>
-        </card-text-wrapper>
+    <card-wrapper v-bind="$props" v-model:selected="selected" @update:selected="handleSelect">
+        <template #default="{ selected: wrapperSelected }">
+            <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="wrapperSelected" />
+            <card-text-wrapper :class="getCardTextWrapperClass(wrapperSelected)">
+                <div class="card-details" :class="show">
+                    <h1 class="name">{{ name }}</h1>
+                    <h1 class="categories">{{ categoryNames }}</h1>
+                </div>
+                <form class="form" v-if="mode === 'edit' && selected" @click.stop>
+                    <InputText type="text" v-model="editableName" />
+                    <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
+                    <Button type="submit" severity="secondary" label="Submit" />
+                </form>
+            </card-text-wrapper>
+        </template>
     </card-wrapper>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { imageIdProp, nameProp, modeProp, loveableProp, selectedProp, showProp, categoriesProp } from '@/types/props';
+import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp } from '@/types/props';
 import CardWrapper from './common/CardWrapper.vue';
 
-// Keep all the props as they are - they'll be passed to CardWrapper
 const props = defineProps({
     id: { type: String, required: true },
     imageId: imageIdProp,
     name: nameProp,
     mode: modeProp,
     loveable: loveableProp,
-    selected: selectedProp,
     show: showProp,
     categories: categoriesProp,
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
-    gallery: { type: String, default: 'gallery' }
+    gallery: { type: String, default: 'gallery' },
+    selected: { type: Boolean, required: true }
 });
 
-const emit = defineEmits(['update:selected']);
-const selected = defineModel('selected', { type: Boolean, default: false });
+const emit = defineEmits<{
+    'update:selected': [boolean];
+}>();
+
+const selected = defineModel<boolean>('selected', { required: true });
+
+function handleSelect(newValue: boolean) {
+    selected.value = newValue;
+    emit('update:selected', newValue);
+}
 
 // TestCard specific logic
 const editableName = ref(props.name);
@@ -64,13 +73,9 @@ watch(
     { immediate: true }
 );
 
-const getCardTextWrapperClass = () => {
-    return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
+const getCardTextWrapperClass = (isSelected: boolean) => {
+    return (props.mode === 'edit' && isSelected) || props.show.length > 0 ? 'show' : 'hide';
 };
-
-function updateSelected(newSelected: boolean) {
-    emit('update:selected', newSelected);
-}
 </script>
 
 <style lang="scss">
