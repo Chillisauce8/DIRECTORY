@@ -1,9 +1,5 @@
 <template>
-    <MultiSelect v-model="model" :options="props.options" :filter="true" :filterField="filterField" v-bind="$attrs" :class="['multi-select-filter', className]">
-        <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
-            <slot :name="name" v-bind="slotData"></slot>
-        </template>
-    </MultiSelect>
+    <MultiSelect v-model="model" :options="props.options" :filter="true" :filterField="filterField" v-bind="$attrs" :class="['multi-select-filter', className]"> </MultiSelect>
 </template>
 
 <script setup lang="ts">
@@ -33,10 +29,4 @@ defineOptions({
 });
 </script>
 
-<style lang="scss" scoped>
-.multi-select-filter {
-    &.w-full {
-        width: 100%;
-    }
-}
-</style>
+<style lang="scss"></style>

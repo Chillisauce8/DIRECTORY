@@ -1,13 +1,13 @@
 <template>
     <span class="p-input-icon-left p-input-icon-right search-control">
-        <InputText v-model="localSearchQuery" type="text" placeholder="Search" class="search-control" @input="handleInput" />
-        <i v-if="localSearchQuery" class="pi pi-times" @click="clearSearch" style="cursor: pointer" />
+        <InputText v-model="searchValue" @input="handleInput" type="text" placeholder="Search" />
+        <i v-if="searchValue" class="pi pi-times" @click="clearSearch" />
         <i v-else class="pi pi-search" />
     </span>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, inject } from 'vue';
 import type { PropType } from 'vue';
 import InputText from 'primevue/inputtext';
 
@@ -17,7 +17,6 @@ interface SearchField {
 }
 
 const props = defineProps({
-    searchQuery: String,
     searchFields: {
         type: Array as PropType<SearchField[]>,
         default: () => [{ field: 'name', label: 'Name' }]
@@ -25,46 +24,39 @@ const props = defineProps({
     minSearchLength: {
         type: Number,
         default: 1
+    },
+    items: {
+        type: Array as PropType<Record<string, any>[]>,
+        default: () => []
     }
 });
 
-const emit = defineEmits(['update:searchQuery']);
+// Single state source
+const searchValue = ref('');
 
-const localSearchQuery = ref(props.searchQuery || '');
+// Type the injected function
+type UpdateSearchFn = (items: any[]) => void;
+const updateSearch = inject<UpdateSearchFn>('updateSearch', () => {});
 
-// Update search when local value changes
-watch(localSearchQuery, (newValue) => {
-    if (newValue.length >= props.minSearchLength || newValue.length === 0) {
-        emit('update:searchQuery', newValue);
-    }
-});
-
-// Update local search when prop changes
-watch(
-    () => props.searchQuery,
-    (newValue) => {
-        if (newValue !== localSearchQuery.value) {
-            localSearchQuery.value = newValue || '';
-        }
-    }
-);
-
-const searchFieldLabels = computed(() => props.searchFields.map((field) => field.label).join(', '));
+// Emit results, not state
+const emit = defineEmits<{
+    'search-results': [Record<string, any>[]];
+}>();
 
 function handleInput() {
-    // Add any specific logic for handling input if needed
+    const results = searchItems(props.items);
+    updateSearch(results);
 }
 
 function clearSearch() {
-    localSearchQuery.value = '';
-    emit('update:searchQuery', '');
+    searchValue.value = '';
+    updateSearch(props.items);
 }
 
-// Update the search function to be more robust
 function searchItems<T extends Record<string, any>>(items: T[]): T[] {
-    if (!localSearchQuery.value) return items;
+    if (!searchValue.value) return items;
 
-    const searchTerm = localSearchQuery.value.toLowerCase().trim();
+    const searchTerm = searchValue.value.toLowerCase().trim();
     return items.filter((item) =>
         props.searchFields.some((field) => {
             const value = item[field.field];
@@ -73,8 +65,10 @@ function searchItems<T extends Record<string, any>>(items: T[]): T[] {
     );
 }
 
+// Expose search functionality
 defineExpose({
-    searchItems
+    searchItems,
+    searchQuery: searchValue
 });
 </script>
 

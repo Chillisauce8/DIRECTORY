@@ -1,53 +1,69 @@
 <template>
-    <component
-        :is="mode === 'view' ? 'a' : 'article'"
-        v-if="isWrapperVisible"
-        :href="mode === 'view' ? fullSizeSrc : null"
-        :data-fancybox="mode === 'view' ? gallery : null"
-        class="card-wrapper media-card"
-        :class="{ selected: selected, [mode]: true }"
-        :id="id"
-        :data-search="searchTerms"
-        @click.prevent.stop="handleClick"
-    >
-        <TestCard :imageId="imageId" :name="name" :mode="mode" :loveable="loveable" :selected="selected" :show="show" />
-    </component>
+    <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" :selected="selected">
+        <!-- Always show image regardless of mode -->
+    </card-picture>
+    <card-text-wrapper :class="getCardTextWrapperClass()">
+        <div class="card-details" :class="show">
+            <h1 class="name">{{ name }}</h1>
+            <h1 class="categories">{{ categoryNames }}</h1>
+        </div>
+        <form class="form" v-if="mode === 'edit' && selected" @click.stop>
+            <InputText type="text" v-model="editableName" />
+            <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
+            <Button type="submit" severity="secondary" label="Submit" />
+        </form>
+    </card-text-wrapper>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-
-import { defineProps, defineEmits, defineModel, type PropType } from 'vue';
+// Remove Vue imports as Nuxt handles them
+import { imageIdProp, nameProp, modeProp, loveableProp, selectedProp, showProp, categoriesProp } from '@/types/props';
 
 const props = defineProps({
-    id: { type: String, required: true },
-    mode: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
-    clickable: { type: Boolean, default: true },
-    searchTerms: { type: String, default: '' },
-    selected: { type: Boolean, default: false },
-    imageId: { type: String, required: true },
-    name: { type: String, default: '' },
-    categories: { type: Array as PropType<{ id: number; name: string }[]>, default: () => [] },
-    gallery: { type: String, default: 'gallery' },
-    loveable: { type: Boolean, default: false },
-    show: { type: Array as PropType<string[]>, default: () => [] }
+    imageId: imageIdProp,
+    name: nameProp,
+    mode: modeProp,
+    loveable: loveableProp,
+    selected: selectedProp,
+    show: showProp,
+    categories: categoriesProp
 });
 
-const emit = defineEmits(['update:selected']);
-const selected = defineModel('selected', { type: Boolean, default: false });
+// Reactive data and computed properties
+const editableName = ref(props.name);
+const selectedCategoryIds = ref(props.categories.map((cat) => cat.id));
+const categoryList = useCategories(); // Assumed external function for category list
+const src = ref<string>('');
 
-function handleClick() {
-    if (props.clickable) {
-        emit('update:selected', !props.selected);
-    }
-}
+// Update computed to use props.categories directly
+const categoryNames = computed(() => {
+    return props.categories.map((category) => category.name).join(', ');
+});
 
-const fullSizeSrc = computed(() => `https://media.chillisauce.com/image/upload/c_fill,q_auto,f_auto/${props.imageId}`);
-const isWrapperVisible = computed(() => props.mode === 'view' || props.clickable);
+// Add watch to keep selectedCategoryIds in sync with props
+watch(
+    () => props.categories,
+    (newCategories) => {
+        selectedCategoryIds.value = newCategories.map((cat) => cat.id);
+    },
+    { immediate: true }
+);
+
+// Add watch to debug show prop changes
+watch(
+    () => props.show,
+    (newShow) => {
+        console.log('Show value changed:', newShow);
+    },
+    { immediate: true }
+);
+
+const getCardTextWrapperClass = () => {
+    return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
+};
 </script>
-
 <style lang="scss">
-.media-card {
+.test-card {
     picture {
         @include aspect-ratio(3, 2);
     }
@@ -84,72 +100,6 @@ const isWrapperVisible = computed(() => props.mode === 'view' || props.clickable
         .p-inputtext {
             font-size: 12px;
         }
-    }
-}
-.card-wrapper {
-    position: relative; // For smooth Vue transition-group https://www.youtube.com/watch?v=DGI_aKld0Jg
-    background: var(--surface-card);
-    border: var(--card-border);
-    font-size: 12px;
-    transition: all 1s ease;
-    border-radius: var(--corner-outer);
-    box-shadow: var(--box-shadow);
-    cursor: pointer;
-    img {
-        transition: all 0.7s ease;
-    }
-    &.order {
-        cursor: move;
-    }
-    &.select,
-    &.view,
-    &.edit,
-    &.order {
-        .mode-icons {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            justify-content: flex-end;
-            padding: 5px;
-            opacity: 0;
-            transition: all 1s ease;
-            .icon {
-                width: 24px;
-                height: 24px;
-            }
-        }
-        :hover {
-            img {
-                filter: brightness(80%);
-            }
-            .mode-icons {
-                opacity: 0.8;
-            }
-        }
-    }
-    &.select.selected {
-        img {
-            filter: brightness(40%);
-        }
-        .mode-icons {
-            opacity: 1;
-            .icon {
-                background-color: var(--primary-color);
-                border-radius: 50%;
-                svg {
-                    stroke: white;
-                }
-            }
-        }
-    }
-    &:has(.card-text-wrapper.hide) {
-        .swp-picture img {
-            border-radius: var(--corner-outer);
-        }
-    }
-    & .swp-picture img {
-        border-top-left-radius: var(--corner-outer);
-        border-top-right-radius: var(--corner-outer);
     }
 }
 </style>

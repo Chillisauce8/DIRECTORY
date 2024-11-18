@@ -1,31 +1,24 @@
 <template>
-    <!-- This Component should just be for configuration !!-->
     <card-list
-        v-model:selectedCategories="controls.selectedCategories.value"
-        v-model:show="controls.show.value"
-        v-model:searchQuery="controls.searchQuery.value"
-        v-model:sort="controls.sort.value"
-        :filterUpdates="{
-            selectedCategories: controls.selectedCategories.value
-        }"
+        v-model:selected-categories="selectedCategories"
+        :filters="[
+            {
+                field: 'categories',
+                options: categoryOptions,
+                selected: selectedCategories
+            }
+        ]"
         functionControlDisplay="icon"
         :visibleFunctionControls="['view', 'select', 'edit', 'order']"
         defaultFunctionControl="view"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
-        :filters="[
-            {
-                field: 'categories',
-                options: categoryOptions,
-                selected: controls.selectedCategories.value
-            }
-        ]"
     >
-        <template #controls>
-            <FilterControl :options="categoryOptions" filterField="categories" v-model="controls.selectedCategories.value" v-bind="filterControlConfig" />
-            <ShowControl v-model="controls.show.value" :showOptions="mediaShowOptions" />
-            <SortControl v-model="controls.sort.value" :sortOptions="mediaSortOptions" />
-            <SearchControl v-model:searchQuery="controls.searchQuery.value" :searchFields="searchFields" :minSearchLength="1" />
+        <template #controls="{ items }">
+            <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
+            <ShowControl :show-options="mediaShowOptions" />
+            <SortControl :sort-options="mediaSortOptions" :items="items" />
+            <SearchControl :search-fields="searchFields" :items="items" />
         </template>
 
         <template #card="{ listing, mode, selected, show }">
@@ -39,19 +32,15 @@
 </template>
 
 <script setup lang="ts">
-interface SearchField {
-    field: string;
-    label: string;
-}
+// Only selectedCategories needs to be managed at this level
+// because it's core business logic specific to this gallery
+const selectedCategories = ref([]);
+const show = ref(['name', 'categories']);
+const sort = ref(null);
+const searchQuery = ref('');
 
-// Keep only configuration and necessary state
-const controls = useListControls({
-    initialSort: { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
-    initialShow: ['name', 'categories'],
-    initialCategories: [],
-    initialSearchQuery: ''
-});
-
+// These could be moved to their respective components with defaults
+// and only overridden here if needed
 const categoryOptions = useCategories();
 
 // Configuration objects
@@ -72,4 +61,17 @@ const searchFields = [
     { field: 'name', label: 'Name' },
     { field: 'categories', label: 'Categories' }
 ];
+
+// Handle emitted results from controls
+function updateShow(fields: string[]) {
+    // Handle show fields update
+}
+
+function updateSortedItems(items: any[]) {
+    // Handle sorted items
+}
+
+function updateSearchResults(results: any[]) {
+    // Handle search results
+}
 </script>

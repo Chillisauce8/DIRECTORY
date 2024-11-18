@@ -1,11 +1,11 @@
 <template>
     <div class="grid-sort">
-        <Dropdown v-model="selectedSort" :options="sortOptions" optionLabel="label" placeholder="Sort by..." class="w-full md:w-[200px]" />
+        <Dropdown v-model="selectedSort" :options="sortOptions" optionLabel="label" placeholder="Sort by..." />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, watchEffect, inject } from 'vue';
 import type { PropType } from 'vue';
 
 interface SortOption {
@@ -18,12 +18,32 @@ const props = defineProps({
     sortOptions: {
         type: Array as PropType<SortOption[]>,
         default: () => []
+    },
+    items: {
+        type: Array as PropType<Record<string, any>[]>,
+        default: () => []
     }
 });
 
-const selectedSort = defineModel<SortOption | null>('modelValue', { default: null });
+// Single state source
+const selectedSort = ref(null);
 
-// Expose sort method for parent components
+// Type the injected function
+type UpdateSortFn = (items: any[]) => void;
+const updateSort = inject<UpdateSortFn>('updateSort', () => {});
+
+// Emit results, not state
+const emit = defineEmits<{
+    'sorted-items': [Record<string, any>[]];
+}>();
+
+watch(selectedSort, (newSort) => {
+    if (props.items?.length && newSort) {
+        const sortedItems = sortItems(props.items);
+        updateSort(sortedItems);
+    }
+});
+
 const sortItems = <T>(items: T[]): T[] => {
     if (!selectedSort.value) return items;
 
@@ -31,11 +51,7 @@ const sortItems = <T>(items: T[]): T[] => {
     return [...items].sort((a: any, b: any) => {
         const aVal = a[sort];
         const bVal = b[sort];
-
-        if (order === 'asc') {
-            return aVal > bVal ? 1 : -1;
-        }
-        return aVal < bVal ? 1 : -1;
+        return order === 'asc' ? (aVal > bVal ? 1 : -1) : aVal < bVal ? 1 : -1;
     });
 };
 

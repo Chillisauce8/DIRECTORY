@@ -7,8 +7,8 @@
                 <!-- Default Controls -->
                 <FunctionControl v-model="mode" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
 
-                <!-- Slot for custom controls -->
-                <slot name="controls" />
+                <!-- Update slot binding to pass listings -->
+                <slot name="controls" :items="listings" :selected-categories="selectedCategories" :search-query="searchQuery" :show="show" :sort="sort" @search-results="handleSearchResults" @sorted-items="handleSortedItems" />
 
                 <!-- Default Display Control -->
                 <DisplayControl v-model="selectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
@@ -28,8 +28,6 @@
                 :key="index"
                 :imageId="listing.images[0].id"
                 :id="listing.id"
-                :name="listing.name"
-                :categories="listing.categories"
                 :gallery="gallery"
                 :mode="mode"
                 :show="show"
@@ -47,8 +45,6 @@
                 :key="index"
                 :imageId="listing.images[0].id"
                 :id="listing.id"
-                :name="listing.name"
-                :categories="listing.categories"
                 :mode="mode"
                 :show="show"
                 :selected.sync="selectedItems.includes(listing.id)"
@@ -65,8 +61,6 @@
                 :key="index"
                 :imageId="listing.images[0].id"
                 :id="listing.id"
-                :name="listing.name"
-                :categories="listing.categories"
                 :mode="mode"
                 :show="show"
                 :selected.sync="selectedItems.includes(listing.id)"
@@ -83,8 +77,36 @@
 import { VueDraggable } from 'vue-draggable-plus';
 import type { Category, SortOption } from '@/composables/useListControls';
 
-// Add sort model
-const sort = ref<{ label: string; sort: string; order: 'asc' | 'desc' } | null>(null);
+// Type definitions for update functions
+type UpdateFunction = (items: any[]) => void;
+
+// Only define these functions once
+const updateSort: UpdateFunction = (items) => {
+    sortedItems.value = items;
+};
+
+const updateSearch: UpdateFunction = (items) => {
+    searchResults.value = items;
+};
+
+const updateShow = (fields: string[]) => {
+    show.value = fields;
+};
+
+// Remove duplicate sort definition and consolidate state
+const sort = defineModel<SortOption | null>('sort', { default: null });
+const searchQuery = defineModel<string>('searchQuery', { default: '' });
+const selectedCategories = defineModel<Category[]>('selectedCategories', { default: () => [] });
+
+// Type the refs properly
+const show = ref<string[]>(['name', 'categories']);
+const searchResults = ref<any[]>([]);
+const sortedItems = ref<any[]>([]);
+
+// Provide the update functions
+provide('updateSort', updateSort);
+provide('updateSearch', updateSearch);
+provide('updateShow', updateShow);
 
 interface LocalCategory {
     name: string;
@@ -124,9 +146,6 @@ type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 
 // Fix duplicate emit definition by combining them
 const emit = defineEmits<{
-    'update:show': [string[]];
-    'update:searchQuery': [string];
-    'update:sort': [SortOption | null];
     'add-selected': [string[]];
     'update:filterUpdates': [FilterUpdate];
 }>();
@@ -144,6 +163,7 @@ interface FilterUpdate {
     [key: string]: any[] | undefined;
 }
 
+// Add filters to props
 const props = defineProps({
     functionControlDisplay: {
         type: String as PropType<'text' | 'icon'>,
@@ -168,23 +188,6 @@ const props = defineProps({
     gallery: { type: String, default: 'gallery' },
     minSearchLength: { type: Number, default: 1 },
     initialSize: { type: String, default: 'Big Cards' },
-    searchQuery: { type: String, default: '' },
-    selectedCategories: {
-        type: Array as PropType<Category[]>,
-        default: () => []
-    },
-    show: {
-        type: Array as PropType<string[]>,
-        default: () => ['name']
-    },
-    sort: {
-        type: Object as PropType<SortOption | undefined>, // Change to allow undefined instead of null
-        default: undefined // Change default to undefined
-    },
-    filters: {
-        type: Array as PropType<FilterConfig[]>,
-        default: () => []
-    },
     categoryOptions: {
         type: Array as PropType<Item[]>,
         default: () => []
@@ -192,6 +195,14 @@ const props = defineProps({
     filterUpdates: {
         type: Object as PropType<FilterUpdate>,
         default: () => ({})
+    },
+    filters: {
+        type: Array as PropType<FilterConfig[]>,
+        default: () => []
+    },
+    show: {
+        type: Array as PropType<string[]>,
+        default: () => ['name', 'categories']
     }
 });
 
@@ -223,33 +234,51 @@ function deleteSelectedItems() {
 const filters = ref<FilterConfig[]>(props.filters);
 const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSize) || cardSizes.value[0]);
 const mode = ref<FunctionMode>(props.defaultFunctionControl);
-const show = ref<string[]>(props.show);
-
-const searchQuery = ref('');
 
 const filteredListings = computed(() => {
     let result = listings.value;
 
     // Apply filters - generic filtering for any field
-    props.filters.forEach((filter) => {
-        if (filter.selected.length > 0) {
-            result = result.filter((listing) => {
-                // Get array of IDs from the listing's field
-                const fieldValues = listing[filter.field]?.map((item: { id: number }) => item.id) || [];
-                // Check if any selected ID matches
-                return filter.selected.some((selected) => fieldValues.includes(selected.id));
-            });
-        }
-    });
+    if (props.filters?.length) {
+        props.filters.forEach((filter: FilterConfig) => {
+            if (filter.selected.length > 0) {
+                result = result.filter((listing) => {
+                    const fieldValues = listing[filter.field]?.map((item: { id: number }) => item.id) || [];
+                    return filter.selected.some((selected: { id: number }) => fieldValues.includes(selected.id));
+                });
+            }
+        });
+    }
 
     // Apply search filter
-    if (props.searchQuery) {
-        result = result.filter((listing) => listing.name.toLowerCase().includes(props.searchQuery.toLowerCase()));
+    if (searchQuery.value) {
+        result = result.filter((listing) => listing.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
     }
 
     // Apply sort
-    if (props.sort) {
-        const { sort: sortField, order } = props.sort;
+    if (sort.value) {
+        const { sort: sortField, order } = sort.value;
+        result = [...result].sort((a, b) => {
+            const aVal = a[sortField];
+            const bVal = b[sortField];
+            return order === 'asc' ? (aVal > bVal ? 1 : -1) : aVal < bVal ? 1 : -1;
+        });
+    }
+
+    // Use search results if available
+    if (searchResults.value.length) {
+        result = searchResults.value;
+    } else if (searchQuery.value) {
+        // Fallback to basic search if no results from SearchControl
+        result = result.filter((listing) => listing.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
+    }
+
+    // Use sorted items if available
+    if (sortedItems.value.length) {
+        result = sortedItems.value;
+    } else if (sort.value) {
+        // Fallback to basic sort if no results from SortControl
+        const { sort: sortField, order } = sort.value;
         result = [...result].sort((a, b) => {
             const aVal = a[sortField];
             const bVal = b[sortField];
@@ -330,7 +359,7 @@ function handleUpdateField(field: string, items: Item[], action: 'add' | 'remove
     console.log('Updated listings:', listings.value);
 
     // Update filters
-    const filterConfig = props.filters.find((f) => f.field === field);
+    const filterConfig = props.filters.find((f: FilterConfig) => f.field === field);
     if (filterConfig) {
         const updatedSelected =
             action === 'add' ? [...filterConfig.selected, ...items.filter((item) => !filterConfig.selected.some((selected) => selected.id === item.id))] : filterConfig.selected.filter((selected) => !items.some((item) => item.id === selected.id));
@@ -395,6 +424,15 @@ const updateArrayField: UpdateArrayFieldFn = (field, items, action) => {
 };
 
 provide('updateArrayField', updateArrayField);
+
+// Handle results from child components
+function handleSearchResults(results: any[]) {
+    searchResults.value = results;
+}
+
+function handleSortedItems(items: any[]) {
+    sortedItems.value = items;
+}
 </script>
 
 <style lang="scss">

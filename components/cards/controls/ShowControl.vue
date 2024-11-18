@@ -1,23 +1,36 @@
 <template>
-    <MultiSelect v-model="internalValue" :options="showOptions" :class="['show-control', className]" display="chip" placeholder="Show Fields" :maxSelectedLabels="2" />
+    <MultiSelect v-model="selectedFields" :options="showOptions" :class="['show-control', className]" display="chip" placeholder="Show Fields" />
 </template>
 
 <script setup lang="ts">
+import type { PropType } from 'vue';
 import { classNameProp } from '@/types/props';
 
+// Internal state only
+const selectedFields = ref(['name']);
+
+// Type the injected function
+type UpdateShowFn = (fields: string[]) => void;
+const updateShow = inject<UpdateShowFn>('updateShow', () => {});
+
+// Emit the selected fields
+const emit = defineEmits<{
+    'update:fields': [string[]];
+}>();
+
 const props = defineProps({
-    modelValue: { type: Array as PropType<string[]>, required: true },
     showOptions: { type: Array as PropType<string[]>, required: true },
     className: classNameProp
 });
 
-const emit = defineEmits<{
-    'update:modelValue': [string[]];
-}>();
+// Remove both model and selectedFields - use only one
+watch(selectedFields, (newFields) => {
+    updateShow(newFields);
+    emit('update:fields', newFields);
+});
 
-const internalValue = computed({
-    get: () => props.modelValue,
-    set: (value) => emit('update:modelValue', value)
+watchEffect(() => {
+    console.log('ShowControl options:', props.showOptions);
 });
 </script>
 
