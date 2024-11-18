@@ -1,34 +1,32 @@
 <template>
     <div :class="['card-gallery', selectedSize?.display || '', mode]">
-        <ListControls
-            :showControls="showGalleryControls"
-            :functionControlDisplay="functionControlDisplay"
-            :visibleFunctionControls="visibleFunctionControls"
-            :defaultFunctionControl="defaultFunctionControl"
-            :showCategoryControl="showCategoryControl"
-            :showShowControl="showShowControl"
-            :showSearchControl="showSearchControl"
-            :functionControlOptions="functionControlOptions"
-            :categoryOptions="categories"
-            :visibleCardSizes="visibleCardSizes"
-            v-model:mode="mode"
-            v-model:selectedCategories="selectedCategories"
-            v-model:show="show"
-            v-model:searchQuery="searchQuery"
-            v-model:selectedSize="selectedSize"
-            v-model:sort="sort"
-            ref="listControls"
-            :searchFields="[
-                { field: 'name', label: 'Name' },
-                { field: 'saleType', label: 'Type' }
-            ]"
-            :selectedItems="selectedItems"
-            @select-all="toggleSelectAll"
-            @delete-selected="deleteSelectedItems"
-            @add-selected="addSelectedItems"
-            @add-categories-to-selected="addCategoriesToSelected"
-            @remove-categories-from-selected="removeFromSelected"
-        />
+        <div class="gallery-controls">
+            <Toast />
+            <ConfirmDialog />
+            <div class="filter-controls flex flex-col lg:flex-row gap-4">
+                <!-- Default Controls -->
+                <FunctionControl v-model="mode" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
+
+                <!-- Slot for custom controls -->
+                <slot name="controls" />
+
+                <!-- Default Display Control -->
+                <DisplayControl v-model="selectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
+                <AddControl />
+            </div>
+
+            <SelectControls
+                :mode="mode"
+                :selectedItems="selectedItems"
+                :categoryOptions="categories"
+                @select-all="toggleSelectAll"
+                @delete-selected="deleteSelectedItems"
+                @add-selected="addSelectedItems"
+                @add-categories-to-selected="addCategoriesToSelected"
+                @remove-categories-from-selected="removeFromSelected"
+            />
+        </div>
+
         <fancy-box v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
             <card-wrapper
                 v-for="(listing, index) in filteredListings"
@@ -90,6 +88,7 @@ import { ref, computed, watch } from 'vue';
 import type { PropType } from 'vue';
 import { VueDraggable } from 'vue-draggable-plus';
 import CardWrapper from './CardWrapper.vue';
+import type { Category, SortOption } from '@/composables/useListControls';
 
 // Update the ref to point to ListControls component
 const listControls = ref();
@@ -97,7 +96,7 @@ const listControls = ref();
 // Add sort model
 const sort = ref<{ label: string; sort: string; order: 'asc' | 'desc' } | null>(null);
 
-interface Category {
+interface LocalCategory {
     name: string;
     id: number;
 }
@@ -127,8 +126,16 @@ const cardSizes = ref<{ label: string; icon: string; display: string }[]>([
 
 type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 
+// Fix duplicate emit definition by combining them
+const emit = defineEmits<{
+    'update:selectedCategories': [Category[]];
+    'update:show': [string[]];
+    'update:searchQuery': [string];
+    'update:sort': [SortOption | null];
+    'add-selected': [string[]];
+}>();
+
 const props = defineProps({
-    showGalleryControls: { type: Boolean, default: true },
     functionControlDisplay: {
         type: String as PropType<'text' | 'icon'>,
         default: 'text'
@@ -141,11 +148,6 @@ const props = defineProps({
         type: String as PropType<FunctionMode>,
         default: 'view'
     },
-    showCategoryControl: { type: Boolean, default: true },
-    showShowControl: { type: Boolean, default: true },
-    showSearchControl: { type: Boolean, default: true },
-    functionControlOptions: { type: Array as PropType<string[]>, default: () => ['view', 'select', 'edit', 'order'] },
-    defaultShowControl: { type: Array as PropType<string[]>, default: () => ['name'] },
     visibleCardSizes: {
         type: Array as PropType<string[] | null>,
         default: () => ['Small Cards', 'Big Cards', 'List']
@@ -157,7 +159,20 @@ const props = defineProps({
     categoryControlOptions: { type: Array as PropType<Category[]>, default: () => [] },
     gallery: { type: String, default: 'gallery' },
     minSearchLength: { type: Number, default: 1 },
-    initialSize: { type: String, default: 'Big Cards' }
+    initialSize: { type: String, default: 'Big Cards' },
+    searchQuery: { type: String, default: '' },
+    selectedCategories: {
+        type: Array as PropType<Category[]>,
+        default: () => []
+    },
+    show: {
+        type: Array as PropType<string[]>,
+        default: () => ['name']
+    },
+    sort: {
+        type: Object as PropType<SortOption | undefined>, // Change to allow undefined instead of null
+        default: undefined // Change default to undefined
+    }
 });
 
 const selectedItems = ref<string[]>([]);
@@ -187,11 +202,10 @@ function deleteSelectedItems() {
 
 const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSize) || cardSizes.value[0]);
 const mode = ref<FunctionMode>(props.defaultFunctionControl);
-const show = ref<string[]>(props.defaultShowControl);
+const show = ref<string[]>(props.show);
 
-const categories = ref<Category[]>(props.categoryControlOptions.length ? props.categoryControlOptions : useCategories());
-const selectedCategories = ref<Category[]>([]);
-const selectedCategoryIds = computed(() => selectedCategories.value.map((category) => category.id));
+const categories = ref<LocalCategory[]>(props.categoryControlOptions.length ? props.categoryControlOptions : useCategories());
+const selectedCategoryIds = computed(() => props.selectedCategories.map((category: LocalCategory) => category.id));
 
 const searchQuery = ref('');
 
@@ -199,18 +213,18 @@ const filteredListings = computed(() => {
     let result = listings.value;
 
     // Apply category filter
-    if (selectedCategoryIds.value.length > 0) {
-        result = result.filter((listing) => listing.categories.some((category) => selectedCategoryIds.value.includes(category.id)));
+    if (props.selectedCategories.length > 0) {
+        result = result.filter((listing) => listing.categories.some((category) => props.selectedCategories.some((sc) => sc.id === category.id)));
     }
 
-    // Apply search filter using the gridSearch ref from ListControls
-    if (searchQuery.value && listControls.value?.gridSearch) {
-        result = listControls.value.gridSearch.searchItems(result);
+    // Apply search filter
+    if (props.searchQuery) {
+        result = result.filter((listing) => listing.name.toLowerCase().includes(props.searchQuery.toLowerCase()));
     }
 
-    // Apply sort if sort value exists
-    if (sort.value) {
-        const { sort: sortField, order } = sort.value;
+    // Apply sort
+    if (props.sort) {
+        const { sort: sortField, order } = props.sort;
         result = [...result].sort((a, b) => {
             const aVal = a[sortField];
             const bVal = b[sortField];
@@ -226,6 +240,13 @@ const draggableListings = ref([...filteredListings.value]);
 watch(filteredListings, (newFilteredListings) => {
     draggableListings.value = [...newFilteredListings];
 });
+
+watch(
+    () => props.show,
+    (newShow) => {
+        show.value = newShow;
+    }
+);
 
 function onStart() {
     console.log('start drag');
@@ -267,9 +288,6 @@ function removeFromSelected(categoriesToRemove: Category[]) {
         return listing;
     });
 }
-
-// Add emit definition at the top level
-const emit = defineEmits(['add-selected']);
 </script>
 
 <style lang="scss">

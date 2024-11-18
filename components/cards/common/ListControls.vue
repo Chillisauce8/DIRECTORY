@@ -2,7 +2,7 @@
     <div v-if="showControls" class="gallery-controls">
         <Toast />
         <ConfirmDialog />
-        <div class="filter-controls flex flex-col md:flex-row gap-4">
+        <div class="filter-controls flex flex-col lg:flex-row gap-4">
             <!-- Function Control -->
             <FunctionControl v-model="modelMode" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
 
@@ -16,11 +16,11 @@
                 filter
                 placeholder="Filter by Category"
                 :maxSelectedLabels="2"
-                className="category-control w-full md:w-80"
+                className="category-control md:w-60"
             />
 
             <!-- Show Control -->
-            <ShowControl v-if="showShowControl" v-model="modelShow" />
+            <ShowControl v-if="showShowControl" v-model="modelShow" :showOptions="['name', 'categories']" />
 
             <!-- Sort Control -->
             <SortControl
@@ -42,113 +42,26 @@
 
             <AddControl />
         </div>
-        <div v-if="mode === 'edit' || mode === 'select'" class="select-controls">
-            <ToggleButton v-model="selectAll" class="select-all" onLabel="Deselect All" offLabel="Select All" onIcon="pi pi-check-circle" offIcon="pi pi-circle" aria-label="Do you confirm" />
-            <!-- Conditionally display these components if there is at least one selected card -->
-            <template v-if="hasSelectedCards">
-                <Button v-if="mode === 'select'" label="Add Selected" class="add-selected" icon="pi pi-plus-circle" outlined raised @click="emit('add-selected')" />
-                <template v-if="mode === 'edit'">
-                    <Button label="Delete Selected" class="delete-selected" icon="pi pi-trash" outlined raised @click="confirmDelete" />
-
-                    <multi-select v-if="editCategoryControl" v-model="editCategories" display="chip" :options="categoryOptions" optionLabel="name" filter placeholder="Edit Categories" :maxSelectedLabels="2" class="edit-categories w-full md:w-80">
-                        <template #footer>
-                            <div class="p-3 flex justify-between">
-                                <Button label="Add To Selected" class="add-to-selected" severity="secondary" text size="small" icon="pi pi-plus" @click="confirmAddCategories" />
-                                <Button label="Remove From Selected" class="remove-from-selected" severity="danger" text size="small" icon="pi pi-times" @click="confirmRemoveCategories" />
-                            </div>
-                        </template>
-                    </multi-select>
-                </template>
-            </template>
-        </div>
+        <SelectControls
+            :mode="modelMode"
+            :selectedItems="selectedItems"
+            :categoryOptions="categoryOptions"
+            @select-all="(value) => emit('select-all', value)"
+            @delete-selected="emit('delete-selected')"
+            @add-selected="emit('add-selected')"
+            @add-categories-to-selected="(categories) => emit('add-categories-to-selected', categories)"
+            @remove-categories-from-selected="(categories) => emit('remove-categories-from-selected', categories)"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, defineEmits, defineModel, type PropType } from 'vue';
-
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Toast from 'primevue/toast';
-
-const confirm = useConfirm();
-const toast = useToast();
-
-// Update confirmDelete function to show toast after deletion
-const confirmDelete = () => {
-    confirm.require({
-        header: 'Confirm Delete',
-        rejectProps: {
-            label: 'Cancel',
-            severity: 'secondary',
-            outlined: true
-        },
-        acceptProps: {
-            label: 'Delete',
-            severity: 'danger'
-        },
-        accept: () => {
-            emit('delete-selected');
-            toast.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'Selected items have been deleted',
-                life: 3000
-            });
-        }
-    });
-};
-
-// Add confirmRemoveCategories function
-const confirmRemoveCategories = () => {
-    confirm.require({
-        header: 'Remove Categories',
-        rejectProps: {
-            label: 'Cancel',
-            severity: 'secondary',
-            outlined: true
-        },
-        acceptProps: {
-            label: 'Remove',
-            severity: 'danger'
-        },
-        accept: () => {
-            removeFromSelected();
-            toast.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'Categories have been removed from selected items',
-                life: 3000
-            });
-        }
-    });
-};
-
-// Add confirmAddCategories function
-const confirmAddCategories = () => {
-    confirm.require({
-        header: 'Add Categories',
-        rejectProps: {
-            label: 'Cancel',
-            severity: 'secondary',
-            outlined: true
-        },
-        acceptProps: {
-            label: 'Add',
-            severity: 'secondary'
-        },
-        accept: () => {
-            addCategoriesToSelected();
-            toast.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'Categories have been added to selected items',
-                life: 3000
-            });
-        }
-    });
-};
+import SelectControls from './SelectControls.vue';
 
 type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 
@@ -254,22 +167,6 @@ watch(
 
 // Computed property to check if there are selected cards
 const hasSelectedCards = computed(() => props.selectedItems.length > 0);
-
-// Add ref for edit categories
-const editCategories = ref<{ name: string; id: number }[]>([]);
-
-// Add handlers for category management
-function addCategoriesToSelected() {
-    emit('add-categories-to-selected', editCategories.value);
-}
-
-// Update removeFromSelected function
-function removeFromSelected() {
-    emit('remove-categories-from-selected', editCategories.value);
-}
-
-// Add computed for edit control visibility
-const editCategoryControl = computed(() => modelMode.value === 'edit' && hasSelectedCards.value);
 
 // Add ref for GridSearch component
 const gridSearch = ref();

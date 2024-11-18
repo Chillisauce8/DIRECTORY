@@ -3,7 +3,7 @@
         <!-- Always show image regardless of mode -->
     </card-picture>
     <card-text-wrapper :class="getCardTextWrapperClass()">
-        <div class="card-details" :class="props.show">
+        <div class="card-details" :class="show">
             <h1 class="name">{{ name }}</h1>
             <h1 class="categories">{{ categoryNames }}</h1>
         </div>
@@ -27,7 +27,7 @@ const props = defineProps({
     mode: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
     loveable: { type: Boolean, default: false },
     selected: { type: Boolean, default: false },
-    show: { type: Array as PropType<string[]>, default: () => [] },
+    show: { type: Array as PropType<string[]>, default: () => ['name'] },
     categories: { type: Array as PropType<{ id: number; name: string }[]>, default: () => [] }
 });
 
@@ -47,6 +47,15 @@ watch(
     () => props.categories,
     (newCategories) => {
         selectedCategoryIds.value = newCategories.map((cat) => cat.id);
+    },
+    { immediate: true }
+);
+
+// Add watch to debug show prop changes
+watch(
+    () => props.show,
+    (newShow) => {
+        console.log('Show value changed:', newShow);
     },
     { immediate: true }
 );

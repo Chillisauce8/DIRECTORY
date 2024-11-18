@@ -1,8 +1,8 @@
 <template>
     <span class="p-input-icon-left p-input-icon-right search-control">
-        <i class="pi pi-search" />
-        <InputText v-model="localSearchQuery" type="text" :placeholder="`Search by ${searchFieldLabels}`" class="w-full" @input="handleInput" />
+        <InputText v-model="localSearchQuery" type="text" placeholder="Search" class="search-control" @input="handleInput" />
         <i v-if="localSearchQuery" class="pi pi-times" @click="clearSearch" style="cursor: pointer" />
+        <i v-else class="pi pi-search" />
     </span>
 </template>
 
@@ -95,18 +95,11 @@ defineExpose({
         top: 50%;
         transform: translateY(-50%);
         color: var(--text-color-secondary);
-
-        &.pi-search {
-            left: 0.75rem;
-        }
-
-        &.pi-times {
-            right: 0.75rem;
-        }
+        right: 0.75rem;
     }
 
     @media (min-width: 768px) {
-        width: 300px;
+        width: 150px;
     }
 }
 </style>

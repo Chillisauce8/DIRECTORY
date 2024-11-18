@@ -5,7 +5,7 @@
         :href="mode === 'view' ? fullSizeSrc : undefined"
         :data-fancybox="mode === 'view' ? gallery : undefined"
         class="card-wrapper test-card"
-        :class="{ selected: selected, [mode]: true }"
+        :class="{ selected: selected, [mode]: true, show }"
         :id="id"
         :data-search="searchTerms"
         @click="handleConditionalClick"
