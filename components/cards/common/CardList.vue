@@ -1,6 +1,6 @@
 <template>
-    <div :class="['card-gallery', selectedSize?.display || '', mode]">
-        <div class="gallery-controls">
+    <div :class="['card-list', selectedSize?.display || '', mode]">
+        <div class="list-controls">
             <Toast />
             <ConfirmDialog />
             <div class="filter-controls flex flex-col lg:flex-row gap-4">
@@ -15,19 +15,14 @@
                 <AddControl />
             </div>
 
-            <SelectControls
-                :mode="mode"
-                :selectedItems="selectedItems"
-                :categoryOptions="categories"
-                @select-all="toggleSelectAll"
-                @delete-selected="deleteSelectedItems"
-                @add-selected="addSelectedItems"
-                @add-categories-to-selected="addCategoriesToSelected"
-                @remove-categories-from-selected="removeFromSelected"
-            />
+            <SelectControls :mode="mode" :selectedItems="selectedItems" :options="categoryOptions" @select-all="toggleSelectAll" @delete-selected="deleteSelectedItems" @add-selected="addSelectedItems" @update-field="handleUpdateField">
+                <template #edit-controls>
+                    <slot name="edit-controls" />
+                </template>
+            </SelectControls>
         </div>
 
-        <fancy-box v-if="mode === 'view'" class="gallery-grid" :options="{ Carousel: { infinite: true } }">
+        <fancy-box v-if="mode === 'view'" class="list-grid" :options="{ Carousel: { infinite: true } }">
             <card-wrapper
                 v-for="(listing, index) in filteredListings"
                 :key="index"
@@ -46,7 +41,7 @@
         </fancy-box>
 
         <!-- Draggable Grid Section (Order Mode) -->
-        <vue-draggable v-else-if="mode === 'order'" class="gallery-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
+        <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
             <CardWrapper
                 v-for="(listing, index) in draggableListings"
                 :key="index"
@@ -64,7 +59,7 @@
         </vue-draggable>
 
         <!-- Default Grid Section (Non-View, Non-Order Modes) -->
-        <div v-else class="gallery-grid">
+        <div v-else class="list-grid">
             <CardWrapper
                 v-for="(listing, index) in filteredListings"
                 :key="index"
@@ -84,14 +79,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import type { PropType } from 'vue';
+// Keep only non-Vue imports
 import { VueDraggable } from 'vue-draggable-plus';
-import CardWrapper from './CardWrapper.vue';
 import type { Category, SortOption } from '@/composables/useListControls';
-
-// Update the ref to point to ListControls component
-const listControls = ref();
 
 // Add sort model
 const sort = ref<{ label: string; sort: string; order: 'asc' | 'desc' } | null>(null);
@@ -118,6 +108,12 @@ interface Listing {
     [key: string]: any; // Add index signature
 }
 
+interface Item {
+    id: number;
+    name: string;
+    [key: string]: any;
+}
+
 const cardSizes = ref<{ label: string; icon: string; display: string }[]>([
     { label: 'Small Cards', icon: 'cardssmall', display: 'display-small-cards' },
     { label: 'Big Cards', icon: 'cardsbig', display: 'display-big-cards' },
@@ -128,12 +124,25 @@ type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 
 // Fix duplicate emit definition by combining them
 const emit = defineEmits<{
-    'update:selectedCategories': [Category[]];
     'update:show': [string[]];
     'update:searchQuery': [string];
     'update:sort': [SortOption | null];
     'add-selected': [string[]];
+    'update:filterUpdates': [FilterUpdate];
 }>();
+
+interface FilterConfig {
+    field: string;
+    options: { id: number; name: string }[];
+    selected: { id: number; name: string }[];
+}
+
+// Add type definition for filter updates
+interface FilterUpdate {
+    selectedCategories?: any[];
+    selectedTags?: any[];
+    [key: string]: any[] | undefined;
+}
 
 const props = defineProps({
     functionControlDisplay: {
@@ -156,7 +165,6 @@ const props = defineProps({
         type: String,
         default: 'Big Cards'
     },
-    categoryControlOptions: { type: Array as PropType<Category[]>, default: () => [] },
     gallery: { type: String, default: 'gallery' },
     minSearchLength: { type: Number, default: 1 },
     initialSize: { type: String, default: 'Big Cards' },
@@ -172,6 +180,18 @@ const props = defineProps({
     sort: {
         type: Object as PropType<SortOption | undefined>, // Change to allow undefined instead of null
         default: undefined // Change default to undefined
+    },
+    filters: {
+        type: Array as PropType<FilterConfig[]>,
+        default: () => []
+    },
+    categoryOptions: {
+        type: Array as PropType<Item[]>,
+        default: () => []
+    },
+    filterUpdates: {
+        type: Object as PropType<FilterUpdate>,
+        default: () => ({})
     }
 });
 
@@ -200,22 +220,27 @@ function deleteSelectedItems() {
     selectedItems.value = [];
 }
 
+const filters = ref<FilterConfig[]>(props.filters);
 const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSize) || cardSizes.value[0]);
 const mode = ref<FunctionMode>(props.defaultFunctionControl);
 const show = ref<string[]>(props.show);
-
-const categories = ref<LocalCategory[]>(props.categoryControlOptions.length ? props.categoryControlOptions : useCategories());
-const selectedCategoryIds = computed(() => props.selectedCategories.map((category: LocalCategory) => category.id));
 
 const searchQuery = ref('');
 
 const filteredListings = computed(() => {
     let result = listings.value;
 
-    // Apply category filter
-    if (props.selectedCategories.length > 0) {
-        result = result.filter((listing) => listing.categories.some((category) => props.selectedCategories.some((sc) => sc.id === category.id)));
-    }
+    // Apply filters - generic filtering for any field
+    props.filters.forEach((filter) => {
+        if (filter.selected.length > 0) {
+            result = result.filter((listing) => {
+                // Get array of IDs from the listing's field
+                const fieldValues = listing[filter.field]?.map((item: { id: number }) => item.id) || [];
+                // Check if any selected ID matches
+                return filter.selected.some((selected) => fieldValues.includes(selected.id));
+            });
+        }
+    });
 
     // Apply search filter
     if (props.searchQuery) {
@@ -261,42 +286,124 @@ function addSelectedItems() {
     emit('add-selected', selectedItems.value);
 }
 
-// Add category management functions
-function addCategoriesToSelected(categoriesToAdd: Category[]) {
+// Replace the old updateField function with this new one
+function handleUpdateField(field: string, items: Item[], action: 'add' | 'remove') {
+    console.log('CardList handleUpdateField started:', { field, items, action, selectedItems: selectedItems.value });
+
+    // Update local listings
     listings.value = listings.value.map((listing) => {
+        // Check if this listing is selected
         if (selectedItems.value.includes(listing.id)) {
-            const existingCategoryIds = listing.categories.map((c) => c.id);
-            const newCategories = categoriesToAdd.filter((c) => !existingCategoryIds.includes(c.id));
-            return {
-                ...listing,
-                categories: [...listing.categories, ...newCategories]
-            };
+            console.log('Updating listing:', listing.id);
+
+            // Ensure the field exists and is an array
+            if (!Array.isArray(listing[field])) {
+                listing[field] = [];
+            }
+
+            if (action === 'add') {
+                // Add items that don't already exist
+                const existingIds = listing[field].map((item: Item) => item.id);
+                const newItems = items.filter((item) => !existingIds.includes(item.id));
+
+                console.log('Adding items:', newItems);
+                return {
+                    ...listing,
+                    [field]: [...listing[field], ...newItems]
+                };
+            } else {
+                // Remove specified items
+                const idsToRemove = items.map((item) => item.id);
+                console.log('Removing items with ids:', idsToRemove);
+
+                return {
+                    ...listing,
+                    [field]: listing[field].filter((item: Item) => !idsToRemove.includes(item.id))
+                };
+            }
         }
         return listing;
     });
+
+    // Force reactivity update
+    listings.value = [...listings.value];
+    console.log('Updated listings:', listings.value);
+
+    // Update filters
+    const filterConfig = props.filters.find((f) => f.field === field);
+    if (filterConfig) {
+        const updatedSelected =
+            action === 'add' ? [...filterConfig.selected, ...items.filter((item) => !filterConfig.selected.some((selected) => selected.id === item.id))] : filterConfig.selected.filter((selected) => !items.some((item) => item.id === selected.id));
+
+        // Emit update for filters
+        emit('update:filterUpdates', {
+            ...props.filterUpdates,
+            [`selected${field.charAt(0).toUpperCase() + field.slice(1)}`]: updatedSelected
+        });
+    }
 }
 
-function removeFromSelected(categoriesToRemove: Category[]) {
-    const categoryIdsToRemove = categoriesToRemove.map((c) => c.id);
+// Add reactive watcher for listings
+watchEffect(() => {
+    console.log(
+        'Current listings state:',
+        listings.value.map((l) => ({
+            id: l.id,
+            categories: l.categories
+        }))
+    );
+});
+
+// Add watcher for listings changes
+watch(
+    listings,
+    (newListings) => {
+        console.log('Listings updated:', newListings);
+    },
+    { deep: true }
+);
+
+// Add provide for update function
+type UpdateArrayFieldFn = (field: string, items: Item[], action: 'add' | 'remove') => void;
+
+const updateArrayField: UpdateArrayFieldFn = (field, items, action) => {
+    console.log('Direct update called:', { field, items, action });
+
+    // Update local listings
     listings.value = listings.value.map((listing) => {
         if (selectedItems.value.includes(listing.id)) {
-            return {
-                ...listing,
-                categories: listing.categories.filter((c) => !categoryIdsToRemove.includes(c.id))
-            };
+            if (action === 'add') {
+                const existingIds = listing[field]?.map((item: Item) => item.id) || [];
+                const newItems = items.filter((item) => !existingIds.includes(item.id));
+                return {
+                    ...listing,
+                    [field]: [...(listing[field] || []), ...newItems]
+                };
+            } else {
+                const idsToRemove = items.map((item) => item.id);
+                return {
+                    ...listing,
+                    [field]: listing[field]?.filter((item: Item) => !idsToRemove.includes(item.id)) || []
+                };
+            }
         }
         return listing;
     });
-}
+
+    // Force reactivity
+    listings.value = [...listings.value];
+};
+
+provide('updateArrayField', updateArrayField);
 </script>
 
 <style lang="scss">
-.card-gallery {
+.card-list {
     --grid-gap: 20px;
     border-radius: var(--border-radius);
     background-color: var(--surface-overlay);
     // padding: var(--grid-gap);
-    .gallery-controls {
+    .list-controls {
         animation: fill-background linear;
         animation-timeline: scroll();
         background-color: transparent;
@@ -312,7 +419,7 @@ function removeFromSelected(categoriesToRemove: Category[]) {
             gap: 10px;
             margin-left: auto;
         }
-        + .gallery-grid {
+        + .list-grid {
             padding-top: calc(var(--grid-gap) / 2);
         }
         .icon {
@@ -334,25 +441,25 @@ function removeFromSelected(categoriesToRemove: Category[]) {
         }
     }
     &.display-small-cards {
-        .gallery-grid {
+        .list-grid {
             --grid-gap: 5px;
             --grid-item-min: 100px;
         }
     }
     &.display-big-cards {
-        .gallery-grid {
+        .list-grid {
             --grid-gap: 20px;
             --grid-item-min: 300px;
         }
     }
     &.display-list {
-        .gallery-grid {
+        .list-grid {
             --grid-gap: 20px;
             --grid-item-min: 300px;
             max-width: 600px;
         }
     }
-    .gallery-grid {
+    .list-grid {
         transition: all 0.4s ease-in-out;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(var(--grid-item-min), 1fr));

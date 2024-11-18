@@ -1,5 +1,5 @@
 <template>
-    <MultiSelect v-bind="$attrs" v-model="model" :class="['multi-select-filter', className]">
+    <MultiSelect v-model="model" :options="props.options" :filter="true" :filterField="filterField" v-bind="$attrs" :class="['multi-select-filter', className]">
         <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
             <slot :name="name" v-bind="slotData"></slot>
         </template>
@@ -7,19 +7,27 @@
 </template>
 
 <script setup lang="ts">
-import { defineModel } from 'vue';
+import { classNameProp } from '@/types/props';
 
-defineProps({
-    className: {
+const props = defineProps({
+    className: classNameProp,
+    options: {
+        type: Array as PropType<{ id: number; name: string }[]>,
+        required: true
+    },
+    filterField: {
         type: String,
-        default: ''
+        default: 'categories'
     }
 });
 
-// Create two-way binding
 const model = defineModel();
 
-// Inherit attrs and emit all events
+watchEffect(() => {
+    console.log('FilterControl options:', props.options);
+    console.log('FilterControl model value:', model.value);
+});
+
 defineOptions({
     inheritAttrs: true
 });

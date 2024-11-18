@@ -16,19 +16,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { defineProps } from 'vue';
-import CardPicture from '../media/CardPicture.vue';
+// Remove Vue imports as Nuxt handles them
+import { imageIdProp, nameProp, modeProp, loveableProp, selectedProp, showProp, categoriesProp } from '@/types/props';
 
-// Props passed down to ArticleContent
 const props = defineProps({
-    imageId: { type: String, required: true },
-    name: { type: String, default: '' },
-    mode: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
-    loveable: { type: Boolean, default: false },
-    selected: { type: Boolean, default: false },
-    show: { type: Array as PropType<string[]>, default: () => ['name'] },
-    categories: { type: Array as PropType<{ id: number; name: string }[]>, default: () => [] }
+    imageId: imageIdProp,
+    name: nameProp,
+    mode: modeProp,
+    loveable: loveableProp,
+    selected: selectedProp,
+    show: showProp,
+    categories: categoriesProp
 });
 
 // Reactive data and computed properties

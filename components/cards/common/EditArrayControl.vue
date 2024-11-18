@@ -2,18 +2,29 @@
     <multi-select v-model="selectedItems" display="chip" :options="options" :optionLabel="optionLabel" filter :placeholder="placeholder" :maxSelectedLabels="maxSelectedLabels" :class="className">
         <template #footer>
             <div class="p-3 flex justify-between">
-                <Button :label="addLabel" class="add-to-selected" severity="secondary" text size="small" icon="pi pi-plus" @click="confirmAdd" />
-                <Button :label="removeLabel" class="remove-from-selected" severity="danger" text size="small" icon="pi pi-times" @click="confirmRemove" />
+                <Button label="Add To Selected" class="add-to-selected" severity="secondary" text size="small" icon="pi pi-plus" @click="confirmAdd" />
+                <Button label="Remove From Selected" class="remove-from-selected" severity="danger" text size="small" icon="pi pi-times" @click="confirmRemove" />
             </div>
         </template>
     </multi-select>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, inject } from 'vue';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import type { PropType } from 'vue';
+
+// Add type for the injected function
+type UpdateArrayFieldFn = (field: string, items: any[], action: 'add' | 'remove') => void;
+
+// Type the injected function
+const updateArrayField = inject<UpdateArrayFieldFn>('updateArrayField');
+
+const emit = defineEmits<{
+    'update:modelValue': [any[]];
+    'update-field': [string, any[], 'add' | 'remove'];
+}>();
 
 const confirm = useConfirm();
 const toast = useToast();
@@ -25,7 +36,11 @@ const props = defineProps({
     },
     options: {
         type: Array as PropType<any[]>,
-        default: () => []
+        required: true
+    },
+    editField: {
+        type: String,
+        required: true
     },
     optionLabel: {
         type: String,
@@ -60,8 +75,6 @@ const props = defineProps({
         default: true
     }
 });
-
-const emit = defineEmits(['update:modelValue', 'add', 'remove']);
 
 const selectedItems = ref<any[]>([]);
 
@@ -116,24 +129,44 @@ const confirmRemove = () => {
 };
 
 const handleAdd = () => {
-    emit('add', selectedItems.value);
-    toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Items have been added to selection',
-        life: 3000
-    });
-    selectedItems.value = [];
+    console.log('EditArrayControl handleAdd - Items to add:', selectedItems.value);
+
+    if (updateArrayField) {
+        const itemsToAdd = selectedItems.value.map((item) => ({
+            id: item.id,
+            name: item.name
+        }));
+
+        updateArrayField(props.editField, itemsToAdd, 'add');
+
+        toast.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Items have been added to selection',
+            life: 3000
+        });
+        selectedItems.value = [];
+    }
 };
 
 const handleRemove = () => {
-    emit('remove', selectedItems.value);
-    toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Items have been removed from selection',
-        life: 3000
-    });
-    selectedItems.value = [];
+    console.log('EditArrayControl handleRemove - Items to remove:', selectedItems.value);
+
+    if (updateArrayField) {
+        const itemsToRemove = selectedItems.value.map((item) => ({
+            id: item.id,
+            name: item.name
+        }));
+
+        updateArrayField(props.editField, itemsToRemove, 'remove');
+
+        toast.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Items have been removed from selection',
+            life: 3000
+        });
+        selectedItems.value = [];
+    }
 };
 </script>

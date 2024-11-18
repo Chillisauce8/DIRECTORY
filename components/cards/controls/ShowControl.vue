@@ -1,15 +1,15 @@
 <template>
-    <SelectButton v-model="internalValue" :options="showOptions" aria-labelledby="show" multiple className="show-control" />
+    <MultiSelect v-model="internalValue" :options="showOptions" :class="['show-control', className]" display="chip" placeholder="Show Fields" :maxSelectedLabels="2" />
 </template>
 
 <script setup lang="ts">
-import SelectButton from 'primevue/selectbutton';
-import { computed } from 'vue';
+import { classNameProp } from '@/types/props';
 
-const props = defineProps<{
-    modelValue: string[];
-    showOptions: string[];
-}>();
+const props = defineProps({
+    modelValue: { type: Array as PropType<string[]>, required: true },
+    showOptions: { type: Array as PropType<string[]>, required: true },
+    className: classNameProp
+});
 
 const emit = defineEmits<{
     'update:modelValue': [string[]];
@@ -23,5 +23,6 @@ const internalValue = computed({
 
 <style lang="scss">
 .show-control {
+    min-width: 150px;
 }
 </style>

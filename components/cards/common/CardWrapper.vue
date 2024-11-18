@@ -16,21 +16,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { defineProps, defineEmits, defineModel, type PropType } from 'vue';
+import { imageIdProp, modeProp, selectedProp, showProp } from '@/types/props';
 
 const props = defineProps({
     id: { type: String, required: true },
-    mode: { type: String as () => 'view' | 'select' | 'edit' | 'order', default: 'view' },
+    mode: modeProp,
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
-    selected: { type: Boolean, default: false },
-    imageId: { type: String, required: true },
-    name: { type: String, default: '' },
-    categories: { type: Array as PropType<{ id: number; name: string }[]>, default: () => [] },
+    selected: selectedProp,
+    imageId: imageIdProp,
     gallery: { type: String, default: 'gallery' },
-    loveable: { type: Boolean, default: false },
-    show: { type: Array as PropType<string[]>, default: () => [] }
+    show: showProp
 });
 
 const emit = defineEmits(['update:selected']);
