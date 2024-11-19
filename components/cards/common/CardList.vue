@@ -23,15 +23,15 @@
         </div>
 
         <fancy-box v-if="mode === 'view'" class="list-grid" :options="{ Carousel: { infinite: true } }">
-            <slot v-for="(listing, index) in filteredListings" :key="index" name="card" v-bind="getCardProps(listing)" />
+            <slot v-for="(listing, index) in filteredListings" :key="listing.id" name="card" v-bind="getCardProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)" />
         </fancy-box>
 
         <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <slot v-for="(listing, index) in draggableListings" :key="index" name="card" v-bind="getCardProps(listing)" />
+            <slot v-for="(listing, index) in draggableListings" :key="listing.id" name="card" v-bind="getCardProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)" />
         </vue-draggable>
 
         <div v-else class="list-grid">
-            <slot v-for="(listing, index) in filteredListings" :key="index" name="card" v-bind="getCardProps(listing)" />
+            <slot v-for="(listing, index) in filteredListings" :key="listing.id" name="card" v-bind="getCardProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)" />
         </div>
     </div>
 </template>
@@ -375,20 +375,27 @@ function getCardProps(listing: Listing) {
         listing,
         mode: unref(mode),
         selected: isSelected,
-        show: show.value,
-        onUpdateSelected: (selected: boolean) => handleItemSelection(listing.id, selected)
+        show: show.value
     };
 }
 
 function handleItemSelection(id: string, selected: boolean): void {
-    if (selected) {
-        if (!selectedItems.value.includes(id)) {
-            selectedItems.value = [...selectedItems.value, id];
-        }
-    } else {
-        selectedItems.value = selectedItems.value.filter((item) => item !== id);
-    }
+    console.log('CardList handleItemSelection:', { id, selected });
+
+    const newSelectedItems = selected ? [...new Set([...selectedItems.value, id])] : selectedItems.value.filter((item) => item !== id);
+
+    console.log('Updating selectedItems:', { old: selectedItems.value, new: newSelectedItems });
+    selectedItems.value = newSelectedItems;
 }
+
+// Watch selectedItems for changes
+watch(
+    () => selectedItems.value,
+    (newVal) => {
+        console.log('CardList selectedItems changed:', newVal);
+    },
+    { deep: true }
+);
 </script>
 
 <style lang="scss">

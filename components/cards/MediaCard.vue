@@ -1,46 +1,62 @@
 <template>
-    <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" @update:src="src = $event" :loveable="loveable" :mode="mode" :selected="selected">
-        <!-- Always show image regardless of mode -->
-    </card-picture>
-    <card-text-wrapper :class="getCardTextWrapperClass()">
-        <div class="card-details" :class="show">
-            <h1 class="name">{{ name }}</h1>
-            <h1 class="categories">{{ categoryNames }}</h1>
-        </div>
-        <form class="form" v-if="mode === 'edit' && selected" @click.stop>
-            <InputText type="text" v-model="editableName" />
-            <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
-            <Button type="submit" severity="secondary" label="Submit" />
-        </form>
-    </card-text-wrapper>
+    <card-wrapper v-bind="$props" v-model:selected="selected" @update:selected="handleSelect" class="media-card">
+        <template #default="{ selected: wrapperSelected }">
+            <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="wrapperSelected" />
+            <card-text-wrapper :class="getCardTextWrapperClass(!!wrapperSelected)">
+                <div class="card-details" :class="show">
+                    <h1 class="name">{{ name }}</h1>
+                    <h1 class="categories">{{ categoryNames }}</h1>
+                </div>
+                <form class="form" v-if="mode === 'edit' && selected" @click.stop>
+                    <InputText type="text" v-model="editableName" />
+                    <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
+                    <Button type="submit" severity="secondary" label="Submit" />
+                </form>
+            </card-text-wrapper>
+        </template>
+    </card-wrapper>
 </template>
 
 <script setup lang="ts">
-// Remove Vue imports as Nuxt handles them
-import { imageIdProp, nameProp, modeProp, loveableProp, selectedProp, showProp, categoriesProp } from '@/types/props';
+import { ref, computed, watch } from 'vue';
+import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp } from '@/types/props';
+import CardWrapper from './common/CardWrapper.vue';
 
 const props = defineProps({
+    id: { type: String, required: true },
     imageId: imageIdProp,
     name: nameProp,
     mode: modeProp,
     loveable: loveableProp,
-    selected: selectedProp,
     show: showProp,
-    categories: categoriesProp
+    categories: categoriesProp,
+    clickable: { type: Boolean, default: true },
+    searchTerms: { type: String, default: '' },
+    gallery: { type: String, default: 'gallery' },
+    selected: { type: Boolean, required: true }
 });
 
-// Reactive data and computed properties
+const emit = defineEmits<{
+    'update:selected': [boolean];
+}>();
+
+const selected = defineModel<boolean>('selected', { required: true });
+
+function handleSelect(newValue: boolean) {
+    selected.value = newValue;
+    emit('update:selected', newValue);
+}
+
+// TestCard specific logic
 const editableName = ref(props.name);
 const selectedCategoryIds = ref(props.categories.map((cat) => cat.id));
 const categoryList = useCategories(); // Assumed external function for category list
 const src = ref<string>('');
 
-// Update computed to use props.categories directly
 const categoryNames = computed(() => {
     return props.categories.map((category) => category.name).join(', ');
 });
 
-// Add watch to keep selectedCategoryIds in sync with props
 watch(
     () => props.categories,
     (newCategories) => {
@@ -49,7 +65,6 @@ watch(
     { immediate: true }
 );
 
-// Add watch to debug show prop changes
 watch(
     () => props.show,
     (newShow) => {
@@ -58,12 +73,21 @@ watch(
     { immediate: true }
 );
 
-const getCardTextWrapperClass = () => {
-    return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
+watch(
+    () => props.name,
+    (newName) => {
+        editableName.value = newName;
+    },
+    { immediate: true }
+);
+
+const getCardTextWrapperClass = (isSelected: boolean) => {
+    return (props.mode === 'edit' && isSelected) || props.show.length > 0 ? 'show' : 'hide';
 };
 </script>
+
 <style lang="scss">
-.test-card {
+.media-card {
     picture {
         @include aspect-ratio(3, 2);
     }

@@ -47,7 +47,21 @@ const confirm = useConfirm();
 const toast = useToast();
 
 const selectAll = ref(false);
-const hasSelectedCards = computed(() => props.selectedItems.length > 0);
+const hasSelectedCards = computed(() => {
+    console.log('Selected items:', props.selectedItems); // Add debugging
+    return props.selectedItems.length > 0;
+});
+
+// Watch selectedItems for changes
+watch(
+    () => props.selectedItems,
+    (newVal) => {
+        console.log('SelectControls selectedItems changed:', newVal);
+        // Update selectAll state if all items are selected
+        selectAll.value = newVal.length > 0;
+    },
+    { immediate: true }
+);
 
 function confirmDelete() {
     confirm.require({

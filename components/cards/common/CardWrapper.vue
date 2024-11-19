@@ -4,7 +4,7 @@
         v-if="isWrapperVisible"
         :href="mode === 'view' ? fullSizeSrc : undefined"
         :data-fancybox="mode === 'view' ? gallery : undefined"
-        class="card-wrapper test-card"
+        class="card-wrapper"
         :class="{ selected: modelValue, [mode]: true, show }"
         :id="id"
         :data-search="searchTerms"
@@ -45,6 +45,7 @@ watch(
 function handleClick() {
     if (props.clickable) {
         const newValue = !modelValue.value;
+        console.log('CardWrapper handleClick:', { newValue, id: props.id }); // Add id to debug
         modelValue.value = newValue;
         emit('update:selected', newValue);
     }
@@ -63,45 +64,6 @@ const isWrapperVisible = computed(() => props.mode === 'view' || props.clickable
 </script>
 
 <style lang="scss">
-.test-card {
-    picture {
-        @include aspect-ratio(3, 2);
-    }
-    &.edit.selected {
-        .card-details {
-            display: none;
-        }
-    }
-    .card-details {
-        &:not(.categories) .categories,
-        &:not(.name) .name {
-            display: none;
-        }
-        .name {
-            font-family: $ff2;
-            font-size: 15px;
-            font-weight: 100;
-            margin: 5px 0;
-        }
-        .categories {
-            font-family: $ff2;
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-    }
-    .form {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        > *:not(:last-child) {
-            margin-bottom: 10px;
-        }
-        .p-inputtext {
-            font-size: 12px;
-        }
-    }
-}
 .card-wrapper {
     position: relative; // For smooth Vue transition-group https://www.youtube.com/watch?v=DGI_aKld0Jg
     background: var(--surface-card);

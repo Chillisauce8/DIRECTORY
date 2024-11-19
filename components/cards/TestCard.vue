@@ -1,8 +1,8 @@
 <template>
-    <card-wrapper v-bind="$props" v-model:selected="selected" @update:selected="handleSelect">
+    <card-wrapper v-bind="$props" :selected="selected" @update:selected="handleSelect" class="test-card">
         <template #default="{ selected: wrapperSelected }">
             <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="wrapperSelected" />
-            <card-text-wrapper :class="getCardTextWrapperClass(wrapperSelected)">
+            <card-text-wrapper :class="getCardTextWrapperClass(!!wrapperSelected)">
                 <div class="card-details" :class="show">
                     <h1 class="name">{{ name }}</h1>
                     <h1 class="categories">{{ categoryNames }}</h1>
@@ -40,12 +40,29 @@ const emit = defineEmits<{
     'update:selected': [boolean];
 }>();
 
-const selected = defineModel<boolean>('selected', { required: true });
+const selected = ref(props.selected);
+
+// Watch for prop changes
+watch(
+    () => props.selected,
+    (newValue) => {
+        selected.value = newValue;
+    }
+);
 
 function handleSelect(newValue: boolean) {
+    console.log('TestCard handleSelect:', { newValue, id: props.id }); // Debug
     selected.value = newValue;
     emit('update:selected', newValue);
 }
+
+// Watch selected state
+watch(
+    () => selected.value,
+    (newVal) => {
+        console.log('TestCard selected changed:', newVal);
+    }
+);
 
 // TestCard specific logic
 const editableName = ref(props.name);
