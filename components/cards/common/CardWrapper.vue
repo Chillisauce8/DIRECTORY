@@ -19,37 +19,45 @@ import { ref, computed } from 'vue';
 
 /* Define component props */
 const props = defineProps({
-    id: { type: String, required: true }, // Unique identifier for the card
-    mode: { type: String, default: '' }, // Mode to determine the root element ('view' or others)
-    clickable: { type: Boolean, default: true }, // Indicates if the card is clickable
-    searchTerms: { type: String, default: '' }, // Terms for search indexing
-    selected: { type: Boolean, required: true }, // Selection state of the card
-    imageId: { type: String, default: '' }, // ID for constructing image URL
-    gallery: { type: String, default: 'gallery' }, // Gallery group name for Fancybox
-    show: { type: Array, default: () => [] } // Array of strings to be added as classes
+    id: { type: String, required: true },
+    mode: { type: String, default: '' },
+    clickable: { type: Boolean, default: true },
+    searchTerms: { type: String, default: '' },
+    selected: { type: Boolean, required: true },
+    imageId: { type: String, default: '' },
+    gallery: { type: String, default: 'gallery' },
+    show: { type: Array, default: () => [] }
 });
 
-/* Computed property for full-size image source */
+/* Emit for two-way binding */
+const emit = defineEmits(['update:selected']);
 const fullSizeSrc = computed(() => `https://media.chillisauce.com/image/upload/c_fill,q_auto,f_auto/${props.imageId}`);
 
 /* Local selected state */
 const isSelected = ref(props.selected);
 
+/* Watch for external changes to selected prop */
+watch(
+    () => props.selected,
+    (newVal) => {
+        isSelected.value = newVal;
+    }
+);
+
 /* Toggle selected state on click */
 const toggleSelected = () => {
     if (props.clickable) {
         isSelected.value = !isSelected.value;
+        emit('update:selected', isSelected.value); // Emit updated value
     }
 };
 
 /* Computed classes */
-const computedClasses = computed(() => {
-    return {
-        selected: isSelected.value, // Add 'selected' if selected is true
-        [props.mode]: props.mode, // Add the mode as a class
-        ...Object.fromEntries(props.show.map((item) => [item, true])) // Add each item in 'show' as a class
-    };
-});
+const computedClasses = computed(() => ({
+    selected: isSelected.value,
+    [props.mode]: props.mode,
+    ...Object.fromEntries(props.show.map((item) => [item, true]))
+}));
 </script>
 
 <style lang="scss">

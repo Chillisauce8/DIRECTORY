@@ -1,12 +1,12 @@
 <template>
-    <card-wrapper v-bind="$props" :selected="selected" @update:selected="handleSelection" class="media-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected"></card-picture>
+    <card-wrapper v-bind="$props" :selected="localSelected" @update:selected="updateSelected" class="media-card">
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="localSelected" />
         <card-text-wrapper :class="getCardTextWrapperClass">
             <div class="card-details" :class="show">
                 <h1 class="name">{{ name }}</h1>
                 <h1 class="categories">{{ categoryNames }}</h1>
             </div>
-            <form class="form" v-if="mode === 'edit' && selected" @click.stop>
+            <form class="form" v-if="mode === 'edit' && localSelected" @click.stop>
                 <InputText type="text" v-model="editableName" />
                 <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
                 <Button type="submit" severity="secondary" label="Submit" />
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, toRef } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp } from '@/types/props';
 import CardWrapper from './common/CardWrapper.vue';
 
@@ -31,23 +31,39 @@ const props = defineProps({
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     gallery: { type: String, default: 'gallery' },
-    selected: { type: Boolean, required: true }
+    selected: { type: Boolean, required: true } // Passed down from parent or updated by CardWrapper
 });
 
-const emit = defineEmits<{
-    'update:selected': [value: boolean];
-}>();
+const emit = defineEmits(['update:selected']);
 
-// TestCard specific logic
+// Local state for managing `selected`
+const localSelected = ref(props.selected);
+
+// Watch prop changes and update local state
+watch(
+    () => props.selected,
+    (newSelected) => {
+        localSelected.value = newSelected;
+    }
+);
+
+// Emit updates to parent when local state changes
+function updateSelected(value: boolean) {
+    localSelected.value = value;
+    emit('update:selected', value); // Notify parent about the change
+}
+
+// Reactive state for category editing
 const editableName = ref(props.name);
 const selectedCategoryIds = ref(props.categories.map((cat) => cat.id));
-const categoryList = useCategories(); // Assumed external function for category list
-const src = ref<string>('');
+const categoryList = useCategories(); // Example: Fetch category list
 
+// Computed property for category names
 const categoryNames = computed(() => {
     return props.categories.map((category) => category.name).join(', ');
 });
 
+// Watch for category changes and update reactive state
 watch(
     () => props.categories,
     (newCategories) => {
@@ -56,14 +72,7 @@ watch(
     { immediate: true }
 );
 
-watch(
-    () => props.show,
-    (newShow) => {
-        console.log('Show value changed:', newShow);
-    },
-    { immediate: true }
-);
-
+// Watch for name changes and update editableName
 watch(
     () => props.name,
     (newName) => {
@@ -72,19 +81,10 @@ watch(
     { immediate: true }
 );
 
-const getCardTextWrapperClass = (isSelected: boolean) => {
-    return (props.mode === 'edit' && isSelected) || props.show.length > 0 ? 'show' : 'hide';
-};
-
-// Update the selection handler to be more explicit
-function handleSelection(value: boolean) {
-    console.log('MediaCard handleSelection:', {
-        value,
-        id: props.id,
-        currentSelected: props.selected
-    });
-    emit('update:selected', value);
-}
+// Dynamic class logic for card text wrapper
+const getCardTextWrapperClass = computed(() => {
+    return (props.mode === 'edit' && localSelected.value) || props.show.length > 0 ? 'show' : 'hide';
+});
 </script>
 
 <style lang="scss">
