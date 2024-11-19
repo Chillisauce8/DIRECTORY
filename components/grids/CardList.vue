@@ -15,11 +15,17 @@
                 <AddControl />
             </div>
 
-            <SelectControls :mode="mode" :selectedItems="selectedItems" :options="categoryOptions" @select-all="toggleSelectAll" @delete-selected="deleteSelectedItems" @add-selected="addSelectedItems" @update-field="handleUpdateField">
-                <template #edit-controls>
-                    <slot name="edit-controls" />
+            <!-- Replace SelectControls with direct implementation -->
+            <div v-if="mode === 'edit' || mode === 'select'" class="select-controls">
+                <ToggleButton v-model="selectAll" class="select-all" onLabel="Deselect All" offLabel="Select All" onIcon="pi pi-check-circle" offIcon="pi pi-circle" aria-label="Do you confirm" />
+                <template v-if="hasSelectedCards">
+                    <Button v-if="mode === 'select'" label="Add Selected" class="add-selected" icon="pi pi-plus-circle" outlined raised @click="addSelectedItems" />
+                    <template v-if="mode === 'edit'">
+                        <Button label="Delete Selected" class="delete-selected" icon="pi pi-trash" outlined raised @click="confirmDelete" />
+                        <slot name="edit-controls" />
+                    </template>
                 </template>
-            </SelectControls>
+            </div>
         </div>
 
         <fancy-box v-if="mode === 'view'" class="list-grid" :options="{ Carousel: { infinite: true } }">
@@ -40,6 +46,10 @@
 // Keep only non-Vue imports
 import { VueDraggable } from 'vue-draggable-plus';
 import type { Category, SortOption } from '@/composables/useListControls';
+
+// Add new imports
+import { useConfirm } from 'primevue/useconfirm';
+import { useToast } from 'primevue/usetoast';
 
 // Type definitions for update functions
 type UpdateFunction = (items: any[]) => void;
@@ -396,6 +406,49 @@ watch(
     },
     { deep: true }
 );
+
+// Add SelectControls functionality
+const confirm = useConfirm();
+const toast = useToast();
+
+const selectAll = ref(false);
+const hasSelectedCards = computed(() => selectedItems.value.length > 0);
+
+watch(
+    () => selectedItems.value,
+    (newVal) => {
+        selectAll.value = newVal.length > 0;
+    },
+    { immediate: true }
+);
+
+function confirmDelete() {
+    confirm.require({
+        header: 'Confirm Delete',
+        rejectProps: {
+            label: 'Cancel',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'Delete',
+            severity: 'danger'
+        },
+        accept: () => {
+            deleteSelectedItems();
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Selected items have been deleted',
+                life: 3000
+            });
+        }
+    });
+}
+
+watch(selectAll, (newValue) => {
+    toggleSelectAll(newValue);
+});
 </script>
 
 <style lang="scss">
