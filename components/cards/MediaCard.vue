@@ -1,24 +1,22 @@
 <template>
-    <card-wrapper v-bind="$props" v-model:selected="selected" @update:selected="handleSelect" class="media-card">
-        <template #default="{ selected: wrapperSelected }">
-            <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="wrapperSelected" />
-            <card-text-wrapper :class="getCardTextWrapperClass(!!wrapperSelected)">
-                <div class="card-details" :class="show">
-                    <h1 class="name">{{ name }}</h1>
-                    <h1 class="categories">{{ categoryNames }}</h1>
-                </div>
-                <form class="form" v-if="mode === 'edit' && selected" @click.stop>
-                    <InputText type="text" v-model="editableName" />
-                    <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
-                    <Button type="submit" severity="secondary" label="Submit" />
-                </form>
-            </card-text-wrapper>
-        </template>
+    <card-wrapper v-bind="$props" :selected="selected" @update:selected="handleSelection" class="media-card">
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected"></card-picture>
+        <card-text-wrapper :class="getCardTextWrapperClass">
+            <div class="card-details" :class="show">
+                <h1 class="name">{{ name }}</h1>
+                <h1 class="categories">{{ categoryNames }}</h1>
+            </div>
+            <form class="form" v-if="mode === 'edit' && selected" @click.stop>
+                <InputText type="text" v-model="editableName" />
+                <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
+                <Button type="submit" severity="secondary" label="Submit" />
+            </form>
+        </card-text-wrapper>
     </card-wrapper>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, toRef } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp } from '@/types/props';
 import CardWrapper from './common/CardWrapper.vue';
 
@@ -37,15 +35,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-    'update:selected': [boolean];
+    'update:selected': [value: boolean];
 }>();
-
-const selected = defineModel<boolean>('selected', { required: true });
-
-function handleSelect(newValue: boolean) {
-    selected.value = newValue;
-    emit('update:selected', newValue);
-}
 
 // TestCard specific logic
 const editableName = ref(props.name);
@@ -84,6 +75,16 @@ watch(
 const getCardTextWrapperClass = (isSelected: boolean) => {
     return (props.mode === 'edit' && isSelected) || props.show.length > 0 ? 'show' : 'hide';
 };
+
+// Update the selection handler to be more explicit
+function handleSelection(value: boolean) {
+    console.log('MediaCard handleSelection:', {
+        value,
+        id: props.id,
+        currentSelected: props.selected
+    });
+    emit('update:selected', value);
+}
 </script>
 
 <style lang="scss">

@@ -1,66 +1,55 @@
 <template>
+    <!-- Dynamic root element with classes and click event -->
     <component
         :is="mode === 'view' ? 'a' : 'article'"
-        v-if="isWrapperVisible"
         :href="mode === 'view' ? fullSizeSrc : undefined"
         :data-fancybox="mode === 'view' ? gallery : undefined"
         class="card-wrapper"
-        :class="{ selected: modelValue, [mode]: true, show }"
+        :class="computedClasses"
         :id="id"
         :data-search="searchTerms"
-        @click="handleConditionalClick"
+        @click="toggleSelected"
     >
-        <slot :src="fullSizeSrc" :selected="modelValue" />
+        <slot />
     </component>
 </template>
 
 <script setup lang="ts">
-import { imageIdProp, modeProp, selectedProp, showProp } from '@/types/props';
+import { ref, computed } from 'vue';
 
+/* Define component props */
 const props = defineProps({
-    id: { type: String, required: true },
-    mode: modeProp,
-    clickable: { type: Boolean, default: true },
-    searchTerms: { type: String, default: '' },
-    selected: { type: Boolean, required: true },
-    imageId: imageIdProp,
-    gallery: { type: String, default: 'gallery' },
-    show: showProp
+    id: { type: String, required: true }, // Unique identifier for the card
+    mode: { type: String, default: '' }, // Mode to determine the root element ('view' or others)
+    clickable: { type: Boolean, default: true }, // Indicates if the card is clickable
+    searchTerms: { type: String, default: '' }, // Terms for search indexing
+    selected: { type: Boolean, required: true }, // Selection state of the card
+    imageId: { type: String, default: '' }, // ID for constructing image URL
+    gallery: { type: String, default: 'gallery' }, // Gallery group name for Fancybox
+    show: { type: Array, default: () => [] } // Array of strings to be added as classes
 });
 
-// Use both model and emit for two-way binding
-const modelValue = defineModel<boolean>();
-const emit = defineEmits(['update:selected']);
-
-// Watch for external prop changes
-watch(
-    () => props.selected,
-    (newVal) => {
-        if (modelValue.value !== newVal) {
-            modelValue.value = newVal;
-        }
-    }
-);
-
-function handleClick() {
-    if (props.clickable) {
-        const newValue = !modelValue.value;
-        console.log('CardWrapper handleClick:', { newValue, id: props.id }); // Add id to debug
-        modelValue.value = newValue;
-        emit('update:selected', newValue);
-    }
-}
-
-function handleConditionalClick(event: Event) {
-    if (props.mode !== 'view') {
-        event.preventDefault();
-        event.stopPropagation();
-        handleClick();
-    }
-}
-
+/* Computed property for full-size image source */
 const fullSizeSrc = computed(() => `https://media.chillisauce.com/image/upload/c_fill,q_auto,f_auto/${props.imageId}`);
-const isWrapperVisible = computed(() => props.mode === 'view' || props.clickable);
+
+/* Local selected state */
+const isSelected = ref(props.selected);
+
+/* Toggle selected state on click */
+const toggleSelected = () => {
+    if (props.clickable) {
+        isSelected.value = !isSelected.value;
+    }
+};
+
+/* Computed classes */
+const computedClasses = computed(() => {
+    return {
+        selected: isSelected.value, // Add 'selected' if selected is true
+        [props.mode]: props.mode, // Add the mode as a class
+        ...Object.fromEntries(props.show.map((item) => [item, true])) // Add each item in 'show' as a class
+    };
+});
 </script>
 
 <style lang="scss">

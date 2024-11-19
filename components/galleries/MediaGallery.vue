@@ -55,4 +55,10 @@ const searchFields = [
     { field: 'name', label: 'Name' },
     { field: 'categories', label: 'Categories' }
 ];
+
+// Remove these as they're not needed anymore
+// const emit = defineEmits<{
+//     'update:selected': [payload: { id: string; selected: boolean }];
+// }>();
+// function handleItemSelection(id: string, selected: boolean) { ... }
 </script>

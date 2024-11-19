@@ -17,7 +17,7 @@
 
             <!-- Replace SelectControls with direct implementation -->
             <div v-if="mode === 'edit' || mode === 'select'" class="select-controls">
-                <ToggleButton v-model="selectAll" class="select-all" onLabel="Deselect All" offLabel="Select All" onIcon="pi pi-check-circle" offIcon="pi pi-circle" aria-label="Do you confirm" />
+                <ToggleButton :modelValue="isAllSelected" @update:modelValue="toggleSelectAll" class="select-all" onLabel="Deselect All" offLabel="Select All" onIcon="pi pi-check-circle" offIcon="pi pi-circle" />
                 <template v-if="hasSelectedCards">
                     <Button v-if="mode === 'select'" label="Add Selected" class="add-selected" icon="pi pi-plus-circle" outlined raised @click="addSelectedItems" />
                     <template v-if="mode === 'edit'">
@@ -37,101 +37,22 @@
         </vue-draggable>
 
         <div v-else class="list-grid">
-            <slot v-for="(listing, index) in filteredListings" :key="listing.id" name="card" v-bind="getCardProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)" />
+            <slot v-for="listing in filteredListings" :key="listing.id" name="card" v-bind="getCardProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-// Keep only non-Vue imports
+// --- Imports ---
 import { VueDraggable } from 'vue-draggable-plus';
-import type { Category, SortOption } from '@/composables/useListControls';
-
-// Add new imports
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
+import type { Category, SortOption } from '@/composables/useListControls';
 
-// Type definitions for update functions
+// --- Types ---
 type UpdateFunction = (items: any[]) => void;
-
-// Core state management - SINGLE SOURCE OF TRUTH
-const searchResults = ref<any[]>([]);
-const sortedItems = ref<any[]>([]);
-const showFields = ref<string[]>(['name', 'categories']);
-const listings = ref<Listing[]>(useListings());
-const show = ref<string[]>(['name', 'categories']);
-const selectedItems = ref<string[]>([]);
-
-// Models
-const sort = defineModel<SortOption | null>('sort', { default: null });
-const searchQuery = defineModel<string>('searchQuery', { default: '' });
-const selectedCategories = defineModel<Category[]>('selectedCategories', { default: () => [] });
-
-// Update functions - SINGLE DEFINITIONS
-const updateSort: UpdateFunction = (items) => {
-    sortedItems.value = items;
-};
-
-const updateSearch: UpdateFunction = (items) => {
-    searchResults.value = items;
-};
-
-const updateShow = (fields: string[]) => {
-    show.value = fields;
-};
-
-// Provide update functions once
-provide('updateSort', updateSort);
-provide('updateSearch', updateSearch);
-provide('updateShow', updateShow);
-
-// Single filteredListings computed property
-const filteredListings = computed(() => {
-    let result = listings.value;
-
-    if (searchResults.value.length) {
-        result = searchResults.value;
-    }
-
-    if (sortedItems.value.length) {
-        result = sortedItems.value;
-    }
-
-    if (props.filters?.length) {
-        props.filters.forEach((filter) => {
-            if (filter.selected.length) {
-                result = result.filter((item) => {
-                    const fieldValues = item[filter.field]?.map((i: any) => i.id) || [];
-                    return filter.selected.some((selected) => fieldValues.includes(selected.id));
-                });
-            }
-        });
-    }
-
-    return result;
-});
-
-interface LocalCategory {
-    name: string;
-    id: number;
-}
-
-interface Listing {
-    id: string;
-    images: { id: string; alt: string }[];
-    saleType: string;
-    name: string;
-    year: string;
-    price: string;
-    engine: string;
-    odometer: string;
-    transmission: string;
-    stearingSide: string;
-    yearFrom: number;
-    yearToo: number;
-    categories: Category[];
-    [key: string]: any; // Add index signature
-}
+type FunctionMode = 'view' | 'select' | 'edit' | 'order';
+type UpdateArrayFieldFn = (field: string, items: Item[], action: 'add' | 'remove') => void;
 
 interface Item {
     id: number;
@@ -139,34 +60,44 @@ interface Item {
     [key: string]: any;
 }
 
-const cardSizes = ref<{ label: string; icon: string; display: string }[]>([
-    { label: 'Small Cards', icon: 'cardssmall', display: 'display-small-cards' },
-    { label: 'Big Cards', icon: 'cardsbig', display: 'display-big-cards' },
-    { label: 'List', icon: 'list', display: 'display-list' }
-]);
-
-type FunctionMode = 'view' | 'select' | 'edit' | 'order';
-
-// Fix duplicate emit definition by combining them
-const emit = defineEmits<{
-    'add-selected': [string[]];
-    'update:filterUpdates': [FilterUpdate];
-}>();
+interface Listing {
+    id: string;
+    images: { id: string; alt: string }[];
+    name: string;
+    categories: Category[];
+    [key: string]: any;
+}
 
 interface FilterConfig {
     field: string;
-    options: { id: number; name: string }[];
-    selected: { id: number; name: string }[];
+    options: Item[];
+    selected: Item[];
 }
 
-// Add type definition for filter updates
 interface FilterUpdate {
     selectedCategories?: any[];
     selectedTags?: any[];
     [key: string]: any[] | undefined;
 }
 
-// Add filters to props
+interface CardSize {
+    label: string;
+    icon: string;
+    display: string;
+}
+
+// --- Constants ---
+const CARD_SIZES: readonly CardSize[] = [
+    { label: 'Small Cards', icon: 'cardssmall', display: 'display-small-cards' },
+    { label: 'Big Cards', icon: 'cardsbig', display: 'display-big-cards' },
+    { label: 'List', icon: 'list', display: 'display-list' }
+] as const;
+
+// --- Models & Props ---
+const sort = defineModel<SortOption | null>('sort', { default: null });
+const searchQuery = defineModel<string>('searchQuery', { default: '' });
+const selectedCategories = defineModel<Category[]>('selectedCategories', { default: () => [] });
+
 const props = defineProps({
     functionControlDisplay: {
         type: String as PropType<'text' | 'icon'>,
@@ -209,231 +140,87 @@ const props = defineProps({
     }
 });
 
-function updateSelectedItems(id: string, isSelected: boolean) {
-    if (isSelected) {
-        if (!selectedItems.value.includes(id)) selectedItems.value.push(id);
+const emit = defineEmits<{
+    'add-selected': [string[]];
+    'update:filterUpdates': [FilterUpdate];
+}>();
+
+// --- State ---
+const confirm = useConfirm();
+const toast = useToast();
+
+const listings = ref<Listing[]>(useListings());
+const selectedItems = ref<string[]>([]);
+const mode = ref<FunctionMode>(props.defaultFunctionControl);
+const searchResults = ref<any[]>([]);
+const sortedItems = ref<any[]>([]);
+const show = ref<string[]>(['name', 'categories']);
+const filters = ref<FilterConfig[]>(props.filters);
+const selectedSize = ref(CARD_SIZES.find((option: CardSize) => option.label === props.defaultCardSize) || CARD_SIZES[0]);
+
+// --- Computed ---
+const hasSelectedCards = computed(() => {
+    const hasSelected = selectedItems.value.length > 0;
+    console.log('hasSelectedCards computed:', { hasSelected, items: selectedItems.value });
+    return hasSelected;
+});
+
+const filteredListings = computed(() => {
+    let result = listings.value;
+    if (searchResults.value.length) result = searchResults.value;
+    if (sortedItems.value.length) result = sortedItems.value;
+
+    if (props.filters?.length) {
+        props.filters.forEach((filter) => {
+            if (filter.selected.length) {
+                result = result.filter((item) => {
+                    const fieldValues = item[filter.field]?.map((i: any) => i.id) || [];
+                    return filter.selected.some((selected) => fieldValues.includes(selected.id));
+                });
+            }
+        });
+    }
+
+    return result;
+});
+
+const draggableListings = ref([...filteredListings.value]);
+
+// Replace selectAll computed with isAllSelected
+const isAllSelected = computed(() => filteredListings.value.length > 0 && selectedItems.value.length === filteredListings.value.length);
+
+// --- Methods ---
+// Selection handling
+function handleItemSelection(id: string, selected: boolean): void {
+    console.log('CardList handleItemSelection:', { id, selected });
+    if (selected) {
+        selectedItems.value = [...new Set([...selectedItems.value, id])];
     } else {
         selectedItems.value = selectedItems.value.filter((item) => item !== id);
     }
+    console.log('Updated selectedItems:', selectedItems.value);
 }
 
-function toggleSelectAll(selectAll: boolean) {
-    if (selectAll) {
-        selectedItems.value = filteredListings.value.map((listing) => listing.id);
-    } else {
-        selectedItems.value = selectedItems.value.filter((id) => !filteredListings.value.some((listing) => listing.id === id));
-    }
+function toggleSelectAll(value: boolean) {
+    console.log('toggleSelectAll:', value);
+    selectedItems.value = value ? filteredListings.value.map((listing) => listing.id) : [];
 }
 
+// CRUD operations
 function deleteSelectedItems() {
     listings.value = listings.value.filter((listing) => !selectedItems.value.includes(listing.id));
     selectedItems.value = [];
 }
 
-const filters = ref<FilterConfig[]>(props.filters);
-const selectedSize = ref(cardSizes.value.find((option) => option.label === props.defaultCardSize) || cardSizes.value[0]);
-const mode = ref<FunctionMode>(props.defaultFunctionControl);
-
-const draggableListings = ref([...filteredListings.value]);
-
-watch(filteredListings, (newFilteredListings) => {
-    draggableListings.value = [...newFilteredListings];
-});
-
-watch(
-    () => props.show,
-    (newShow) => {
-        show.value = newShow;
-    }
-);
-
-function onStart() {
-    console.log('start drag');
-}
-
-function onEnd() {
-    console.log('end drag');
-}
-
 function addSelectedItems() {
-    // Pass the array of selected items to parent component
     emit('add-selected', selectedItems.value);
 }
-
-// Replace the old updateField function with this new one
-function handleUpdateField(field: string, items: Item[], action: 'add' | 'remove') {
-    console.log('CardList handleUpdateField started:', { field, items, action, selectedItems: selectedItems.value });
-
-    // Update local listings
-    listings.value = listings.value.map((listing) => {
-        // Check if this listing is selected
-        if (selectedItems.value.includes(listing.id)) {
-            console.log('Updating listing:', listing.id);
-
-            // Ensure the field exists and is an array
-            if (!Array.isArray(listing[field])) {
-                listing[field] = [];
-            }
-
-            if (action === 'add') {
-                // Add items that don't already exist
-                const existingIds = listing[field].map((item: Item) => item.id);
-                const newItems = items.filter((item) => !existingIds.includes(item.id));
-
-                console.log('Adding items:', newItems);
-                return {
-                    ...listing,
-                    [field]: [...listing[field], ...newItems]
-                };
-            } else {
-                // Remove specified items
-                const idsToRemove = items.map((item) => item.id);
-                console.log('Removing items with ids:', idsToRemove);
-
-                return {
-                    ...listing,
-                    [field]: listing[field].filter((item: Item) => !idsToRemove.includes(item.id))
-                };
-            }
-        }
-        return listing;
-    });
-
-    // Force reactivity update
-    listings.value = [...listings.value];
-    console.log('Updated listings:', listings.value);
-
-    // Update filters
-    const filterConfig = props.filters.find((f: FilterConfig) => f.field === field);
-    if (filterConfig) {
-        const updatedSelected =
-            action === 'add' ? [...filterConfig.selected, ...items.filter((item) => !filterConfig.selected.some((selected) => selected.id === item.id))] : filterConfig.selected.filter((selected) => !items.some((item) => item.id === selected.id));
-
-        // Emit update for filters
-        emit('update:filterUpdates', {
-            ...props.filterUpdates,
-            [`selected${field.charAt(0).toUpperCase() + field.slice(1)}`]: updatedSelected
-        });
-    }
-}
-
-// Add reactive watcher for listings
-watchEffect(() => {
-    console.log(
-        'Current listings state:',
-        listings.value.map((l) => ({
-            id: l.id,
-            categories: l.categories
-        }))
-    );
-});
-
-// Add watcher for listings changes
-watch(
-    listings,
-    (newListings) => {
-        console.log('Listings updated:', newListings);
-    },
-    { deep: true }
-);
-
-// Add provide for update function
-type UpdateArrayFieldFn = (field: string, items: Item[], action: 'add' | 'remove') => void;
-
-const updateArrayField: UpdateArrayFieldFn = (field, items, action) => {
-    console.log('Direct update called:', { field, items, action });
-
-    // Update local listings
-    listings.value = listings.value.map((listing) => {
-        if (selectedItems.value.includes(listing.id)) {
-            if (action === 'add') {
-                const existingIds = listing[field]?.map((item: Item) => item.id) || [];
-                const newItems = items.filter((item) => !existingIds.includes(item.id));
-                return {
-                    ...listing,
-                    [field]: [...(listing[field] || []), ...newItems]
-                };
-            } else {
-                const idsToRemove = items.map((item) => item.id);
-                return {
-                    ...listing,
-                    [field]: listing[field]?.filter((item: Item) => !idsToRemove.includes(item.id)) || []
-                };
-            }
-        }
-        return listing;
-    });
-
-    // Force reactivity
-    listings.value = [...listings.value];
-};
-
-provide('updateArrayField', updateArrayField);
-
-// Handle results from child components
-function handleSearchResults(results: any[]) {
-    searchResults.value = results;
-}
-
-function handleSortedItems(items: any[]) {
-    sortedItems.value = items;
-}
-
-function getCardProps(listing: Listing) {
-    const isSelected = selectedItems.value.includes(listing.id);
-    return {
-        listing,
-        mode: unref(mode),
-        selected: isSelected,
-        show: show.value
-    };
-}
-
-function handleItemSelection(id: string, selected: boolean): void {
-    console.log('CardList handleItemSelection:', { id, selected });
-
-    const newSelectedItems = selected ? [...new Set([...selectedItems.value, id])] : selectedItems.value.filter((item) => item !== id);
-
-    console.log('Updating selectedItems:', { old: selectedItems.value, new: newSelectedItems });
-    selectedItems.value = newSelectedItems;
-}
-
-// Watch selectedItems for changes
-watch(
-    () => selectedItems.value,
-    (newVal) => {
-        console.log('CardList selectedItems changed:', newVal);
-    },
-    { deep: true }
-);
-
-// Add SelectControls functionality
-const confirm = useConfirm();
-const toast = useToast();
-
-const selectAll = ref(false);
-const hasSelectedCards = computed(() => selectedItems.value.length > 0);
-
-watch(
-    () => selectedItems.value,
-    (newVal) => {
-        selectAll.value = newVal.length > 0;
-    },
-    { immediate: true }
-);
 
 function confirmDelete() {
     confirm.require({
         header: 'Confirm Delete',
-        rejectProps: {
-            label: 'Cancel',
-            severity: 'secondary',
-            outlined: true
-        },
-        acceptProps: {
-            label: 'Delete',
-            severity: 'danger'
-        },
+        rejectProps: { label: 'Cancel', severity: 'secondary', outlined: true },
+        acceptProps: { label: 'Delete', severity: 'danger' },
         accept: () => {
             deleteSelectedItems();
             toast.add({
@@ -446,9 +233,94 @@ function confirmDelete() {
     });
 }
 
-watch(selectAll, (newValue) => {
-    toggleSelectAll(newValue);
+// Update handlers
+const updateArrayField: UpdateArrayFieldFn = (field, items, action) => {
+    listings.value = listings.value.map((listing) => {
+        if (selectedItems.value.includes(listing.id)) {
+            const currentField = listing[field] || [];
+            return {
+                ...listing,
+                [field]: action === 'add' ? [...currentField, ...items.filter((item) => !currentField.some((existing: Item) => existing.id === item.id))] : currentField.filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id))
+            };
+        }
+        return listing;
+    });
+};
+
+function handleUpdateField(field: string, items: Item[], action: 'add' | 'remove') {
+    updateArrayField(field, items, action);
+
+    const filterConfig = props.filters.find((f) => f.field === field);
+    if (filterConfig) {
+        const updatedSelected =
+            action === 'add' ? [...filterConfig.selected, ...items.filter((item) => !filterConfig.selected.some((selected) => selected.id === item.id))] : filterConfig.selected.filter((selected) => !items.some((item) => item.id === selected.id));
+
+        emit('update:filterUpdates', {
+            ...props.filterUpdates,
+            [`selected${field.charAt(0).toUpperCase() + field.slice(1)}`]: updatedSelected
+        });
+    }
+}
+
+// Result handlers
+function handleSearchResults(results: any[]) {
+    searchResults.value = results;
+}
+
+function handleSortedItems(items: any[]) {
+    sortedItems.value = items;
+}
+
+function getCardProps(listing: Listing) {
+    const isSelected = selectedItems.value.includes(listing.id);
+    console.log('getCardProps:', { listingId: listing.id, isSelected });
+
+    return {
+        listing,
+        mode: unref(mode),
+        selected: isSelected,
+        show: show.value
+    };
+}
+
+// Drag handlers
+function onStart(): void {
+    console.log('start drag');
+}
+
+function onEnd(): void {
+    console.log('end drag');
+}
+
+// --- Watchers ---
+watch(filteredListings, (newListings) => {
+    draggableListings.value = [...newListings];
 });
+
+watch(
+    () => props.show,
+    (newShow) => {
+        show.value = newShow;
+    }
+);
+
+watch(
+    selectedItems,
+    (newVal, oldVal) => {
+        console.log('selectedItems changed:', {
+            old: oldVal,
+            new: newVal,
+            hasSelected: newVal.length > 0
+        });
+    },
+    { deep: true }
+);
+
+// --- Provides ---
+provide('updateArrayField', updateArrayField);
+provide('updateSort', (items: any[]) => (sortedItems.value = items));
+provide('updateSearch', (items: any[]) => (searchResults.value = items));
+provide('updateShow', (fields: string[]) => (show.value = fields));
 </script>
 
 <style lang="scss">
