@@ -1,12 +1,12 @@
 <template>
-    <card-wrapper v-bind="$props" :selected="localSelected" @update:selected="updateSelected" class="media-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="localSelected" />
+    <card-wrapper v-bind="$props" @update:selected="handleSelection" class="media-card">
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
         <card-text-wrapper :class="getCardTextWrapperClass">
             <div class="card-details" :class="show">
                 <h1 class="name">{{ name }}</h1>
                 <h1 class="categories">{{ categoryNames }}</h1>
             </div>
-            <form class="form" v-if="mode === 'edit' && localSelected" @click.stop>
+            <form class="form" v-if="mode === 'edit' && selected" @click.stop>
                 <InputText type="text" v-model="editableName" />
                 <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
                 <Button type="submit" severity="secondary" label="Submit" />
@@ -36,21 +36,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:selected']);
 
-// Local state for managing `selected`
-const localSelected = ref(props.selected);
-
-// Watch prop changes and update local state
-watch(
-    () => props.selected,
-    (newSelected) => {
-        localSelected.value = newSelected;
-    }
-);
-
-// Emit updates to parent when local state changes
-function updateSelected(value: boolean) {
-    localSelected.value = value;
-    emit('update:selected', value); // Notify parent about the change
+// Remove localSelected and direct binding to ensure reactivity
+function handleSelection(value: boolean) {
+    emit('update:selected', value);
 }
 
 // Reactive state for category editing
@@ -83,7 +71,7 @@ watch(
 
 // Dynamic class logic for card text wrapper
 const getCardTextWrapperClass = computed(() => {
-    return (props.mode === 'edit' && localSelected.value) || props.show.length > 0 ? 'show' : 'hide';
+    return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
 });
 </script>
 

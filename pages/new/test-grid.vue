@@ -1,5 +1,5 @@
 <template>
-    <MediaGrid />
+    <TestGrid />
 </template>
 
 <script setup lang="ts"></script>

@@ -9,9 +9,9 @@ const model = ref([
         icon: 'pi pi-home',
         items: [
             {
-              label: 'Calendar',
-              icon: 'pi pi-fw pi-calendar',
-              to: '/new/calendar'
+                label: 'Calendar',
+                icon: 'pi pi-fw pi-calendar',
+                to: '/new/calendar'
             },
             {
                 label: 'Markets',
@@ -50,9 +50,14 @@ const model = ref([
                 to: '/new/testFormLayout'
             },
             {
-                label: 'Image Gallery Design',
+                label: 'Image Grid',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/gallery'
+            },
+            {
+                label: 'Test Grid',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/test-grid'
             },
             {
                 label: 'Images Fetching',

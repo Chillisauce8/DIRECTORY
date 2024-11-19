@@ -1,5 +1,5 @@
 <template>
-    <card-list
+    <grid-container
         v-model:selected-categories="selectedCategories"
         :filters="[
             {
@@ -28,7 +28,7 @@
         <template #edit-controls>
             <EditArrayControl :options="categoryOptions" editField="categories" class="edit-array-control w-full md:w-80" />
         </template>
-    </card-list>
+    </grid-container>
 </template>
 
 <script setup lang="ts">
