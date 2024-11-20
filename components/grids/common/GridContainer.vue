@@ -170,7 +170,7 @@ const selectedItems = ref<string[]>([]);
 const mode = ref<FunctionMode>(props.defaultFunctionControl);
 const searchResults = ref<any[]>([]);
 const sortedItems = ref<any[]>([]);
-const show = ref<string[]>(['name', 'categories']);
+const show = ref<string[]>(props?.show ?? ['name', 'categories']);
 const filters = ref<FilterConfig[]>(props.filters);
 const selectedSize = ref(CARD_SIZES.find((option: CardSize) => option.label === props.defaultCardSize) || CARD_SIZES[0]);
 

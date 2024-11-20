@@ -13,10 +13,11 @@
         defaultFunctionControl="view"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
+        :show="selectedMediaShowOptions"
     >
         <template #controls="{ items }">
             <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
-            <ShowControl :show-options="mediaShowOptions" />
+            <ShowControl v-model="selectedMediaShowOptions" @update:modelValue="test" :show-options="mediaShowOptions" />
             <SortControl :sort-options="mediaSortOptions" :items="items" />
             <SearchControl :search-fields="searchFields" :items="items" />
         </template>
@@ -40,6 +41,7 @@
 
 <script setup lang="ts">
 const selectedCategories = ref([]);
+const selectedMediaShowOptions = ref(['name']);
 const categoryOptions = useCategories();
 
 // Simple configuration objects
@@ -62,6 +64,11 @@ const searchFields = [
     { field: 'name', label: 'Name' },
     { field: 'categories', label: 'Categories' }
 ];
+
+
+function test(v: string[]) {
+  console.log(v);
+}
 
 // Remove these as they're not needed anymore
 // const emit = defineEmits<{
