@@ -5,7 +5,7 @@
             <ConfirmDialog />
             <div class="filter-controls flex flex-col lg:flex-row gap-4">
                 <!-- Default Controls -->
-                <FunctionControl v-model="mode" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
+                <FunctionControl v-model="mode" @update:modelValue="onModeUpdate" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
 
                 <!-- Update slot binding to pass listings -->
                 <slot name="controls" :items="listings" :selected-categories="selectedCategories" :search-query="searchQuery" :show="show" :sort="sort" @search-results="handleSearchResults" @sorted-items="handleSortedItems" />
@@ -29,15 +29,31 @@
         </div>
 
         <fancy-box v-if="mode === 'view'" class="list-grid" :options="{ Carousel: { infinite: true } }">
-            <slot v-for="(listing, index) in filteredListings" :key="listing.id" name="card" v-bind="getCardProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)" />
+            <template v-for="(listing, index) in filteredListings" :key="listing.id">
+                <CardWrapper v-bind="getCardProps(listing)"
+                             @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
+                    <slot name="card" v-bind="getCardProps(listing)"/>
+                </CardWrapper>
+            </template>
         </fancy-box>
 
         <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <slot v-for="(listing, index) in draggableListings" :key="listing.id" name="card" v-bind="getCardProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)" />
+            <template v-for="(listing, index) in draggableListings" :key="listing.id">
+                <CardWrapper v-bind="getCardProps(listing)"
+                             @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
+                  < slot name="card" v-bind="getCardProps(listing)"/>
+                </CardWrapper>
+            </template>
         </vue-draggable>
 
         <div v-else class="list-grid">
-            <slot v-for="listing in filteredListings" :key="listing.id" name="card" v-bind="getCardProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)" />
+            <template v-for="listing in filteredListings" :key="listing.id">
+                <CardWrapper v-bind="getCardProps(listing)"
+                             @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
+                    <slot name="card"
+                          v-bind="getCardProps(listing)"/>
+                </CardWrapper>
+            </template>
         </div>
     </div>
 </template>
@@ -290,6 +306,11 @@ function onStart(): void {
 
 function onEnd(): void {
     console.log('end drag');
+}
+
+
+function onModeUpdate(mode: FunctionMode) {
+    selectedItems.value = [];
 }
 
 // --- Watchers ---

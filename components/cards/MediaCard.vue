@@ -1,5 +1,5 @@
 <template>
-    <card-wrapper v-bind="$props" @update:selected="handleSelection" class="media-card">
+    <div class="media-card">
         <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
         <card-text-wrapper :class="getCardTextWrapperClass">
             <div class="card-details" :class="show">
@@ -12,7 +12,7 @@
                 <Button type="submit" severity="secondary" label="Submit" />
             </form>
         </card-text-wrapper>
-    </card-wrapper>
+    </div>
 </template>
 
 <script setup lang="ts">
