@@ -15,11 +15,11 @@
         :searchFields="searchFields"
         :show="selectedMediaShowOptions"
     >
-        <template #controls="{ items }">
-            <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
+        <template #controls>
+            <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig"/>
             <ShowControl v-model="selectedMediaShowOptions" @update:modelValue="test" :show-options="mediaShowOptions" />
-            <SortControl :sort-options="mediaSortOptions" :items="items" />
-            <SearchControl :search-fields="searchFields" :items="items" />
+            <SortControl :sort-options="mediaSortOptions"/>
+            <SearchControl :search-fields="searchFields"/>
         </template>
 
         <template #card="{ listing, mode: cardMode, selected, show }">
@@ -30,7 +30,7 @@
                        :loveable="listing.loveable"
                        :selected="selected"
                        :show="show"
-                       :categories="listing.categories" />
+                       :categories="listing.categories" :listing="listing"/>
         </template>
 
         <template #edit-controls>

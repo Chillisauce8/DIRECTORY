@@ -8,7 +8,7 @@
                 <FunctionControl v-model="mode" @update:modelValue="onModeUpdate" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
 
                 <!-- Update slot binding to pass listings -->
-                <slot name="controls" :items="listings" :selected-categories="selectedCategories" :search-query="searchQuery" :show="show" :sort="sort" @search-results="handleSearchResults" @sorted-items="handleSortedItems" />
+                <slot name="controls" :items="listings" :selected-categories="selectedCategories" :show="show"/>
 
                 <!-- Default Display Control -->
                 <DisplayControl v-model="selectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
@@ -41,7 +41,7 @@
             <template v-for="(listing, index) in draggableListings" :key="listing.id">
                 <CardWrapper v-bind="getCardProps(listing)"
                              @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
-                  < slot name="card" v-bind="getCardProps(listing)"/>
+                  <slot name="card" v-bind="getCardProps(listing)"/>
                 </CardWrapper>
             </template>
         </vue-draggable>
@@ -63,7 +63,7 @@
 import { VueDraggable } from 'vue-draggable-plus';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
-import type { Category, SortOption } from '@/composables/useListControls';
+import type {Category, SearchQueryConfig, SortOption} from '@/composables/useListControls';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
@@ -113,6 +113,9 @@ const CARD_SIZES: readonly CardSize[] = [
 const sort = defineModel<SortOption | null>('sort', { default: null });
 const searchQuery = defineModel<string>('searchQuery', { default: '' });
 const selectedCategories = defineModel<Category[]>('selectedCategories', { default: () => [] });
+
+const selectedSort = ref<SortOption | null>(null);
+const searchQueryConfig = ref<SearchQueryConfig | null>(null);
 
 const props = defineProps({
     functionControlDisplay: {
@@ -168,8 +171,6 @@ const toast = useToast();
 const listings = ref<Listing[]>(useListings());
 const selectedItems = ref<string[]>([]);
 const mode = ref<FunctionMode>(props.defaultFunctionControl);
-const searchResults = ref<any[]>([]);
-const sortedItems = ref<any[]>([]);
 const show = ref<string[]>(props?.show ?? ['name', 'categories']);
 const filters = ref<FilterConfig[]>(props.filters);
 const selectedSize = ref(CARD_SIZES.find((option: CardSize) => option.label === props.defaultCardSize) || CARD_SIZES[0]);
@@ -182,9 +183,15 @@ const hasSelectedCards = computed(() => {
 });
 
 const filteredListings = computed(() => {
-    let result = listings.value;
-    if (searchResults.value.length) result = searchResults.value;
-    if (sortedItems.value.length) result = sortedItems.value;
+    let result = unref(listings.value)
+
+    if (searchQueryConfig.value) {
+      result = searchItems(result, searchQueryConfig.value);
+    }
+
+    if (selectedSort.value) {
+        result = sortItems(result, selectedSort.value);
+    }
 
     if (props.filters?.length) {
         props.filters.forEach((filter) => {
@@ -278,13 +285,32 @@ function handleUpdateField(field: string, items: Item[], action: 'add' | 'remove
     }
 }
 
-// Result handlers
-function handleSearchResults(results: any[]) {
-    searchResults.value = results;
+function sortItems<T>(items: T[], selectedSort: SortOption): T[] {
+  if (!selectedSort) {
+    return items;
+  }
+
+  const { sort, order } = selectedSort;
+
+  return [...items].sort((a: any, b: any) => {
+    const aVal = a[sort];
+    const bVal = b[sort];
+    return order === 'asc' ? (aVal > bVal ? 1 : -1) : aVal < bVal ? 1 : -1;
+  });
 }
 
-function handleSortedItems(items: any[]) {
-    sortedItems.value = items;
+function searchItems<T extends Record<string, any>>(items: T[], searchQueryConfig: SearchQueryConfig): T[] {
+  if (!searchQueryConfig) {
+    return items;
+  }
+
+  const searchTerm = searchQueryConfig.searchQuery.toLowerCase().trim();
+  return items.filter((item) =>
+    searchQueryConfig.searchFields.some((field) => {
+      const value = item[field.field];
+      return value != null && String(value).toLowerCase().includes(searchTerm);
+    })
+  );
 }
 
 function getCardProps(listing: Listing) {
@@ -339,9 +365,9 @@ watch(
 
 // --- Provides ---
 provide('updateArrayField', updateArrayField);
-provide('updateSort', (items: any[]) => (sortedItems.value = items));
-provide('updateSearch', (items: any[]) => (searchResults.value = items));
 provide('updateShow', (fields: string[]) => (show.value = fields));
+provide('updateSearchQueryConfig', (config: SearchQueryConfig) => searchQueryConfig.value = config);
+provide('updateItemsSorting', (sort: SortOption) => selectedSort.value = sort);
 </script>
 
 <style lang="scss">

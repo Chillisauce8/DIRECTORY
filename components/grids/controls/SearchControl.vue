@@ -7,14 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, inject, onMounted } from 'vue';
+import { ref } from 'vue';
 import type { PropType } from 'vue';
 import InputText from 'primevue/inputtext';
+import type {SearchField, UpdateSearchQueryConfigFn} from '~/composables/useListControls';
 
-interface SearchField {
-    field: string;
-    label: string;
-}
 
 const props = defineProps({
     searchFields: {
@@ -24,80 +21,38 @@ const props = defineProps({
     minSearchLength: {
         type: Number,
         default: 1
-    },
-    items: {
-        type: Array as PropType<Record<string, any>[]>,
-        default: () => []
     }
 });
 
-// Single state source
+
 const searchValue = ref('');
 
-// Type the injected function
-type UpdateSearchFn = (items: any[]) => void;
-const updateSearch = inject<UpdateSearchFn>('updateSearch', () => {});
-
-// Emit results, not state
-const emit = defineEmits<{
-    'search-results': [Record<string, any>[]];
-}>();
-
-// Add initialization
-onMounted(() => {
-    // Ensure initial state is properly set
-    if (props.items.length > 0) {
-        handleInput();
-    }
-});
+const updateSearchQueryConfig = inject<UpdateSearchQueryConfigFn>('updateSearchQueryConfig', () => {});
 
 // Modify handleInput to be more robust
 function handleInput() {
-    if (!searchValue.value) {
-        // If search is cleared, reset to original items
-        emit('search-results', props.items);
-        updateSearch(props.items);
+    if (!props.searchFields?.length) {
         return;
     }
 
-    const results = searchItems(props.items);
-    emit('search-results', results);
-    updateSearch(results);
+    if (props?.minSearchLength && searchValue.value.length < props?.minSearchLength) {
+        return;
+    }
+
+    updateSearchQueryConfig({
+        searchFields: props.searchFields,
+        searchQuery: searchValue.value,
+    });
 }
 
 function clearSearch() {
     searchValue.value = '';
-    updateSearch(props.items);
+
+    updateSearchQueryConfig({
+      searchFields: props.searchFields,
+      searchQuery: '',
+    });
 }
-
-function searchItems<T extends Record<string, any>>(items: T[]): T[] {
-    if (!searchValue.value) return items;
-
-    const searchTerm = searchValue.value.toLowerCase().trim();
-    return items.filter((item) =>
-        props.searchFields.some((field) => {
-            const value = item[field.field];
-            return value != null && String(value).toLowerCase().includes(searchTerm);
-        })
-    );
-}
-
-// Add items watcher to ensure search is updated when items change
-watch(
-    () => props.items,
-    (newItems) => {
-        if (searchValue.value) {
-            handleInput();
-        }
-    },
-    { deep: true }
-);
-
-// Expose search functionality
-defineExpose({
-    searchItems,
-    searchQuery: searchValue
-});
 </script>
 
 <style lang="scss" scoped>
