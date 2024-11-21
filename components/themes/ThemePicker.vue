@@ -1,83 +1,37 @@
 <template>
-    <div>
-        <!-- Lightness Selector -->
-        <div>
-            <label for="lightness">Lightness:</label>
-            <select id="lightness" v-model="selectedLightness">
-                <option v-for="lightness in lightnessOptions" :key="lightness.value" :value="lightness.value">
-                    {{ lightness.label }}
-                </option>
-            </select>
-        </div>
+    <div class="card flex flex-col gap-4">
         <!-- Color Selector -->
-        <div>
-            <label for="color">Color:</label>
-            <select id="color" v-model="selectedColor">
-                <option v-for="color in colorOptions" :key="color.value" :value="color.value">
-                    {{ color.label }}
-                </option>
-            </select>
-        </div>
-        <!-- Style Selector -->
-        <div>
-            <label for="style">Style:</label>
-            <select id="style" v-model="selectedStyle">
-                <option v-for="style in styleOptions" :key="style.value" :value="style.value">
-                    {{ style.label }}
-                </option>
-            </select>
-        </div>
+        <!-- <div>
+            <Select v-model="selectedColor" :options="colorOptions" optionLabel="label" optionValue="value" placeholder="Color" />
+        </div> -->
         <!-- Elevation Selector -->
-        <div>
-            <label for="elevation">Elevation:</label>
-            <select id="elevation" v-model="selectedElevation">
-                <option v-for="elevation in elevationOptions" :key="elevation.value" :value="elevation.value">
-                    {{ elevation.label }}
-                </option>
-            </select>
-        </div>
+
+        <Select v-model="selectedElevation" size="small" :options="elevationOptions" optionLabel="label" optionValue="value" placeholder="Elevation" />
+
         <!-- Rounding Selector -->
-        <div>
-            <label for="rounding">Rounding:</label>
-            <select id="rounding" v-model="selectedRounding">
-                <option v-for="rounding in roundingOptions" :key="rounding.value" :value="rounding.value">
-                    {{ rounding.label }}
-                </option>
-            </select>
-        </div>
+
+        <Select v-model="selectedRounding" size="small" :options="roundingOptions" optionLabel="label" optionValue="value" placeholder="Rounding" />
+
         <!-- Card Selector -->
-        <div>
-            <label for="card">Card:</label>
-            <select id="card" v-model="selectedCard">
-                <option v-for="card in cardOptions" :key="card.value" :value="card.value">
-                    {{ card.label }}
-                </option>
-            </select>
-        </div>
+
+        <Select v-model="selectedCard" size="small" :options="cardOptions" optionLabel="label" optionValue="value" placeholder="Card" />
     </div>
 </template>
 
 <script setup lang="ts">
+import Select from 'primevue/select';
+
 type Option = { value: string; label: string };
 
-const selectedLightness = ref<string>(localStorage.getItem('lightness') || 'light');
-const selectedColor = ref<string>(localStorage.getItem('color') || 'martini');
-const selectedStyle = ref<string>(localStorage.getItem('style') || 'default');
+// const selectedColor = ref<string>(localStorage.getItem('color') || 'martini');
 const selectedElevation = ref<string>(localStorage.getItem('elevation') || 'high');
 const selectedRounding = ref<string>(localStorage.getItem('rounding') || 'rounded');
-const selectedCard = ref<string>(localStorage.getItem('card') || 'polaroid');
+const selectedCard = ref<string>(localStorage.getItem('card') || 'simple');
 
-const lightnessOptions: Option[] = [
-    { value: 'light', label: 'Light' },
-    { value: 'dark', label: 'Dark' }
-];
-
-const colorOptions: Option[] = [
-    { value: 'martini', label: 'Martini' },
-    { value: 'gulf', label: 'Gulf' }
-];
-
-const styleOptions: Option[] = [{ value: 'default', label: 'Default' }];
+// const colorOptions: Option[] = [
+//     { value: 'martini', label: 'Martini' },
+//     { value: 'gulf', label: 'Gulf' }
+// ];
 
 const elevationOptions: Option[] = [
     { value: 'flat', label: 'Flat' },
@@ -96,10 +50,8 @@ const cardOptions: Option[] = [
 
 const applyThemeClasses = () => {
     document.body.className = `
-        theme-color-${selectedColor.value}
-        theme-style-${selectedStyle.value}
+     
         theme-elevation-${selectedElevation.value}
-        theme-lightness-${selectedLightness.value}
         theme-rounding-${selectedRounding.value}
         theme-card-${selectedCard.value}
     `
@@ -109,11 +61,9 @@ const applyThemeClasses = () => {
 
 onMounted(applyThemeClasses);
 
-watch([selectedLightness, selectedColor, selectedStyle, selectedElevation, selectedRounding, selectedCard], applyThemeClasses);
+watch([selectedElevation, selectedRounding, selectedCard], applyThemeClasses);
 
-watch(selectedLightness, (newValue) => localStorage.setItem('lightness', newValue));
-watch(selectedColor, (newValue) => localStorage.setItem('color', newValue));
-watch(selectedStyle, (newValue) => localStorage.setItem('style', newValue));
+// watch(selectedColor, (newValue) => localStorage.setItem('color', newValue));
 watch(selectedElevation, (newValue) => localStorage.setItem('elevation', newValue));
 watch(selectedRounding, (newValue) => localStorage.setItem('rounding', newValue));
 watch(selectedCard, (newValue) => localStorage.setItem('card', newValue));

@@ -122,34 +122,7 @@
     --card-without-border: none;
 
     & body {
-        &.theme-color-martini {
-            --color-darkest: var(--darkest-martini);
-            --color-dark: var(--dark-martini);
-            --color-highlight: var(--highlight-martini);
-            --color-light: var(--light-martini);
-            --color-lightest: var(--lightest-martini);
-            &.theme-lightness-dark {
-                --color-darkest: var(--lightest-martini);
-                --color-dark: var(--light-martini);
-                --color-highlight: var(--highlight-martini);
-                --color-light: var(--dark-martini);
-                --color-lightest: var(--darkest-martini);
-            }
-        }
-        &.theme-color-gulf {
-            --color-darkest: var(--darkest-gulf);
-            --color-dark: var(--dark-gulf);
-            --color-highlight: var(--highlight-gulf);
-            --color-light: var(--light-gulf);
-            --color-lightest: var(--lightest-gulf);
-            &.theme-lightness-dark {
-                --color-darkest: var(--lightest-gulf);
-                --color-dark: var(--light-gulf);
-                --color-highlight: var(--highlight-gulf);
-                --color-light: var(--dark-gulf);
-                --color-lightest: var(--darkest-gulf);
-            }
-        }
+        // Color themes moved to bottom
         &.theme-rounding-rounded {
             --corner-outer: var(--round-outer);
             --corner-inner: var(--round-inner);
@@ -172,3 +145,20 @@
         }
     }
 }
+
+/* Commented out color themes
+&.theme-color-martini {
+    --color-darkest: var(--darkest-martini);
+    --color-dark: var(--dark-martini);
+    --color-highlight: var(--highlight-martini);
+    --color-light: var(--light-martini);
+    --color-lightest: var(--lightest-martini);
+}
+&.theme-color-gulf {
+    --color-darkest: var(--darkest-gulf);
+    --color-dark: var(--dark-gulf);
+    --color-highlight: var(--highlight-gulf);
+    --color-light: var(--light-gulf);
+    --color-lightest: var(--lightest-gulf);
+}
+*/
