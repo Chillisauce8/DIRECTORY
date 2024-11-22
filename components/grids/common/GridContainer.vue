@@ -30,7 +30,7 @@
 
         <fancy-box v-if="mode === 'view'" class="list-grid" :options="{ Carousel: { infinite: true } }">
             <template v-for="(listing, index) in filteredListings" :key="listing.id">
-                <CardWrapper v-bind="getCardProps(listing)"
+                <CardWrapper v-bind="getCardWrapperProps(listing)"
                              @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
                     <slot name="card" v-bind="getCardProps(listing)"/>
                 </CardWrapper>
@@ -39,7 +39,7 @@
 
         <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
             <template v-for="(listing, index) in draggableListings" :key="listing.id">
-                <CardWrapper v-bind="getCardProps(listing)"
+                <CardWrapper v-bind="getCardWrapperProps(listing)"
                              @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
                   <slot name="card" v-bind="getCardProps(listing)"/>
                 </CardWrapper>
@@ -48,7 +48,7 @@
 
         <div v-else class="list-grid">
             <template v-for="listing in filteredListings" :key="listing.id">
-                <CardWrapper v-bind="getCardProps(listing)"
+                <CardWrapper v-bind="getCardWrapperProps(listing)"
                              @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
                     <slot name="card"
                           v-bind="getCardProps(listing)"/>
@@ -322,6 +322,22 @@ function getCardProps(listing: Listing) {
         mode: unref(mode),
         selected: isSelected,
         show: show.value
+    };
+}
+
+
+function getCardWrapperProps(listing: Listing) {
+    const isSelected = selectedItems.value.includes(listing.id);
+
+    return {
+        id: listing.id,
+        imageId: listing.images[0].id,
+        name: listing?.name,
+        mode: unref(mode),
+        selected: isSelected,
+        show: show.value,
+        categories: listing.categories,
+        listing
     };
 }
 
