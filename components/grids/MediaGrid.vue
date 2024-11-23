@@ -13,27 +13,40 @@
         defaultFunctionControl="view"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
+        :show="selectedMediaShowOptions"
     >
-        <template #controls="{ items }">
+        <template #controls>
             <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
-            <ShowControl :show-options="mediaShowOptions" />
-            <SortControl :sort-options="mediaSortOptions" :items="items" />
-            <SearchControl :search-fields="searchFields" :items="items" />
+            <ShowControl v-model="selectedMediaShowOptions" :show-options="mediaShowOptions" />
+            <SortControl :sort-options="mediaSortOptions" />
+            <SearchControl :search-fields="searchFields" />
         </template>
 
-        <template #card="{ listing, mode: cardMode, selected, show }">
-            <MediaCard :id="listing.id" :imageId="listing.images[0].id" :name="listing.name" :mode="cardMode" :loveable="listing.loveable" :selected="selected" :show="show" :categories="listing.categories" />
+        <template #card="{ listing, mode: cardMode, selected, show, onNameUpdate, onCategoriesUpdate }">
+            <MediaCard
+                :id="listing.id"
+                :imageId="listing.images[0].id"
+                :name="listing.name"
+                :mode="cardMode"
+                :loveable="listing.loveable"
+                :selected="selected"
+                :show="show"
+                :categories="listing.categories"
+                :onNameUpdate="onNameUpdate"
+                :onCategoriesUpdate="onCategoriesUpdate"
+            />
         </template>
 
         <template #edit-controls>
-            <EditArrayControl :options="categoryOptions" editField="categories" class="edit-array-control w-full md:w-80" />
+            <EditArrayControl :options="categoryOptions" editField="categories" placeholder="Edit Categories" class="edit-array-control w-full md:w-80" />
         </template>
     </grid-container>
 </template>
 
 <script setup lang="ts">
-const selectedCategories = ref([]);
 const categoryOptions = useCategories();
+const selectedCategories = ref([]);
+const selectedMediaShowOptions = ref(['name']);
 
 // Simple configuration objects
 const mediaShowOptions = ['name', 'categories'];
@@ -55,10 +68,4 @@ const searchFields = [
     { field: 'name', label: 'Name' },
     { field: 'categories', label: 'Categories' }
 ];
-
-// Remove these as they're not needed anymore
-// const emit = defineEmits<{
-//     'update:selected': [payload: { id: string; selected: boolean }];
-// }>();
-// function handleItemSelection(id: string, selected: boolean) { ... }
 </script>

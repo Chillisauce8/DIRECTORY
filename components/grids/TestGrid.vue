@@ -16,21 +16,25 @@
         :show="selectedMediaShowOptions"
     >
         <template #controls>
-            <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig"/>
+            <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
             <ShowControl v-model="selectedMediaShowOptions" @update:modelValue="test" :show-options="mediaShowOptions" />
-            <SortControl :sort-options="mediaSortOptions"/>
-            <SearchControl :search-fields="searchFields"/>
+            <SortControl :sort-options="mediaSortOptions" />
+            <SearchControl :search-fields="searchFields" />
         </template>
 
-        <template #card="{ listing, mode: cardMode, selected, show }">
-            <MediaCard :id="listing.id"
-                       :imageId="listing.images[0].id"
-                       :name="listing.name"
-                       :mode="cardMode"
-                       :loveable="listing.loveable"
-                       :selected="selected"
-                       :show="show"
-                       :categories="listing.categories" :listing="listing"/>
+        <template #card="{ listing, mode: cardMode, selected, show, onNameUpdate, onCategoriesUpdate }">
+            <MediaCard
+                :id="listing.id"
+                :imageId="listing.images[0].id"
+                :name="listing.name"
+                :mode="cardMode"
+                :loveable="listing.loveable"
+                :selected="selected"
+                :show="show"
+                :categories="listing.categories"
+                :onNameUpdate="onNameUpdate"
+                :onCategoriesUpdate="onCategoriesUpdate"
+            />
         </template>
 
         <template #edit-controls>
@@ -65,9 +69,8 @@ const searchFields = [
     { field: 'categories', label: 'Categories' }
 ];
 
-
 function test(v: string[]) {
-  console.log(v);
+    console.log(v);
 }
 
 // Remove these as they're not needed anymore

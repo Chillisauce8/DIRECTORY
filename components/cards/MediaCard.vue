@@ -6,7 +6,7 @@
                 <h1 class="name">{{ name }}</h1>
                 <h1 class="categories">{{ categoryNames }}</h1>
             </div>
-            <form class="form" v-if="mode === 'edit' && selected" @click.stop>
+            <form class="form" v-if="mode === 'edit' && selected" @submit.prevent="handleSubmit" @click.stop>
                 <InputText type="text" v-model="editableName" />
                 <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
                 <Button type="submit" severity="secondary" label="Submit" />
@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp } from '@/types/props';
-import CardWrapper from './common/CardWrapper.vue';
+import type { Category } from '@/types/props'; // or wherever your Category type is defined
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -31,10 +31,12 @@ const props = defineProps({
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     gallery: { type: String, default: 'gallery' },
-    selected: { type: Boolean, required: true } // Passed down from parent or updated by CardWrapper
+    selected: { type: Boolean, required: true }, // Passed down from parent or updated by CardWrapper
+    onNameUpdate: { type: Function as PropType<(name: string) => void>, required: true },
+    onCategoriesUpdate: { type: Function as PropType<(categories: Category[]) => void>, required: true }
 });
 
-const emit = defineEmits(['update:selected']);
+const emit = defineEmits(['update:selected', 'update:name', 'update:categories']);
 
 // Remove localSelected and direct binding to ensure reactivity
 function handleSelection(value: boolean) {
@@ -44,7 +46,7 @@ function handleSelection(value: boolean) {
 // Reactive state for category editing
 const editableName = ref(props.name);
 const selectedCategoryIds = ref(props.categories.map((cat) => cat.id));
-const categoryList = useCategories(); // Example: Fetch category list
+const categoryList = ref(useCategories()); // Make categoryList a ref and type it
 
 // Computed property for category names
 const categoryNames = computed(() => {
@@ -73,6 +75,17 @@ watch(
 const getCardTextWrapperClass = computed(() => {
     return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
 });
+
+function handleSubmit() {
+    // Call the parent handlers
+    props.onNameUpdate(editableName.value);
+
+    const selectedCategories = categoryList.value.filter((cat: Category) => selectedCategoryIds.value.includes(cat.id));
+    props.onCategoriesUpdate(selectedCategories);
+
+    // Reset form or close edit mode if needed
+    emit('update:selected', false);
+}
 </script>
 
 <style lang="scss">
