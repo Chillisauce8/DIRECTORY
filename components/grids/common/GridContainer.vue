@@ -335,7 +335,8 @@ function getCardProps(listing: Listing) {
         selected: isSelected,
         show: show.value,
         onNameUpdate: (newName: string) => handleNameUpdate(listing.id, newName),
-        onCategoriesUpdate: (newCategories: Category[]) => handleCategoriesUpdate(listing.id, newCategories)
+        onCategoriesUpdate: (newCategories: Category[]) => handleCategoriesUpdate(listing.id, newCategories),
+        onListingSelectionUpdate: (selected: boolean) => handleListingSelectionUpdate(listing.id, selected),
     };
 }
 
@@ -414,6 +415,14 @@ function handleCategoriesUpdate(id: string, newCategories: Category[]) {
         }
         return listing;
     });
+}
+
+function handleListingSelectionUpdate(id: string, selected: boolean) {
+    if (selected) {
+        selectedItems.value = [...selectedItems.value, id];
+    } else {
+        selectedItems.value = selectedItems.value.filter((item) => item !== id);
+    }
 }
 </script>
 

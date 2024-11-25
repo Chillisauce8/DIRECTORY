@@ -22,7 +22,7 @@
             <SearchControl :search-fields="searchFields" />
         </template>
 
-        <template #card="{ listing, mode: cardMode, selected, show, onNameUpdate, onCategoriesUpdate }">
+        <template #card="{ listing, mode: cardMode, selected, show, onNameUpdate, onCategoriesUpdate, onListingUpdate, onListingSelectionUpdate }">
             <MediaCard
                 :id="listing.id"
                 :imageId="listing.images[0].id"
@@ -32,8 +32,9 @@
                 :selected="selected"
                 :show="show"
                 :categories="listing.categories"
-                :onNameUpdate="onNameUpdate"
-                :onCategoriesUpdate="onCategoriesUpdate"
+                @update:name="onNameUpdate"
+                @update:categories="onCategoriesUpdate"
+                @update:selected="onListingSelectionUpdate"
             />
         </template>
 

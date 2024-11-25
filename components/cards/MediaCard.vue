@@ -77,11 +77,10 @@ const getCardTextWrapperClass = computed(() => {
 });
 
 function handleSubmit() {
-    // Call the parent handlers
-    props.onNameUpdate(editableName.value);
+    emit('update:name', editableName.value);
 
     const selectedCategories = categoryList.value.filter((cat: Category) => selectedCategoryIds.value.includes(cat.id));
-    props.onCategoriesUpdate(selectedCategories);
+    emit('update:categories', selectedCategories);
 
     // Reset form or close edit mode if needed
     emit('update:selected', false);
