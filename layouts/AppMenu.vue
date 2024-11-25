@@ -50,9 +50,9 @@ const model = ref([
                 to: '/new/testFormLayout'
             },
             {
-                label: 'Media Grid',
+                label: 'Files Grid',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/new/gallery'
+                to: '/new/files'
             },
             {
                 label: 'Test Grid',
