@@ -48,7 +48,7 @@ export class SchemaFormsBuildHelper {
 
   constructor(
       private schemaName: string,
-      private schemaPath: string,
+      // private schemaPath: string,
       public schemaParser: SchemaParser,
       private schemaRelatorsFetchService: SchemaRelatorsFetchService,
       // private currentSupplier: CurrentSupplier
@@ -68,9 +68,9 @@ export class SchemaFormsBuildHelper {
   }
 
   _addRelatorsToBulkRequest(path: string, resultObj: Object) {
-    if (this.schemaPath) {
-      path = this.schemaPath + '.' + path;
-    }
+    // if (this.schemaPath) {
+    //   path = this.schemaPath + '.' + path;
+    // }
 
     this.relatorsBulkRequestParams.push({'schema': this.schemaName, 'path': path, 'resultObj': resultObj});
   }
@@ -437,14 +437,35 @@ export class SchemaFormsBuildHelperFactory {
   ) {
   }
 
-  getInstance(schemaName: string, schemaJson: Object, schemaPath?: string): SchemaFormsBuildHelper {
+  getInstance(schemaName: string, schemaJson: Object, fields?: Object): SchemaFormsBuildHelper {
 
-    if (schemaPath) {
-      const chilliSchemaParser = new SchemaParser(schemaJson);
-      schemaJson = chilliSchemaParser.getItem(schemaPath);
+    if (fields && Object.keys(fields).length && schemaJson) {
+      const shouldHideAbsentFields = fields[Object.keys(fields)[0]] === 1;
+
+      for (const propertyName of schemaJson['properties']) {
+        if (shouldHideAbsentFields) {
+          if (!(propertyName in fields)) {
+            // hide
+            schemaJson['properties'][propertyName]["hide"] = true;
+
+            if (!("persist" in schemaJson['properties'][propertyName])) {
+              schemaJson['properties'][propertyName]["persist"] = true;
+            }
+          }
+        } else {
+          if (propertyName in fields) {
+            // hide
+            schemaJson['properties'][propertyName]["hide"] = true;
+
+            if (!("persist" in schemaJson['properties'][propertyName])) {
+              schemaJson['properties'][propertyName]["persist"] = true;
+            }
+          }
+        }
+      }
     }
 
-    return new SchemaFormsBuildHelper(schemaName, schemaPath as string, this.schemaParserFactory.getInstance(schemaJson),
+    return new SchemaFormsBuildHelper(schemaName, this.schemaParserFactory.getInstance(schemaJson),
       this.schemaRelatorsFetchService);
   }
 }

@@ -16,7 +16,7 @@ import { useToast } from 'primevue/usetoast';
 import { sysService } from '~/service/http/sys.service';
 
 
-export default function useSchemaFormController(formName: string): any {
+export default function useSchemaFormController(formName: string, fields?: Object): any {
 
   const toast = useToast();
 
@@ -86,11 +86,11 @@ export default function useSchemaFormController(formName: string): any {
       return false;
     },
 
-    getSchema: async (): Promise<any> => {
+    getSchema: async (fields?: Object): Promise<any> => {
       const schemaName = sharedFunctions.getSchemaName();
       return sysService.getSchema(schemaName)
         .then((schema: any) => {
-            vm.schemaFormsBuildHelper = schemaFormsBuildHelperFactory.getInstance(schemaName, schema);
+            vm.schemaFormsBuildHelper = schemaFormsBuildHelperFactory.getInstance(schemaName, schema, fields);
         });
     },
 
@@ -252,7 +252,7 @@ export default function useSchemaFormController(formName: string): any {
 
     vm.editMode = sharedFunctions.isEditMode();
 
-    getAllSettings()
+    getAllSettings(fields)
       .then(() => {
         if (Object.keys(vm.model).length === 0) {
           vm.model = vm.schemaFormsBuildHelper.buildEmptyModel();
@@ -308,8 +308,8 @@ export default function useSchemaFormController(formName: string): any {
     );
   }
 
-  async function getAllSettings(): Promise<any> {
-    const promises = [sharedFunctions.getSchema()];
+  async function getAllSettings(fields?: Object): Promise<any> {
+    const promises = [sharedFunctions.getSchema(vm.editMode ? fields : undefined)];
 
     if (vm.editMode) {
       const getTargetPromise = sharedFunctions.getTarget()

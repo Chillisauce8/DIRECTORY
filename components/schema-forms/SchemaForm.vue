@@ -29,6 +29,7 @@ export interface FormProps extends BaseFieldProps {
     subtitle?: string;
     formName?: string;
     needCorrectExistingValues?: boolean;
+    fields?: Object;
 }
 
 export interface FormEmits extends BaseFieldEmits {

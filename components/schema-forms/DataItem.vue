@@ -4,6 +4,7 @@
     </Button>
 
     <SchemaForm :formName="formName"
+                :fields="props.fields"
                 :title="props.title"
                 :subtitle="props.subtitle"
                 :id="formName"
@@ -63,12 +64,12 @@ const emits = defineEmits(['mounted', 'changed']);
 const isCreateUpdate = ['create', 'update'].includes(props.function);
 const isReadSingle = props.function === 'read' && !!props.id;
 const isReadMulti = props.function === 'read' && !props.id;
-const needSchema = props.schema === true;
+const needSchema = props.schema;
 
 const collectionName = props.collection;
 
 const formName = props.collection + '-form';
-const {vm, formDescription, sharedFunctions} = useSchemaFormController(formName);
+const {vm, formDescription, sharedFunctions} = useSchemaFormController(formName, props.fields);
 
 let dataToSave: any;
 
