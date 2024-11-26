@@ -442,7 +442,7 @@ export class SchemaFormsBuildHelperFactory {
     if (fields && Object.keys(fields).length && schemaJson) {
       const shouldHideAbsentFields = fields[Object.keys(fields)[0]] === 1;
 
-      for (const propertyName of schemaJson['properties']) {
+      for (const propertyName in schemaJson['properties']) {
         if (shouldHideAbsentFields) {
           if (!(propertyName in fields)) {
             // hide
