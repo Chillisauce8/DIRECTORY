@@ -6,11 +6,14 @@
                 <h1 class="name">{{ name }}</h1>
                 <h1 class="categories">{{ categoryNames }}</h1>
             </div>
-            <form class="form" v-if="mode === 'edit' && selected" @submit.prevent="handleSubmit" @click.stop>
-                <InputText type="text" v-model="editableName" />
-                <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
-                <Button type="submit" severity="secondary" label="Submit" />
-            </form>
+            <slot v-if="mode === 'edit' && selected" name="inline-edit">
+                <form class="form" @submit.prevent="handleSubmit" @click.stop>
+                    <InputText type="text" v-model="editableName" />
+                    <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
+                    <Button type="submit" severity="secondary" label="Submit" />
+                </form>
+            </slot>
+
         </card-text-wrapper>
     </div>
 </template>
@@ -19,6 +22,13 @@
 import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp } from '@/types/props';
 import type { Category } from '@/types/props'; // or wherever your Category type is defined
+import DataItem from '~/components/schema-forms/DataItem.vue';
+
+
+interface DbNodeEditConfig {
+    collection: string;
+    fields: Record<string, 0 | 1>;
+}
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -31,12 +41,19 @@ const props = defineProps({
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     gallery: { type: String, default: 'gallery' },
-    selected: { type: Boolean, required: true }, // Passed down from parent or updated by CardWrapper
+    selected: { type: Boolean, required: true },
+    dbNode: { type: Object},
+    dbNodeEditConfig: { type: Object as PropType<DbNodeEditConfig> },
     onNameUpdate: { type: Function as PropType<(name: string) => void>, required: true },
     onCategoriesUpdate: { type: Function as PropType<(categories: Category[]) => void>, required: true }
 });
 
-const emit = defineEmits(['update:selected', 'update:name', 'update:categories']);
+const emit = defineEmits([
+    'update:selected',
+    'update:dbNode',
+    'update:name',
+    'update:categories'
+]);
 
 // Remove localSelected and direct binding to ensure reactivity
 function handleSelection(value: boolean) {
@@ -47,6 +64,8 @@ function handleSelection(value: boolean) {
 const editableName = ref(props.name);
 const selectedCategoryIds = ref(props.categories.map((cat) => cat.id));
 const categoryList = ref(useCategories()); // Make categoryList a ref and type it
+const internalDbNode = ref(props.dbNode);
+let updateDbNodeFn: () => Promise<void>;
 
 // Computed property for category names
 const categoryNames = computed(() => {
@@ -76,14 +95,27 @@ const getCardTextWrapperClass = computed(() => {
     return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
 });
 
-function handleSubmit() {
-    emit('update:name', editableName.value);
+async function handleSubmit() {
+  const dbNode = internalDbNode.value;
 
-    const selectedCategories = categoryList.value.filter((cat: Category) => selectedCategoryIds.value.includes(cat.id));
-    emit('update:categories', selectedCategories);
+  if (typeof updateDbNodeFn === 'function') {
+      await updateDbNodeFn();
+    }
+
+    // emit('update:name', editableName.value);
+    //
+    // const selectedCategories = categoryList.value.filter((cat: Category) => selectedCategoryIds.value.includes(cat.id));
+    // emit('update:categories', selectedCategories);
 
     // Reset form or close edit mode if needed
+    emit('update:dbNode', dbNode);
     emit('update:selected', false);
+}
+
+function handleDbNodeUpdate(data: any) {
+    internalDbNode.value = unref(data?.data ?? {});
+
+    updateDbNodeFn = data.saveDataFunc;
 }
 </script>
 
@@ -125,6 +157,10 @@ function handleSubmit() {
         .p-inputtext {
             font-size: 12px;
         }
+    }
+    .edit-form {
+        height: 100%;
+        overflow: auto;
     }
 }
 </style>

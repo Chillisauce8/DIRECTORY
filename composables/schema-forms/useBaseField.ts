@@ -148,6 +148,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
         if (updated || valuesDifferent || !isEqual(im._innerModel, value)) {
           im._innerModel = value;
+
           sharedFunctions.processInnerModelChanged();
         }
      // }
@@ -589,6 +590,11 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
       if (valuesDifferent || !isEqual(im._innerModel, value)) {
         im._innerModel = value;
+
+        if (im._previousValue === null) {
+          return;
+        }
+
         sharedFunctions.processInnerModelChanged();
       }
     // }

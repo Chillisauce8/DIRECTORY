@@ -27,7 +27,7 @@ export class FileUploaderService {
     //
   }
 
-  async upload(config: FileUploaderConfig): Promise<boolean> {
+  async upload<R extends unknown = any>(config: FileUploaderConfig): Promise<R> {
     const requestOptions = this.createRequestOptions(config);
 
     return this.http.request(config.url, requestOptions)

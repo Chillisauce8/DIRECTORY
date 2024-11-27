@@ -12,7 +12,9 @@
 
                 <!-- Default Display Control -->
                 <DisplayControl v-model="selectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
-                <AddControl />
+                <slot name="add-controls">
+                    <AddControl />
+                </slot>
             </div>
 
             <!-- Replace SelectControls with direct implementation -->
@@ -59,26 +61,13 @@
 import { VueDraggable } from 'vue-draggable-plus';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
-import type { Category, SearchQueryConfig, SortOption } from '@/composables/useListControls';
+import type {Category, Item, Listing, SearchQueryConfig, SortOption} from '@/composables/useListControls';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
 type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 type UpdateArrayFieldFn = (field: string, items: Item[], action: 'add' | 'remove') => void;
 
-interface Item {
-    id: number;
-    name: string;
-    [key: string]: any;
-}
-
-interface Listing {
-    id: string;
-    images: { id: string; alt: string }[];
-    name: string;
-    categories: Category[];
-    [key: string]: any;
-}
 
 interface FilterConfig {
     field: string;
@@ -151,7 +140,11 @@ const props = defineProps({
     show: {
         type: Array as PropType<string[]>,
         default: () => ['name', 'categories']
-    }
+    },
+    listings: {
+        type: Array as PropType<Listing[]>,
+        default: () => []
+    },
 });
 
 const emit = defineEmits<{
@@ -163,7 +156,7 @@ const emit = defineEmits<{
 const confirm = useConfirm();
 const toast = useToast();
 
-const listings = ref<Listing[]>(useListings());
+const listings = ref<Listing[]>(props?.listings ?? useListings());
 const selectedItems = ref<string[]>([]);
 const mode = ref<FunctionMode>(props.defaultFunctionControl);
 const show = ref<string[]>(props?.show ?? ['name', 'categories']);
@@ -334,6 +327,7 @@ function getCardProps(listing: Listing) {
         mode: unref(mode),
         selected: isSelected,
         show: show.value,
+        dbNode: listing.dbNode,
         onNameUpdate: (newName: string) => handleNameUpdate(listing.id, newName),
         onCategoriesUpdate: (newCategories: Category[]) => handleCategoriesUpdate(listing.id, newCategories),
         onListingSelectionUpdate: (selected: boolean) => handleListingSelectionUpdate(listing.id, selected),
@@ -345,12 +339,11 @@ function getCardWrapperProps(listing: Listing) {
 
     return {
         id: listing.id,
-        imageId: listing.images[0].id,
+        imageId: listing?.images?.[0]?.id,
         name: listing?.name,
         mode: unref(mode),
         selected: isSelected,
         show: show.value,
-        categories: listing.categories,
         listing
     };
 }
@@ -392,11 +385,12 @@ watch(
     { deep: true }
 );
 
-// --- Provides ---
-provide('updateArrayField', updateArrayField);
-provide('updateShow', (fields: string[]) => (show.value = fields));
-provide('updateSearchQueryConfig', (config: SearchQueryConfig) => (searchQueryConfig.value = config));
-provide('updateItemsSorting', (sort: SortOption) => (selectedSort.value = sort));
+watch(
+    () => props.listings,
+    (newListings) => {
+        listings.value = newListings;
+    }
+);
 
 // Add these functions to handle updates
 function handleNameUpdate(id: string, newName: string) {
@@ -424,6 +418,12 @@ function handleListingSelectionUpdate(id: string, selected: boolean) {
         selectedItems.value = selectedItems.value.filter((item) => item !== id);
     }
 }
+
+// --- Provides ---
+provide('updateArrayField', updateArrayField);
+provide('updateShow', (fields: string[]) => (show.value = fields));
+provide('updateSearchQueryConfig', (config: SearchQueryConfig) => (searchQueryConfig.value = config));
+provide('updateItemsSorting', (sort: SortOption) => (selectedSort.value = sort));
 </script>
 
 <style lang="scss">

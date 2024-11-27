@@ -52,7 +52,7 @@ const model = ref([
             {
                 label: 'Files Grid',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/new/files'
+                to: '/new/files-grid'
             },
             {
                 label: 'Test Grid',

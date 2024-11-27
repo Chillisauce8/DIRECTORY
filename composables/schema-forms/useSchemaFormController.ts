@@ -146,7 +146,7 @@ export default function useSchemaFormController(formName: string, fields?: Objec
       return savePromise
         .then((result: any) => {
           vm.savedModelResult = result;
-          const data = result['data'] || result;
+          const data = result?.['data']?._id ? result?.data : result;
           vm.initialModel = cloneDeep(data);
           vm.model = data;
           vm.formIsChanged = false;

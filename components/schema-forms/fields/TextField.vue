@@ -117,7 +117,7 @@ function onModelChange(value: any) {
   emits('modelChange', vm.model);
 }
 
-const onModelChangeDebounced = debounce(onModelChange, 1000);
+const onModelChangeDebounced = debounce(onModelChange, 100);
 
 function correctExistingValue() {
   if (!isString(vm.model)) {

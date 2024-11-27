@@ -29,6 +29,18 @@ export interface SearchQueryConfig {
 
 export type UpdateSearchQueryConfigFn = (config: SearchQueryConfig) => void;
 
+export interface Item {
+  id: string;
+  name: string;
+  [key: string]: any;
+}
+
+export interface Listing<DBNode extends unknown = any> extends Item {
+  images: { id: string; alt: string }[];
+  categories: Category[];
+  dbNode: DBNode;
+  [key: string]: any;
+}
 
 interface ListControlsOptions {
     initialSort?: SortOption;
