@@ -1,15 +1,23 @@
 <template>
   <grid-container
     functionControlDisplay="icon"
+    :filters="[
+      {
+          field: 'categories',
+          options: categoryOptions,
+          selected: selectedCategories
+      }
+    ]"
     :visibleFunctionControls="['view', 'select', 'edit', 'order']"
     defaultFunctionControl="view"
     defaultCardSize="Big Cards"
     :searchFields="searchFields"
     :show="selectedFilesShowOptions"
     :listings="listingList"
+    :category-options="categoryOptions"
   >
     <template #controls>
-<!--      <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />-->
+      <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
       <ShowControl v-model="selectedFilesShowOptions" :show-options="filesShowOptions" />
       <SortControl :sort-options="filesSortOptions" />
       <SearchControl :search-fields="searchFields" />
@@ -49,7 +57,7 @@
       </Dialog>
     </template>
 
-    <template #card="{ listing, mode: cardMode, selected, show, onNameUpdate, onCategoriesUpdate, onListingSelectionUpdate }">
+    <template #card="{ listing, mode: cardMode, selected, show, onListingSelectionUpdate }">
         <MediaCard :id="listing.id"
                    :imageId="listing?.images?.[0]?.id"
                    :name="listing.name"
@@ -85,8 +93,8 @@ import {fileUploaderService} from '~/service/file/file-uploader-service';
 
 const fileService = useFilesService();
 
-const categoryOptions = ref([]);
-// const selectedCategories = ref([]);
+const categoryOptions = ref<any[]>([]);
+const selectedCategories = ref([]);
 const selectedFilesShowOptions = ref(['name']);
 
 const filesShowOptions = ['name', 'categories'];
@@ -95,14 +103,14 @@ const filesSortOptions = [
   { label: 'Name (Z-A)', sort: 'name', order: 'desc' }
 ];
 
-// const filterControlConfig = {
-//   display: 'chip',
-//   optionLabel: 'name',
-//   filter: true,
-//   placeholder: 'Filter by Category',
-//   maxSelectedLabels: 2,
-//   className: 'category-control md:w-60'
-// } as const;
+const filterControlConfig = {
+  display: 'chip',
+  optionLabel: 'name',
+  filter: true,
+  placeholder: 'Filter by Category',
+  maxSelectedLabels: 2,
+  className: 'category-control md:w-60'
+} as const;
 
 const searchFields = [
   { field: 'name', label: 'Name' },
@@ -118,12 +126,22 @@ const ratingItems = ref([0, 1, 2, 3, 4, 5]);
 const fileDialog = ref(false);
 
 const listingList = ref(fileList.map(f => prepareListingItem(f)));
+updateCategoryOptions(listingList.value);
+
+function updateCategoryOptions(listingList: Listing<FileDbNode>[]) {
+  const categoryList = listingList.map(l => l.categories).flat();
+
+  const categoriesMap = new Map();
+  categoryList.forEach((c) => categoriesMap.set(c.id, c));
+
+  categoryOptions.value = Array.from(categoriesMap.values());
+}
 
 function prepareListingItem(file: FileDbNode): Listing<FileDbNode> {
   return {
     id: file._doc,
     name: file.name,
-    categories: file.categories,
+    categories: (file?.categories ?? []).map(i => i.category),
     images: file.type !== FileType.Document ? [{id: file._doc, alt: file.name}] : [],
     dbNode: file
   };
@@ -224,5 +242,7 @@ async function uploadFile() {
 
   fileDialog.value = false;
   listingList.value = [...listingList.value, prepareListingItem(result)];
+
+  updateCategoryOptions(listingList.value);
 }
 </script>
