@@ -37,7 +37,7 @@ const model = ref([
             {
                 label: 'Task List to DB',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/apps/tasklisttest'
+                to: '/tasklist/IndexTest'
             },
             {
                 label: 'Test Form',
@@ -53,6 +53,11 @@ const model = ref([
                 label: 'Files Grid',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/files'
+            },
+            {
+                label: 'Tasks Grid',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/tasks'
             },
             {
                 label: 'Test Grid',
