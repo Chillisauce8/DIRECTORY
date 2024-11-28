@@ -206,6 +206,7 @@ export default defineNuxtConfig({
 
     build: {
         // transpile: ['@vuepic/vue-datepicker'],
+
         analyze: true
         // optimization: {
         //   runtimeChunk: 'single',
