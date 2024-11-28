@@ -55,6 +55,11 @@ const model = ref([
                 to: '/new/files-grid'
             },
             {
+                label: 'Categories Grid',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/categories-grid'
+            },
+            {
                 label: 'Test Grid',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/test-grid'

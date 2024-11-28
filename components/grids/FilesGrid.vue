@@ -15,6 +15,7 @@
     :show="selectedFilesShowOptions"
     :listings="listingList"
     :category-options="categoryOptions"
+    @node-deleted="dbNodeDeleted"
   >
     <template #controls>
       <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
@@ -141,7 +142,7 @@ function prepareListingItem(file: FileDbNode): Listing<FileDbNode> {
   return {
     id: file._doc,
     name: file.name,
-    categories: (file?.categories ?? []).map(i => i.category),
+    categories: (file?.categories ?? []),
     images: file.type !== FileType.Document ? [{id: file._doc, alt: file.name}] : [],
     dbNode: file
   };
@@ -244,5 +245,9 @@ async function uploadFile() {
   listingList.value = [...listingList.value, prepareListingItem(result)];
 
   updateCategoryOptions(listingList.value);
+}
+
+function dbNodeDeleted(nodeId: string) {
+    listingList.value = listingList.value.filter(l => l.id !== nodeId);
 }
 </script>

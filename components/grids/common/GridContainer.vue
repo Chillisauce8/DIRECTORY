@@ -13,7 +13,23 @@
                 <!-- Default Display Control -->
                 <DisplayControl v-model="selectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
                 <slot name="add-controls">
-                    <AddControl />
+                    <template v-if="props.listingCollection">
+                        <AddControl @click="addCollectionNodeDialog = true"/>
+
+                        <Dialog v-model:visible="addCollectionNodeDialog"
+                                :style="{ width: '450px' }"
+                                :header="'Add new node to \'' + props.listingCollection + '\' collection'"
+                                :modal="true" class="p-fluid">
+                            <DataItem :collection="props.listingCollection"
+                                      function="create"
+                                      @changed="handleCreateNodeChanges">
+                            </DataItem>
+
+                            <template #footer>
+                               <Button label="Save" icon="pi pi-check" @click="createNode" />
+                            </template>
+                        </Dialog>
+                    </template>
                 </slot>
             </div>
 
@@ -62,6 +78,7 @@ import { VueDraggable } from 'vue-draggable-plus';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import type {Category, Item, Listing, SearchQueryConfig, SortOption} from '@/composables/useListControls';
+import {httpService} from '~/service/http/http.service';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
@@ -145,11 +162,16 @@ const props = defineProps({
         type: Array as PropType<Listing[]>,
         default: () => []
     },
+    listingCollection: {
+        type: String
+    },
 });
 
 const emit = defineEmits<{
     'add-selected': [string[]];
     'update:filterUpdates': [FilterUpdate];
+    'nodeCreated': any;
+    'nodeDeleted': any;
 }>();
 
 // --- State ---
@@ -162,6 +184,7 @@ const mode = ref<FunctionMode>(props.defaultFunctionControl);
 const show = ref<string[]>(props?.show ?? ['name', 'categories']);
 const selectedSize = ref(CARD_SIZES.find((option: CardSize) => option.label === props.defaultCardSize) || CARD_SIZES[0]);
 const selectedCategories = ref<Category[]>([]);
+const addCollectionNodeDialog = ref(false);
 
 // --- Computed ---
 // Rename this computed property to be more specific
@@ -235,8 +258,15 @@ function toggleSelectAll(value: boolean) {
 }
 
 // CRUD operations
-function deleteSelectedItems() {
-    listings.value = listings.value.filter((listing) => !selectedItems.value.includes(listing.id));
+async function deleteSelectedItems() {
+    if (props.listingCollection) {
+        for (const listingId of selectedItems.value) {
+            await httpService.delete(`/delete/${props.listingCollection}/${listingId}`);
+            emit('nodeDeleted', listingId);
+        }
+    }
+
+    // listings.value = listings.value.filter((listing) => !selectedItems.value.includes(listing.id));
     selectedItems.value = [];
 }
 
@@ -419,6 +449,21 @@ function handleListingSelectionUpdate(id: string, selected: boolean) {
     }
 }
 
+let saveNewNodeFn: () => Promise<void> = async () => {};
+let newNode: any = null;
+
+function handleCreateNodeChanges(changedEvent: {data: any; saveDataFunc: () => Promise<void>}) {
+    saveNewNodeFn = changedEvent.saveDataFunc;
+    newNode = changedEvent.data;
+}
+
+async function createNode() {
+    await saveNewNodeFn();
+
+    addCollectionNodeDialog.value = false;
+
+    emit('nodeCreated', newNode);
+}
 // --- Provides ---
 provide('updateArrayField', updateArrayField);
 provide('updateShow', (fields: string[]) => (show.value = fields));

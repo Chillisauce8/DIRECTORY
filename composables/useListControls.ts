@@ -1,7 +1,7 @@
 import { ref, computed, type Ref } from 'vue';
 
 export interface Category {
-    id: number;
+    id: string;
     name: string;
 }
 

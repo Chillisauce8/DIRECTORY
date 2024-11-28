@@ -6,11 +6,14 @@
                 <h1 class="name">{{ name }}</h1>
                 <h1 class="categories">{{ categoryNames }}</h1>
             </div>
-            <form class="form" v-if="mode === 'edit' && selected" @submit.prevent="handleSubmit" @click.stop>
-                <InputText type="text" v-model="editableName" />
-                <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
-                <Button type="submit" severity="secondary" label="Submit" />
-            </form>
+            <slot v-if="mode === 'edit' && selected" name="inline-edit">
+                <form class="form" @submit.prevent="handleSubmit" @click.stop>
+                    <InputText type="text" v-model="editableName" />
+                    <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
+                    <Button type="submit" severity="secondary" label="Submit" />
+                </form>
+            </slot>
+
         </card-text-wrapper>
     </div>
 </template>
