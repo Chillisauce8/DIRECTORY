@@ -45,7 +45,7 @@ export default function useEvents() {
             created: '2022-07-12T07:31:46',
             categories: [
                 {
-                    name: '1956 Austin-Healey 100 BN2',
+                    name: 'Bodywork',
                     id: 1
                 },
                 {
@@ -53,11 +53,11 @@ export default function useEvents() {
                     id: 8
                 },
                 {
-                    name: 'Ferrari 250 GTO Berlietta',
+                    name: 'Service',
                     id: 2
                 },
                 {
-                    name: 'Paris to Peking',
+                    name: 'Admin',
                     id: 7
                 }
             ]
@@ -153,7 +153,7 @@ export default function useEvents() {
             created: '2022-09-20T15:33:48',
             categories: [
                 {
-                    name: 'Paris to Peking',
+                    name: 'Admin',
                     id: 7
                 },
                 {
@@ -171,6 +171,7 @@ export default function useEvents() {
                     name: 'Mercedes-Benz 300SL'
                 }
             ],
+            description: 'Original Connolly leather showing wear on drivers seat bolster and steering wheel. Full interior deep clean needed.',
             status: [
                 {
                     state: 'Done',
@@ -206,7 +207,7 @@ export default function useEvents() {
             created: '2022-07-23T15:34:48',
             categories: [
                 {
-                    name: 'Paris to Peking',
+                    name: 'Admin',
                     id: 7
                 }
             ]
@@ -309,7 +310,7 @@ export default function useEvents() {
             created: '2022-08-23T15:07:33',
             categories: [
                 {
-                    name: 'Ferrari 250 GTO Berlietta',
+                    name: 'Service',
                     id: 2
                 },
                 {
@@ -365,7 +366,7 @@ export default function useEvents() {
             created: '2022-08-12T10:15:02',
             categories: [
                 {
-                    name: 'Silverstone',
+                    name: 'Event',
                     id: 6
                 }
             ]
@@ -463,7 +464,7 @@ export default function useEvents() {
                     id: 4
                 },
                 {
-                    name: 'Ferrari 250 GTO Berlietta',
+                    name: 'Service',
                     id: 2
                 }
             ]
@@ -544,7 +545,7 @@ export default function useEvents() {
             created: '2023-10-13T15:45:36',
             categories: [
                 {
-                    name: 'Ferrari 250 GTO Berlietta',
+                    name: 'Service',
                     id: 2
                 }
             ]
@@ -588,11 +589,11 @@ export default function useEvents() {
             created: '2023-08-16T04:35:40',
             categories: [
                 {
-                    name: 'Ferrari 250 GTO Berlietta',
+                    name: 'Service',
                     id: 2
                 },
                 {
-                    name: 'Goodwood 2024',
+                    name: 'Restoration',
                     id: 5
                 },
                 {
@@ -600,7 +601,7 @@ export default function useEvents() {
                     id: 4
                 },
                 {
-                    name: '1956 Austin-Healey 100 BN2',
+                    name: 'Bodywork',
                     id: 1
                 }
             ]
@@ -658,15 +659,15 @@ export default function useEvents() {
             created: '2022-02-23T03:32:15',
             categories: [
                 {
-                    name: 'Ferrari 250 GTO Berlietta',
+                    name: 'Service',
                     id: 2
                 },
                 {
-                    name: 'Goodwood 2024',
+                    name: 'Restoration',
                     id: 5
                 },
                 {
-                    name: 'Paris to Peking',
+                    name: 'Admin',
                     id: 7
                 }
             ]
@@ -719,15 +720,15 @@ export default function useEvents() {
             created: '2023-10-05T06:29:12',
             categories: [
                 {
-                    name: 'Silverstone',
+                    name: 'Event',
                     id: 6
                 },
                 {
-                    name: 'Goodwood 2024',
+                    name: 'Restoration',
                     id: 5
                 },
                 {
-                    name: 'Ferrari 250 GTO Berlietta',
+                    name: 'Service',
                     id: 2
                 }
             ]
