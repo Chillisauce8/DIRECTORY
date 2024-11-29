@@ -1,19 +1,11 @@
 <template>
-    <SelectButton
-        v-if="showSelector"
-        :modelValue="modelValue"
-        @update:modelValue="$emit('update:modelValue', $event)"
-        :options="filteredSizes"
-        optionLabel="label"
-        dataKey="label"
-        aria-labelledby="card-size-selector"
-        :allowEmpty="false"
-        class="card-size-control"
-    >
-        <template #option="slotProps">
-            <SvgIcon :svg="slotProps.option.icon" :label="slotProps.option.label" labelPosition="hover" />
-        </template>
-    </SelectButton>
+    <div class="display-control">
+        <SelectButton v-if="showSelector" :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)" :options="filteredSizes" optionLabel="label" dataKey="label" aria-labelledby="card-size-selector" :allowEmpty="false">
+            <template #option="slotProps">
+                <SvgIcon :svg="slotProps.option.icon" :label="slotProps.option.label" labelPosition="hover" />
+            </template>
+        </SelectButton>
+    </div>
 </template>
 
 <script setup lang="ts">

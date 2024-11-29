@@ -1,9 +1,21 @@
 <template>
-    <SelectButton v-if="showSelector" :modelValue="modelValue" @update:modelValue="$emit('update:modelValue', $event)" :options="filteredControls" optionValue="value" optionLabel="label" dataKey="value" :allowEmpty="false" class="function-control">
-        <template v-if="display === 'icon'" #option="slotProps">
-            <SvgIcon :svg="slotProps.option.icon" :label="slotProps.option.label" labelPosition="hover" />
-        </template>
-    </SelectButton>
+    <div class="function-control">
+        <SelectButton
+            v-if="showSelector"
+            :modelValue="modelValue"
+            @update:modelValue="$emit('update:modelValue', $event)"
+            :options="filteredControls"
+            optionValue="value"
+            optionLabel="label"
+            dataKey="value"
+            :allowEmpty="false"
+            class="function-control"
+        >
+            <template v-if="display === 'icon'" #option="slotProps">
+                <SvgIcon :svg="slotProps.option.icon" :label="slotProps.option.label" labelPosition="hover" />
+            </template>
+        </SelectButton>
+    </div>
 </template>
 
 <script setup lang="ts">

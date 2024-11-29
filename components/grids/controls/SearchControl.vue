@@ -1,17 +1,18 @@
 <template>
-    <span class="p-input-icon-left p-input-icon-right search-control">
-        <InputText v-model="searchValue" @input="handleInput" type="text" placeholder="Search" />
-        <i v-if="searchValue" class="pi pi-times" @click="clearSearch" />
-        <i v-else class="pi pi-search" />
-    </span>
+    <div class="search-control">
+        <span class="p-input-icon-left p-input-icon-right">
+            <InputText v-model="searchValue" @input="handleInput" type="text" placeholder="Search" />
+            <i v-if="searchValue" class="pi pi-times" @click="clearSearch" />
+            <i v-else class="pi pi-search" />
+        </span>
+    </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { PropType } from 'vue';
 import InputText from 'primevue/inputtext';
-import type {SearchField, UpdateSearchQueryConfigFn} from '~/composables/useListControls';
-
+import type { SearchField, UpdateSearchQueryConfigFn } from '~/composables/useListControls';
 
 const props = defineProps({
     searchFields: {
@@ -23,7 +24,6 @@ const props = defineProps({
         default: 1
     }
 });
-
 
 const searchValue = ref('');
 
@@ -41,7 +41,7 @@ function handleInput() {
 
     updateSearchQueryConfig({
         searchFields: props.searchFields,
-        searchQuery: searchValue.value,
+        searchQuery: searchValue.value
     });
 }
 
@@ -49,8 +49,8 @@ function clearSearch() {
     searchValue.value = '';
 
     updateSearchQueryConfig({
-      searchFields: props.searchFields,
-      searchQuery: '',
+        searchFields: props.searchFields,
+        searchQuery: ''
     });
 }
 </script>

@@ -1,5 +1,7 @@
 <template>
-    <MultiSelect :modelValue="modelValue" @update:modelValue="(val) => $emit('update:modelValue', val)" :options="props.options" :filter="true" :filterField="filterField" v-bind="$attrs" :class="['multi-select-filter', className]"> </MultiSelect>
+    <div class="filter-control">
+        <MultiSelect :modelValue="modelValue" @update:modelValue="(val) => $emit('update:modelValue', val)" :options="props.options" :filter="true" :filterField="filterField" v-bind="$attrs" :class="className"> </MultiSelect>
+    </div>
 </template>
 
 <script setup lang="ts">
