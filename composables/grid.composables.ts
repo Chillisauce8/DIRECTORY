@@ -87,6 +87,6 @@ export async function useGrid<DBNode extends DbNode = any>(config: GridConfig<DB
   };
 }
 
-export const useGridHandleCreateNodeFn = () => inject<GridCreateNodeFn>(GridCreateNodeFn);
+export const useGridHandleCreateNodeFn = () => inject(GridCreateNodeFn) as GridCreateNodeFn;
 export const useGridHandleUpdateNodeFn = () => inject(GridUpdateNodeFn) as GridModifyNodeFn;
 export const useGridHandleRemoveNodeFn = () => inject(GridRemoveNodeFn) as GridModifyNodeFn;

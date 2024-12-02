@@ -87,7 +87,7 @@ import {
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
 type FunctionMode = 'view' | 'select' | 'edit' | 'order';
-type UpdateArrayFieldFn = (field: string, items: Item[], action: 'add' | 'remove') => void;
+type UpdateArrayFieldFn = (field: string, items: Item[], action: 'add' | 'remove') => Promise<void>;
 
 
 interface FilterConfig {
@@ -302,33 +302,43 @@ function confirmDelete() {
 }
 
 // Update handlers
-const updateArrayField: UpdateArrayFieldFn = (field, items, action) => {
-    listings.value = listings.value.map((listing) => {
-        if (selectedItems.value.includes(listing.id)) {
-            const currentField = listing[field] || [];
-            return {
-                ...listing,
-                [field]: action === 'add' ? [...currentField, ...items.filter((item) => !currentField.some((existing: Item) => existing.id === item.id))] : currentField.filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id))
-            };
-        }
-        return listing;
-    });
+const updateArrayField: UpdateArrayFieldFn = async (field, items, action) => {
+    for (const selectedItemId of selectedItems.value) {
+      const listing = listings.value.find((listing) => listing.id === selectedItemId);
+
+      if (!listing) {
+          continue;
+      }
+
+      const dbNode = listing.dbNode;
+
+      const updatedDbNode = {
+          ...dbNode,
+          [field]: action === 'add' ?
+            [...dbNode[field], ...items] :
+            dbNode[field].filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id))
+      };
+
+      await handleUpdateNodeFn(updatedDbNode);
+    }
+
+    selectedItems.value = [];
 };
 
-function handleUpdateField(field: string, items: Item[], action: 'add' | 'remove') {
-    updateArrayField(field, items, action);
-
-    const filterConfig = props.filters.find((f) => f.field === field);
-    if (filterConfig) {
-        const updatedSelected =
-            action === 'add' ? [...filterConfig.selected, ...items.filter((item) => !filterConfig.selected.some((selected) => selected.id === item.id))] : filterConfig.selected.filter((selected) => !items.some((item) => item.id === selected.id));
-
-        emit('update:filterUpdates', {
-            ...props.filterUpdates,
-            [`selected${field.charAt(0).toUpperCase() + field.slice(1)}`]: updatedSelected
-        });
-    }
-}
+// function handleUpdateField(field: string, items: Item[], action: 'add' | 'remove') {
+//     updateArrayField(field, items, action);
+//
+//     const filterConfig = props.filters.find((f) => f.field === field);
+//     if (filterConfig) {
+//         const updatedSelected =
+//             action === 'add' ? [...filterConfig.selected, ...items.filter((item) => !filterConfig.selected.some((selected) => selected.id === item.id))] : filterConfig.selected.filter((selected) => !items.some((item) => item.id === selected.id));
+//
+//         emit('update:filterUpdates', {
+//             ...props.filterUpdates,
+//             [`selected${field.charAt(0).toUpperCase() + field.slice(1)}`]: updatedSelected
+//         });
+//     }
+// }
 
 function sortItems<T>(items: T[], selectedSort: SortOption): T[] {
     if (!selectedSort) {

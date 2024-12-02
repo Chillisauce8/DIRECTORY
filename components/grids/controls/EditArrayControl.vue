@@ -94,9 +94,9 @@ watch(
     { deep: true }
 );
 
-const confirmAdd = () => {
+const confirmAdd = async () => {
     if (!props.confirmAdd) {
-        handleAdd();
+        await handleAdd();
         return;
     }
 
@@ -111,9 +111,9 @@ const confirmAdd = () => {
     });
 };
 
-const confirmRemove = () => {
+const confirmRemove = async () => {
     if (!props.confirmRemove) {
-        handleRemove();
+        await handleRemove();
         return;
     }
 
@@ -128,28 +128,31 @@ const confirmRemove = () => {
     });
 };
 
-const handleAdd = () => {
+const handleAdd = async () => {
     console.log('EditArrayControl handleAdd - Items to add:', selectedItems.value);
 
-    if (updateArrayField) {
-        const itemsToAdd = selectedItems.value.map((item) => ({
-            id: item.id,
-            name: item.name
-        }));
-
-        updateArrayField(props.editField, itemsToAdd, 'add');
-
-        toast.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Items have been added to selection',
-            life: 3000
-        });
-        selectedItems.value = [];
+    if (!updateArrayField) {
+        return;
     }
+
+    const itemsToAdd = selectedItems.value.map((item) => ({
+        id: item.id,
+        name: item.name
+    }));
+
+    await updateArrayField(props.editField, itemsToAdd, 'add');
+
+    toast.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: 'Items have been added to selection',
+        life: 3000
+    });
+
+    selectedItems.value = [];
 };
 
-const handleRemove = () => {
+const handleRemove = async () => {
     console.log('EditArrayControl handleRemove - Items to remove:', selectedItems.value);
 
     if (updateArrayField) {
@@ -158,7 +161,7 @@ const handleRemove = () => {
             name: item.name
         }));
 
-        updateArrayField(props.editField, itemsToRemove, 'remove');
+        await updateArrayField(props.editField, itemsToRemove, 'remove');
 
         toast.add({
             severity: 'success',

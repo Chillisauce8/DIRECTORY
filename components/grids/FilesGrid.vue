@@ -85,16 +85,27 @@
 </template>
 
 <script setup lang="ts">
-import {FileDbNode, useFilesService} from '~/service/file/files-service';
+import {FileDbNode} from '~/service/file/files-service';
 import type {Listing} from '~/composables/useListControls';
 import {fileHelperService, FileType} from '~/service/file/file-helper-service';
 import EXIF from '~/service/file/exif';
 import {fileUploaderService} from '~/service/file/file-uploader-service';
+import {useGrid} from '~/composables/grid.composables';
+import {useCategoriesService} from '~/service/cars/categories.service';
 
+const categoriesService = useCategoriesService();
 
-const fileService = useFilesService();
+const collectionName = 'files';
 
-const categoryOptions = ref<any[]>([]);
+const {listingList, updateDbNodeInListingList} = await useGrid({
+  collectionName,
+  prepareListingItem,
+  createDbNode: async (dbNode: any) => {return dbNode},
+});
+
+const categoryList = await categoriesService.getList();
+
+const categoryOptions = ref<any[]>(categoryList.map((category) => ({id: category._doc, name: category.name})));
 const selectedCategories = ref([]);
 const selectedFilesShowOptions = ref(['name']);
 
@@ -118,31 +129,11 @@ const searchFields = [
   { field: 'categories', label: 'Categories' }
 ];
 
-const collectionName = 'files';
-
-const {listingList, updateDbNodeInListingList} = await useGrid({
-  collectionName,
-  prepareListingItem,
-  createDbNode: async (dbNode: any) => {return dbNode},
-});
-
-
 let fileNode = ref<any>({});
 let fileToUpload: File | null = null;
 
 const ratingItems = ref([0, 1, 2, 3, 4, 5]);
 const fileDialog = ref(false);
-
-updateCategoryOptions(listingList.value);
-
-function updateCategoryOptions(listingList: Listing<FileDbNode>[]) {
-  const categoryList = listingList.map(l => l.categories).flat();
-
-  const categoriesMap = new Map();
-  categoryList.forEach((c) => categoriesMap.set(c.id, c));
-
-  categoryOptions.value = Array.from(categoriesMap.values());
-}
 
 function prepareListingItem(file: FileDbNode): Listing<FileDbNode> {
   return {

@@ -18,7 +18,7 @@
     :listing-collection="collectionName">
 
     <template #controls>
-<!--      <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />-->
+      <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
       <ShowControl v-model="selectedCategoryShowOptions" :show-options="categoriesShowOptions" />
       <SortControl :sort-options="categoriesSortOptions" />
       <SearchControl :search-fields="searchFields" />
@@ -55,15 +55,21 @@
 
 <script setup lang="ts">
 import {Listing} from '~/composables/useListControls';
-import {CategoryDbNode, useCategoriesService} from '~/service/cars/categories.service';
+import {CategoryDbNode} from '~/service/cars/categories.service';
 
-const categoriesService = useCategoriesService();
 
-const categoryOptions = ref<any[]>([]);
+const collectionName = 'categories';
+
+const {listingList, updateDbNodeInListingList} = await useGrid({
+  collectionName,
+  prepareListingItem,
+});
+
+const categoryOptions = ref<any[]>(listingList.value.map(({dbNode}) => ({id: dbNode._doc, name: dbNode.name})));
 const selectedCategories = ref([]);
 const selectedCategoryShowOptions = ref(['name']);
 
-const categoriesShowOptions = ['name'/*, 'categories'*/];
+const categoriesShowOptions = ['name', 'categories'];
 const categoriesSortOptions = [
   { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
   { label: 'Name (Z-A)', sort: 'name', order: 'desc' }
@@ -80,15 +86,8 @@ const filterControlConfig = {
 
 const searchFields = [
   { field: 'name', label: 'Name' },
-  // { field: 'categories', label: 'Categories' }
+  { field: 'categories', label: 'Categories' }
 ];
-
-const collectionName = 'categories';
-
-const {listingList, updateDbNodeInListingList} = await useGrid({
-    collectionName,
-    prepareListingItem,
-});
 
 function prepareListingItem(category: CategoryDbNode): Listing<any> {
   return {
