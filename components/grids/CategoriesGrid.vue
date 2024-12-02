@@ -15,9 +15,7 @@
     :show="selectedCategoryShowOptions"
     :listings="listingList"
     :category-options="categoryOptions"
-    :listing-collection="collectionName"
-    @node-created="onDbNodeCreated"
-    @node-deleted="dbNodeDeleted">
+    :listing-collection="collectionName">
 
     <template #controls>
 <!--      <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />-->
@@ -47,7 +45,10 @@
     </template>
 
     <template #edit-controls>
-      <EditArrayControl :options="categoryOptions" editField="categories" placeholder="Edit Categories" class="edit-array-control w-full md:w-80" />
+      <EditArrayControl :options="categoryOptions"
+                        editField="categories"
+                        placeholder="Edit Categories"
+                        class="edit-array-control w-full md:w-80" />
     </template>
   </grid-container>
 </template>
@@ -84,9 +85,10 @@ const searchFields = [
 
 const collectionName = 'categories';
 
-const categoryList = await categoriesService.getList();
-
-const listingList = ref(categoryList.map(i => prepareListingItem(i)));
+const {listingList, updateDbNodeInListingList} = await useGrid({
+    collectionName,
+    prepareListingItem,
+});
 
 function prepareListingItem(category: CategoryDbNode): Listing<any> {
   return {
@@ -98,16 +100,8 @@ function prepareListingItem(category: CategoryDbNode): Listing<any> {
   };
 }
 
-function onDbNodeCreated(dbNode: CategoryDbNode) {
-  listingList.value = [...listingList.value, prepareListingItem(dbNode)];
-}
-
 function onDbNodeUpdate(dbNode: CategoryDbNode) {
-  listingList.value = listingList.value.map(l => l.id === dbNode._doc ? prepareListingItem(dbNode) : l);
-}
-
-function dbNodeDeleted(nodeId: string) {
-  listingList.value = listingList.value.filter(l => l.id !== nodeId);
+  updateDbNodeInListingList(dbNode);
 }
 </script>
 

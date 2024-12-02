@@ -15,7 +15,7 @@
     :show="selectedFilesShowOptions"
     :listings="listingList"
     :category-options="categoryOptions"
-    @node-deleted="dbNodeDeleted"
+    :listing-collection="collectionName"
   >
     <template #controls>
       <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
@@ -118,7 +118,14 @@ const searchFields = [
   { field: 'categories', label: 'Categories' }
 ];
 
-const fileList = await fileService.getFiles();
+const collectionName = 'files';
+
+const {listingList, updateDbNodeInListingList} = await useGrid({
+  collectionName,
+  prepareListingItem,
+  createDbNode: async (dbNode: any) => {return dbNode},
+});
+
 
 let fileNode = ref<any>({});
 let fileToUpload: File | null = null;
@@ -126,7 +133,6 @@ let fileToUpload: File | null = null;
 const ratingItems = ref([0, 1, 2, 3, 4, 5]);
 const fileDialog = ref(false);
 
-const listingList = ref(fileList.map(f => prepareListingItem(f)));
 updateCategoryOptions(listingList.value);
 
 function updateCategoryOptions(listingList: Listing<FileDbNode>[]) {
@@ -149,7 +155,7 @@ function prepareListingItem(file: FileDbNode): Listing<FileDbNode> {
 }
 
 function onDbNodeUpdate(dbNode: any) {
-  listingList.value = listingList.value.map(l => l.id === dbNode._doc ? prepareListingItem(dbNode) : l);
+  updateDbNodeInListingList(dbNode);
 }
 
 async function prepareFileNode(file: File): Promise<{node: FileDbNode; file: File}> {
@@ -245,9 +251,5 @@ async function uploadFile() {
   listingList.value = [...listingList.value, prepareListingItem(result)];
 
   updateCategoryOptions(listingList.value);
-}
-
-function dbNodeDeleted(nodeId: string) {
-    listingList.value = listingList.value.filter(l => l.id !== nodeId);
 }
 </script>

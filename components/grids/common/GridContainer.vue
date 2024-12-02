@@ -79,6 +79,10 @@ import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import type {Category, Item, Listing, SearchQueryConfig, SortOption} from '@/composables/useListControls';
 import {httpService} from '~/service/http/http.service';
+import {
+    useGridHandleCreateNodeFn, useGridHandleRemoveNodeFn, useGridHandleUpdateNodeFn
+} from '~/composables/grid.composables';
+
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
@@ -103,6 +107,10 @@ interface CardSize {
     icon: string;
     display: string;
 }
+
+const handleCreateNodeFn = useGridHandleCreateNodeFn();
+const handleUpdateNodeFn = useGridHandleUpdateNodeFn();
+const handleDeleteNodeFn = useGridHandleRemoveNodeFn();
 
 // --- Constants ---
 const CARD_SIZES: readonly CardSize[] = [
@@ -170,8 +178,6 @@ const props = defineProps({
 const emit = defineEmits<{
     'add-selected': [string[]];
     'update:filterUpdates': [FilterUpdate];
-    'nodeCreated': any;
-    'nodeDeleted': any;
 }>();
 
 // --- State ---
@@ -261,12 +267,16 @@ function toggleSelectAll(value: boolean) {
 async function deleteSelectedItems() {
     if (props.listingCollection) {
         for (const listingId of selectedItems.value) {
-            await httpService.delete(`/delete/${props.listingCollection}/${listingId}`);
-            emit('nodeDeleted', listingId);
+            const dbNode = listings.value.find((listing) => listing.id === listingId)?.dbNode;
+
+            if (!dbNode) {
+                continue;
+            }
+
+            await handleDeleteNodeFn(dbNode);
         }
     }
 
-    // listings.value = listings.value.filter((listing) => !selectedItems.value.includes(listing.id));
     selectedItems.value = [];
 }
 
@@ -449,20 +459,16 @@ function handleListingSelectionUpdate(id: string, selected: boolean) {
     }
 }
 
-let saveNewNodeFn: () => Promise<void> = async () => {};
-let newNode: any = null;
+let dataOfNodeToCreate: any = null;
 
 function handleCreateNodeChanges(changedEvent: {data: any; saveDataFunc: () => Promise<void>}) {
-    saveNewNodeFn = changedEvent.saveDataFunc;
-    newNode = changedEvent.data;
+    dataOfNodeToCreate = changedEvent.data;
 }
 
 async function createNode() {
-    await saveNewNodeFn();
+    await handleCreateNodeFn(dataOfNodeToCreate);
 
     addCollectionNodeDialog.value = false;
-
-    emit('nodeCreated', newNode);
 }
 // --- Provides ---
 provide('updateArrayField', updateArrayField);

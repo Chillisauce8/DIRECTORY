@@ -1,4 +1,5 @@
-import { ref, computed, type Ref } from 'vue';
+import {computed, ref, type Ref} from 'vue';
+import type {DbNode} from '~/service/cars/dbNodeCRUD.service';
 
 export interface Category {
     id: string;
@@ -30,16 +31,16 @@ export interface SearchQueryConfig {
 export type UpdateSearchQueryConfigFn = (config: SearchQueryConfig) => void;
 
 export interface Item {
-  id: string;
-  name: string;
-  [key: string]: any;
+    id: string;
+    name: string;
+    [key: string]: any;
 }
 
-export interface Listing<DBNode extends unknown = any> extends Item {
-  images: { id: string; alt: string }[];
-  categories: Category[];
-  dbNode: DBNode;
-  [key: string]: any;
+export interface Listing<DBNode extends DbNode = any> extends Item {
+    images: { id: string; alt: string }[];
+    // categories: Category[];
+    dbNode: DBNode;
+    [key: string]: any;
 }
 
 interface ListControlsOptions {
