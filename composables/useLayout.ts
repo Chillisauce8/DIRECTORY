@@ -1,15 +1,44 @@
 import { computed, reactive, ref, watch } from 'vue';
+import type { Ref } from 'vue';
 
-const layoutConfig = reactive({
+interface LayoutConfig {
+    preset: string;
+    primary: string;
+    surface: string | null;
+    darkTheme: boolean;
+    menuMode: string;
+    menuTheme: string;
+    elevation: string;
+    rounding: string;
+    card: string;
+}
+
+interface LayoutState {
+    staticMenuDesktopInactive: boolean;
+    overlayMenuActive: boolean;
+    sidebarActive: boolean;
+    anchored: boolean;
+    overlaySubmenuActive: boolean;
+    profileSidebarVisible: boolean;
+    configSidebarVisible: boolean;
+    staticMenuMobileActive: boolean;
+    menuHoverActive: boolean;
+    activeMenuItem: string | null;
+}
+
+const layoutConfig = reactive<LayoutConfig>({
     preset: 'Aura',
     primary: 'emerald',
     surface: null,
     darkTheme: false,
     menuMode: 'static',
-    menuTheme: 'colorScheme'
+    menuTheme: 'colorScheme',
+    elevation: 'high',
+    rounding: 'rounded',
+    card: 'simple'
 });
 
-const layoutState = reactive({
+const layoutState = reactive<LayoutState>({
     staticMenuDesktopInactive: false,
     overlayMenuActive: false,
     sidebarActive: false,
@@ -22,22 +51,22 @@ const layoutState = reactive({
     activeMenuItem: null
 });
 
-const outsideClickListener = ref(null);
+const outsideClickListener: Ref<((event: MouseEvent) => void) | null> = ref(null);
 
 export function useLayout() {
-    const setPrimary = (value) => {
+    const setPrimary = (value: string): void => {
         layoutConfig.primary = value;
     };
 
-    const setSurface = (value) => {
+    const setSurface = (value: string): void => {
         layoutConfig.surface = value;
     };
 
-    const setPreset = (value) => {
+    const setPreset = (value: string): void => {
         layoutConfig.preset = value;
     };
 
-    const setMenuMode = (mode) => {
+    const setMenuMode = (mode: string): void => {
         layoutConfig.menuMode = mode;
 
         if (layoutConfig.menuMode === 'static') {
@@ -45,39 +74,38 @@ export function useLayout() {
         }
     };
 
-    const setMenuTheme = (value) => {
+    const setMenuTheme = (value: string): void => {
         layoutConfig.menuTheme = value;
     };
 
-    const toggleDarkMode = () => {
+    const toggleDarkMode = (): void => {
         if (!document.startViewTransition) {
             executeDarkModeToggle();
-
             return;
         }
 
-        document.startViewTransition(() => executeDarkModeToggle(event));
+        document.startViewTransition(() => executeDarkModeToggle());
     };
 
-    const executeDarkModeToggle = () => {
+    const executeDarkModeToggle = (): void => {
         layoutConfig.darkTheme = !layoutConfig.darkTheme;
         document.documentElement.classList.toggle('app-dark');
     };
 
-    const setActiveMenuItem = (item) => {
-        layoutState.activeMenuItem = item.value || item;
+    const setActiveMenuItem = (item: string | { value: string }): void => {
+        layoutState.activeMenuItem = typeof item === 'string' ? item : item.value;
     };
 
-    const setMenuStates = (value) => {
+    const setMenuStates = (value: boolean): void => {
         layoutState.overlaySubmenuActive = value;
         layoutState.menuHoverActive = value;
     };
 
-    const setStaticMenuMobile = () => {
+    const setStaticMenuMobile = (): void => {
         layoutState.staticMenuMobileActive = !layoutState.staticMenuMobileActive;
     };
 
-    const watchSidebarActive = () => {
+    const watchSidebarActive = (): void => {
         watch(isSidebarActive, (newVal) => {
             if (newVal) {
                 bindOutsideClickListener();
@@ -87,7 +115,7 @@ export function useLayout() {
         });
     };
 
-    const onMenuToggle = () => {
+    const onMenuToggle = (): void => {
         if (layoutConfig.menuMode === 'overlay') {
             layoutState.overlayMenuActive = !layoutState.overlayMenuActive;
         }
@@ -99,11 +127,11 @@ export function useLayout() {
         }
     };
 
-    const onProfileSidebarToggle = () => {
+    const onProfileSidebarToggle = (): void => {
         layoutState.profileSidebarVisible = !layoutState.profileSidebarVisible;
     };
 
-    const onConfigSidebarToggle = () => {
+    const onConfigSidebarToggle = (): void => {
         if (isSidebarActive.value) {
             resetMenu();
             unbindOutsideClickListener();
@@ -112,17 +140,17 @@ export function useLayout() {
         layoutState.configSidebarVisible = !layoutState.configSidebarVisible;
     };
 
-    const onSidebarToggle = (value) => {
+    const onSidebarToggle = (value: boolean): void => {
         layoutState.sidebarActive = value;
     };
 
-    const onAnchorToggle = () => {
+    const onAnchorToggle = (): void => {
         layoutState.anchored = !layoutState.anchored;
     };
 
-    const bindOutsideClickListener = () => {
+    const bindOutsideClickListener = (): void => {
         if (!outsideClickListener.value) {
-            outsideClickListener.value = (event) => {
+            outsideClickListener.value = (event: MouseEvent) => {
                 if (isOutsideClicked(event)) {
                     resetMenu();
                 }
@@ -131,21 +159,22 @@ export function useLayout() {
         }
     };
 
-    const unbindOutsideClickListener = () => {
+    const unbindOutsideClickListener = (): void => {
         if (outsideClickListener.value) {
             document.removeEventListener('click', outsideClickListener.value);
             outsideClickListener.value = null;
         }
     };
 
-    const isOutsideClicked = (event) => {
+    const isOutsideClicked = (event: MouseEvent): boolean => {
         const sidebarEl = document.querySelector('.layout-sidebar');
         const topbarButtonEl = document.querySelector('.topbar-menubutton');
+        const target = event.target as Node;
 
-        return !(sidebarEl?.isSameNode(event.target) || sidebarEl?.contains(event.target) || topbarButtonEl?.isSameNode(event.target) || topbarButtonEl?.contains(event.target));
+        return !(sidebarEl?.isSameNode(target) || sidebarEl?.contains(target) || topbarButtonEl?.isSameNode(target) || topbarButtonEl?.contains(target));
     };
 
-    const resetMenu = () => {
+    const resetMenu = (): void => {
         layoutState.overlayMenuActive = false;
         layoutState.overlaySubmenuActive = false;
         layoutState.staticMenuMobileActive = false;
@@ -162,6 +191,28 @@ export function useLayout() {
 
     const getPrimary = computed(() => layoutConfig.primary);
     const getSurface = computed(() => layoutConfig.surface);
+
+    const setElevation = (value: string): void => {
+        layoutConfig.elevation = value;
+    };
+
+    const setRounding = (value: string): void => {
+        layoutConfig.rounding = value;
+    };
+
+    const setCard = (value: string): void => {
+        layoutConfig.card = value;
+    };
+
+    const applyThemeClasses = (): void => {
+        document.body.className = `
+            theme-elevation-${layoutConfig.elevation}
+            theme-rounding-${layoutConfig.rounding}
+            theme-card-${layoutConfig.card}
+        `
+            .replace(/\s+/g, ' ')
+            .trim();
+    };
 
     return {
         layoutConfig,
@@ -189,6 +240,10 @@ export function useLayout() {
         isSlimPlus,
         isHorizontal,
         isDesktop,
-        unbindOutsideClickListener
+        unbindOutsideClickListener,
+        setElevation,
+        setRounding,
+        setCard,
+        applyThemeClasses
     };
 }
