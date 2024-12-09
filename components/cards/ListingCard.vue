@@ -38,7 +38,7 @@ const props = defineProps(['images', 'name', 'saleType', 'year', 'price', 'engin
         //     min-height: 150px;
     }
     .name {
-        font-family: $ff2;
+        font-family: var(--primary-font-family);
         font-size: 15px;
         font-weight: 100;
     }

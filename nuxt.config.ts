@@ -161,6 +161,27 @@ export default defineNuxtConfig({
     hooks: {
         'pages:extend': (pages: any[]) => {
             pages.push({
+                name: 'Market List',
+                path: '/market',
+                file: '@/pages/market/list.vue'
+            });
+            pages.push({
+                name: 'Market',
+                path: '/market/:slug+',
+                file: '@/pages/market/slug.vue'
+            });
+            pages.push({
+                name: 'market-test',
+                path: '/apps/market-test',
+                file: '@/pages/apps/market-test/List.vue'
+            });
+        }
+    },
+
+    /*
+    hooks: {
+        'pages:extend': (pages: any[]) => {
+            pages.push({
                 name: 'e-commerce',
                 path: '/',
                 file: '@/pages/dashboards/index.vue',
@@ -528,7 +549,7 @@ export default defineNuxtConfig({
             });
         }
     },
-
+*/
     alias: {
         quill: process.dev ? 'quill/dist/quill.js' : 'quill'
     },

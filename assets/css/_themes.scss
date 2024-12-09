@@ -1,113 +1,4 @@
 :root {
-    // @include generate-shades('example', 200, 75, 25);
-    // Livery
-    --pig-pink-light: #fde8f1;
-    --pig-pink-dark: #c61160;
-
-    --pig-pink-stripes: linear-gradient(
-        to right,
-        var(--pig-pink-light) 0%,
-        var(--pig-pink-light) 40%,
-        var(--pig-pink-dark) 40%,
-        var(--pig-pink-dark) 41%,
-        var(--pig-pink-light) 41%,
-        var(--pig-pink-light) 59%,
-        var(--pig-pink-dark) 59%,
-        var(--pig-pink-dark) 60%,
-        var(--pig-pink-light) 60%,
-        var(--pig-pink-light) 100%
-    );
-
-    --lotus-jps-gold: #86995b;
-    --lotus-jps-black: #231f20;
-
-    --lotus-jps-stripes: linear-gradient(
-        to right,
-        var(--lotus-jps-black) 0%,
-        var(--lotus-jps-black) 20%,
-        var(--lotus-jps-gold) 20%,
-        var(--lotus-jps-gold) 20.5%,
-        var(--lotus-jps-black) 20.5%,
-        var(--lotus-jps-black) 35%,
-        var(--lotus-jps-gold) 35%,
-        var(--lotus-jps-gold) 35.5%,
-        var(--lotus-jps-black) 35.5%,
-        var(--lotus-jps-black) 64.5%,
-        var(--lotus-jps-gold) 64.5%,
-        var(--lotus-jps-gold) 65%,
-        var(--lotus-jps-black) 65%,
-        var(--lotus-jps-black) 79.5%,
-        var(--lotus-jps-gold) 79.5,
-        var(--lotus-jps-gold) 80%,
-        var(--lotus-jps-black) 80%,
-        var(--lotus-jps-black) 100%
-    );
-
-    --darkest-martini: black;
-    --dark-martini: #05053c;
-    --highlight-martini: #d91016;
-    --light-martini: #2fb8ec;
-    --lightest-martini: #ebeef3;
-
-    --martini-light-blue: #2fb8ec;
-    --martini-dark-blue: #05053c;
-    --martini-red: #d91016;
-
-    --martini-stripes: linear-gradient(
-        to right,
-        transparent 0%,
-        transparent 40%,
-        var(--martini-dark-blue) 40%,
-        var(--martini-dark-blue) 42.6%,
-        var(--martini-light-blue) 42.6%,
-        var(--martini-light-blue) 44%,
-        var(--martini-dark-blue) 44%,
-        var(--martini-dark-blue) 44.6%,
-        var(--martini-light-blue) 44.6%,
-        var(--martini-light-blue) 46%,
-        var(--martini-dark-blue) 46%,
-        var(--martini-dark-blue) 47.4%,
-        var(--martini-red) 47.4%,
-        var(--martini-red) 52.4%,
-        var(--martini-dark-blue) 52.4%,
-        var(--martini-dark-blue) 54%,
-        var(--martini-light-blue) 54%,
-        var(--martini-light-blue) 55.4%,
-        var(--martini-dark-blue) 55.4%,
-        var(--martini-dark-blue) 56%,
-        var(--martini-light-blue) 56%,
-        var(--martini-light-blue) 57.4%,
-        var(--martini-dark-blue) 57.4%,
-        var(--martini-dark-blue) 60%,
-        transparent 60%,
-        transparent 100%
-    );
-
-    // https://www.gulfoilltd.com/gulf-livery  https://color.adobe.com/-Racing-color-theme-8083036/
-    --darkest-gulf: black;
-    --dark-gulf: #002776;
-    --highlight-gulf: #ff6319;
-    --light-gulf: #b8d8eb; //  --bluer-gulf: #88B3C6;
-    --lightest-gulf: #ffffff;
-
-    --gulf-dark-blue: #002776;
-    --gulf-light-blue: #b8d8eb;
-    --gulf-orange: #ff6319;
-
-    --gulf-stripes: linear-gradient(
-        to right,
-        var(--gulf-light-blue) 0%,
-        var(--gulf-light-blue) 40%,
-        var(--gulf-dark-blue) 40%,
-        var(--gulf-dark-blue) 41%,
-        var(--gulf-orange) 41%,
-        var(--gulf-orange) 59%,
-        var(--gulf-dark-blue) 59%,
-        var(--gulf-dark-blue) 60%,
-        var(--gulf-light-blue) 60%,
-        var(--gulf-light-blue) 100%
-    );
-
     //   ROUNDING
     --round-outer: 5px;
     --round-inner: 3px;
@@ -120,6 +11,9 @@
     //CARD
     --card-with-border: transparent 5px solid;
     --card-without-border: none;
+
+    --primary-font-family: 'EuclidFlex', 'Oswald', sans-serif;
+    --surface-semi-transparent: rgba(255, 255, 255, 0.3);
 
     & body {
         // Color themes moved to bottom
@@ -145,20 +39,3 @@
         }
     }
 }
-
-/* Commented out color themes
-&.theme-color-martini {
-    --color-darkest: var(--darkest-martini);
-    --color-dark: var(--dark-martini);
-    --color-highlight: var(--highlight-martini);
-    --color-light: var(--light-martini);
-    --color-lightest: var(--lightest-martini);
-}
-&.theme-color-gulf {
-    --color-darkest: var(--darkest-gulf);
-    --color-dark: var(--dark-gulf);
-    --color-highlight: var(--highlight-gulf);
-    --color-light: var(--light-gulf);
-    --color-lightest: var(--lightest-gulf);
-}
-*/

@@ -43,7 +43,7 @@ const props = defineProps(['images', 'name']);
         //     min-height: 150px;
     }
     .name {
-        font-family: $ff2;
+        font-family: var(--primary-font-family);
         font-size: 18px;
         font-weight: 600;
     }

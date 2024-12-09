@@ -27,13 +27,13 @@ const props = defineProps(['images', 'name', 'nickname', 'make', 'year']);
     }
 
     .name {
-        font-family: $ff2;
+        font-family: var(--primary-font-family);
         font-size: 14px;
         font-weight: 100;
     }
     .nickname {
         font-size: 16px;
-        font-family: $ff2;
+        font-family: var(--primary-font-family);
         font-weight: 600;
         letter-spacing: 0.3rem;
         text-transform: uppercase;

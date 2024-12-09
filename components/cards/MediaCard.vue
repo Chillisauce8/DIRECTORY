@@ -13,7 +13,6 @@
                     <Button type="submit" severity="secondary" label="Submit" />
                 </form>
             </slot>
-
         </card-text-wrapper>
     </div>
 </template>
@@ -22,7 +21,6 @@
 import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp } from '@/types/props';
 import type { Category } from '@/types/props'; // or wherever your Category type is defined
-
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -107,13 +105,13 @@ function handleSubmit() {
             display: none;
         }
         .name {
-            font-family: $ff2;
+            font-family: var(--primary-font-family);
             font-size: 15px;
             font-weight: 100;
             margin: 5px 0;
         }
         .categories {
-            font-family: $ff2;
+            font-family: var(--primary-font-family);
             font-size: 12px;
             font-weight: 500;
             text-transform: uppercase;

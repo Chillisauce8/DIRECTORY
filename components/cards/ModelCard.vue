@@ -27,18 +27,18 @@ const props = defineProps(['images', 'name', 'make', 'years']);
     }
 
     .make {
-        font-family: $ff2;
+        font-family: var(--primary-font-family);
         font-size: 12px;
         font-weight: 600;
     }
     .name {
-        font-family: $ff2;
+        font-family: var(--primary-font-family);
         font-size: 16px;
         font-weight: 100;
     }
 
     .years {
-        font-family: $ff2;
+        font-family: var(--primary-font-family);
         font-size: 14px;
         font-weight: 100;
     }

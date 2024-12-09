@@ -1,6 +1,6 @@
 <template>
-    <div :class="['card-list', selectedSize?.display || '', mode]">
-        <div class="list-controls">
+    <div :class="['grid-container', selectedSize?.display || '', mode]">
+        <div class="grid-controls">
             <Toast />
             <ConfirmDialog />
             <div class="filter-controls flex flex-col lg:flex-row gap-4">
@@ -14,19 +14,13 @@
                 <DisplayControl v-model="selectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
                 <slot name="add-controls">
                     <template v-if="props.listingCollection">
-                        <AddControl @click="addCollectionNodeDialog = true"/>
+                        <AddControl @click="addCollectionNodeDialog = true" />
 
-                        <Dialog v-model:visible="addCollectionNodeDialog"
-                                :style="{ width: '450px' }"
-                                :header="'Add new node to \'' + props.listingCollection + '\' collection'"
-                                :modal="true" class="p-fluid">
-                            <DataItem :collection="props.listingCollection"
-                                      function="create"
-                                      @changed="handleCreateNodeChanges">
-                            </DataItem>
+                        <Dialog v-model:visible="addCollectionNodeDialog" :style="{ width: '450px' }" :header="'Add new node to \'' + props.listingCollection + '\' collection'" :modal="true" class="p-fluid">
+                            <DataItem :collection="props.listingCollection" function="create" @changed="handleCreateNodeChanges"> </DataItem>
 
                             <template #footer>
-                               <Button label="Save" icon="pi pi-check" @click="createNode" />
+                                <Button label="Save" icon="pi pi-check" @click="createNode" />
                             </template>
                         </Dialog>
                     </template>
@@ -77,18 +71,14 @@
 import { VueDraggable } from 'vue-draggable-plus';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
-import type {Category, Item, Listing, SearchQueryConfig, SortOption} from '@/composables/useListControls';
-import {httpService} from '~/service/http/http.service';
-import {
-    useGridHandleCreateNodeFn, useGridHandleRemoveNodeFn, useGridHandleUpdateNodeFn
-} from '~/composables/grid.composables';
-
+import type { Category, Item, Listing, SearchQueryConfig, SortOption } from '@/composables/useListControls';
+import { httpService } from '~/service/http/http.service';
+import { useGridHandleCreateNodeFn, useGridHandleRemoveNodeFn, useGridHandleUpdateNodeFn } from '~/composables/grid.composables';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
 type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 type UpdateArrayFieldFn = (field: string, items: Item[], action: 'add' | 'remove') => Promise<void>;
-
 
 interface FilterConfig {
     field: string;
@@ -172,7 +162,7 @@ const props = defineProps({
     },
     listingCollection: {
         type: String
-    },
+    }
 });
 
 const emit = defineEmits<{
@@ -304,22 +294,20 @@ function confirmDelete() {
 // Update handlers
 const updateArrayField: UpdateArrayFieldFn = async (field, items, action) => {
     for (const selectedItemId of selectedItems.value) {
-      const listing = listings.value.find((listing) => listing.id === selectedItemId);
+        const listing = listings.value.find((listing) => listing.id === selectedItemId);
 
-      if (!listing) {
-          continue;
-      }
+        if (!listing) {
+            continue;
+        }
 
-      const dbNode = listing.dbNode;
+        const dbNode = listing.dbNode;
 
-      const updatedDbNode = {
-          ...dbNode,
-          [field]: action === 'add' ?
-            [...dbNode[field], ...items] :
-            dbNode[field].filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id))
-      };
+        const updatedDbNode = {
+            ...dbNode,
+            [field]: action === 'add' ? [...dbNode[field], ...items] : dbNode[field].filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id))
+        };
 
-      await handleUpdateNodeFn(updatedDbNode);
+        await handleUpdateNodeFn(updatedDbNode);
     }
 
     selectedItems.value = [];
@@ -380,7 +368,7 @@ function getCardProps(listing: Listing) {
         dbNode: listing.dbNode,
         onNameUpdate: (newName: string) => handleNameUpdate(listing.id, newName),
         onCategoriesUpdate: (newCategories: Category[]) => handleCategoriesUpdate(listing.id, newCategories),
-        onListingSelectionUpdate: (selected: boolean) => handleListingSelectionUpdate(listing.id, selected),
+        onListingSelectionUpdate: (selected: boolean) => handleListingSelectionUpdate(listing.id, selected)
     };
 }
 
@@ -471,7 +459,7 @@ function handleListingSelectionUpdate(id: string, selected: boolean) {
 
 let dataOfNodeToCreate: any = null;
 
-function handleCreateNodeChanges(changedEvent: {data: any; saveDataFunc: () => Promise<void>}) {
+function handleCreateNodeChanges(changedEvent: { data: any; saveDataFunc: () => Promise<void> }) {
     dataOfNodeToCreate = changedEvent.data;
 }
 
@@ -488,12 +476,14 @@ provide('updateItemsSorting', (sort: SortOption) => (selectedSort.value = sort))
 </script>
 
 <style lang="scss">
-.card-list {
+.grid-container {
     --grid-gap: 20px;
     border-radius: var(--border-radius);
     background-color: var(--surface-overlay);
+
+    background-color: var(--surface-semi-transparent);
     // padding: var(--grid-gap);
-    .list-controls {
+    .grid-controls {
         animation: fill-background linear;
         animation-timeline: scroll();
         background-color: transparent;

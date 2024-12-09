@@ -18,6 +18,9 @@ function showProfileSidebar() {
             <AppBreadcrumb class="topbar-breadcrumb"></AppBreadcrumb>
         </div>
 
+        <div class="topbar-center">
+            <SvgLogo />
+        </div>
         <div class="topbar-end">
             <ul class="topbar-menu">
                 <li class="topbar-search">
@@ -39,4 +42,11 @@ function showProfileSidebar() {
     </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.layout-topbar {
+    .svg-logo {
+        width: 200px;
+        //  height: 40px;
+    }
+}
+</style>

@@ -111,13 +111,13 @@ const getCardTextWrapperClass = (isSelected: boolean) => {
             display: none;
         }
         .name {
-            font-family: $ff2;
+            font-family: var(--primary-font-family);
             font-size: 15px;
             font-weight: 100;
             margin: 5px 0;
         }
         .categories {
-            font-family: $ff2;
+            font-family: var(--primary-font-family);
             font-size: 12px;
             font-weight: 500;
             text-transform: uppercase;

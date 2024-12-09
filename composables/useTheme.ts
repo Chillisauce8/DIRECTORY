@@ -409,6 +409,7 @@ export const useTheme = () => {
                 light: {
                     surface: {
                         0: '#ffffff',
+
                         50: '#f5f5f5',
                         100: '#cdcdcd',
                         200: '#a5a5a6',

@@ -1,8 +1,88 @@
+<template>
+    <AppSubMenu :model="model" />
+</template>
+
 <script setup>
 import { ref } from 'vue';
 
 import AppSubMenu from './AppSubMenu.vue';
 
+const model = ref([
+    {
+        // label: 'NEW !',
+        icon: 'pi pi-home',
+        items: [
+            {
+                label: 'Calendar',
+                icon: 'pi pi-fw pi-calendar',
+                to: '/new/calendar'
+            },
+            {
+                label: 'Markets',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/market'
+            },
+            {
+                label: 'Vehicle Page Design',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/car'
+            },
+            {
+                label: 'Vehicle Card Design',
+                icon: 'pi pi-fw pi-image',
+                to: '/new/carddesign'
+            },
+
+            {
+                label: 'Market test',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/apps/market-test'
+            },
+            {
+                label: 'Task List to DB',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/apps/tasklist/IndexTest'
+            },
+            {
+                label: 'Test Form',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/testForm'
+            },
+            {
+                label: 'Test Form Field Layout',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/testFormLayout'
+            },
+            {
+                label: 'Files Grid',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/files-grid'
+            },
+            {
+                label: 'Categories Grid',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/categories-grid'
+            },
+            {
+                label: 'Tasks Grid',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/tasks'
+            },
+            {
+                label: 'Test Grid',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/test-grid'
+            },
+            {
+                label: 'Images Fetching',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/imagesfetching'
+            }
+        ]
+    }
+]);
+
+/*
 const model = ref([
     {
         label: 'NEW !',
@@ -527,10 +607,7 @@ const model = ref([
         ]
     }
 ]);
+*/
 </script>
 
-<template>
-    <AppSubMenu :model="model" />
-</template>
-
-<style lang="scss" scoped></style>
+<style lang="scss"></style>
