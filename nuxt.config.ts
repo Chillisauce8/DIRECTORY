@@ -151,12 +151,20 @@ export default defineNuxtConfig({
 
     plugins: [{ src: '~/plugins/app.js' }, { src: '~/plugins/default-http-interceptors.ts' }, { src: '~/plugins/js-extend.ts' }],
 
-    components: [
-        {
-            path: '~/components', // will get any components nested in let's say /components/test too
-            pathPrefix: false
-        }
-    ],
+    components: {
+        dirs: [
+            {
+                path: '~/components',
+                pathPrefix: false
+            },
+            {
+                path: '~/layouts',
+                pathPrefix: false
+            }
+        ]
+    },
+
+    pages: true,
 
     hooks: {
         'pages:extend': (pages: any[]) => {
@@ -174,6 +182,11 @@ export default defineNuxtConfig({
                 name: 'market-test',
                 path: '/apps/market-test',
                 file: '@/pages/apps/market-test/List.vue'
+            });
+            pages.push({
+                name: 'index',
+                path: '/',
+                file: '@/pages/index.vue'
             });
         }
     },
@@ -559,5 +572,10 @@ export default defineNuxtConfig({
         routeRules: environment?.routeRules ?? {}
     },
 
-    compatibilityDate: '2024-10-14'
+    compatibilityDate: '2024-10-14',
+
+    imports: {
+        autoImport: true,
+        dirs: ['composables/**', 'utils/**']
+    }
 });

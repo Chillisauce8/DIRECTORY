@@ -44,8 +44,9 @@ const containerClass = computed(() => {
         <AppSidebar />
 
         <div class="layout-content-wrapper">
-            <AppTopbar />
-            <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb>
+            <TopNav />
+            <!--       <AppTopbar /> -->
+            <!--  <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb> -->
             <div class="layout-content">
                 <NuxtPage></NuxtPage>
             </div>

@@ -1,9 +1,9 @@
 <template>
-    <div class="svg-icon">
-        <i v-html="iconContent" class="icon" :class="svg" />
+    <component :is="button ? 'button' : 'div'" class="svg-icon" :class="svg">
+        <i v-html="iconContent" class="icon" />
         <!-- Display label if it's defined, using the class based on labelPosition -->
         <div v-if="label" class="label" :class="labelPosition">{{ label }}</div>
-    </div>
+    </component>
 </template>
 
 <script setup lang="ts">
@@ -14,6 +14,7 @@ interface SvgIconProps {
     svg: string;
     label?: string;
     labelPosition?: 'hover' | 'row' | 'column';
+    button?: boolean;
 }
 
 // Use defineProps with explicit types
@@ -68,9 +69,8 @@ watch(() => props.svg, loadIcon);
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 1em;
-        width: 1em;
-
+        width: 100%;
+        height: 100%;
         svg {
             width: 100%;
             height: 100%;
