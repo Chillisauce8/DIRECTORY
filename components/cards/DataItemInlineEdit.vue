@@ -7,7 +7,7 @@
             :initial-data="props.dataItem"
             @changed="onDataItemChange">
   </DataItem>
-  <Button type="button" severity="secondary" label="Submit" @click="onSubmit"/>
+  <Button v-if="submitPossible" type="button" severity="secondary" label="Submit" @click="onSubmit"/>
 </template>
 
 <script setup lang="ts">
@@ -33,6 +33,7 @@ interface DateItemInlineEditEmits {
 const props = defineProps<DateItemInlineEditProps>();
 const emits = defineEmits<DateItemInlineEditEmits>();
 
+const submitPossible = ref(false);
 
 let saveDataFunc: () => Promise<DataItem>;
 let updateDataItem: DataItem;
@@ -41,6 +42,7 @@ let updateDataItem: DataItem;
 async function onDataItemChange(changeResult: {data: DataItem, saveDataFunc: () => Promise<DataItem>}) {
   updateDataItem = unref(changeResult.data);
   saveDataFunc = changeResult.saveDataFunc;
+  submitPossible.value = true;
 }
 
 async function onSubmit() {

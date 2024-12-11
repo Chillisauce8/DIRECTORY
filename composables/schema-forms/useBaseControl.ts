@@ -44,7 +44,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
     initFieldBase();
 
     if (vm.model) {
-      correctExistingValue();
+      sharedFunctions.correctExistingValue();
     }
 
     fillDescriptionPattern();

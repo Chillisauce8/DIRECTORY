@@ -67,14 +67,27 @@
                    :selected="selected"
                    :show="show"
                    :categories="listing.categories">
-            <template #inline-edit>
-                <div v-if="cardMode === 'edit' && selected" @click.stop>
-                    <DataItemInlineEdit collection="files"
-                                        :fields="{name: 1, categories: 1}"
-                                        :data-item="listing.dbNode"
-                                        @update:data-item="onDbNodeUpdate($event); onListingSelectionUpdate(false)"/>
-                </div>
-            </template>
+          <template #card-details>
+            <editable-group collection="files"
+                            :data="listing.dbNode"
+                            :edit="cardMode === 'edit' && selected"
+                            @submit="onDbNodeUpdate($event); onListingSelectionUpdate(false)">
+              <editable field="name">
+                <h1>{{listing.name}}</h1>
+              </editable>
+              <editable field="categories">
+                <h1>{{listing.categories.map((category) => category.name).join(', ')}}</h1>
+              </editable>
+            </editable-group>
+          </template>
+<!--            <template #inline-edit>-->
+<!--                <div v-if="cardMode === 'edit' && selected" @click.stop>-->
+<!--                    <DataItemInlineEdit collection="files"-->
+<!--                                        :fields="{name: 1, categories: 1}"-->
+<!--                                        :data-item="listing.dbNode"-->
+<!--                                        @update:data-item="onDbNodeUpdate($event); onListingSelectionUpdate(false)"/>-->
+<!--                </div>-->
+<!--            </template>-->
         </MediaCard>
     </template>
 

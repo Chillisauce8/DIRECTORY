@@ -1,7 +1,7 @@
 import { schemaRelatorsFetchService, SchemaRelatorsFetchService } from './schemaRelatorsFetch.service';
 import { SchemaParser, schemaParserFactory, SchemaParserFactory } from './schemaParser.factory';
 import {BlockComponents} from './blockComponents';
-import { groupBy, isUndefined } from '../utils';
+import { groupBy } from '../utils';
 
 
 export interface BlockDescription {
@@ -75,7 +75,7 @@ export class SchemaFormsBuildHelper {
     this.relatorsBulkRequestParams.push({'schema': this.schemaName, 'path': path, 'resultObj': resultObj});
   }
 
-  async _fetchRelatorChoicesInBulk(): Promise<any> {
+  async fetchRelatorChoicesInBulk(): Promise<any> {
     const groupedRelatorsBulkRequestParams = this._groupRelatorsBulkRequestParams();
 
     // const currentSupplierId = this.currentSupplier.getId();
@@ -384,7 +384,7 @@ export class SchemaFormsBuildHelper {
       }
     }
 
-    const promise = this._fetchRelatorChoicesInBulk();
+    const promise = this.fetchRelatorChoicesInBulk();
     this.waitPromises.push(promise);
 
     await Promise.all(this.waitPromises)

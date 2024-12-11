@@ -80,6 +80,7 @@ function initField() {
   componentProperties.value = {
     ...props.description,
     options: autocompleteItems,
+    dataKey: "id",
     optionLabel: props.description.optionLabel || (autocompleteItems.value?.[0]?.title ? 'title' :
       autocompleteItems.value?.[0]?.name ? 'name' : undefined),
     placeholder: vm.placeholderValue,
@@ -175,7 +176,7 @@ function _initInnerData() {
   autocompleteItems.value = sharedFunctions.filterPossibleValues();
   _isObjects = autocompleteItems.value && autocompleteItems.value.length && isObject(autocompleteItems.value[0]);
 
-  if (_fakeModel) {
+  if (_fakeModel.value) {
     return;
   }
 

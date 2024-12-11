@@ -144,42 +144,71 @@ export function debounce(func: Function, wait: number, immediate?: boolean) {
 
   // Calling debounce returns a new anonymous function
   return function() {
-    // reference the context and args for the setTimeout function
     // @ts-ignore
     let context: any = this;
     let args = arguments;
 
-    // Should the function be called now? If immediate is true
-    //   and not already in a timeout then the answer is: Yes
     let callNow = immediate && !timeout;
 
-    // This is the basic debounce behaviour where you can call this
-    //   function several times, but it will only execute once
-    //   (before or after imposing a delay).
-    //   Each time the returned function is called, the timer starts over.
     clearTimeout(timeout as NodeJS.Timeout);
 
-    // Set the new timeout
     timeout = setTimeout(function() {
-
-      // Inside the timeout function, clear the timeout variable
-      // which will let the next execution run when in 'immediate' mode
       timeout = null;
 
-      // Check if the function already ran with the immediate flag
       if (!immediate) {
-        // Call the original function with apply
-        // apply lets you define the 'this' object as well as the arguments
-        //    (both captured before setTimeout)
         func.apply(context, args);
       }
     }, wait);
 
-    // Immediate mode and no wait timer? Execute the function...
     if (callNow) func.apply(context, args);
   }
 }
 
+export function debounceAsync(
+  func,
+  wait = 0,
+  {
+    leading = false,
+    cancelObj = 'canceled'
+  } = {}
+) {
+  let timerId, latestResolve, shouldCancel
+
+  return function ( ...args ) {
+    if ( !latestResolve ) { // The first call since last invocation.
+      return new Promise( ( resolve, reject ) => {
+        latestResolve = resolve
+        if ( leading ) {
+          invokeAtLeading.apply( this, [ args, resolve, reject ] );
+        } else {
+          timerId = setTimeout( invokeAtTrailing.bind( this, args, resolve, reject ), wait )
+        }
+      })
+    }
+
+    shouldCancel = true
+    return new Promise( ( resolve, reject ) => {
+      latestResolve = resolve
+      timerId = setTimeout( invokeAtTrailing.bind( this, args, resolve, reject ), wait )
+    })
+  }
+
+  function invokeAtLeading( args, resolve, reject ) {
+    func.apply( this, args ).then( resolve ).catch( reject )
+    shouldCancel = false
+  }
+
+  function invokeAtTrailing( args, resolve, reject ) {
+    if ( shouldCancel && resolve !== latestResolve ) {
+      reject( cancelObj )
+    } else {
+      func.apply( this, args ).then( resolve ).catch( reject )
+      shouldCancel = false
+      clearTimeout( timerId )
+      timerId = latestResolve = null
+    }
+  }
+}
 
 export function deleteNullProperties(obj: any, recurse: boolean) {
 

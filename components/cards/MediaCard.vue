@@ -1,18 +1,24 @@
 <template>
     <div class="media-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290"
+                      aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
         <card-text-wrapper :class="getCardTextWrapperClass">
+
+          <slot name="card-details">
             <div class="card-details" :class="show">
                 <h1 class="name">{{ name }}</h1>
                 <h1 class="categories">{{ categoryNames }}</h1>
             </div>
-            <slot v-if="mode === 'edit' && selected" name="inline-edit">
-                <form class="form" @submit.prevent="handleSubmit" @click.stop>
-                    <InputText type="text" v-model="editableName" />
-                    <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
-                    <Button type="submit" severity="secondary" label="Submit" />
-                </form>
-            </slot>
+          </slot>
+<!--          <slot v-if="mode === 'edit' && selected" name="inline-edit">-->
+<!--              <form class="form" @submit.prevent="handleSubmit" @click.stop>-->
+<!--                  <InputText type="text" v-model="editableName" />-->
+<!--                  <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList"-->
+<!--                               optionLabel="name" optionValue="id" filter placeholder="Select a Category"-->
+<!--                               :maxSelectedLabels="1" />-->
+<!--                  <Button type="submit" severity="secondary" label="Submit" />-->
+<!--              </form>-->
+<!--          </slot>-->
         </card-text-wrapper>
     </div>
 </template>
@@ -20,7 +26,8 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp } from '@/types/props';
-import type { Category } from '@/types/props'; // or wherever your Category type is defined
+import type { Category } from '@/types/props';
+import useCategories from '~/composables/useCategories'; // or wherever your Category type is defined
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -44,6 +51,8 @@ const emit = defineEmits(['update:selected', 'update:name', 'update:categories']
 function handleSelection(value: boolean) {
     emit('update:selected', value);
 }
+
+const schemaHelper = null;
 
 // Reactive state for category editing
 const editableName = ref(props.name);
