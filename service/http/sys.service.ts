@@ -14,9 +14,16 @@ export class SysService {
     //
   };
 
-  async getSchema(qName : string): Promise<any> {
-    return this.httpService.get('/api/sys/definitions/' + qName)
+  private schemasCache = {};
+
+  async getSchema(name : string): Promise<any> {
+    if (this.schemasCache[name]) {
+      return this.schemasCache[name];
+    }
+
+    return this.httpService.get('/api/sys/definitions/' + name)
       .then((data : any) => {
+        this.schemasCache[name] = data.data;
         return data.data;
       });
   }

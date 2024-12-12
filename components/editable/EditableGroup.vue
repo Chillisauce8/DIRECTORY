@@ -85,6 +85,7 @@ async function generateFieldDescription(fieldPath: string) {
 
 let needToExecuteFetchRelator = false;
 
+
 function processAfterFieldGeneration() {
   if (!needToExecuteFetchRelator) {
     needToExecuteFetchRelator = true;
@@ -94,7 +95,7 @@ function processAfterFieldGeneration() {
       schemaFormsBuildHelper.clearRelatorsBulkRequestParams();
       needToExecuteFetchRelator = false;
       possibleToRenderComponent.value = true;
-    }, 300);
+    }, 100);
   }
 }
 
