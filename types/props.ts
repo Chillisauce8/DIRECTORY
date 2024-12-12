@@ -48,6 +48,11 @@ export const nameProp = {
     default: ''
 };
 
+export const dataItemProp = {
+    type: Object,
+    default: null
+};
+
 export const classNameProp = {
     type: String,
     default: ''

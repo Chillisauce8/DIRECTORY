@@ -66,28 +66,9 @@
                    :loveable="listing.loveable"
                    :selected="selected"
                    :show="show"
-                   :categories="listing.categories">
-          <template #card-details>
-            <editable-group collection="files"
-                            :data="listing.dbNode"
-                            :edit="cardMode === 'edit' && selected"
-                            @submit="onDbNodeUpdate($event); onListingSelectionUpdate(false)">
-              <editable field="name">
-                <h1>{{listing.name}}</h1>
-              </editable>
-              <editable field="categories">
-                <h1>{{listing.categories.map((category) => category.name).join(', ')}}</h1>
-              </editable>
-            </editable-group>
-          </template>
-<!--            <template #inline-edit>-->
-<!--                <div v-if="cardMode === 'edit' && selected" @click.stop>-->
-<!--                    <DataItemInlineEdit collection="files"-->
-<!--                                        :fields="{name: 1, categories: 1}"-->
-<!--                                        :data-item="listing.dbNode"-->
-<!--                                        @update:data-item="onDbNodeUpdate($event); onListingSelectionUpdate(false)"/>-->
-<!--                </div>-->
-<!--            </template>-->
+                   :data-item="listing.dbNode"
+                   :categories="listing.categories"
+                   @update:data-item="onDbNodeUpdate($event); onListingSelectionUpdate(false)">
         </MediaCard>
     </template>
 
@@ -105,7 +86,9 @@ import EXIF from '~/service/file/exif';
 import {fileUploaderService} from '~/service/file/file-uploader-service';
 import {useGrid} from '~/composables/grid.composables';
 import {useCategoriesService} from '~/service/cars/categories.service';
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const categoriesService = useCategoriesService();
 
 const collectionName = 'files';
@@ -160,6 +143,8 @@ function prepareListingItem(file: FileDbNode): Listing<FileDbNode> {
 
 function onDbNodeUpdate(dbNode: any) {
   updateDbNodeInListingList(dbNode);
+
+  toast.add({ severity: 'success', summary: 'Successful', detail: 'File Data Updated', life: 3000 });
 }
 
 async function prepareFileNode(file: File): Promise<{node: FileDbNode; file: File}> {

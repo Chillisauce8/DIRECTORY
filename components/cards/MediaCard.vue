@@ -4,35 +4,32 @@
                       aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
         <card-text-wrapper :class="getCardTextWrapperClass">
 
-          <slot name="card-details">
-            <div class="card-details" :class="show">
-                <h1 class="name">{{ name }}</h1>
-                <h1 class="categories">{{ categoryNames }}</h1>
-            </div>
-          </slot>
-<!--          <slot v-if="mode === 'edit' && selected" name="inline-edit">-->
-<!--              <form class="form" @submit.prevent="handleSubmit" @click.stop>-->
-<!--                  <InputText type="text" v-model="editableName" />-->
-<!--                  <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList"-->
-<!--                               optionLabel="name" optionValue="id" filter placeholder="Select a Category"-->
-<!--                               :maxSelectedLabels="1" />-->
-<!--                  <Button type="submit" severity="secondary" label="Submit" />-->
-<!--              </form>-->
-<!--          </slot>-->
+          <editable-group collection="files"
+                          :data="props.dataItem"
+                          :edit="props.mode === 'edit' && selected"
+                          @submit="onEditableGroupSubmit($event)">
+            <editable field="name">
+              <h1>{{props.name}}</h1>
+            </editable>
+            <editable field="categories">
+              <h1>{{props.categories.map((category) => category.name).join(', ')}}</h1>
+            </editable>
+          </editable-group>
+
         </card-text-wrapper>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp } from '@/types/props';
+import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
 import type { Category } from '@/types/props';
-import useCategories from '~/composables/useCategories'; // or wherever your Category type is defined
 
 const props = defineProps({
     id: { type: String, required: true },
     imageId: imageIdProp,
     name: nameProp,
+    dataItem: dataItemProp,
     mode: modeProp,
     loveable: loveableProp,
     show: showProp,
@@ -45,57 +42,22 @@ const props = defineProps({
     onCategoriesUpdate: { type: Function as PropType<(categories: Category[]) => void>, required: true }
 });
 
-const emit = defineEmits(['update:selected', 'update:name', 'update:categories']);
+const emit = defineEmits(['update:selected', 'update:data-item', 'update:categories']);
 
 // Remove localSelected and direct binding to ensure reactivity
 function handleSelection(value: boolean) {
     emit('update:selected', value);
 }
 
-const schemaHelper = null;
-
-// Reactive state for category editing
-const editableName = ref(props.name);
-const selectedCategoryIds = ref(props.categories.map((cat) => cat.id));
-const categoryList = ref(useCategories()); // Make categoryList a ref and type it
-
-// Computed property for category names
-const categoryNames = computed(() => {
-    return props.categories.map((category) => category.name).join(', ');
-});
-
-// Watch for category changes and update reactive state
-watch(
-    () => props.categories,
-    (newCategories) => {
-        selectedCategoryIds.value = newCategories.map((cat) => cat.id);
-    },
-    { immediate: true }
-);
-
-// Watch for name changes and update editableName
-watch(
-    () => props.name,
-    (newName) => {
-        editableName.value = newName;
-    },
-    { immediate: true }
-);
-
 // Dynamic class logic for card text wrapper
 const getCardTextWrapperClass = computed(() => {
     return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
 });
 
-function handleSubmit() {
-    emit('update:name', editableName.value);
-
-    const selectedCategories = categoryList.value.filter((cat: Category) => selectedCategoryIds.value.includes(cat.id));
-    emit('update:categories', selectedCategories);
-
-    // Reset form or close edit mode if needed
-    emit('update:selected', false);
+function onEditableGroupSubmit($event) {
+  emit('update:data-item', $event);
 }
+
 </script>
 
 <style lang="scss">

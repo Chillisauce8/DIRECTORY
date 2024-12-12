@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ref } from 'vue';
+import { type Ref, ref } from 'vue';
 import { getValueFromObject, setObjectPropertyByString } from '~/service/utils';
 import { SchemaFormsBuildHelper } from '~/service/schema-forms/schemaFormsBuildHelper.factory';
 
@@ -12,9 +12,11 @@ export interface EditableProps {
   schemaFormsBuildHelper?: SchemaFormsBuildHelper;
 }
 
-const generateFieldDescription: Function|undefined = inject('generateFieldDescription');
-const processAfterFieldGeneration: Function|undefined = inject('processAfterFieldGeneration');
-const possibleToRenderComponent = inject('possibleToRenderComponent');
+const generateFieldDescription: Function = inject('generateFieldDescription') as Function;
+const processAfterFieldGeneration: Function = inject('processAfterFieldGeneration') as Function;
+const setDataProperty: Function = inject('setDataProperty') as Function;
+const getDataProperty: Function = inject('getDataProperty') as Function;
+const possibleToRenderComponent = inject('possibleToRenderComponent') as Ref<boolean>;
 
 const props = defineProps<EditableProps>();
 
@@ -22,7 +24,7 @@ let editableValue = getValueFromObject(parentProps?.data, props.field);
 
 const context = {};
 let fieldDescription;
-let componentInstance = ref(null);
+let componentInstance: Ref<any> = ref(null);
 
 
 const TextField = resolveComponent('TextField');
@@ -56,7 +58,7 @@ function getFieldComponentByName(componentName: string) {
 
 
 watch(() => props?.field, async (value: any) => {
-  editableValue = getValueFromObject(parentProps?.data, props.field);
+  editableValue = getDataProperty(value);
 });
 
 
@@ -84,7 +86,7 @@ watch(() => possibleToRenderComponent.value, (value: any) => {
 }, {immediate: true});
 
 function onModelChange($event: any) {
-  setObjectPropertyByString(parentProps?.data, props.field, $event);
+  setDataProperty(props.field, $event);
 }
 
 </script>

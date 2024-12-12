@@ -1,10 +1,22 @@
+<template>
+  <div v-if="!props.edit" class="card-details">
+    <slot></slot>
+  </div>
+  <form v-if="props.edit" class="form" @submit.prevent="handleSubmit" @click.stop>
+    <slot></slot>
+    <Button type="submit" severity="secondary" label="Submit" />
+  </form>
+</template>
+
 <script setup lang="ts">
-
-
 import { sysService } from '~/service/http/sys.service';
 import {
   schemaFormsBuildHelperFactory
 } from '~/service/schema-forms/schemaFormsBuildHelper.factory';
+import { provide } from 'vue'
+import { httpService } from '~/service/http/http.service';
+import { getValueFromObject, setObjectPropertyByString } from '~/service/utils';
+
 
 export interface EditableGroupProps {
   collection: string;
@@ -25,8 +37,11 @@ const props = withDefaults(defineProps<EditableGroupProps>(), {
 // @ts-ignore
 const emits = defineEmits<EditableGroupEmits>();
 
+let dataCopy = structuredClone(toRaw(props.data));
+
 let isSchemaLoaded = false;
-let schemaFormsBuildHelperPromise;
+let schemaFormsBuildHelperPromise: Promise<any>;
+
 
 function _loadSchemaFormsBuildHelper() {
   possibleToRenderComponent.value = false;
@@ -57,9 +72,9 @@ watch(() => props?.collection, async (value: any) => {
   _loadSchemaFormsBuildHelper();
 });
 
-
-import { provide } from 'vue'
-import { httpService } from '~/service/http/http.service';
+watch(() => props?.data, async (value: any) => {
+  dataCopy = structuredClone(toRaw(value));
+});
 
 const possibleToRenderComponent = ref(false);
 
@@ -84,9 +99,19 @@ function processAfterFieldGeneration() {
 }
 
 
+function getDataProperty(field: string) {
+  return getValueFromObject(dataCopy, field)
+}
+
+function setDataProperty(field: string, value: any) {
+  setObjectPropertyByString(dataCopy, field, value)
+}
+
 provide('generateFieldDescription', generateFieldDescription);
 provide('processAfterFieldGeneration', processAfterFieldGeneration);
 provide('possibleToRenderComponent', possibleToRenderComponent);
+provide('getDataProperty', getDataProperty);
+provide('setDataProperty', setDataProperty);
 
 
 async function updateTarget(dataToSave: any): Promise<any> {
@@ -97,25 +122,16 @@ async function updateTarget(dataToSave: any): Promise<any> {
 }
 
 async function handleSubmit() {
-  let data = props.data;
+  let data = dataCopy;
+
   if (props.saveOnSubmit) {
-    data = await updateTarget(props.data);
+    data = await updateTarget(data);
   }
 
   emits('submit', data);
 }
 
 </script>
-
-<template>
-  <div v-if="!props.edit" class="card-details">
-    <slot></slot>
-  </div>
-  <form v-if="props.edit" class="form" @submit.prevent="handleSubmit" @click.stop>
-    <slot></slot>
-    <Button type="submit" severity="secondary" label="Submit" />
-  </form>
-</template>
 
 <style scoped lang="scss">
 
