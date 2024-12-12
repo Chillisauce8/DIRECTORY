@@ -8,7 +8,7 @@
         :class="computedClasses"
         :id="id"
         :data-search="searchTerms"
-        @click="toggleSelected"
+        @click="toggleSelected($event)"
     >
         <slot />
     </component>
@@ -45,8 +45,8 @@ watch(
 );
 
 /* Toggle selected state on click */
-const toggleSelected = () => {
-    if (props.clickable) {
+const toggleSelected = ($event) => {
+    if (props.clickable && !$event.defaultPrevented) {
         isSelected.value = !isSelected.value;
         emit('update:selected', isSelected.value); // Emit updated value
     }

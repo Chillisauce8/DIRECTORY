@@ -5,7 +5,9 @@
             <ConfirmDialog />
             <div class="filter-controls flex flex-col lg:flex-row gap-4">
                 <!-- Default Controls -->
-                <FunctionControl v-model="mode" @update:modelValue="onModeUpdate" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
+                <FunctionControl v-model="mode" @update:modelValue="onModeUpdate"
+                                 :display="functionControlDisplay" :visibleControls="visibleFunctionControls"
+                                 :defaultControl="defaultFunctionControl" />
 
                 <!-- Update slot binding to pass listings -->
                 <slot name="controls" :items="listings" :selected-categories="selectedCategories" :show="show" />
@@ -16,8 +18,11 @@
                     <template v-if="props.listingCollection">
                         <AddControl @click="addCollectionNodeDialog = true" />
 
-                        <Dialog v-model:visible="addCollectionNodeDialog" :style="{ width: '450px' }" :header="'Add new node to \'' + props.listingCollection + '\' collection'" :modal="true" class="p-fluid">
-                            <DataItem :collection="props.listingCollection" function="create" @changed="handleCreateNodeChanges"> </DataItem>
+                        <Dialog v-model:visible="addCollectionNodeDialog" :style="{ width: '450px' }"
+                                :header="'Add new node to \'' + props.listingCollection + '\' collection'" :modal="true"
+                                class="p-fluid">
+                            <DataItem :collection="props.listingCollection" function="create" @changed="handleCreateNodeChanges">
+                            </DataItem>
 
                             <template #footer>
                                 <Button label="Save" icon="pi pi-check" @click="createNode" />
@@ -48,9 +53,11 @@
             </template>
         </fancy-box>
 
-        <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
+        <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings"
+                       @start="onStart" @end="onEnd">
             <template v-for="(listing, index) in draggableListings" :key="listing.id">
-                <CardWrapper v-bind="getCardWrapperProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
+                <CardWrapper v-bind="getCardWrapperProps(listing)"
+                             @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
                     <slot name="card" v-bind="getCardProps(listing)" />
                 </CardWrapper>
             </template>
@@ -74,6 +81,7 @@ import { useToast } from 'primevue/usetoast';
 import type { Category, Item, Listing, SearchQueryConfig, SortOption } from '@/composables/useListControls';
 import { httpService } from '~/service/http/http.service';
 import { useGridHandleCreateNodeFn, useGridHandleRemoveNodeFn, useGridHandleUpdateNodeFn } from '~/composables/grid.composables';
+import { uniqBy } from '~/service/utils';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
@@ -162,7 +170,7 @@ const props = defineProps({
     },
     listingCollection: {
         type: String
-    }
+    },
 });
 
 const emit = defineEmits<{
@@ -302,9 +310,25 @@ const updateArrayField: UpdateArrayFieldFn = async (field, items, action) => {
 
         const dbNode = listing.dbNode;
 
+        let fieldValues;
+
+        if (action === 'add') {
+          fieldValues = [...dbNode[field], ...items];
+
+          if (fieldValues.length) {
+            if (fieldValues[0].id) {
+              fieldValues = uniqBy(fieldValues, 'id');
+            } else {
+              fieldValues = uniq(fieldValues);
+            }
+          }
+        } else {
+          fieldValues = dbNode[field].filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id));
+        }
+
         const updatedDbNode = {
             ...dbNode,
-            [field]: action === 'add' ? [...dbNode[field], ...items] : dbNode[field].filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id))
+            [field]: fieldValues
         };
 
         await handleUpdateNodeFn(updatedDbNode);

@@ -73,7 +73,8 @@
     </template>
 
     <template #edit-controls>
-      <EditArrayControl :options="categoryOptions" editField="categories" placeholder="Edit Categories" class="edit-array-control w-full md:w-80" />
+      <EditArrayControl :options="categoryOptions" editField="categories" placeholder="Edit Categories"
+                        class="edit-array-control w-full md:w-80" />
     </template>
   </grid-container>
 </template>
