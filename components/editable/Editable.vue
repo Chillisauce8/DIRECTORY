@@ -1,3 +1,14 @@
+<template>
+  <slot v-if="!parentProps?.edit || !componentInstance"></slot>
+  <template v-if="componentInstance">
+    <component :is="componentInstance" :autofocus="true"
+               :description="fieldDescription" :context="context"
+               :model="editableValue" @modelChange="onModelChange($event)">
+    </component>
+  </template>
+</template>
+
+
 <script setup lang="ts">
 
 import { type Ref, ref } from 'vue';
@@ -90,16 +101,6 @@ function onModelChange($event: any) {
 }
 
 </script>
-
-<template>
-  <slot v-if="!parentProps?.edit"></slot>
-  <template v-if="componentInstance">
-    <component :is="componentInstance"
-               :description="fieldDescription" :context="context"
-               :model="editableValue" @modelChange="onModelChange($event)">
-    </component>
-  </template>
-</template>
 
 <style scoped lang="scss">
 

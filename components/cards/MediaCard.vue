@@ -88,7 +88,7 @@ function onEditableGroupSubmit($event) {
             text-transform: uppercase;
         }
     }
-    .form {
+    .edit-form {
         width: 100%;
         display: flex;
         flex-direction: column;
