@@ -79,9 +79,8 @@ import { VueDraggable } from 'vue-draggable-plus';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import type { Category, Item, Listing, SearchQueryConfig, SortOption } from '@/composables/useListControls';
-import { httpService } from '~/service/http/http.service';
 import { useGridHandleCreateNodeFn, useGridHandleRemoveNodeFn, useGridHandleUpdateNodeFn } from '~/composables/grid.composables';
-import { uniqBy } from '~/service/utils';
+import { uniqBy, uniq } from '~/service/utils';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
