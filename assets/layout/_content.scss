@@ -1,7 +1,11 @@
 .layout-content-wrapper {
     // padding: 2rem;
     padding: 0 1rem 1rem 1rem;
-    &:has(.fullscreen) {
+    &:has(.full-screen) {
         padding: 0;
+        .layout-content {
+            position: relative;
+            top: -48px;
+        }
     }
 }
