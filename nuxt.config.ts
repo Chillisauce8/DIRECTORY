@@ -7,7 +7,7 @@ const { DefaultTheme } = useTheme();
 
 export default defineNuxtConfig({
     //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
-    modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image'],
+    modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image', '@vueuse/motion/nuxt'],
 
     primevue: {
         autoImport: true,

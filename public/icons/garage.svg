@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" data-name="Layer 60" viewBox="4 5 100 91">
+ <!-- <path class="bar-top" d="M 20.756 38.883 L 88.467 38.688 L 88.57 42.645 L 20.8 43.325 L 20.756 38.883 Z"   stroke-width="1"></path>
+  <path class="bar-middle" d="M 20.374 58.132 L 88.085 57.937 L 88.188 61.894 L 20.418 62.574 L 20.374 58.132 Z"   stroke-width="1"></path>
+  <path class="bar-bottom" d="M 20.263 76.764 L 87.974 76.569 L 88.077 80.526 L 20.307 81.206 L 20.263 76.764 Z"   stroke-width="1"></path>
+  -->
+  <path class="frame" d="M 4.646 21.727 L 4.461 95.373 L 6.993 95.345 L 6.873 23.841 L 101.265 23.776 L 101.135 95.526 L 103.409 95.578 L 103.471 21.561 L 4.646 21.727 Z"   stroke-width="1" transform="matrix(0.999999, -0.001094, 0.001094, 0.999999, 0.000213, -0.000334)"></path>
+  <ellipse class="clock" cx="53.936" cy="14.255" rx="3.73" ry="3.869"   stroke-width="1"></ellipse>
+  <ellipse class="bulb" cx="53.786" cy="28.749" rx="1.906" ry="1.909"   stroke-width="1"></ellipse>
+  <!-- <path class="wire" d="M 53.788 26.509 L 53.818 24.053"   stroke-width="1" transform="matrix(-1, 0, 0, -1, -0.000007, 0.000001)"></path> -->
+  <path class="clock-hand" d="M 53.943 11.449 L 53.968 14.207 L 56.287 15.379"   stroke-width="1"></path>
+  <path class="roof" d="M 54.174 5.948 L 104.041 21.325 L 4.306 21.325 L 54.174 5.948 Z"   stroke-width="1"></path>
+</svg>
