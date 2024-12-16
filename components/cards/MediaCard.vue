@@ -1,21 +1,15 @@
 <template>
     <div class="media-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290"
-                      aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
         <card-text-wrapper :class="getCardTextWrapperClass">
-
-          <editable-group collection="files"
-                          :data="props.dataItem"
-                          :edit="props.mode === 'edit' && selected"
-                          @submit="onEditableGroupSubmit($event)">
-            <editable field="name">
-              <h1>{{props.name}}</h1>
-            </editable>
-            <editable field="categories">
-              <h1>{{props.categories.map((category) => category.name).join(', ')}}</h1>
-            </editable>
-          </editable-group>
-
+            <editable-group class="card-details" collection="files" :data="props.dataItem" :edit="props.mode === 'edit' && selected" @submit="onEditableGroupSubmit($event)">
+                <editable field="name">
+                    <h1>{{ props.name }}</h1>
+                </editable>
+                <editable field="categories">
+                    <h1>{{ props.categories.map((category) => category.name).join(', ') }}</h1>
+                </editable>
+            </editable-group>
         </card-text-wrapper>
     </div>
 </template>
@@ -55,9 +49,8 @@ const getCardTextWrapperClass = computed(() => {
 });
 
 function onEditableGroupSubmit($event) {
-  emit('update:data-item', $event);
+    emit('update:data-item', $event);
 }
-
 </script>
 
 <style lang="scss">
@@ -86,17 +79,6 @@ function onEditableGroupSubmit($event) {
             font-size: 12px;
             font-weight: 500;
             text-transform: uppercase;
-        }
-    }
-    .edit-form {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        > *:not(:last-child) {
-            margin-bottom: 10px;
-        }
-        .p-inputtext {
-            font-size: 12px;
         }
     }
 }

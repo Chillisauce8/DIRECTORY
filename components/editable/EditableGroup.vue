@@ -1,37 +1,33 @@
 <template>
-  <div v-if="!props.edit" class="card-details">
-    <slot></slot>
-  </div>
-  <form v-if="props.edit" class="edit-form"  @click.prevent>
-    <slot></slot>
-    <Button @click.prevent="handleSubmit" severity="secondary" label="Submit" />
-  </form>
+    <div class="editable-group">
+        <component :is="props.edit ? 'form' : 'div'" :class="[props.edit ? 'edit-items' : 'view-items', { 'is-transitioning': isTransitioning }]" @click.prevent="props.edit ? undefined : null">
+            <slot></slot>
+            <Button v-if="props.edit" @click.prevent="handleSubmit" severity="secondary" label="Submit" />
+        </component>
+    </div>
 </template>
 
 <script setup lang="ts">
 import { sysService } from '~/service/http/sys.service';
-import {
-  schemaFormsBuildHelperFactory
-} from '~/service/schema-forms/schemaFormsBuildHelper.factory';
-import { provide } from 'vue'
+import { schemaFormsBuildHelperFactory } from '~/service/schema-forms/schemaFormsBuildHelper.factory';
+import { provide, ref } from 'vue';
 import { httpService } from '~/service/http/http.service';
 import { getValueFromObject, setObjectPropertyByString } from '~/service/utils';
 
-
 export interface EditableGroupProps {
-  collection: string;
-  data: any;
-  edit: boolean;
-  saveOnSubmit: boolean;
+    collection: string;
+    data: any;
+    edit: boolean;
+    saveOnSubmit: boolean;
 }
 
 export interface EditableGroupEmits {
-  (e: 'submit', value: any): void;
+    (e: 'submit', value: any): void;
 }
 
 const props = withDefaults(defineProps<EditableGroupProps>(), {
-  edit: false,
-  saveOnSubmit: true,
+    edit: false,
+    saveOnSubmit: true
 });
 
 // @ts-ignore
@@ -42,70 +38,95 @@ let dataCopy = structuredClone(toRaw(props.data));
 let isSchemaLoaded = false;
 let schemaFormsBuildHelperPromise: Promise<any>;
 
-
 function _loadSchemaFormsBuildHelper() {
-  possibleToRenderComponent.value = false;
-  schemaFormsBuildHelperPromise = sysService.getSchema(props.collection)
-    .then(schema => {
-      return schemaFormsBuildHelperFactory.getInstance(props.collection, schema);
+    possibleToRenderComponent.value = false;
+    schemaFormsBuildHelperPromise = sysService.getSchema(props.collection).then((schema) => {
+        return schemaFormsBuildHelperFactory.getInstance(props.collection, schema);
     });
 }
 
+watch(
+    () => props?.edit,
+    async (value: any) => {
+        if (!value) {
+            possibleToRenderComponent.value = false;
+        }
 
-watch(() => props?.edit, async (value: any) => {
-  if (!value) {
-    possibleToRenderComponent.value = false;
-  }
+        if (!value || isSchemaLoaded) {
+            return;
+        }
 
-  if (!value || isSchemaLoaded) {
-    return;
-  }
+        _loadSchemaFormsBuildHelper();
+    }
+);
 
-  _loadSchemaFormsBuildHelper();
-});
+watch(
+    () => props?.collection,
+    async (value: any) => {
+        if (!value || !props.edit) {
+            return;
+        }
 
-watch(() => props?.collection, async (value: any) => {
-  if (!value || !props.edit) {
-    return;
-  }
+        _loadSchemaFormsBuildHelper();
+    }
+);
 
-  _loadSchemaFormsBuildHelper();
-});
+watch(
+    () => props?.data,
+    async (value: any) => {
+        dataCopy = structuredClone(toRaw(value));
+    }
+);
 
-watch(() => props?.data, async (value: any) => {
-  dataCopy = structuredClone(toRaw(value));
-});
+watch(
+    () => props.edit,
+    async (value: any) => {
+        isTransitioning.value = true;
+        setTimeout(() => {
+            isTransitioning.value = false;
+        }, 2000); // Increased to 2 seconds
+
+        if (!value) {
+            possibleToRenderComponent.value = false;
+        }
+
+        if (!value || isSchemaLoaded) {
+            return;
+        }
+
+        _loadSchemaFormsBuildHelper();
+    }
+);
 
 const possibleToRenderComponent = ref(false);
+const isTransitioning = ref(false);
 
 async function generateFieldDescription(fieldPath: string) {
-  const schemaFormsBuildHelper = await schemaFormsBuildHelperPromise;
-  return schemaFormsBuildHelper.generateField(fieldPath)?.description;
+    const schemaFormsBuildHelper = await schemaFormsBuildHelperPromise;
+    return schemaFormsBuildHelper.generateField(fieldPath)?.description;
 }
 
 let needToExecuteFetchRelator = false;
 
-
 function processAfterFieldGeneration() {
-  if (!needToExecuteFetchRelator) {
-    needToExecuteFetchRelator = true;
-    setTimeout(async () => {
-      const schemaFormsBuildHelper = await schemaFormsBuildHelperPromise;
-      await schemaFormsBuildHelper.fetchRelatorChoicesInBulk();
-      schemaFormsBuildHelper.clearRelatorsBulkRequestParams();
-      needToExecuteFetchRelator = false;
-      possibleToRenderComponent.value = true;
-    }, 100);
-  }
+    if (!needToExecuteFetchRelator) {
+        needToExecuteFetchRelator = true;
+        setTimeout(async () => {
+            const schemaFormsBuildHelper = await schemaFormsBuildHelperPromise;
+            await schemaFormsBuildHelper.fetchRelatorChoicesInBulk();
+            schemaFormsBuildHelper.clearRelatorsBulkRequestParams();
+            needToExecuteFetchRelator = false;
+            possibleToRenderComponent.value = true;
+        }, 100);
+    }
 }
 
-
 function getDataProperty(field: string) {
-  return getValueFromObject(dataCopy, field)
+    return getValueFromObject(dataCopy, field);
 }
 
 function setDataProperty(field: string, value: any) {
-  setObjectPropertyByString(dataCopy, field, value)
+    setObjectPropertyByString(dataCopy, field, value);
 }
 
 provide('generateFieldDescription', generateFieldDescription);
@@ -114,26 +135,49 @@ provide('possibleToRenderComponent', possibleToRenderComponent);
 provide('getDataProperty', getDataProperty);
 provide('setDataProperty', setDataProperty);
 
-
 async function updateTarget(dataToSave: any): Promise<any> {
-  return httpService.update(`/api/update/${props.collection}`, dataToSave)
-    .then((response: any) => {
-      return response.data;
+    return httpService.update(`/api/update/${props.collection}`, dataToSave).then((response: any) => {
+        return response.data;
     });
 }
 
 async function handleSubmit() {
-  let data = dataCopy;
+    let data = dataCopy;
 
-  if (props.saveOnSubmit) {
-    data = await updateTarget(data);
-  }
+    if (props.saveOnSubmit) {
+        data = await updateTarget(data);
+    }
 
-  emits('submit', data);
+    emits('submit', data);
 }
-
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+.editable-group {
+    .edit-items,
+    .view-items {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
 
+        &.is-transitioning {
+            opacity: 0;
+            animation: fadein 1s ease-in forwards;
+            animation-delay: 0.3s;
+        }
+    }
+
+    .p-inputtext {
+        font-size: 12px;
+    }
+
+    @keyframes fadein {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+}
 </style>
