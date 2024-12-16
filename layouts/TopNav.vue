@@ -7,9 +7,9 @@
             <SvgLogo />
         </div>
         <div class="right">
-            <SvgIcon svg="cog" class="icon-test" button @click="onConfigSidebarToggle" />
+            <SvgIcon svg="cog" class="icon-right" button @click="onConfigSidebarToggle" />
 
-            <SvgIcon svg="driver" class="icon-test" button @click="showProfileSidebar" />
+            <SvgIcon svg="driver" class="icon-right" button @click="showProfileSidebar" />
         </div>
     </div>
 </template>
@@ -45,10 +45,11 @@ watch(y, (newY) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 64px;
+    height: 48px;
     position: sticky;
     top: 0px;
     color: white;
+    padding: 0 8px;
 
     .right,
     .center,
@@ -59,10 +60,16 @@ watch(y, (newY) => {
     .svg-logo {
         width: 200px;
     }
-
-    .icon-test {
+    .hamburger {
         width: 36px;
         height: 36px;
+        margin: 0 6px;
+    }
+
+    .icon-right {
+        width: 24px;
+        height: 24px;
+        margin: 0 6px;
     }
 
     transition: backdrop-filter 0.3s, background-color 0.3s;
