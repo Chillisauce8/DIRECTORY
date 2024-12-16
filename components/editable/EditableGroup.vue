@@ -1,6 +1,6 @@
 <template>
-    <div class="editable-group">
-        <component :is="props.edit ? 'form' : 'div'" :class="[props.edit ? 'edit-items' : 'view-items', { 'is-transitioning': isTransitioning }]" @click.prevent="props.edit ? undefined : null">
+    <div class="editable-group" :class="{ changed: hasChanged }">
+        <component :is="props.edit ? 'form' : 'div'" :class="[props.edit ? 'edit-items' : 'view-items']" @click.prevent="props.edit ? undefined : null">
             <slot></slot>
             <Button v-if="props.edit" @click.prevent="handleSubmit" severity="secondary" label="Submit" />
         </component>
@@ -81,10 +81,8 @@ watch(
 watch(
     () => props.edit,
     async (value: any) => {
-        isTransitioning.value = true;
-        setTimeout(() => {
-            isTransitioning.value = false;
-        }, 2000); // Increased to 2 seconds
+        // Set changed to true and never change it back
+        hasChanged.value = true;
 
         if (!value) {
             possibleToRenderComponent.value = false;
@@ -99,7 +97,7 @@ watch(
 );
 
 const possibleToRenderComponent = ref(false);
-const isTransitioning = ref(false);
+const hasChanged = ref(false);
 
 async function generateFieldDescription(fieldPath: string) {
     const schemaFormsBuildHelper = await schemaFormsBuildHelperPromise;
@@ -154,17 +152,20 @@ async function handleSubmit() {
 
 <style lang="scss">
 .editable-group {
+    &.changed {
+        .edit-items,
+        .view-items {
+            max-height: 500px;
+            opacity: 0;
+            animation: fadein 0.5s ease-in forwards 0.3s, update-height 1s ease-in forwards;
+        }
+    }
+
     .edit-items,
     .view-items {
         display: flex;
         flex-direction: column;
         gap: 10px;
-
-        &.is-transitioning {
-            opacity: 0;
-            animation: fadein 1s ease-in forwards;
-            animation-delay: 0.3s;
-        }
     }
 
     .p-inputtext {
@@ -177,6 +178,20 @@ async function handleSubmit() {
         }
         to {
             opacity: 1;
+        }
+    }
+
+    @keyframes update-height {
+        0% {
+            max-height: 0px;
+            overflow: hidden;
+        }
+        99% {
+            overflow: hidden;
+        }
+        100% {
+            max-height: 500px;
+            overflow: initial;
         }
     }
 }

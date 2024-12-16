@@ -21,7 +21,7 @@
     align-items: stretch;
     overflow: hidden;
     transition: all 1s ease-in-out;
-
+    /*
     &.show {
         opacity: 1;
         max-height: 300px; // Set to the desired max height of the content
@@ -33,5 +33,6 @@
         overflow: hidden;
         padding: 0;
     }
+      */
 }
 </style>
