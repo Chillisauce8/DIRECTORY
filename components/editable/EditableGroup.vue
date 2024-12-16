@@ -2,9 +2,9 @@
   <div v-if="!props.edit" class="card-details">
     <slot></slot>
   </div>
-  <form v-if="props.edit" class="edit-form" @submit.prevent="handleSubmit" @click.prevent>
+  <form v-if="props.edit" class="edit-form"  @click.prevent>
     <slot></slot>
-    <Button type="submit" severity="secondary" label="Submit" />
+    <Button @click.prevent="handleSubmit" severity="secondary" label="Submit" />
   </form>
 </template>
 
