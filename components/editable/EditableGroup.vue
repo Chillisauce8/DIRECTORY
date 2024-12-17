@@ -167,6 +167,11 @@ async function handleSubmit() {
         flex-direction: column;
         gap: 10px;
     }
+    .edit-items {
+        .input-wrapper > * {
+            width: 100%;
+        }
+    }
 
     .p-inputtext {
         font-size: 12px;
