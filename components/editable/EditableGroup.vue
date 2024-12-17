@@ -1,6 +1,6 @@
 <template>
     <div class="editable-group" :class="{ changed: hasChanged }">
-        <component :is="props.edit ? 'form' : 'div'" :class="[props.edit ? 'edit-items' : 'view-items']" @click.prevent="props.edit ? undefined : null">
+        <component :is="props.edit ? 'form' : 'div'" :class="[props.edit ? 'edit-items' : 'view-items']" @click="props.edit ? $event.preventDefault() : null">
             <slot></slot>
             <Button v-if="props.edit" @click.prevent="handleSubmit" severity="secondary" label="Submit" />
         </component>
