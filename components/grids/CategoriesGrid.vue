@@ -3,13 +3,13 @@
         functionControlDisplay="icon"
         :filters="[
             {
-                field: 'categories',
+                field: 'categoryGroup',
                 options: categoryOptions,
                 selected: selectedCategories
             }
         ]"
-        :visibleFunctionControls="['view', 'select', 'edit', 'order']"
-        defaultFunctionControl="view"
+        :visibleFunctionControls="['select', 'edit']"
+        defaultFunctionControl="select"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
         :show="selectedCategoryShowOptions"
@@ -20,7 +20,7 @@
         <template #controls>
             <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
             <ShowControl v-model="selectedCategoryShowOptions" :show-options="categoriesShowOptions" />
-            <SortControl :sort-options="categoriesSortOptions" />
+            <!-- <SortControl :sort-options="categoriesSortOptions" /> -->
             <SearchControl :search-fields="searchFields" />
         </template>
 
@@ -61,35 +61,33 @@ const { listingList, updateDbNodeInListingList } = await useGrid({
     prepareListingItem
 });
 
-const categoryOptions = ref<any[]>(listingList.value.map(({ dbNode }) => ({ id: dbNode._doc, name: dbNode.name })));
+const categoryOptions = ref<any[]>(listingList.value.filter(({ dbNode }) => dbNode.type === 'Category Group').map(({ dbNode }) => ({ id: dbNode._doc, name: dbNode.name })));
 const selectedCategories = ref([]);
 const selectedCategoryShowOptions = ref(['name']);
 
 const categoriesShowOptions = ['name', 'categories'];
-const categoriesSortOptions = [
-    { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
-    { label: 'Name (Z-A)', sort: 'name', order: 'desc' }
-];
+// const categoriesSortOptions = [
+//     { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
+//     { label: 'Name (Z-A)', sort: 'name', order: 'desc' }
+// ];
 
 const filterControlConfig = {
     display: 'chip',
     optionLabel: 'name',
     filter: true,
-    placeholder: 'Filter by Category',
+    placeholder: 'Filter by Category Group',
     maxSelectedLabels: 2,
     className: 'category-control md:w-60'
 } as const;
 
-const searchFields = [
-    { field: 'name', label: 'Name' },
-    { field: 'categories', label: 'Categories' }
-];
+const searchFields = [{ field: 'name', label: 'Name' }];
 
 function prepareListingItem(category: CategoryDbNode): Listing<any> {
     return {
         id: category._doc,
         name: category.name,
         type: category.type,
+        categoryGroup: category.categoryGroup,
         categories: category?.categories ?? [],
         images: (category?.images ?? []).map((i) => ({ id: i.image.id, alt: i.image.name })),
         dbNode: category

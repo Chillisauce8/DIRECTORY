@@ -22,8 +22,8 @@ export interface CategoryDbNode {
     name: string;
     type: string;
     categoryGroup: CategoryRelator;
-    description: string;
-    categories: CategoryRelator[];
+    //    description: string;
+    //    categories: CategoryRelator[];
     images: ImageRelator[];
 }
 
