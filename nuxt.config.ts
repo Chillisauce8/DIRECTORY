@@ -3,9 +3,12 @@ import environment from './environment';
 
 import { useTheme } from './composables/useTheme';
 
+import commonjs from 'vite-plugin-commonjs'
+
 const { DefaultTheme } = useTheme();
 
 export default defineNuxtConfig({
+    sourcemap: { server: false, client: false },
     //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
     modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image', '@vueuse/motion/nuxt'],
 
@@ -25,12 +28,14 @@ export default defineNuxtConfig({
     },
 
     devtools: {
-        enabled: true
+        enabled: false
     },
 
     ssr: environment.ssr ?? true,
 
-    css: ['@/assets/css/global.scss', '@/assets/styles.scss', '@/assets/tailwind.css', 'primeicons/primeicons.css'],
+    css: ['@/assets/css/global.scss', '@/assets/styles.scss', '@/assets/tailwind.css', 'primeicons/primeicons.css',
+      '@uppy/core/dist/style.css', '@uppy/dashboard/dist/style.css', '@uppy/drag-drop/dist/style.css',
+      '@uppy/progress-bar/dist/style.css'],
 
     image: {
         cloudinary: {
@@ -117,6 +122,30 @@ export default defineNuxtConfig({
     },
 
     vite: {
+        plugins: [
+          // viteCommonjs({
+          //   // exclude: ['lodash'],
+          // })
+          commonjs({
+            filter(id) {
+
+              if (id.includes('node_modules/')) {
+                // console.log(id)
+                return true
+              }
+            },
+            advanced: {
+              importRules: (id: string) => {
+                //
+                // if (id.includes('/node_modules/lodash/_root.js')) {
+                //   console.log(id);
+                //   return `__CJS__import__0__`;
+                // }
+                return "namedFirst";
+              }
+            }
+          })
+        ],
         css: {
             preprocessorOptions: {
                 scss: {
@@ -133,12 +162,29 @@ export default defineNuxtConfig({
         optimizeDeps: {
             exclude: ['fsevents'],
             noDiscovery: true,
-            include: ['quill']
+            include: ['quill', 'lodash'],
+            // esbuildOptions: {
+            //   plugins: [
+            //     esbuildCommonjs([
+            //       "@uppy/core",
+            //       "@uppy/dashboard",
+            //       "@uppy/drag-drop",
+            //       "@uppy/file-input",
+            //       "@uppy/progress-bar",
+            //       "@uppy/tus",
+            //       "@uppy/vue",
+            //       "@uppy/webcam",
+            //       "mime-match",
+            //       "Restricter"
+            //     ])
+            //   ]
+            // }
         },
         build: {
             rollupOptions: {
                 output: {}
-            }
+            },
+            sourcemap: false
         }
     },
     delayHydration: {

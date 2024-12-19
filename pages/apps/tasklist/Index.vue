@@ -2,7 +2,6 @@
 import { useToast } from 'primevue/usetoast';
 import { onBeforeMount, ref } from 'vue';
 import CreateTaskDialog from './CreateTaskDialog.vue';
-import List from '../../../../../OneDrive/Desktop/apollo-nuxt/pages/apps/tasklist/List.vue';
 
 const toast = useToast();
 

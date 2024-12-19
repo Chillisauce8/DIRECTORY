@@ -1,7 +1,8 @@
 @charset "UTF-8";
 
 @import 'mixins';
-//@import 'scss-variables';
+// still used in some places. Not possible to build without it
+@import 'scss-variables';
 
 @import 'flag-variables';
 @import 'flag-icons-base';

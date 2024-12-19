@@ -25,35 +25,38 @@
     </template>
 
     <template #add-controls>
-      <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary" class="p-button-outlined" chooseLabel="Add" />
+<!--      <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary" class="p-button-outlined" chooseLabel="Add" />-->
+      <Button label="Add" @click="fileDialog=true"/>
 
-      <Dialog v-model:visible="fileDialog" :style="{ width: '450px' }" header="File Details" :modal="true"
+      <Dialog v-model:visible="fileDialog" :style="{ width: '900px' }" header="File Details" :modal="true"
               class="p-fluid">
 
         <div class="p-8 rounded-border flex flex-col border border-surface items-center gap-8">
-          <FloatLabel>
-            <InputText :id="'name-' + fileNode.name + fileNode.type + fileNode.size" type="text"
-                       v-model="fileNode.name" required/>
-            <label :for="'name-' + fileNode.name + fileNode.type + fileNode.size">File Name</label>
-          </FloatLabel>
+          <FilesUpload></FilesUpload>
 
-          <FloatLabel>
-            <InputText :id="'description-' + fileNode.name + fileNode.type + fileNode.size" type="text"
-                       v-model="fileNode.description" maxlength="1000"/>
-            <label :for="'description-' + fileNode.name + fileNode.type + fileNode.size">Description</label>
-          </FloatLabel>
+<!--          <FloatLabel>-->
+<!--            <InputText :id="'name-' + fileNode.name + fileNode.type + fileNode.size" type="text"-->
+<!--                       v-model="fileNode.name" required/>-->
+<!--            <label :for="'name-' + fileNode.name + fileNode.type + fileNode.size">File Name</label>-->
+<!--          </FloatLabel>-->
 
-          <FloatLabel>
-            <Select id="'rating-' + file.name + file.type + file.size"
-                    v-model="fileNode.rating" :options="ratingItems">
-            </Select>
-            <label :for="'rating-' + fileNode.name + fileNode.type + fileNode.size">Rating</label>
-          </FloatLabel>
+<!--          <FloatLabel>-->
+<!--            <InputText :id="'description-' + fileNode.name + fileNode.type + fileNode.size" type="text"-->
+<!--                       v-model="fileNode.description" maxlength="1000"/>-->
+<!--            <label :for="'description-' + fileNode.name + fileNode.type + fileNode.size">Description</label>-->
+<!--          </FloatLabel>-->
+
+<!--          <FloatLabel>-->
+<!--            <Select id="'rating-' + file.name + file.type + file.size"-->
+<!--                    v-model="fileNode.rating" :options="ratingItems">-->
+<!--            </Select>-->
+<!--            <label :for="'rating-' + fileNode.name + fileNode.type + fileNode.size">Rating</label>-->
+<!--          </FloatLabel>-->
         </div>
 
         <template #footer>
           <Button label="Cancel" icon="pi pi-times" @click="fileDialog = false" />
-          <Button label="Save" icon="pi pi-check" @click="uploadFile" />
+<!--          <Button label="Save" icon="pi pi-check" @click="uploadFile" />-->
         </template>
       </Dialog>
     </template>
@@ -129,7 +132,6 @@ const searchFields = [
 let fileNode = ref<any>({});
 let fileToUpload: File | null = null;
 
-const ratingItems = ref([0, 1, 2, 3, 4, 5]);
 const fileDialog = ref(false);
 
 function prepareListingItem(file: FileDbNode): Listing<FileDbNode> {
@@ -240,6 +242,6 @@ async function uploadFile() {
   fileDialog.value = false;
   listingList.value = [...listingList.value, prepareListingItem(result)];
 
-  updateCategoryOptions(listingList.value);
+  // updateCategoryOptions(listingList.value);
 }
 </script>
