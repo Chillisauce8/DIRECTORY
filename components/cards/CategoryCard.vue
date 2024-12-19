@@ -1,13 +1,16 @@
 <template>
-    <div class="media-card">
+    <div class="category-card">
         <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
         <card-text-wrapper :class="getCardTextWrapperClass">
-            <editable-group class="card-details" collection="files" :data="props.dataItem" :edit="props.mode === 'edit' && selected" @submit="onEditableGroupSubmit($event)">
+            <editable-group class="card-details" collection="categories" :data="props.dataItem" :edit="props.mode === 'edit' && selected" @submit="onEditableGroupSubmit($event)">
                 <editable field="name">
                     <h1>{{ props.name }}</h1>
                 </editable>
-                <editable field="categories">
-                    <h1>{{ props.categories.map((category) => category.name).join(', ') }}</h1>
+                <editable field="type">
+                    <h1>Type: {{ props.type }}</h1>
+                </editable>
+                <editable field="categoryGroup">
+                    <h1>{{ props.categoryGroup.name }}</h1>
                 </editable>
             </editable-group>
         </card-text-wrapper>
@@ -28,6 +31,8 @@ const props = defineProps({
     loveable: loveableProp,
     show: showProp,
     categories: categoriesProp,
+    categoryGroup: { type: Object, default: () => ({}) },
+    type: { type: String, default: '' },
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     gallery: { type: String, default: 'gallery' },
@@ -54,7 +59,7 @@ function onEditableGroupSubmit($event) {
 </script>
 
 <style lang="scss">
-.media-card {
+.category-card {
     picture {
         @include aspect-ratio(3, 2);
     }

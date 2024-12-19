@@ -90,15 +90,22 @@ const toggleOpen = () => {
     --garage-light-off: rgba(0, 0, 0, 0.7);
     --garage-door-color: rgba(0, 0, 0, 1);
     --garage-shutter-color: rgba(255, 255, 255, 1);
+    --garage-frame-color: rgba(255, 255, 255, 1);
+    --garage-shutter-height: 8%;
+    --clock-color: rgba(0, 0, 0, 1);
+    --garage-frame-color: rgba(255, 255, 255, 0.3); // Add this new variable
+    --garage-roof-color: rgba(255, 255, 255, 0.3); // Add this new variable
+    --garage-roof-color-hover: rgba(255, 255, 255, 1); // Add this new variable
 
     position: relative;
-    width: 48px;
-    height: 48px;
+
     cursor: pointer;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-
+    &:hover {
+        --garage-roof-color: var(--garage-roof-color-hover);
+    }
     .classic-car {
         position: absolute;
         top: 8%;
@@ -185,10 +192,11 @@ const toggleOpen = () => {
             position: relative;
             transform: translateY(0);
             transition: transform 0.8s ease-in-out;
+            // transition: background-color 0.8s ease-in-out;
 
             .garage-shutter {
                 width: 80%;
-                height: 3px;
+                height: var(--garage-shutter-height);
                 background-color: var(--garage-shutter-color);
             }
 
@@ -202,6 +210,19 @@ const toggleOpen = () => {
     .garage {
         position: absolute;
         top: 0px;
+        .frame {
+            stroke: var(--garage-frame-color);
+            fill: var(--garage-frame-color);
+        }
+        .roof {
+            stroke: var(--garage-roof-color);
+            fill: var(--garage-roof-color); // Set initial state
+            transition: all 0.5s ease;
+        }
+        .clock {
+            fill: var(--clock-color);
+            stroke: var(--clock-color);
+        }
         .bulb {
             fill: none;
             stroke: none;

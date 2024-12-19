@@ -1,67 +1,55 @@
 <template>
     <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
-        <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
-             v-show="!props.description.xHideValue">
-          <div class="array-of-object-header">
-            <h1 class="title array-of-object" v-if="props.description.header.title">
-                {{ sharedFunctions.getTitle() }}
+        <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue">
+            <div class="array-of-object-header">
+                <h1 class="title array-of-object" v-if="props.description.header.title">
+                    {{ sharedFunctions.getTitle() }}
 
-                <span v-if="sharedFunctions.getDescriptionText()"
-                      v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                    <SvgIcon svg="info" />
-                </span>
-              </h1>
+                    <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+                        <SvgIcon svg="info" />
+                    </span>
+                </h1>
 
-              <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems()" direction="left" />
+                <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems()" direction="left" />
             </div>
 
             <div class="field-block">
-              <template v-for="(row, rowIndex) in vm.model" :key="rowIndex">
-                  <template v-for="(line, lineIndex) in vm.linesForRows[rowIndex]" v-show="!isWholeLineHidden(line)">
-                    <template v-for="(item, itemIndex) in line">
-                          <template :style="{ width: item.description.xFlex + '%' }"
-                               v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)"
-                               v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
-                              <DynamicField
-                                  v-if="item.blockComponent === BlockComponents.value"
-                                  :description="item.description"
-                                  :model="vm.model[rowIndex][item.description.name]"
-                                  :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
-                                  @modelChange="onModelChange(rowIndex, item.description.name, $event)">
-                              </DynamicField>
+                <template v-for="(row, rowIndex) in vm.model" :key="rowIndex">
+                    <template v-for="(line, lineIndex) in vm.linesForRows[rowIndex]" v-show="!isWholeLineHidden(line)">
+                        <template v-for="(item, itemIndex) in line">
+                            <template :style="{ width: item.description.xFlex + '%' }" v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)" v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
+                                <DynamicField
+                                    v-if="item.blockComponent === BlockComponents.value"
+                                    :description="item.description"
+                                    :model="vm.model[rowIndex][item.description.name]"
+                                    :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
+                                    @modelChange="onModelChange(rowIndex, item.description.name, $event)"
+                                    :formLabelType="props.formLabelType"
+                                    :floatLabelVariant="props.floatLabelVariant"
+                                >
+                                </DynamicField>
 
-                            <template v-if="item.blockComponent !== BlockComponents.value">
-                              <DynamicFieldBlock
-                                  :description="item"
-                                  :model="vm.model[rowIndex]"
-                                  :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
-                                  @modelChange="onModelChange(rowIndex, null, $event)">
-                              </DynamicFieldBlock>
-                          </template>
-                      </template>
-                  </template>
+                                <template v-if="item.blockComponent !== BlockComponents.value">
+                                    <DynamicFieldBlock :description="item" :model="vm.model[rowIndex]" :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)" @modelChange="onModelChange(rowIndex, null, $event)">
+                                    </DynamicFieldBlock>
+                                </template>
+                            </template>
+                        </template>
+                    </template>
                 </template>
-              </template>
 
-              <div v-if="!vm.model?.length">
-                  <Button icon="pi pi-plus" aria-label="Add First Row"
-                          v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode">
-                  </Button>
+                <div v-if="!vm.model?.length">
+                    <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode"> </Button>
 
-                  <Button icon="pi pi-plus" aria-label="Add First Row"
-                          v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode"
-                          @click="addFirstRow()">
-                  </Button>
-              </div>
+                    <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode" @click="addFirstRow()"> </Button>
+                </div>
             </div>
 
             <ContextMenu ref="menu" :model="getContextMenuItems(vm.selectionValues)" />
 
-            <div v-if="!sharedFunctions.isValidMaxItems()"
-                 class="text-color_red field_wrap">Max items value is {{ props.description.xMaxItemsValue }}</div>
+            <div v-if="!sharedFunctions.isValidMaxItems()" class="text-color_red field_wrap">Max items value is {{ props.description.xMaxItemsValue }}</div>
 
-            <div v-if="!sharedFunctions.isValidMinItems()"
-                 class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
+            <div v-if="!sharedFunctions.isValidMinItems()" class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
 
             <div v-if="!ifValidUniqueItems()" class="text-color_red field_wrap">Items are not unique</div>
         </template>
@@ -74,12 +62,17 @@ import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/
 import { uniqWith } from '~/service/utils';
 import { getCurrentInstance } from 'vue';
 import { BlockComponents } from '~/service/schema-forms/blockComponents';
+import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
+
+interface ArrayProps extends BaseFieldProps {
+    formLabelType?: FormLabelType;
+    floatLabelVariant?: FloatLabelVariant;
+}
 
 // @ts-ignore
-const props = defineProps<BaseFieldProps>();
+const props = defineProps<ArrayProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
-
 
 let { vm, sharedFunctions, initDone } = useBaseArrayFieldControl(props, emits);
 
@@ -129,9 +122,7 @@ function touch() {
 }
 
 function showSpeedDeal(lineIndex: number, line: any[], rowIndex: number, itemIndex: number): boolean {
-  return !sharedFunctions.isReadonly() &&
-    lineIndex === vm.linesForRows[rowIndex].length - 1 &&
-    itemIndex === line.length - 1;
+    return !sharedFunctions.isReadonly() && lineIndex === vm.linesForRows[rowIndex].length - 1 && itemIndex === line.length - 1;
 }
 
 function getContextMenuItems(selectionValues: string[]) {
@@ -323,7 +314,7 @@ function ifValidUniqueItems(): boolean {
     );
 }
 
-function onModelChange(rowIndex: number, descriptionName: string|null, $event: any) {
+function onModelChange(rowIndex: number, descriptionName: string | null, $event: any) {
     const modelClone = [...vm.model];
 
     if (descriptionName) {
