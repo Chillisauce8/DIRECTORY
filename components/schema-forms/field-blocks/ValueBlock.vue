@@ -1,9 +1,14 @@
 <template>
     <DynamicField
-        v-if="shouldFieldBeConstructed" v-show="!props.description.xHideValue"
-        :description="props.description" :model="vm.model"
+        v-if="shouldFieldBeConstructed"
+        v-show="!props.description.xHideValue"
+        :description="props.description"
+        :model="vm.model"
         @modelChange="onModelChange($event)"
-        :context="props.context">
+        :context="props.context"
+        :formLabelType="props.formLabelType"
+        :floatLabelVariant="props.floatLabelVariant"
+    >
     </DynamicField>
 </template>
 
@@ -14,10 +19,12 @@ import useBaseField from '~/composables/schema-forms/useBaseField';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
 import { getCurrentInstance } from 'vue';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
-
+import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
 
 export interface ValueFieldProps extends BaseFieldProps {
     showTitle?: boolean;
+    formLabelType?: FormLabelType;
+    floatLabelVariant?: FloatLabelVariant;
 }
 
 // @ts-ignore

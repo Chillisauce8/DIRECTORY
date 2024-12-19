@@ -1,14 +1,12 @@
 <template>
-    <section :class="props.classes ? props.classes : 'form'" :id="props.id">
+    <section :id="props.id">
         <h1 v-if="props.title" class="title">{{ props.title }}</h1>
         <h2 v-if="props.subtitle" class="subtitle">{{ props.subtitle }}</h2>
 
         <div class="field-block" v-if="!!context">
-          <template v-for="(contentDescription, contentIndex) in props.description.content">
-            <DynamicFieldBlock :model="vm.model" @modelChange="onModelChange($event)" :context="context"
-                          :description="contentDescription">
-            </DynamicFieldBlock>
-          </template>
+            <template v-for="(contentDescription, contentIndex) in props.description.content">
+                <DynamicFieldBlock :model="vm.model" @modelChange="onModelChange($event)" :context="context" :description="contentDescription" :formLabelType="formLabelType" :floatLabelVariant="floatLabelVariant"> </DynamicFieldBlock>
+            </template>
         </div>
         <Toast />
     </section>
@@ -21,20 +19,20 @@ import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import useBaseField from '~/composables/schema-forms/useBaseField';
 import DynamicFieldBlock from '~/components/schema-forms/DynamicFieldBlock.vue';
+import type { FormLabelProps } from '~/types/schema-forms';
+import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
 
-export interface FormProps extends BaseFieldProps {
+// Combine types instead of extending
+export type FormProps = BaseFieldProps & {
     id?: string;
-    classes?: string;
     title?: string;
     subtitle?: string;
     formName?: string;
     needCorrectExistingValues?: boolean;
     fields?: Object;
-}
-
-export interface FormEmits extends BaseFieldEmits {
-    (e: 'formDone', value: boolean): void;
-}
+    formLabelType?: FormLabelType;
+    floatLabelVariant?: FloatLabelVariant;
+};
 
 // @ts-ignore
 const props = withDefaults(defineProps<FormProps>(), {
@@ -43,15 +41,26 @@ const props = withDefaults(defineProps<FormProps>(), {
     formName: 'form'
 });
 
+// Add computed properties to handle undefined props
+const formLabelType = computed(() => props.formLabelType);
+const floatLabelVariant = computed(() => props.floatLabelVariant);
+
+export interface FormEmits extends BaseFieldEmits {
+    (e: 'formDone', value: boolean): void;
+}
+
 // @ts-ignore
-const emits = defineEmits<FormEmits>();
+const emits = defineEmits<{
+    (e: 'formDone', value: boolean): void;
+    (e: 'modelChange', value: any): void;
+}>();
 
 let formDoneSent = false;
 
 const im = reactive({
-  shouldHeaderBeConstructed: false,
-  shouldContentBeConstructed: [],
-  shouldAddHeaderNameToModelPathValues: undefined
+    shouldHeaderBeConstructed: false,
+    shouldContentBeConstructed: [],
+    shouldAddHeaderNameToModelPathValues: undefined
 });
 
 const { vm, sharedFunctions } = useBaseField(props, emits);
@@ -160,156 +169,42 @@ function onModelChange(value: any) {
 }
 
 function onModelChangeByPath(value: any) {
-  if (!isEqual(vm.model[props.description.header.name], value)) {
-    vm.model[props.description.header.name] = value;
-    setModel(vm.model, true);
-  } else {
-    schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
-  }
+    if (!isEqual(vm.model[props.description.header.name], value)) {
+        vm.model[props.description.header.name] = value;
+        setModel(vm.model, true);
+    } else {
+        schemaFormsProcessingHelper.processFormChanges(sharedFunctions.getFormName());
+    }
 }
 
 function initShouldAddHeaderNameToModelPath() {
-  im.shouldAddHeaderNameToModelPathValues = [];
+    im.shouldAddHeaderNameToModelPathValues = [];
 
-  for (let i = 0; i < props.description.content.length; ++i) {
-    const value = shouldAddHeaderNameToModelPath(props.description.content[i]);
-    im.shouldAddHeaderNameToModelPathValues.push(value);
-  }
+    for (let i = 0; i < props.description.content.length; ++i) {
+        const value = shouldAddHeaderNameToModelPath(props.description.content[i]);
+        im.shouldAddHeaderNameToModelPathValues.push(value);
+    }
 }
 
 function shouldAddHeaderNameToModelPath(contentDescription: any): boolean {
-  if (!Object.keys(props.description.header).length || !props.description.header.path) {
-    return false;
-  }
+    if (!Object.keys(props.description.header).length || !props.description.header.path) {
+        return false;
+    }
 
-  if (props.description.header.type === 'container') {
-    return false;
-  }
+    if (props.description.header.type === 'container') {
+        return false;
+    }
 
-  if (contentDescription.description.header) {
-    return contentDescription.description.header.path !== props.description.header.path;
-  } else {
-    return contentDescription.description.path !== props.description.header.path;
-  }
+    if (contentDescription.description.header) {
+        return contentDescription.description.header.path !== props.description.header.path;
+    } else {
+        return contentDescription.description.path !== props.description.header.path;
+    }
 }
-
 
 sharedFunctions.initField = initField;
 sharedFunctions.setModel = setModel;
 sharedFunctions.processInnerModelChanged = processInnerModelChanged;
 </script>
 
-<style lang="scss">
-.form {
-    --background-color: white;
-    --text-color: black;
-    --form-title-color: black;
-    --form-subtitle-color: grey;
-    --section-title-color: black;
-    --section-side-color: lightgrey;
-    --field-subtext-color: grey;
-    --error-message-color: crimson;
-
-    background-color: var(--background-color);
-    & * {
-        font-size: 14px;
-        color: var(--text-color);
-        font-weight: 400;
-        letter-spacing: 1px;
-        //  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-    }
-    input {
-        //    background-color: lightblue;
-    }
-    & section {
-        &:nth-child(2n) {
-            //  background: #f0f2f7;
-        }
-        &:nth-child(2n + 1) {
-            //   background: #f5f6fa;
-        }
-    }
-    & section {
-        margin: 10px 0 10px;
-        padding-left: 20px;
-        border-left: 3px solid var(--section-side-color); //  border-radius: 10px;
-        &.row .field-block {
-            display: flex;
-        }
-    }
-    h1 {
-        font-weight: 600;
-        font-size: 14px;
-        color: var(--section-title-color);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin: 5px;
-    }
-    > h1 {
-        font-size: 24px;
-        text-align: center;
-        color: var(--form-title-color);
-    }
-    h2 {
-        font-size: 18px;
-        text-align: center;
-        color: var(--form-subtitle-color);
-    }
-
-    .field-wrapper {
-        display: flex;
-        flex-direction: column;
-        margin: 10px;
-        label {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .subtext {
-            font-size: 12px;
-            color: var(--field-subtext-color);
-        }
-        .error-message {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--error-message-color);
-        }
-        .field {
-            display: flex;
-            flex-direction: row;
-            margin-bottom: 0;
-            .input-wrapper {
-                flex-grow: 1;
-                display: flex;
-                flex-direction: column;
-            }
-        }
-    }
-    .field-group {
-        &.row-start {
-            display: flex;
-            flex-wrap: wrap;
-        }
-    }
-    .p-speeddial {
-        position: relative;
-        button {
-            scale: 0.6;
-        }
-    }
-
-    .p-speeddial-action {
-        // Modifies the button colour on speedial open.
-        background-color: rgb(200, 200, 200);
-    }
-
-    .array-of-object-header {
-      display: flex;
-      justify-content: space-between;
-      .p-button:first-of-type {
-        background-color: red;
-        border-color: red;
-      }
-    }
-}
-</style>
+<style lang="scss"></style>

@@ -1,5 +1,5 @@
 <template>
-    <section :class="classes ? classes : 'form'" :id="id">
+    <section :class="classes ? classes : 'form-test'" :id="id">
         <div v-if="arrayOfObject" class="array-of-object-header">
             <h1 v-if="title" class="title array-of-object">{{ title }}</h1>
             <SpeedDial />
@@ -162,7 +162,7 @@ function getDefaults(value) {
 </script>
 
 <style lang="scss">
-.form {
+.form-test {
     --background-color: white;
     --text-color: black;
     --form-title-color: black;
@@ -185,20 +185,16 @@ function getDefaults(value) {
     input {
         //    background-color: lightblue;
     }
-    & section {
-        &:nth-child(2n) {
-            //  background: #f0f2f7;
-        }
-        &:nth-child(2n + 1) {
-            //   background: #f5f6fa;
-        }
-    }
-    & section {
+
+    section {
         margin: 10px 0 10px;
         padding-left: 20px;
         border-left: 3px solid var(--section-side-color); //  border-radius: 10px;
         &.row .field-block {
             display: flex;
+            & > * {
+                flex-grow: 1;
+            }
         }
     }
     h1 {

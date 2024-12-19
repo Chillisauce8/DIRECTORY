@@ -1,33 +1,30 @@
 <template>
-    <section :class="sharedFunctions.prepareClasses()"
-         v-if="sharedFunctions?.shouldBeConstructed(props.description.header)"
-         v-show="!props.description.xHideValue"
-         :id="props.description.id">
+    <section :class="sharedFunctions.prepareClasses()" v-if="sharedFunctions?.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue" :id="props.description.id">
+        <h1 class="title" v-if="props.description.header.title">
+            {{ sharedFunctions.getTitle() }}
+            <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
+        </h1>
 
-      <h1 class="title" v-if="props.description.header.title">
-        {{ sharedFunctions.getTitle() }}
-        <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()"
-           v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
-      </h1>
+        <template v-for="(line, lineIndex) in vm.lines" v-show="!isAllLineHidden(line)">
+            <div class="field-block">
+                <template v-for="item in line">
+                    <template v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
+                        <DynamicField
+                            v-if="item.blockComponent === BlockComponents.value"
+                            :description="item.description"
+                            :model="vm.model[item.description.name]"
+                            @modelChange="onModelChange(item.description.name, $event)"
+                            :context="sharedFunctions.createInnerFieldContext(props.description.name, index)"
+                            :formLabelType="props.formLabelType"
+                            :floatLabelVariant="props.floatLabelVariant"
+                        >
+                        </DynamicField>
 
-      <template v-for="(line, lineIndex) in vm.lines" v-show="!isAllLineHidden(line)">
-          <div class="field-block">
-            <template v-for="item in line">
-                <template v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
-                    <DynamicField v-if="item.blockComponent === BlockComponents.value"
-                                    :description="item.description" :model="vm.model[item.description.name]"
-                                    @modelChange="onModelChange(item.description.name, $event)"
-                                    :context="vm.context">
-                    </DynamicField>
-
-                    <DynamicFieldBlock v-if="item.blockComponent !== BlockComponents.value"
-                                  :description="item" :context="vm.context"
-                                  :model="vm.model" @modelChange="onModelChange(null, $event)">
-                    </DynamicFieldBlock>
+                        <DynamicFieldBlock v-if="item.blockComponent !== BlockComponents.value" :description="item" :context="vm.context" :model="vm.model" @modelChange="onModelChange(null, $event)"> </DynamicFieldBlock>
+                    </template>
                 </template>
-            </template>
-          </div>
-       </template>
+            </div>
+        </template>
     </section>
 </template>
 
@@ -39,12 +36,17 @@ import { isObject } from '~/service/utils';
 import DynamicFieldBlock from '~/components/schema-forms/DynamicFieldBlock.vue';
 import DynamicField from '~/components/schema-forms/DynamicField.vue';
 import { BlockComponents } from '~/service/schema-forms/blockComponents';
+import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
+
+interface ObjectProps extends BaseFieldProps {
+    formLabelType?: FormLabelType;
+    floatLabelVariant?: FloatLabelVariant;
+}
 
 // @ts-ignore
-const props = defineProps<BaseFieldProps>();
+const props = defineProps<ObjectProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
-
 
 let { vm, sharedFunctions } = useBaseField(props, emits);
 
@@ -112,7 +114,7 @@ function shouldShowTitle(lineIndex: number): boolean {
     return firstDisplayedLineIndex === lineIndex;
 }
 
-function onModelChange(descriptionName: string|null, $event: any) {
+function onModelChange(descriptionName: string | null, $event: any) {
     if (descriptionName) {
         const modelClone = { ...vm.model };
         modelClone[descriptionName] = $event;
