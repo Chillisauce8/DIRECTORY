@@ -80,7 +80,7 @@ onMounted(() => {
         },
         parentObjectField: null,
         parentGroupField: null,
-        parentDynamicControl: null
+      parentDynamicField: null
     };
 
     sharedFunctions.setRefs(refs);

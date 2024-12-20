@@ -1,5 +1,5 @@
 <template>
-  <ComponentRender :componentName="vm.componentName"
+  <ComponentRender :componentName="'Select'"
                    :componentProperties="componentProperties"
                    :validator="$v"
                    :model="vm.model" @onModelChange="onModelChange($event)"
@@ -70,6 +70,7 @@ function initField() {
 
   componentProperties.value = {
     ...props.description,
+    component: undefined,
     showClear: !props.description.required,
     options: vm.filteredSelectValues,
     optionLabel: props.description.optionLabel || (vm.filteredSelectValues?.[0]?.title ? 'title' : undefined),

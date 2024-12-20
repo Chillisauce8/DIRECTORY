@@ -8,7 +8,6 @@ import commonjs from 'vite-plugin-commonjs'
 const { DefaultTheme } = useTheme();
 
 export default defineNuxtConfig({
-    sourcemap: { server: false, client: false },
     //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
     modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image', '@vueuse/motion/nuxt'],
 
@@ -123,14 +122,9 @@ export default defineNuxtConfig({
 
     vite: {
         plugins: [
-          // viteCommonjs({
-          //   // exclude: ['lodash'],
-          // })
           commonjs({
             filter(id) {
-
               if (id.includes('node_modules/')) {
-                // console.log(id)
                 return true
               }
             },
@@ -163,28 +157,11 @@ export default defineNuxtConfig({
             exclude: ['fsevents'],
             noDiscovery: true,
             include: ['quill', 'lodash'],
-            // esbuildOptions: {
-            //   plugins: [
-            //     esbuildCommonjs([
-            //       "@uppy/core",
-            //       "@uppy/dashboard",
-            //       "@uppy/drag-drop",
-            //       "@uppy/file-input",
-            //       "@uppy/progress-bar",
-            //       "@uppy/tus",
-            //       "@uppy/vue",
-            //       "@uppy/webcam",
-            //       "mime-match",
-            //       "Restricter"
-            //     ])
-            //   ]
-            // }
         },
         build: {
             rollupOptions: {
                 output: {}
-            },
-            sourcemap: false
+            }
         }
     },
     delayHydration: {

@@ -254,6 +254,9 @@ export default function useSchemaFormController(formName: string, fields?: Objec
 
     getAllSettings(fields)
       .then(() => {
+        schemaFormsProcessingHelper.registerForm(vm.name);
+      })
+      .then(() => {
         if (Object.keys(vm.model).length === 0) {
           vm.model = vm.schemaFormsBuildHelper.buildEmptyModel();
         }
@@ -263,9 +266,6 @@ export default function useSchemaFormController(formName: string, fields?: Objec
       })// TODO: update useOneGroup
       .then((result: Array<Object>) => {
         formDescription.value = result;
-      })
-      .then(() => {
-        schemaFormsProcessingHelper.registerForm(vm.name);
       })
       .catch(err => {
         console.log(err);

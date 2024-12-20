@@ -28,7 +28,7 @@ export interface ComponentRefs {
   form?: FormRef,
   parentObjectField?: any,
   parentGroupField?: any,
-  parentDynamicControl?: any,
+  parentDynamicField?: any,
 }
 
 
@@ -176,7 +176,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
       if (componentInternalInstance) {
         const parentObjectField = sharedFunctions.getParentByName(componentInternalInstance, 'ObjectField');
-        const parentDynamicControl = sharedFunctions.getParentByName(componentInternalInstance, 'DynamicControl');
+        const parentDynamicField = sharedFunctions.getParentByName(componentInternalInstance, 'DynamicField');
         const parentGroupField = sharedFunctions.getParentByName(componentInternalInstance, 'FormGroup');
         const schemaForm = sharedFunctions.getParentByName(componentInternalInstance, 'SchemaForm');
 
@@ -188,7 +188,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
           },
           parentObjectField: parentObjectField,
           parentGroupField: parentGroupField,
-          parentDynamicControl: parentDynamicControl,
+          parentDynamicField: parentDynamicField,
         };
 
         sharedFunctions.setRefs(refs);
