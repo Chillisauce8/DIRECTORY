@@ -58,31 +58,64 @@
 </template>
 
 <script setup lang="ts">
-import { Dashboard, DragDrop, ProgressBar } from '@uppy/vue'
 import Uppy from '@uppy/core'
+import { Dashboard, DragDrop, ProgressBar } from '@uppy/vue'
 import Webcam from '@uppy/webcam'
-import { computed } from 'vue';
 import XHRUpload from '@uppy/xhr-upload';
+import RemoteSources from '@uppy/remote-sources';
+import ScreenCapture from '@uppy/screen-capture';
+import { computed } from 'vue';
 import { fileHelperService, FileType } from '~/service/file/file-helper-service';
-import exifr from 'exifr';
 import EXIF from '~/service/file/exif';
 
-// const { VITE_TUS_ENDPOINT: TUS_ENDPOINT } = import.meta.env
+const emit = defineEmits(['uploaded:file']);
+
+// Remove localSelected and direct binding to ensure reactivity
+function handleFileUploaded(data: any) {
+  emit('uploaded:file', data);
+}
+
+const COMPANION_URL = 'http://companion.uppy.io';
+const companionAllowedHosts = [];
 
 const uppy = computed(() => new Uppy({
-  id: 'uppy', autoProceed: false, debug: true,
-  onBeforeFileAdded: (currentFile, files) => {
-    extendMetadata(currentFile);
-    return currentFile;
-  },
-})
-.use(XHRUpload, {
-  endpoint: '/api/files',
-  limit: 6,
-  // bundle: true,
-})
-.use(Webcam)
-);
+    id: 'uppy', autoProceed: false, debug: true,
+    onBeforeFileAdded: (currentFile, files) => {
+      extendMetadata(currentFile);
+      return currentFile;
+    },
+  })
+  .use(XHRUpload, {
+    endpoint: '/api/files',
+    limit: 6,
+    onAfterResponse: (xhr: XMLHttpRequest, retryCount: number) => {
+      const response = JSON.parse(xhr.response);
+
+      if (response.ok) {
+        handleFileUploaded(response.data);
+      }
+    }
+  })
+  .use(RemoteSources, {
+    companionUrl: COMPANION_URL,
+    sources: [
+      'Box',
+      'Dropbox',
+      'Facebook',
+      'GoogleDrive',
+      'Instagram',
+      'OneDrive',
+      'Unsplash',
+      'Url',
+    ],
+    companionAllowedHosts,
+  })
+  .use(Webcam, {
+    showVideoSourceDropdown: true,
+    showRecordingLength: true,
+  })
+  .use(ScreenCapture)
+)
 
 
 function extendMetadata(fileObject) {

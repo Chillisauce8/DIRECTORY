@@ -32,26 +32,8 @@
               class="p-fluid">
 
         <div class="p-8 rounded-border flex flex-col border border-surface items-center gap-8">
-          <FilesUpload></FilesUpload>
-
-<!--          <FloatLabel>-->
-<!--            <InputText :id="'name-' + fileNode.name + fileNode.type + fileNode.size" type="text"-->
-<!--                       v-model="fileNode.name" required/>-->
-<!--            <label :for="'name-' + fileNode.name + fileNode.type + fileNode.size">File Name</label>-->
-<!--          </FloatLabel>-->
-
-<!--          <FloatLabel>-->
-<!--            <InputText :id="'description-' + fileNode.name + fileNode.type + fileNode.size" type="text"-->
-<!--                       v-model="fileNode.description" maxlength="1000"/>-->
-<!--            <label :for="'description-' + fileNode.name + fileNode.type + fileNode.size">Description</label>-->
-<!--          </FloatLabel>-->
-
-<!--          <FloatLabel>-->
-<!--            <Select id="'rating-' + file.name + file.type + file.size"-->
-<!--                    v-model="fileNode.rating" :options="ratingItems">-->
-<!--            </Select>-->
-<!--            <label :for="'rating-' + fileNode.name + fileNode.type + fileNode.size">Rating</label>-->
-<!--          </FloatLabel>-->
+          <FilesUpload @uploaded:file="onFileUploaded($event)">
+          </FilesUpload>
         </div>
 
         <template #footer>
@@ -85,9 +67,7 @@
 <script setup lang="ts">
 import {FileDbNode} from '~/service/file/files-service';
 import type {Listing} from '~/composables/useListControls';
-import {fileHelperService, FileType} from '~/service/file/file-helper-service';
-import EXIF from '~/service/file/exif';
-import {fileUploaderService} from '~/service/file/file-uploader-service';
+import {FileType} from '~/service/file/file-helper-service';
 import {useGrid} from '~/composables/grid.composables';
 import {useCategoriesService} from '~/service/cars/categories.service';
 import { useToast } from 'primevue/usetoast';
@@ -129,9 +109,6 @@ const searchFields = [
   { field: 'categories', label: 'Categories' }
 ];
 
-let fileNode = ref<any>({});
-let fileToUpload: File | null = null;
-
 const fileDialog = ref(false);
 
 function prepareListingItem(file: FileDbNode): Listing<FileDbNode> {
@@ -150,98 +127,10 @@ function onDbNodeUpdate(dbNode: any) {
   toast.add({ severity: 'success', summary: 'Successful', detail: 'File Data Updated', life: 3000 });
 }
 
-async function prepareFileNode(file: File): Promise<{node: FileDbNode; file: File}> {
-  return new Promise((resolve) => {
-    const type = fileHelperService.getFileType(file);
-    const extension = fileHelperService.getFileExtension(file.name);
-    const originalType = file.type || extension;
+function onFileUploaded(data) {
+  listingList.value = [...listingList.value, prepareListingItem(data)];
 
-    const medialProperties = fileHelperService.getMediaFileProperties(file);
-
-    let imgEl;
-    let imageInfo: any = {};
-
-    if (type === FileType.Image) {
-      imgEl = document.getElementById('img-' + file.name + file.type + file.size);
-
-      if (medialProperties.aspectRatio) {
-        imageInfo = {
-          width: medialProperties.width,
-          height: medialProperties.height,
-          aspectRatio: medialProperties.aspectRatio,
-        }
-      } else if (imgEl) {
-        const w = imgEl.naturalWidth;
-        const h = imgEl.naturalHeight;
-        const aspectRation = fileHelperService.calculateAspectRatio(w, h);
-
-        imageInfo = {
-          width: w,
-          height: h,
-          aspectRation
-        }
-      }
-    }
-
-    const exif = new EXIF();
-    exif.getData(file, function () {
-
-      const metadata = exif.getAllTags(this);
-
-      const data: any = {
-        node: {
-          name: file.name,
-          description: '',
-          rating: null,
-          originalType,
-          type,
-          extension,
-          size: file.size,
-          imageInfo,
-          data: metadata,
-        },
-        file: file,
-      };
-
-      resolve(data);
-    });
-  });
+  toast.add({ severity: 'success', summary: 'Successful', detail: 'File Added', life: 3000 });
 }
 
-async function onFileSelect(event: {files: File[]}) {
-  fileNode.value = null;
-  fileToUpload = null;
-
-  const file = event.files[0];
-
-  const nodeInfo = await prepareFileNode(file);
-
-  fileNode.value = nodeInfo.node;
-  fileToUpload = nodeInfo.file;
-
-  fileDialog.value = true;
-}
-
-async function uploadFile() {
-  if (!fileNode.value || !fileToUpload) {
-    return;
-  }
-
-  const config: any = {
-    url: '/api/files',
-    data: {model: fileNode.value, file: fileToUpload},
-    method: 'POST',
-  }
-
-  const result = await fileUploaderService.upload<FileDbNode>(config);
-
-  if (!result) {
-    return;
-  }
-
-  fileDialog.value = false;
-  listingList.value = [...listingList.value, prepareListingItem(result)];
-
-  // updateCategoryOptions(listingList.value);
-}
 </script>
