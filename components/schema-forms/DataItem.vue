@@ -242,52 +242,72 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
 <style lang="scss">
 // Add wrapper container
 .form-container {
+    // Main
+    --background-color: white;
+    --text-color: black;
+    --base-font-size: 14px;
+
+    // Title
+    --form-title-size: 2em;
+    --form-title-color: var(--text-color);
+
+    // Subtitle
+    --form-subtitle-size: 1.2em;
+    --form-subtitle-color: var(--text-color);
+
+    --section-title-color: black;
+    --section-side-color: lightgrey;
+    --field-subtext-color: grey;
+    --error-message-color: crimson;
+
+    // Enable container queries
     width: 100%; // Required - container needs dimension
     container-type: inline-size;
     container-name: form;
-    min-height: 100%;
+    // min-height: 100%;
 
     .form {
         // Container query rules
-        @container form (min-width: 601px) and (max-width: 1000px) {
-            --background-color: rgb(224, 224, 221);
-            font-size: 10px;
-        }
-
-        @container form (max-width: 600px) {
-            --background-color: rgb(221, 224, 221);
-            font-size: 12px;
-        }
-
-        @container form (min-width: 601px) and (max-width: 1000px) {
-            --background-color: rgb(220, 203, 203);
-            font-size: 14px;
-        }
-
         @container form (min-width: 1001px) {
             --background-color: rgb(205, 205, 219);
-            font-size: 16px;
+            --base-font-size: 16px;
+        }
+        @container form (max-width: 1000px) {
+            --background-color: rgb(220, 203, 203);
+            --base-font-size: 14px;
+        }
+        @container form  (max-width: 600px) {
+            --background-color: rgb(221, 224, 221);
+            --base-font-size: 12px;
+        }
+        @container form (max-width: 400px) {
+            --background-color: white;
+            --base-font-size: 10px;
         }
 
-        // Enable container queries
-        container-type: inline-size;
-        container-name: form;
-
-        // Default variables
-        --background-color: white;
-        --text-color: black;
-        --form-title-color: black;
-        --form-subtitle-color: grey;
-        --section-title-color: black;
-        --section-side-color: lightgrey;
-        --field-subtext-color: grey;
-        --error-message-color: crimson;
-
         background-color: var(--background-color);
+        font-size: var(--base-font-size);
+
+        > .title {
+            font-size: var(--form-title-size);
+            color: var(--form-title-color);
+            text-align: center;
+        }
+        > .subtitle {
+            font-size: var(--form-subtitle-size);
+            color: var(--form-subtitle-color);
+            text-align: center;
+        }
+
+        // Needed to make input size change
+        .p-inputtext {
+            font-size: var(--base-font-size);
+        }
+
         section {
-            margin: 10px 0 10px;
-            padding-left: 20px;
-            border-left: 3px solid var(--section-side-color); //  border-radius: 10px;
+            // margin: 10px 0 10px;
+            // padding-left: 20px;
+            // border-left: 3px solid var(--section-side-color); //  border-radius: 10px;
             &.row .field-block {
                 display: flex;
                 gap: 1em;
@@ -299,21 +319,11 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
 
         h1 {
             font-weight: 600;
-            font-size: 14px;
+            //  font-size: 14px;
             color: var(--section-title-color);
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin: 5px;
-        }
-        > h1 {
-            font-size: 24px;
-            text-align: center;
-            color: var(--form-title-color);
-        }
-        h2 {
-            font-size: 18px;
-            text-align: center;
-            color: var(--form-subtitle-color);
+            // margin: 5px;
         }
 
         .field-wrapper {
@@ -327,12 +337,12 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
                 // margin-bottom: 4px;
             }
             .subtext {
-                font-size: 12px;
+                //  font-size: 12px;
                 color: var(--field-subtext-color);
             }
             .error-message {
-                font-size: 14px;
-                font-weight: 600;
+                // font-size: 14px;
+                // font-weight: 600;
                 color: var(--error-message-color);
             }
             .field {
