@@ -378,8 +378,8 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
             display: flex;
             justify-content: space-between;
             .p-button:first-of-type {
-                background-color: blue;
-                border-color: blue;
+                background-color: grey;
+                border-color: grey;
             }
         }
     }
