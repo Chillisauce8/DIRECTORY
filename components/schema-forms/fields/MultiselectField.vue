@@ -80,7 +80,7 @@ function initField() {
   componentProperties.value = {
     ...props.description,
     options: autocompleteItems,
-    dataKey: "id",
+    dataKey: _isObjects ? "id" : undefined,
     optionLabel: props.description.optionLabel || (autocompleteItems.value?.[0]?.title ? 'title' :
       autocompleteItems.value?.[0]?.name ? 'name' : undefined),
     placeholder: vm.placeholderValue,

@@ -247,11 +247,13 @@ export class SchemaFormsBuildHelper {
         return BlockComponents.object;
       }
     } else if (item.type === 'array') {
-      if (item.component === 'SelectOrUpload') {
+      const component = item.component || this.schemaParser.parseItemComponent(item);
+
+      if (component === 'SelectOrUpload') {
         return BlockComponents.selectOrUploadArray;
       }
 
-      if (['MultiSelect', 'Listbox', 'Chips'].includes(item.component)) {
+      if (['MultiSelect', 'Listbox', 'InputChips'].includes(component)) {
         return BlockComponents.value;
       }
 
