@@ -1,10 +1,13 @@
 <template>
+    <!-- Main section that wraps the object block, only shows if conditions are met -->
     <section :class="sharedFunctions.prepareClasses()" v-if="sharedFunctions?.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue" :id="props.description.id">
+        <!-- Title section with optional tooltip -->
         <h1 class="title" v-if="props.description.header.title">
             {{ sharedFunctions.getTitle() }}
             <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
         </h1>
 
+        <!-- Loops through each line of fields -->
         <template v-for="(line, lineIndex) in vm.lines" v-show="!isAllLineHidden(line)">
             <div class="field-block">
                 <template v-for="item in line">
@@ -38,14 +41,14 @@ import DynamicField from '~/components/schema-forms/DynamicField.vue';
 import { BlockComponents } from '~/service/schema-forms/blockComponents';
 import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
 
+// Interface extending base props with form label customization options
 interface ObjectProps extends BaseFieldProps {
     formLabelType?: FormLabelType;
     floatLabelVariant?: FloatLabelVariant;
 }
 
-// @ts-ignore
+// Component setup and initialization
 const props = defineProps<ObjectProps>();
-// @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
 let { vm, sharedFunctions } = useBaseField(props, emits);
@@ -56,6 +59,13 @@ vm.lines = [];
 
 sharedFunctions.initField = initField;
 
+/**
+ * Initializes the field by:
+ * 1. Setting up the model as an empty object if invalid
+ * 2. Creating line arrays for field layout
+ * 3. Handling required fields and default values
+ * 4. Organizing content into lines based on x-line property
+ */
 function initField(): void {
     initFieldBase();
 
@@ -94,6 +104,7 @@ function initField(): void {
     });
 }
 
+// Lifecycle hooks for component initialization and cleanup
 onMounted(() => {
     const instance = getCurrentInstance();
     sharedFunctions.doOnMounted(instance);
@@ -103,17 +114,31 @@ onDeactivated(() => {
     sharedFunctions.onDeactivated();
 });
 
+/**
+ * Checks if all elements in a line should be hidden
+ * Returns true if every element in the line is either hidden, removed, or shouldn't be constructed
+ */
 function isAllLineHidden(line: Array<any>): boolean {
     return line.every((elem: any) => {
         return elem.description.xHideValue || elem.description.xRemoveValue || !sharedFunctions.shouldBeConstructed(elem.description, undefined, null, false);
     });
 }
 
+/**
+ * Determines if the title should be shown for a specific line
+ * Shows title only for the first visible line
+ */
 function shouldShowTitle(lineIndex: number): boolean {
     const firstDisplayedLineIndex = vm.lines.findIndex((line: any) => !isAllLineHidden(line));
     return firstDisplayedLineIndex === lineIndex;
 }
 
+/**
+ * Handles model changes:
+ * - For individual fields: updates specific property in model
+ * - For entire objects: replaces whole model
+ * Emits the updated model to parent component
+ */
 function onModelChange(descriptionName: string | null, $event: any) {
     if (descriptionName) {
         const modelClone = { ...vm.model };
@@ -126,6 +151,10 @@ function onModelChange(descriptionName: string | null, $event: any) {
     emits('modelChange', vm.model);
 }
 
+/**
+ * Determines if a field item should be constructed/shown
+ * Keeps track of previous state to handle conditional rendering
+ */
 function shouldItemBeConstructed(item: any): boolean {
     const result = sharedFunctions.shouldBeConstructed(item.description, null, item.shouldItemBeConstructedPrevValue || null);
 

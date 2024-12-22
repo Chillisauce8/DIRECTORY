@@ -23,6 +23,7 @@ import type { FormLabelProps } from '~/types/schema-forms';
 import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
 
 // Combine types instead of extending
+// Props that define the form's basic structure and behavior
 export type FormProps = BaseFieldProps & {
     id?: string;
     title?: string;
@@ -55,23 +56,29 @@ const emits = defineEmits<{
     (e: 'modelChange', value: any): void;
 }>();
 
+// Track if we've notified parent that form is ready
 let formDoneSent = false;
 
+// Internal reactive state for form construction
 const im = reactive({
     shouldHeaderBeConstructed: false,
     shouldContentBeConstructed: [],
     shouldAddHeaderNameToModelPathValues: undefined
 });
 
+// Get base field functionality
 const { vm, sharedFunctions } = useBaseField(props, emits);
 
 const initFieldBase = sharedFunctions.initField;
 const setModelBase = sharedFunctions.setModel;
 const processInnerModelChangedBase = sharedFunctions.processInnerModelChanged;
 
+// Store the form's context (holds form data and global variables)
 const context = ref(null);
 
+// Lifecycle hooks
 onMounted(() => {
+    // Set up form references when component mounts
     const refs = {
         self: null,
         form: {
@@ -80,7 +87,7 @@ onMounted(() => {
         },
         parentObjectField: null,
         parentGroupField: null,
-      parentDynamicField: null
+        parentDynamicField: null
     };
 
     sharedFunctions.setRefs(refs);
@@ -88,10 +95,12 @@ onMounted(() => {
     sharedFunctions.doOnMounted();
 });
 
+// Clean up when component is deactivated
 onDeactivated(() => {
     sharedFunctions.doOnDeactivated();
 });
 
+// Emit form ready event after slight delay
 onUpdated(() => {
     if (formDoneSent) {
         return;
@@ -103,6 +112,7 @@ onUpdated(() => {
     }, 100);
 });
 
+// Watch for changes in the form model
 watch(
     () => props?.model,
     (value: any) => {
@@ -115,6 +125,12 @@ watch(
     }
 );
 
+/**
+ * Initialize the form field and set up the context
+ * - Sets up initial model structure
+ * - Creates context with global variables
+ * - Initializes header path settings
+ */
 function initField() {
     initFieldBase();
 
@@ -148,19 +164,35 @@ function initField() {
     initShouldAddHeaderNameToModelPath();
 }
 
+/**
+ * Update the form's model with new values
+ * @param value - New model value
+ * @param updated - Whether the model was updated
+ */
 function setModel(value: any, updated?: boolean) {
     return setModelBase(value, true);
 }
 
+/**
+ * Get the name of the current form
+ */
 function getFormName(): string {
     return props.formName;
 }
 
+/**
+ * Handle changes to inner form models and trigger form processing
+ * @param value - Changed model value
+ */
 function processInnerModelChanged(value?: any) {
     processInnerModelChangedBase(value);
     schemaFormsProcessingHelper.processFormChanges(getFormName());
 }
 
+/**
+ * Handle model changes and emit to parent component
+ * @param value - New model value
+ */
 function onModelChange(value: any) {
     vm.model = value;
     emits('modelChange', vm.model);
@@ -168,6 +200,10 @@ function onModelChange(value: any) {
     // console.log(JSON.stringify(vm.model, null, 4));
 }
 
+/**
+ * Handle model changes for a specific path in the form
+ * @param value - New value for the path
+ */
 function onModelChangeByPath(value: any) {
     if (!isEqual(vm.model[props.description.header.name], value)) {
         vm.model[props.description.header.name] = value;
@@ -177,6 +213,10 @@ function onModelChangeByPath(value: any) {
     }
 }
 
+/**
+ * Initialize settings for whether header names should be added to model paths
+ * Used for proper model path construction in nested forms
+ */
 function initShouldAddHeaderNameToModelPath() {
     im.shouldAddHeaderNameToModelPathValues = [];
 
@@ -186,6 +226,11 @@ function initShouldAddHeaderNameToModelPath() {
     }
 }
 
+/**
+ * Determine if a header name should be added to the model path
+ * @param contentDescription - Description of the content field
+ * @returns boolean indicating if header name should be added
+ */
 function shouldAddHeaderNameToModelPath(contentDescription: any): boolean {
     if (!Object.keys(props.description.header).length || !props.description.header.path) {
         return false;
@@ -202,6 +247,7 @@ function shouldAddHeaderNameToModelPath(contentDescription: any): boolean {
     }
 }
 
+// Assign local implementations to shared functions
 sharedFunctions.initField = initField;
 sharedFunctions.setModel = setModel;
 sharedFunctions.processInnerModelChanged = processInnerModelChanged;

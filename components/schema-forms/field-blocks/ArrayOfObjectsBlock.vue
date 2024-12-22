@@ -1,23 +1,35 @@
 <template>
+    <!-- Main container for the array of objects form block -->
     <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
+        <!-- Only render if initialization is complete and header should be constructed -->
         <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue">
+            <!-- Header section with title and speed dial actions -->
             <div class="array-of-object-header">
+                <!-- Title with optional info tooltip -->
                 <h1 class="title array-of-object" v-if="props.description.header.title">
                     {{ sharedFunctions.getTitle() }}
 
+                    <!-- Information icon with tooltip -->
                     <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
                         <SvgIcon svg="info" />
                     </span>
                 </h1>
 
+                <!-- Speed dial menu for row actions (only shows if model has items) -->
                 <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems()" direction="left" />
             </div>
 
+            <!-- Main form fields container -->
             <div class="field-block">
+                <!-- Iterate through each row in the model -->
                 <template v-for="(row, rowIndex) in vm.model" :key="rowIndex">
+                    <!-- Iterate through lines within each row -->
                     <template v-for="(line, lineIndex) in vm.linesForRows[rowIndex]" v-show="!isWholeLineHidden(line)">
+                        <!-- Iterate through items within each line -->
                         <template v-for="(item, itemIndex) in line">
+                            <!-- Container for each form field -->
                             <template :style="{ width: item.description.xFlex + '%' }" v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)" v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
+                                <!-- Render dynamic field for basic value inputs -->
                                 <DynamicField
                                     v-if="item.blockComponent === BlockComponents.value"
                                     :description="item.description"
@@ -29,6 +41,7 @@
                                 >
                                 </DynamicField>
 
+                                <!-- Render dynamic field block for complex components -->
                                 <template v-if="item.blockComponent !== BlockComponents.value">
                                     <DynamicFieldBlock :description="item" :model="vm.model[rowIndex]" :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)" @modelChange="onModelChange(rowIndex, null, $event)">
                                     </DynamicFieldBlock>
@@ -38,15 +51,20 @@
                     </template>
                 </template>
 
+                <!-- Empty state with add buttons -->
                 <div v-if="!vm.model?.length">
+                    <!-- Add button for selection mode -->
                     <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode"> </Button>
 
+                    <!-- Add button for normal mode -->
                     <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode" @click="addFirstRow()"> </Button>
                 </div>
             </div>
 
+            <!-- Context menu for selection mode -->
             <ContextMenu ref="menu" :model="getContextMenuItems(vm.selectionValues)" />
 
+            <!-- Validation error messages -->
             <div v-if="!sharedFunctions.isValidMaxItems()" class="text-color_red field_wrap">Max items value is {{ props.description.xMaxItemsValue }}</div>
 
             <div v-if="!sharedFunctions.isValidMinItems()" class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
@@ -94,6 +112,10 @@ watch(
     }
 );
 
+/**
+ * Main initialization function that sets up the component's state.
+ * It checks if we're in selection mode and gets selection data if needed.
+ */
 function initField() {
     vm.isSelectionMode = sharedFunctions.isSelection();
 
@@ -113,18 +135,35 @@ onDeactivated(() => {
     sharedFunctions.onDeactivated();
 });
 
+/**
+ * Checks if the current array state is valid by verifying:
+ * - Maximum items limit
+ * - Minimum items requirement
+ * - Uniqueness of items (if required)
+ */
 function isValid(): boolean {
     return sharedFunctions.isValidMaxItems() && sharedFunctions.isValidMinItems() && sharedFunctions.ifValidUniqueItems();
 }
 
+/**
+ * Placeholder function for handling touch events
+ */
 function touch() {
     //
 }
 
+/**
+ * Determines if the speed dial menu should be shown for a specific item
+ * Shows it only for the last item in a row when not in readonly mode
+ */
 function showSpeedDeal(lineIndex: number, line: any[], rowIndex: number, itemIndex: number): boolean {
     return !sharedFunctions.isReadonly() && lineIndex === vm.linesForRows[rowIndex].length - 1 && itemIndex === line.length - 1;
 }
 
+/**
+ * Creates menu items for the selection dropdown
+ * Each item will trigger onSelectionClick when chosen
+ */
 function getContextMenuItems(selectionValues: string[]) {
     return selectionValues.map((item: string) => {
         return {
@@ -134,6 +173,10 @@ function getContextMenuItems(selectionValues: string[]) {
     });
 }
 
+/**
+ * Creates the speed dial menu items (floating action buttons)
+ * Includes actions like add, delete, move up/down, and copy row
+ */
 function createSpeedDialItems() {
     const index = vm.model.length - 1;
     return [
@@ -170,20 +213,35 @@ function createSpeedDialItems() {
     ];
 }
 
+/**
+ * Checks if the field is required based on header configuration
+ */
 function isRequired(): boolean {
     return props.description.header.required;
 }
 
+/**
+ * Opens the context menu for selecting items
+ * Currently not implemented
+ */
 function openContextMenu(index: number) {
     throw 'Not implemented';
 }
 
+/**
+ * Updates the UI when row descriptions change
+ * Rebuilds the lines layout for all rows
+ */
 function onRowsDescriptionChanged() {
     updateLinesForRows();
 
     onRowsDescriptionChangedBase();
 }
 
+/**
+ * Updates the internal layout structure for how rows are displayed
+ * Organizes items into lines based on their configuration
+ */
 function updateLinesForRows() {
     vm.linesForRows = [];
 
@@ -196,6 +254,10 @@ function updateLinesForRows() {
     }
 }
 
+/**
+ * Adds the first row to an empty array
+ * Handles both normal and selection modes
+ */
 function addFirstRow() {
     if (!sharedFunctions.canAddMore()) {
         return;
@@ -208,6 +270,10 @@ function addFirstRow() {
     addFirstRowBase();
 }
 
+/**
+ * Adds a new row after the specified row index
+ * Handles both normal and selection modes
+ */
 function addRowAfter(rowIndex: number) {
     if (!sharedFunctions.canAddMore()) {
         return;
@@ -221,6 +287,10 @@ function addRowAfter(rowIndex: number) {
     addRowAfterBase(rowIndex);
 }
 
+/**
+ * Handles when a selection is made from the dropdown
+ * Creates a new row with the selected value
+ */
 function onSelectionClick(value: string) {
     vm.selectedSelectionValue = value;
 
@@ -232,6 +302,10 @@ function onSelectionClick(value: string) {
     }
 }
 
+/**
+ * Organizes items into lines based on their line number configuration
+ * Used for layout purposes to group fields together
+ */
 function _getLinesItems(rowIndex: number): Array<Array<any>> {
     const lines = [[]];
 
@@ -254,6 +328,10 @@ function _getLinesItems(rowIndex: number): Array<Array<any>> {
     return lines;
 }
 
+/**
+ * Gets the line number for an item based on its configuration
+ * Returns 0 if no line number is specified
+ */
 function _getLineNumber(description: any): number {
     let lineNumber = 0;
     if (description.xLine || description.rawData.line) {
@@ -263,6 +341,10 @@ function _getLineNumber(description: any): number {
     return lineNumber;
 }
 
+/**
+ * Creates a new empty row with default values
+ * Handles special cases for different field types
+ */
 function createModelRow() {
     const row: any = {};
     props.description.content.forEach((item: any) => {
@@ -286,12 +368,20 @@ function createModelRow() {
     return row;
 }
 
+/**
+ * Checks if all items in a line are hidden
+ * Used to hide entire lines when all their fields are hidden
+ */
 function isWholeLineHidden(line: Array<Object>): boolean {
     return line.every((elem: any) => {
         return elem.description.xHideValue || elem.description.xRemoveValue;
     });
 }
 
+/**
+ * Validates that all items in the array are unique
+ * Only checks if uniqueness is required by configuration
+ */
 function ifValidUniqueItems(): boolean {
     if (!vm.needCheckUniq) {
         return true;
@@ -314,6 +404,10 @@ function ifValidUniqueItems(): boolean {
     );
 }
 
+/**
+ * Updates the model when any field in a row changes
+ * Emits the change event with the updated model
+ */
 function onModelChange(rowIndex: number, descriptionName: string | null, $event: any) {
     const modelClone = [...vm.model];
 

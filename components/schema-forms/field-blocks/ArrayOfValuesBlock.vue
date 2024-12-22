@@ -1,6 +1,9 @@
 <template>
+    <!-- Main wrapper for the array field component -->
     <div class="field-wrapper" :class="innerComponentName" :id="props.description.id">
+        <!-- Only show content if initialization is done and component should be constructed -->
         <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)" v-show="!props.description.xHideValue">
+            <!-- Field label with optional tooltip for description -->
             <label v-if="props.description.title">
                 {{ sharedFunctions.getTitle() }}
 
@@ -8,6 +11,8 @@
                     <i class="pi pi-question padding_-5"></i>
                 </span>
             </label>
+
+            <!-- Loop through each item in the array to create dynamic fields -->
             <template v-for="(line, index) in vm.model" :key="index">
                 <template v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
                     <DynamicField
@@ -26,10 +31,12 @@
                 </template>
             </template>
 
+            <!-- Show add button when array is empty -->
             <div class="empty row start-center" v-if="!vm?.model?.length">
                 <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore()" @click="sharedFunctions.addFirstRow()"> </Button>
             </div>
 
+            <!-- Validation error messages -->
             <div v-if="!sharedFunctions.isValidMaxItems()" class="text-color_red field_wrap">Max items value is {{ props.description.xMaxItemsValue }}</div>
 
             <div v-if="!sharedFunctions.isValidMinItems()" class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
@@ -40,34 +47,46 @@
 </template>
 
 <script setup lang="ts">
+// Import necessary composables and types
 import useBaseArrayFieldControl from '~/composables/schema-forms/useBaseArrayFieldControl';
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import { getCurrentInstance } from 'vue';
 import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
 
+// Props interface extending base field properties
 interface ArrayValuesProps extends BaseFieldProps {
     formLabelType?: FormLabelType;
     floatLabelVariant?: FloatLabelVariant;
 }
 
+// Setup props and emits
 // @ts-ignore
 const props = defineProps<ArrayValuesProps>();
 // @ts-ignore
 const emits = defineEmits<BaseFieldEmits>();
 
+// Reference for the inner component name (used for styling)
 const innerComponentName = ref();
 
+// Initialize the array field control with shared functions and reactive state
 const { vm, sharedFunctions, initDone } = useBaseArrayFieldControl(props, emits);
 
+// Lifecycle Hooks
 onMounted(() => {
+    // Initialize component when mounted
     const instance = getCurrentInstance();
     sharedFunctions.doOnMounted(instance);
 });
 
 onDeactivated(() => {
+    // Cleanup when component is deactivated
     sharedFunctions.onDeactivated();
 });
 
+/**
+ * Creates the speed dial menu items for each array row
+ * Returns buttons for: add, delete, move up, and move down
+ */
 function createSpeedDialItems(index: number) {
     return [
         {
@@ -91,27 +110,48 @@ function createSpeedDialItems(index: number) {
     ];
 }
 
+/**
+ * Creates a new empty row for the array
+ * Returns null as default value for new items
+ */
 function createModelRow() {
     return null;
 }
 
+/**
+ * Handles changes to individual items in the array
+ * Updates the model and emits the change event
+ */
 function onModelChange($event: any, index: number) {
     vm.model[index] = $event;
     emits('modelChange', vm.model);
 }
 
+/**
+ * Validates the array field
+ * Checks max items, min items, and uniqueness constraints
+ */
 function isValid(): boolean {
     return sharedFunctions.isValidMaxItems() && sharedFunctions.isValidMinItems() && sharedFunctions.ifValidUniqueItems();
 }
 
+/**
+ * Placeholder for touch functionality
+ * Used to mark field as touched for validation
+ */
 function touch() {
     //
 }
 
+/**
+ * Handles initialization completion of child components
+ * Sets the inner component name for styling
+ */
 function onControlInitDone($event: any) {
     innerComponentName.value = $event.componentName;
 }
 
+// Assign local functions to shared functions object for external use
 sharedFunctions.createModelRow = createModelRow;
 sharedFunctions.isValid = isValid;
 sharedFunctions.touch = touch;
