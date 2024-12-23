@@ -34,20 +34,6 @@
       }"
     />
 
-    <h2>Drag Drop Area</h2>
-    <DragDrop
-      :uppy="uppy"
-      :props="{
-        locale: {
-          strings: {
-            chooseFile: 'Boop a file',
-            orDragDrop: 'or yoink it here',
-          },
-        },
-      }"
-    />
-
-    <h2>Progress Bar</h2>
     <ProgressBar
       :uppy="uppy"
       :props="{
