@@ -2,33 +2,40 @@
     <!-- Main container for the array of objects form block -->
     <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
         <!-- Only render if initialization is complete and header should be constructed -->
-        <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue">
-            <!-- Header section with title and speed dial actions -->
-            <div class="array-of-object-header">
-                <!-- Title with optional info tooltip -->
-                <h1 class="title array-of-object" v-if="props.description.header.title">
-                    {{ sharedFunctions.getTitle() }}
-
-                    <!-- Information icon with tooltip -->
-                    <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                        <SvgIcon svg="info" />
-                    </span>
-                </h1>
-
-                <!-- Speed dial menu for row actions (only shows if model has items) -->
-                <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems()" direction="left" />
-            </div>
+        <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
+                  v-show="!props.description.xHideValue">
 
             <!-- Main form fields container -->
             <div class="field-block">
                 <!-- Iterate through each row in the model -->
                 <template v-for="(row, rowIndex) in vm.model" :key="rowIndex">
+                    <!-- Header section with title and speed dial actions -->
+                    <div class="array-of-object-header">
+                      <!-- Title with optional info tooltip -->
+                      <h1 class="title array-of-object" v-if="props.description.header.title">
+                        <template v-if="rowIndex === 0">
+                          {{ sharedFunctions.getTitle() }}
+
+                          <!-- Information icon with tooltip -->
+                          <span v-if="sharedFunctions.getDescriptionText()"
+                                v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+                              <SvgIcon svg="info" />
+                            </span>
+                        </template>
+                      </h1>
+
+                      <!-- Speed dial menu for row actions (only shows if model has items) -->
+                      <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems(rowIndex)" direction="left" />
+                    </div>
+
                     <!-- Iterate through lines within each row -->
                     <template v-for="(line, lineIndex) in vm.linesForRows[rowIndex]" v-show="!isWholeLineHidden(line)">
                         <!-- Iterate through items within each line -->
                         <template v-for="(item, itemIndex) in line">
                             <!-- Container for each form field -->
-                            <template :style="{ width: item.description.xFlex + '%' }" v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)" v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
+                            <template :style="{ width: item.description.xFlex + '%' }"
+                                      v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)"
+                                      v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
                                 <!-- Render dynamic field for basic value inputs -->
                                 <DynamicField
                                     v-if="item.blockComponent === BlockComponents.value"
@@ -43,21 +50,37 @@
 
                                 <!-- Render dynamic field block for complex components -->
                                 <template v-if="item.blockComponent !== BlockComponents.value">
-                                    <DynamicFieldBlock :description="item" :model="vm.model[rowIndex]" :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)" @modelChange="onModelChange(rowIndex, null, $event)">
+                                    <DynamicFieldBlock :description="item" :model="vm.model[rowIndex]"
+                                         :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
+                                                       @modelChange="onModelChange(rowIndex, null, $event)">
                                     </DynamicFieldBlock>
                                 </template>
                             </template>
                         </template>
                     </template>
+
                 </template>
 
                 <!-- Empty state with add buttons -->
                 <div v-if="!vm.model?.length">
-                    <!-- Add button for selection mode -->
-                    <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode"> </Button>
+                  <div class="array-of-object-header">
+                    <h1 class="title array-of-object" v-if="props.description.header.title">
+                      {{ sharedFunctions.getTitle() }}
 
+                      <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+                          <SvgIcon svg="info" />
+                      </span>
+                    </h1>
+                    <!-- Add button for selection mode -->
+                    <Button icon="pi pi-plus" aria-label="Add First Row"
+                            v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode">
+                    </Button>
                     <!-- Add button for normal mode -->
-                    <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode" @click="addFirstRow()"> </Button>
+                    <Button icon="pi pi-plus" aria-label="Add First Row"
+                            v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode"
+                            @click="addFirstRow()">
+                    </Button>
+                  </div>
                 </div>
             </div>
 
@@ -177,8 +200,8 @@ function getContextMenuItems(selectionValues: string[]) {
  * Creates the speed dial menu items (floating action buttons)
  * Includes actions like add, delete, move up/down, and copy row
  */
-function createSpeedDialItems() {
-    const index = vm.model.length - 1;
+function createSpeedDialItems(index: number) {
+    // const index = vm.model.length - 1;
     return [
         {
             icon: 'pi pi-plus',

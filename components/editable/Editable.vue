@@ -59,7 +59,7 @@ function getFieldComponentByName(componentName: string) {
     case 'DatePicker': return CalendarField;
     case 'ToggleSwitch': return CheckboxField;
     case 'Checkbox': return CheckboxField;
-    case 'InputChips': return ChipsField;
+    case 'Chips': return ChipsField;
     case 'Select': return DropdownField;
     case 'MultiSelect': return MultiselectField;
 

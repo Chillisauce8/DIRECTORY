@@ -2,7 +2,8 @@
     <!-- Main wrapper for the array field component -->
     <div class="field-wrapper" :class="innerComponentName" :id="props.description.id">
         <!-- Only show content if initialization is done and component should be constructed -->
-        <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)" v-show="!props.description.xHideValue">
+        <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)"
+                  v-show="!props.description.xHideValue">
             <!-- Field label with optional tooltip for description -->
             <label v-if="props.description.title">
                 {{ sharedFunctions.getTitle() }}

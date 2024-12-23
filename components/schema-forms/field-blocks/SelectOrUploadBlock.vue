@@ -14,74 +14,78 @@
                 @click="openSelectImageDialog()">
         </Button>
 
-<!--        <Button icon="pi pi-upload" aria-label="Load Image" class="mr-2 mb-2"-->
-<!--                name="upload"-->
-<!--                v-if="!sharedFunctions.isReadonly()"-->
-<!--                @click="chooseFile()">-->
-<!--        </Button>-->
-
-<!--        <FileUpload mode="basic" ref="fileupload"-->
-<!--                    class="file-input"-->
-<!--                    customUpload @uploader="customUploader"-->
-<!--                    @select="onFileChanged($event)" />-->
-
         <Button icon="pi pi-times" aria-label="Delete Images" class="mr-2 mb-2"
                 v-if="selectedFiled.length > 0"
                 @click="removeSelectedImages()">
         </Button>
 
-        <FileUpload mode="advanced" :multiple="true" :previewWidth="100" :maxFileSize="100000000"
-                    label="Import" chooseLabel="Import" class="mr-2 inline-block"
-                    customUpload @uploader="customUploader" @select="filesSelected">
-          <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
-            <div class="flex flex-col gap-8 pt-4">
-              <div v-if="files.length > 0">
-                <h5>Pending</h5>
-                <div class="flex flex-wrap gap-4">
-                  <div v-for="(file, index) of files" :key="file.name + file.type + file.size"
-                       class="p-8 rounded-border flex flex-col border border-surface items-center gap-4"
-                       :fileKey="file.key = file.name + file.type + file.size">
-                    <div v-if="fileHelperService.getFileType(file) === FileType.Image">
-                      <img role="presentation" :alt="file.name" :src="file.objectURL"
-                           :id="'img-' + file.name + file.type + file.size"
-                           width="50" height="50" />
-                    </div>
+        <Button label="Add" @click="fileDialog=true"/>
 
-                    <FloatLabel>
-                      <InputText :id="'name-' + file.name + file.type + file.size" type="text"
-                                 v-model="filesMetadata.names[file.key]" required/>
-                      <label :for="'name-' + file.name + file.type + file.size">File Name</label>
-                    </FloatLabel>
+        <Dialog v-model:visible="fileDialog" :style="{ width: '900px' }" header="File Details" :modal="true"
+                class="p-fluid">
 
-                    <FloatLabel>
-                      <InputText :id="'description-' + file.name + file.type + file.size" type="text"
-                                 v-model="filesMetadata.descriptions[file.key]" maxlength="1000"/>
-                      <label :for="'description-' + file.name + file.type + file.size">Description</label>
-                    </FloatLabel>
+          <div class="p-8 rounded-border flex flex-col border border-surface items-center gap-8">
+            <FilesUpload @uploaded:file="onFileUploaded($event)">
+            </FilesUpload>
+          </div>
 
-                    <FloatLabel>
-                      <Select id="'rating-' + file.name + file.type + file.size"
-                                v-model="filesMetadata.ratings[file.key]" :options="ratingItems">
-                      </Select>
-                      <label :for="'rating-' + file.name + file.type + file.size">Rating</label>
-                    </FloatLabel>
-
-                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">
-                          {{ file.name }}
-                        </span>
-
-                    <div>{{ formatSize(file.size) }}</div>
-
-                    <Badge value="Pending" severity="warn" />
-                    <Button icon="pi pi-times"
-                            @click="onRemoveTemplatingFile(file, removeFileCallback, index)"
-                            outlined rounded severity="danger" />
-                  </div>
-                </div>
-              </div>
-            </div>
+          <template #footer>
+            <Button label="Close" icon="pi pi-times" @click="fileDialog = false" />
           </template>
-        </FileUpload>
+        </Dialog>
+
+<!--        <FileUpload mode="advanced" :multiple="true" :previewWidth="100" :maxFileSize="100000000"-->
+<!--                    label="Import" chooseLabel="Import" class="mr-2 inline-block"-->
+<!--                    customUpload @uploader="customUploader" @select="filesSelected">-->
+<!--          <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">-->
+<!--            <div class="flex flex-col gap-8 pt-4">-->
+<!--              <div v-if="files.length > 0">-->
+<!--                <h5>Pending</h5>-->
+<!--                <div class="flex flex-wrap gap-4">-->
+<!--                  <div v-for="(file, index) of files" :key="file.name + file.type + file.size"-->
+<!--                       class="p-8 rounded-border flex flex-col border border-surface items-center gap-4"-->
+<!--                       :fileKey="file.key = file.name + file.type + file.size">-->
+<!--                    <div v-if="fileHelperService.getFileType(file) === FileType.Image">-->
+<!--                      <img role="presentation" :alt="file.name" :src="file.objectURL"-->
+<!--                           :id="'img-' + file.name + file.type + file.size"-->
+<!--                           width="50" height="50" />-->
+<!--                    </div>-->
+
+<!--                    <FloatLabel>-->
+<!--                      <InputText :id="'name-' + file.name + file.type + file.size" type="text"-->
+<!--                                 v-model="filesMetadata.names[file.key]" required/>-->
+<!--                      <label :for="'name-' + file.name + file.type + file.size">File Name</label>-->
+<!--                    </FloatLabel>-->
+
+<!--                    <FloatLabel>-->
+<!--                      <InputText :id="'description-' + file.name + file.type + file.size" type="text"-->
+<!--                                 v-model="filesMetadata.descriptions[file.key]" maxlength="1000"/>-->
+<!--                      <label :for="'description-' + file.name + file.type + file.size">Description</label>-->
+<!--                    </FloatLabel>-->
+
+<!--                    <FloatLabel>-->
+<!--                      <Select id="'rating-' + file.name + file.type + file.size"-->
+<!--                                v-model="filesMetadata.ratings[file.key]" :options="ratingItems">-->
+<!--                      </Select>-->
+<!--                      <label :for="'rating-' + file.name + file.type + file.size">Rating</label>-->
+<!--                    </FloatLabel>-->
+
+<!--                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">-->
+<!--                          {{ file.name }}-->
+<!--                        </span>-->
+
+<!--                    <div>{{ formatSize(file.size) }}</div>-->
+
+<!--                    <Badge value="Pending" severity="warn" />-->
+<!--                    <Button icon="pi pi-times"-->
+<!--                            @click="onRemoveTemplatingFile(file, removeFileCallback, index)"-->
+<!--                            outlined rounded severity="danger" />-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </template>-->
+<!--        </FileUpload>-->
 
       </div>
 
@@ -218,17 +222,17 @@ const filteredFiles = ref([]);
 
 const selectedFiled = ref([]);
 
-const fileupload = ref();
+const fileDialog = ref(false);
 
 
-const filesMetadata = reactive({
-  names: {},
-  descriptions: {},
-  ratings: {},
-});
+// const filesMetadata = reactive({
+//   names: {},
+//   descriptions: {},
+//   ratings: {},
+// });
 
 
-const ratingItems = ref([0, 1, 2, 3, 4, 5]);
+// const ratingItems = ref([0, 1, 2, 3, 4, 5]);
 
 
 onMounted(async () => {
@@ -242,6 +246,7 @@ onMounted(async () => {
 async function loadFilteredFiles() {
   filteredFiles.value = await filesService.getFiles({type: FileType.Image});
 }
+
 
 function openSelectImageDialog() {
   showSelectDialog.value = true;
@@ -334,136 +339,148 @@ function removeSelectedImages() {
 
 
 // for aspect ratio calculation
-function gcd(a: number, b: number) {
-  return (b == 0) ? a : gcd (b, a % b);
+// function gcd(a: number, b: number) {
+//   return (b == 0) ? a : gcd (b, a % b);
+// }
+
+//
+// const customUploader = async (event: any) => {
+//   for (const file of event.files) {
+//
+//     const data: any = await new Promise((resolve) => {
+//       const type = fileHelperService.getFileType(file);
+//       const extension = fileHelperService.getFileExtension(file.name);
+//       const originalType = file.type || extension;
+//
+//       const medialProperties = fileHelperService.getMediaFileProperties(file);
+//
+//       let imgEl;
+//       let imageInfo: any = {};
+//
+//       if (type === FileType.Image) {
+//         imgEl = document.getElementById('img-' + file.name + file.type + file.size);
+//
+//         if (medialProperties.aspectRatio) {
+//           imageInfo = {
+//             width: medialProperties.width,
+//             height: medialProperties.height,
+//             aspectRatio: medialProperties.aspectRatio,
+//           }
+//         } else if (imgEl) {
+//           const w = imgEl.naturalWidth;
+//           const h = imgEl.naturalHeight;
+//           const r = gcd(w, h);
+//
+//           const aspectRation = w/r + ":" + h/r;
+//
+//           imageInfo = {
+//             width: w,
+//             height: h,
+//             aspectRation
+//           }
+//         }
+//       }
+//
+//       const exif = new EXIF();
+//       exif.getData(file, function () {
+//
+//         const metadata = exif.getAllTags(this);
+//
+//         const data: any = {
+//           model: {
+//             name: filesMetadata.names[file.key],
+//             description: filesMetadata.descriptions[file.key],
+//             rating: filesMetadata.ratings[file.key],
+//             originalType,
+//             type,
+//             extension,
+//             size: file.size,
+//             imageInfo,
+//             data: metadata,
+//           },
+//           file: file,
+//         };
+//
+//         resolve(data);
+//       });
+//     });
+//
+//     const config: any = {
+//       url: '/api/files',
+//       data: data,
+//       method: 'POST',
+//       // headers: { [headerName: string]: string; },
+//       // withCredentials: true,
+//     }
+//
+//     const result = await fileUploaderService.upload(config);
+//
+//     if (result) {
+//       const model = pick(result, ['_doc', 'name', 'description', 'rating', 'type']);
+//       vm.model.push(model);
+//
+//       loadFilteredFiles();
+//
+//       toast.add({severity: 'info', summary: 'Success', detail: `${data.model.name} Uploaded`, life: 3000});
+//     } else {
+//       toast.add({severity: 'error', summary: 'Error', detail: `${data.model.name} Upload Failed`, life: 3000});
+//     }
+//   }
+//
+//   toast.add({ severity: 'info', summary: 'Process finished', detail: 'Uploading finished', life: 3000 });
+// };
+//
+//
+// const filesSelected = async (event: {files: File[]}) => {
+//   for (const file of event.files) {
+//     const key = file.name + file.type + file.size;
+//
+//     if (filesMetadata.names[key] === undefined) {
+//       filesMetadata.names[key] = file.name.split('.')[0];
+//     }
+//
+//     if (filesMetadata.descriptions[key] === undefined) {
+//       filesMetadata.descriptions[key] = '';
+//     }
+//
+//     if (filesMetadata.ratings[key] === undefined) {
+//       filesMetadata.ratings[key] = null;
+//     }
+//   }
+// }
+//
+//
+// const onRemoveTemplatingFile = (file: File, removeFileCallback: Function, index: number) => {
+//   removeFileCallback(index);
+// };
+//
+
+// const formatSize = (bytes) => {
+//   const k = 1024;
+//   const dm = 3;
+//   const sizes = $primevue.config.locale.fileSizeTypes;
+//
+//   if (bytes === 0) {
+//     return `0 ${sizes[0]}`;
+//   }
+//
+//   const i = Math.floor(Math.log(bytes) / Math.log(k));
+//   const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+//
+//   return `${formattedSize} ${sizes[i]}`;
+// };
+
+
+function onFileUploaded(result) {
+  if (result) {
+    const model = pick(result, ['_doc', 'name', 'description', 'rating', 'type']);
+    vm.model.push(model);
+
+    loadFilteredFiles();
+
+    toast.add({severity: 'info', summary: 'Success', detail: `${vm.model.name} Uploaded`, life: 3000});
+  }
 }
-
-
-const customUploader = async (event: any) => {
-  for (const file of event.files) {
-
-    const data: any = await new Promise((resolve) => {
-      const type = fileHelperService.getFileType(file);
-      const extension = fileHelperService.getFileExtension(file.name);
-      const originalType = file.type || extension;
-
-      const medialProperties = fileHelperService.getMediaFileProperties(file);
-
-      let imgEl;
-      let imageInfo: any = {};
-
-      if (type === FileType.Image) {
-        imgEl = document.getElementById('img-' + file.name + file.type + file.size);
-
-        if (medialProperties.aspectRatio) {
-          imageInfo = {
-            width: medialProperties.width,
-            height: medialProperties.height,
-            aspectRatio: medialProperties.aspectRatio,
-          }
-        } else if (imgEl) {
-          const w = imgEl.naturalWidth;
-          const h = imgEl.naturalHeight;
-          const r = gcd(w, h);
-
-          const aspectRation = w/r + ":" + h/r;
-
-          imageInfo = {
-            width: w,
-            height: h,
-            aspectRation
-          }
-        }
-      }
-
-      const exif = new EXIF();
-      exif.getData(file, function () {
-
-        const metadata = exif.getAllTags(this);
-
-        const data: any = {
-          model: {
-            name: filesMetadata.names[file.key],
-            description: filesMetadata.descriptions[file.key],
-            rating: filesMetadata.ratings[file.key],
-            originalType,
-            type,
-            extension,
-            size: file.size,
-            imageInfo,
-            data: metadata,
-          },
-          file: file,
-        };
-
-        resolve(data);
-      });
-    });
-
-    const config: any = {
-      url: '/api/files',
-      data: data,
-      method: 'POST',
-      // headers: { [headerName: string]: string; },
-      // withCredentials: true,
-    }
-
-    const result = await fileUploaderService.upload(config);
-
-    if (result) {
-      const model = pick(result, ['_doc', 'name', 'description', 'rating', 'type']);
-      vm.model.push(model);
-
-      loadFilteredFiles();
-
-      toast.add({severity: 'info', summary: 'Success', detail: `${data.model.name} Uploaded`, life: 3000});
-    } else {
-      toast.add({severity: 'error', summary: 'Error', detail: `${data.model.name} Upload Failed`, life: 3000});
-    }
-  }
-
-  toast.add({ severity: 'info', summary: 'Process finished', detail: 'Uploading finished', life: 3000 });
-};
-
-
-const filesSelected = async (event: {files: File[]}) => {
-  for (const file of event.files) {
-    const key = file.name + file.type + file.size;
-
-    if (filesMetadata.names[key] === undefined) {
-      filesMetadata.names[key] = file.name.split('.')[0];
-    }
-
-    if (filesMetadata.descriptions[key] === undefined) {
-      filesMetadata.descriptions[key] = '';
-    }
-
-    if (filesMetadata.ratings[key] === undefined) {
-      filesMetadata.ratings[key] = null;
-    }
-  }
-}
-
-
-const onRemoveTemplatingFile = (file: File, removeFileCallback: Function, index: number) => {
-  removeFileCallback(index);
-};
-
-
-const formatSize = (bytes) => {
-  const k = 1024;
-  const dm = 3;
-  const sizes = $primevue.config.locale.fileSizeTypes;
-
-  if (bytes === 0) {
-    return `0 ${sizes[0]}`;
-  }
-
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
-
-  return `${formattedSize} ${sizes[i]}`;
-};
 
 </script>
 

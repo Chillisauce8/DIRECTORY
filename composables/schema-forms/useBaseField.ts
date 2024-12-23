@@ -2,6 +2,7 @@ import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsPro
 import { isUndefined, intersection, isObject, isString, isEqual, cloneDeep, pick } from '~/service/utils';
 import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
+import type { FloatLabelVariant, FormLabelType } from '~/types/schema-forms';
 
 
 export interface BaseFieldProps {
@@ -9,6 +10,8 @@ export interface BaseFieldProps {
   description: any;
   context?: any;
   noPlaceholder?: boolean;
+  formLabelType?: FormLabelType;
+  floatLabelVariant?: FloatLabelVariant;
 }
 
 

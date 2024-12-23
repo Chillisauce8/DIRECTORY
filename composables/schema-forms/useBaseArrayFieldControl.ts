@@ -9,6 +9,8 @@ export default function useBaseArrayFieldControl(props: BaseFieldProps, emits: B
 
   const baseFieldExport = useBaseField(props, emits);
 
+  const confirm = useConfirm();
+
   let {
     vm,
     sharedFunctions,
@@ -151,27 +153,25 @@ export default function useBaseArrayFieldControl(props: BaseFieldProps, emits: B
     }
 
     if (index < vm.model.length - 1 && needToShowDeleteArrayItemsDialog()) {
-      // TODO:
-      // deleteArrayItemsDialog.show()
-      //   .pipe(
-      //     tap((result: ICommonDialogResult) => {
-      //       if (result?.canceled || !result?.data) {
-      //         return;
-      //       }
-      //
-      //       switch (result.data) {
-      //         case DeleteArrayItemsAction.deleteThisRow:
-      //           deleteArrayItems(index, 1);
-      //           break;
-      //         case DeleteArrayItemsAction.deleteThisAndAllRowsBelow:
-      //           deleteArrayItems(index, vm.model.length - index);
-      //           break;
-      //         default:
-      //           break;
-      //       }
-      //     }),
-      //   )
-      //   .subscribe();
+      confirm.require({
+        message: 'What should be Deleted?',
+        header: 'Delete Array Items',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+          label: 'Delete this and all rows below',
+          // severity: 'secondary',
+          outlined: true
+        },
+        acceptProps: {
+          label: 'Delete this row',
+        },
+        accept: () => {
+          deleteArrayItems(index, 1);
+        },
+        reject: () => {
+          deleteArrayItems(index, vm.model.length - index);
+        }
+      });
     } else {
       deleteArrayItems(index, 1);
     }

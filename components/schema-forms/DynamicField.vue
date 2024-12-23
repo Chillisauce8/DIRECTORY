@@ -103,7 +103,7 @@ const componentInstance = computed(() => {
             return CheckboxField;
         case 'Checkbox':
             return CheckboxField;
-        case 'InputChips':
+        case 'Chips':
             return ChipsField;
         case 'Select':
             return DropdownField;

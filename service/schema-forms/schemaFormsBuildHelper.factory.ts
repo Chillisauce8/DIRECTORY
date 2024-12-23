@@ -253,7 +253,7 @@ export class SchemaFormsBuildHelper {
         return BlockComponents.selectOrUploadArray;
       }
 
-      if (['MultiSelect', 'Listbox', 'InputChips'].includes(component)) {
+      if (['MultiSelect', 'Listbox', 'Chips'].includes(component)) {
         return BlockComponents.value;
       }
 

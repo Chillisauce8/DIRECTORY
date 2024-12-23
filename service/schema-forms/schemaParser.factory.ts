@@ -320,7 +320,7 @@ export class SchemaParser {
       }
 
       if (item.items && item.items.type === 'string') {
-        return 'InputChips';
+        return 'Chips';
       }
 
       if ((item.items && '_relator' in item.items) ||

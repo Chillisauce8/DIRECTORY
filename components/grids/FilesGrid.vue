@@ -37,8 +37,7 @@
         </div>
 
         <template #footer>
-          <Button label="Cancel" icon="pi pi-times" @click="fileDialog = false" />
-<!--          <Button label="Save" icon="pi pi-check" @click="uploadFile" />-->
+          <Button label="Close" icon="pi pi-times" @click="fileDialog = false" />
         </template>
       </Dialog>
     </template>

@@ -24,6 +24,9 @@ const emits = defineEmits<BaseControlEmits>();
 
 const componentProperties = {
   ...props.description,
+  multiple: true,
+  fluid: true,
+  typeahead: false,
 };
 
 const baseFieldExport = useBaseControl(props, emits);
@@ -32,6 +35,8 @@ let {
   vm,
   sharedFunctions,
 } = baseFieldExport;
+
+vm.componentName = "AutoComplete";
 
 
 const getDefaultValueBase = sharedFunctions.getDefaultValue;

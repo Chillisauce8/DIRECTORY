@@ -1,10 +1,13 @@
 <template>
     <!-- Main section that wraps the object block, only shows if conditions are met -->
-    <section :class="sharedFunctions.prepareClasses()" v-if="sharedFunctions?.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue" :id="props.description.id">
+    <section :class="sharedFunctions.prepareClasses()"
+             v-if="sharedFunctions?.shouldBeConstructed(props.description.header)"
+             v-show="!props.description.xHideValue" :id="props.description.id">
         <!-- Title section with optional tooltip -->
         <h1 class="title" v-if="props.description.header.title">
             {{ sharedFunctions.getTitle() }}
-            <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
+            <i class="icon icon-question-mark" v-if="sharedFunctions.getDescriptionText()"
+               v-tooltip.bottom="sharedFunctions.getDescriptionText()"></i>
         </h1>
 
         <!-- Loops through each line of fields -->
@@ -17,7 +20,7 @@
                             :description="item.description"
                             :model="vm.model[item.description.name]"
                             @modelChange="onModelChange(item.description.name, $event)"
-                            :context="sharedFunctions.createInnerFieldContext(props.description.name, index)"
+                            :context="sharedFunctions.createInnerFieldContext(props.description.name, lineIndex)"
                             :formLabelType="props.formLabelType"
                             :floatLabelVariant="props.floatLabelVariant"
                         >

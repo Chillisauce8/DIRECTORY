@@ -1,4 +1,5 @@
 <template>
+  <div class="data-item">
     <template v-if="isCreateUpdate">
         <!-- Container element -->
         <div class="form-container">
@@ -31,6 +32,7 @@
             </template>
         </template>
     </template>
+  </div>
 </template>
 
 <script setup lang="ts">

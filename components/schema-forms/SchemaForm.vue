@@ -1,5 +1,7 @@
 <template>
     <section :id="props.id">
+        <ConfirmDialog></ConfirmDialog>
+
         <h1 v-if="props.title" class="title">{{ props.title }}</h1>
         <h2 v-if="props.subtitle" class="subtitle">{{ props.subtitle }}</h2>
 
