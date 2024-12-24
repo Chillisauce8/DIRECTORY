@@ -1,5 +1,14 @@
 import {schemaFormsProcessingHelper} from '~/service/schema-forms/schemaFormsProcessing.service'
-import { isUndefined, intersection, isObject, isString, isEqual, cloneDeep, pick } from '~/service/utils';
+import {
+  isUndefined,
+  intersection,
+  isObject,
+  isString,
+  isEqual,
+  cloneDeep,
+  pick,
+  getValueFromObject
+} from '~/service/utils';
 import { xFeaturesHelper } from '~/service/schema-forms/xFeaturesHelper';
 import type { ComponentInternalInstance } from '@vue/runtime-core';
 import type { FloatLabelVariant, FormLabelType } from '~/types/schema-forms';
@@ -749,7 +758,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     }
   }
 
-  function _getPropertyDescription(name: string) {
+  function _getPropertyDescription(path: string) {
     let fieldDescription;
 
     const descriptionDescription = props.description?.description;
@@ -760,13 +769,13 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       fieldDescription = props.description;
     }
 
-    let propertyDescription = fieldDescription.header?.[name];
+    let propertyDescription = getValueFromObject(fieldDescription.header, path);
 
     if (propertyDescription) {
       return propertyDescription;
     }
 
-    propertyDescription = fieldDescription?.[name];
+    propertyDescription = getValueFromObject(fieldDescription, path);
 
     if (propertyDescription) {
       return propertyDescription;

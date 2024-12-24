@@ -6,15 +6,6 @@ import { EventEmitterSubscription } from '../event-emitter/event-emitter-observa
 import { ComponentInternalInstance } from 'vue';
 
 
-export interface IFieldRef {
-  isValid: () => boolean,
-  touch: () => void,
-  needXProcessTheField: () => boolean,
-  processXFeaturesWrapped: () => void,
-  getFormName: () => string,
-  description: any,
-
-}
 
 interface IFieldRegistration {
   ref: ComponentInternalInstance;
@@ -27,8 +18,6 @@ interface IFieldRegistration {
 export class SchemaFormsProcessingHelper {
 
   private registeredForms: any = {};
-
-  private _isProcessModelChangesActivated = false;
 
   // private _formUpdatedSubject: Subject<any>;
   private formUpdatedEmitter: EventEmitter<any> = new EventEmitter<any>();
@@ -99,7 +88,7 @@ export class SchemaFormsProcessingHelper {
 
     const features = this.xFeaturesHelper.getControlFeatures(description, context);
 
-    return !!features['hide'];
+    return !!features['hide'] || features['show'] === false;
   }
 
   shouldFieldBePersisted(description: any, context: any): boolean {

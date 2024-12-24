@@ -223,6 +223,8 @@ export class XFeaturesHelper {
             return this.getValueValue(keyName, ifElsePath, description.path, elseItemDescription, executionContext);
           }
         }
+      } else {
+        return false;
       }
     } else if (keyDescription['switch']) {
       const switchPath = `${description.path}.${keyName}${keyName !== 'switch' ? '.switch' : ''}`;

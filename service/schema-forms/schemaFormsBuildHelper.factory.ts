@@ -192,13 +192,23 @@ export class SchemaFormsBuildHelper {
       }
     }
 
+    const newShowDescription = description.rawData?.show;
+
+    if (newShowDescription && newShowDescription.if === 'false') {
+      const value = newShowDescription.value || newShowDescription?.then?.value;
+
+      if (!value.persist) {
+        return true;
+      }
+    }
+
     const newIfDescription = description.rawData?.if;
 
     if (newIfDescription === 'true') {
       const value = description.rawData.value || description.rawData.then ||
         description.rawData?.then?.value;
 
-      if (value.hide && !value.persist) {
+      if ((value.hide || value.show === false) && !value.persist) {
         return true;
       }
     }

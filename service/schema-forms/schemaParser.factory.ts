@@ -1,6 +1,6 @@
 import { isString } from '~/service/utils';
 
-export const X_KEYS = ['hide', 'required', 'default', 'readOnly', 'writeOnly', 'title', 'description', 'default',
+export const X_KEYS = ['hide', 'show', 'required', 'default', 'readOnly', 'writeOnly', 'title', 'description', 'default',
   'enum', 'x-enum', 'options', 'optionsPlus', 'set', 'dependencies', 'depreciated', 'concatenate', 'calculate'];
 
 export const X_KEYS_OPERATORS = ['if', 'then', 'else', 'switch', 'cases', 'value'];
@@ -51,6 +51,7 @@ export class SchemaParser {
     result['type'] = item['type'] || properties['type'];
 
     result['xHide'] = properties['x-hide'] || item['x-hide'];
+    result['xShow'] = properties['x-show'] || item['x-show'];
     result['xRequired'] = properties['x-required'] || item['x-required'];
     result['xFilter'] = properties['x-filter'] || item['x-filter'];
     result['xEnum'] = properties['x-enum'] || item['x-enum'];
@@ -160,6 +161,7 @@ export class SchemaParser {
     result['component'] = item.component;
     result['required'] = item.required;
     result['xHide'] = item['x-hide'];
+    result['xShow'] = item['x-show'];
     result['xClose'] = item['x-close'];
 
     result['rawData'] = this.parseRawData({}, item);
