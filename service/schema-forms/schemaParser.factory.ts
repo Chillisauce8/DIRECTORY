@@ -51,15 +51,9 @@ export class SchemaParser {
     result['type'] = item['type'] || properties['type'];
 
     result['xHide'] = properties['x-hide'] || item['x-hide'];
-    result['xShow'] = properties['x-show'] || item['x-show'];
     result['xRequired'] = properties['x-required'] || item['x-required'];
     result['xFilter'] = properties['x-filter'] || item['x-filter'];
-    result['xEnum'] = properties['x-enum'] || item['x-enum'];
-    result['xDefault'] = properties['x-default'] || item['x-default'];
-    result['xSet'] = properties['x-set'] || item['x-set'];
-    result['xTitle'] = properties['x-title'] || item['x-title'];
     result['xCalculate'] = properties['x-calculate'] || item['x-calculate'];
-    result['xConcatenate'] = properties['x-concatenate'] || item['x-concatenate'];
     result['xReadonly'] = properties['x-readonly'] || item['x-readonly'];
     result['xMinimum'] = properties['x-minimum'] || item['x-minimum'];
     result['xMaximum'] = properties['x-maximum'] || item['x-maximum'];
@@ -161,7 +155,6 @@ export class SchemaParser {
     result['component'] = item.component;
     result['required'] = item.required;
     result['xHide'] = item['x-hide'];
-    result['xShow'] = item['x-show'];
     result['xClose'] = item['x-close'];
 
     result['rawData'] = this.parseRawData({}, item);

@@ -160,7 +160,8 @@ function calculateComponentName(): string {
     }
 
     if (props.description.xEnumValues || props.description.xOptionsValues) {
-        if (props.description.component !== 'Multiselect' && props.description.component !== 'Autocomplete') {
+        if (props.description.component !== 'MultiSelect' && props.description.component !== 'Autocomplete' &&
+          componentName.value !== 'MultiSelect' && componentName.value !== 'Autocomplete') {
             return 'Select';
         }
     }

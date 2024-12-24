@@ -165,8 +165,8 @@ export class SchemaFormsBuildHelper {
   }
 
   _isAbsolutelyRemovedFromForm(description: any): boolean {
-    const xHideDescription = description['xHide'] || description['x-hide'];
-    const xConcatenateDescription = description['xConcatenate'] || description['x-concatenate'];
+    const xHideDescription = description['hide'] || description['x-hide'];
+    const xConcatenateDescription = description['concatenate'] || description['x-concatenate'];
 
     if (xHideDescription &&
         Object.keys(xHideDescription).length === 1 &&

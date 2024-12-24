@@ -35,7 +35,6 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
 
   const initFieldBase = sharedFunctions.initField;
   const doOnMountedBase = sharedFunctions.doOnMounted;
-  const possibleOldXPropertyNamesBase = sharedFunctions.possibleOldXPropertyNames;
   const possibleXPropertyNamesBase = sharedFunctions.possibleXPropertyNames;
   const processXFeaturesBase = sharedFunctions.processXFeatures;
 
@@ -111,48 +110,15 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
     }
   }
 
-  function possibleOldXPropertyNames() {
-    return possibleOldXPropertyNamesBase().concat(['xCalculate', 'xReadonly', 'xConcatenate',
-      'xMinimum', 'xMaximum', 'xRequired', 'xEnum']);
-  }
-
   function possibleXPropertyNames() {
-    // 'xEnum' should be here because it is possible to have text control that can be changed to
-    // a select control with xEnum and ngModel changes
+    // 'x-enum' should be here because it is possible to have text control that can be changed to
+    // a select control with x-enum and ngModel changes
     return possibleXPropertyNamesBase().concat(['default', 'set', 'calculate', 'readonly', 'concatenate',
       'minimum', 'maximum', 'required', 'enum', 'x-enum']);
   }
 
   function processXFeatures() {
     const features: any = processXFeaturesBase();
-
-    if (props.description.xCalculate) {
-      processXCalculateForModelChanges();
-    }
-
-    if (props.description.xReadonly) {
-      processXReadOnlyForModelChanges();
-    }
-
-    if (props.description.xConcatenate) {
-      processXConcatenateForModelChanges();
-    }
-
-    if (props.description.xMinimum) {
-      processXMinimumForModelChanges();
-    }
-
-    if (props.description.xMaximum) {
-      processXMaximumForModelChanges();
-    }
-
-    if (props.description.xRequired) {
-      processXRequiredForModelChanges();
-    }
-
-    if (props.description.xEnum) {
-      processXEnumForModelChanges();
-    }
 
     if ('calculate' in features) {
       if (isNaN(features['calculate'])) {
@@ -243,11 +209,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
     }
   }
 
-  function processXConcatenateForModelChanges(value?: any) {
-    if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXConcatenateValue(props.description.xConcatenate, vm.context);
-    }
-
+  function processXConcatenateForModelChanges(value: any) {
     if (!isEqual(value, props.description.xConcatenateValue)) {
       props.description.xConcatenateValue = value;
 
@@ -286,11 +248,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
     }
   }
 
-  function processXEnumForModelChanges(value?: any) {
-    if (isUndefined(value) || value['enum']) {
-      value = schemaFormsProcessingHelper.getXEnumValues(props.description.xEnum, vm.context);
-    }
-
+  function processXEnumForModelChanges(value: any) {
     if (!isEqual(value, props.description.xEnumValues)) {
       props.description.xEnumValues = value;
       im.refs?.parentDynamicField?.setupState.sharedFunctions.processControlTypeChanges();
@@ -314,7 +272,6 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
   sharedFunctions.initField = initField;
   sharedFunctions.doOnMounted = doOnMounted;
   sharedFunctions.trackByIndexFn = trackByIndexFn;
-  sharedFunctions.possibleOldXPropertyNames = possibleOldXPropertyNames;
   sharedFunctions.possibleXPropertyNames = possibleXPropertyNames;
   sharedFunctions.processXOptionsForModelChanges = processXOptionsForModelChanges;
   sharedFunctions.processXFeatures = processXFeatures;

@@ -556,8 +556,6 @@ export class SchemaFormsProcessingHelper {
   }
 
   private _checkConditionForItem(item: any, context: any): boolean {
-    const self = this;
-
     if (!item) {
       return false;
     }

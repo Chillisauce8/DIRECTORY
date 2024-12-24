@@ -246,10 +246,6 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       }
     },
 
-    possibleOldXPropertyNames: () => {
-      return ['xHide', 'xTitle', 'xDefault', 'xSet', 'xMinItems', 'xMaxItems'];
-    },
-
     possibleXPropertyNames: () => {
       return ['hide', 'title', 'if', 'switch'];
     },
@@ -263,10 +259,6 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         _cachedFunction: vm.context._cachedFunction,
       }
 
-      if (_getPropertyDescription('xHide')) {
-        processXHidedForModelChanges();
-      }
-
       let fieldDescription;
 
       const descriptionDescription = props.description?.description;
@@ -277,24 +269,14 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         fieldDescription = props.description?.header || props.description;
       }
 
-      if (fieldDescription.xTitle) {
-        processXTitleForModelChanges();
-      }
-
-      if (props.description.xDefault) {
-        processXDefaultForModelChanges();
-      }
-
-      if (props.description.xSet) {
-        const value = schemaFormsProcessingHelper.getXSetValue(props.description.xSet,
-          vm.context, props.description);
-        processXSetForModelChanges(value);
-      }
-
       const features = xFeaturesHelper.getControlFeatures(fieldDescription, vm.context);
 
       if ('hide' in features) {
         processXHidedForModelChanges(features['hide']);
+      }
+
+      if ('show' in features) {
+        processXHidedForModelChanges(!features['show']);
       }
 
       if ('writeOnly' in features) {
@@ -550,12 +532,6 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     needXProcessTheField: (): boolean => {
-      for (const propertyName of sharedFunctions.possibleOldXPropertyNames()) {
-        if (_getPropertyDescription(propertyName)) {
-          return true;
-        }
-      }
-
       for (const propertyName of sharedFunctions.possibleXPropertyNames()) {
         const propertyDescription = _getPropertyDescription('rawData.' + propertyName);
 
@@ -715,12 +691,8 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     sharedFunctions.getDescription().xDescriptionValue = value;
   }
 
-  function processXDefaultForModelChanges(value?: any) {
-    if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXDefaultValue(props.description.xDefault, vm.context, props.description);
-    } else {
-      value = schemaFormsProcessingHelper.resolveSpecialValue(value, props.description, vm.context, false);
-    }
+  function processXDefaultForModelChanges(value: any) {
+    value = schemaFormsProcessingHelper.resolveSpecialValue(value, props.description, vm.context, false);
 
     if (!isEqual(value, props.description.xDefaultValue)) {
       const previousXDefaultValue = props.description.xDefaultValue;

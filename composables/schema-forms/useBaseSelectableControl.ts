@@ -15,7 +15,6 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
   } = baseFieldExport;
 
   const initFieldBase = sharedFunctions.initField;
-  const possibleOldXPropertyNamesBase = sharedFunctions.possibleOldXPropertyNames;
   const possibleXPropertyNamesBase = sharedFunctions.possibleXPropertyNames;
   const processXFeaturesBase = sharedFunctions.processXFeatures;
   const setModelBase = sharedFunctions.setModel;
@@ -139,10 +138,6 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
     }
   }
 
-  function possibleOldXPropertyNames() {
-    return possibleOldXPropertyNamesBase().concat(['xFilter']);
-  }
-
   function possibleXPropertyNames() {
     return possibleXPropertyNamesBase().concat(['filter']);
   }
@@ -226,11 +221,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
     fillEmptyModel();
   }
 
-  function processXEnumForModelChanges(value?: boolean) {
-    if (!value) {
-      value = schemaFormsProcessingHelper.getXEnumValues(props.description.xEnum, vm.context);
-    }
-
+  function processXEnumForModelChanges(value: boolean) {
     if (!isEqual(value, props.description.xEnumValues)) {
       props.description.xEnumValues = value;
 
@@ -322,7 +313,6 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
 
 
   sharedFunctions.initField = initField;
-  sharedFunctions.possibleOldXPropertyNames = possibleOldXPropertyNames;
   sharedFunctions.possibleXPropertyNames = possibleXPropertyNames;
   sharedFunctions.processXFeatures = processXFeatures;
   sharedFunctions.setModel = setModel;
@@ -330,6 +320,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
   sharedFunctions.getDefaultValue = getDefaultValue;
   sharedFunctions.fillEmptyModel = fillEmptyModel;
   sharedFunctions.processXOptionsForModelChanges = processXOptionsForModelChanges;
+  sharedFunctions.processXEnumForModelChanges = processXEnumForModelChanges;
   sharedFunctions.filterPossibleValues = filterPossibleValues;
   sharedFunctions.querySearch = querySearch;
 
