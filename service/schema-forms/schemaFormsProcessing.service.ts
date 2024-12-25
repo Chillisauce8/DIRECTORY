@@ -16,7 +16,6 @@ interface IFieldRegistration {
 
 
 export class SchemaFormsProcessingHelper {
-
   private registeredForms: any = {};
 
   // private _formUpdatedSubject: Subject<any>;

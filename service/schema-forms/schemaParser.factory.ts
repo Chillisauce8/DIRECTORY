@@ -47,6 +47,7 @@ export class SchemaParser {
     result['title'] = properties.title || item.title;
     result['required'] = properties.required || item.required;
     result['readonly'] = properties.readonly || item.readonly;
+    result['format'] = properties.format || item.format;
     result['default'] = properties['default'] || item['default'];
     result['type'] = item['type'] || properties['type'];
 
@@ -266,12 +267,8 @@ export class SchemaParser {
         return 'DatePicker';
       }
 
-      if (item.format === 'datetime') {
-        return 'InputText';
-      }
-
       if (item.format === 'date-time') {
-        return 'InputText';
+        return 'DatePicker';
       }
 
       if (item.format === 'time24') {

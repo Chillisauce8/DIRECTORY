@@ -40,6 +40,16 @@ const componentProperties = {
   ...props.description,
 };
 
+if (vm.componentName === 'DatePicker') {
+  if (props.description.format === 'time') {
+    componentProperties['timeOnly'] = true;
+  }
+
+  if (props.description.format === 'date-time') {
+    componentProperties['showTime'] = true;
+  }
+}
+
 
 const initFieldBase = sharedFunctions.initField;
 const setModelBase = sharedFunctions.setModel;
@@ -139,7 +149,7 @@ function correctExistingValue() {
 
 function getDefaultValue(): any {
   const defaultValue = getDefaultValueBase();
-  if (defaultValue && props.description.component === 'DatePicker') {
+  if (defaultValue && vm.componentName === 'DatePicker') {
     if (isDate(defaultValue)) {
       return defaultValue;
     }
@@ -149,7 +159,7 @@ function getDefaultValue(): any {
 }
 
 function _prepareMinMaxValues() {
-  if (props.description.component === 'DatePicker') {
+  if (vm.componentName === 'DatePicker') {
     if (props.description['minimumDate']) {
       props.description.minimum = _parseDateString(props.description['minimumDate']);
     }
@@ -161,7 +171,7 @@ function _prepareMinMaxValues() {
 }
 
 function _parseDateString(value: string): Date|undefined {
-  if (props.description.component === 'DatePicker' && value === 'today') {
+  if (vm.componentName === 'DatePicker' && value === 'today') {
     return new Date();
   } else {
     return dateHelper.parseSaveDateFormat(value);

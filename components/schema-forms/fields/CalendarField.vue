@@ -41,6 +41,14 @@ const componentProperties = {
   ...props.description,
 };
 
+if (props.description.format === 'time') {
+  componentProperties['timeOnly'] = true;
+}
+
+if (props.description.format === 'date-time') {
+  componentProperties['showTime'] = true;
+}
+
 
 const initFieldBase = sharedFunctions.initField;
 const correctExistingValueBase = sharedFunctions.correctExistingValue;
