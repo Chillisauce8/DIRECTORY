@@ -192,6 +192,11 @@ export default defineNuxtConfig({
     hooks: {
         'pages:extend': (pages: any[]) => {
             pages.push({
+                name: 'Edit Test Form',
+                path: '/new/testForm/:id',
+                file: '@/pages/new/testForm.vue'
+            });
+            pages.push({
                 name: 'Market List',
                 path: '/market',
                 file: '@/pages/market/list.vue'

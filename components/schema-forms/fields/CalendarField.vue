@@ -104,7 +104,13 @@ function onModelChange(value: any) {
   fakeModel.value = value;
 
   if (value) {
-    vm.model = dateHelper.saveDateFormat(value);
+    if (props.description.format === 'date-time') {
+      vm.model = dateHelper.saveDateTimeFormat(value);
+    } else if (props.description.format === 'time') {
+      vm.model = dateHelper.saveTimeFormat(value);
+    } else {
+      vm.model = dateHelper.saveDateFormat(value);
+    }
   } else {
     vm.model = undefined;
   }
@@ -139,11 +145,10 @@ function correctExistingValue() {
   if (!isString(vm.model) && !isDate(vm.model)) {
     vm.model = null;
   } else {
-
-    if (props.description.timeOnly) {
+    if (props.description.timeOnly || props.description.format === 'time') {
       const timeValue = dateHelper.parseTime(vm.model);
       if (timeValue) {
-        vm.model = dateHelper.inputTimeFormat(timeValue);
+        vm.model = timeValue;
       }
     }
 
