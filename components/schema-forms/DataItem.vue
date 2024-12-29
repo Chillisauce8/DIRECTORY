@@ -1,38 +1,38 @@
 <template>
-  <div class="data-item">
-    <template v-if="isCreateUpdate">
-        <!-- Container element -->
-        <div class="form-container">
-            <SchemaForm
-                :formName="formName"
-                :fields="props.fields"
-                :title="props.title"
-                :subtitle="props.subtitle"
-                :id="formName"
-                v-if="formDescription"
-                :description="formDescription"
-                :model="vm.model"
-                @modelChange="onModelChange($event)"
-                :needCorrectExistingValues="false"
-                :formLabelType="props.formLabelType"
-                :floatLabelVariant="props.floatLabelVariant"
-                class="form"
-            >
-            </SchemaForm>
-        </div>
-        <Button v-if="props.saveButton" icon="pi pi-save" aria-label="Save Form" @click="saveModel()"> Save </Button>
-    </template>
-    <template v-else-if="props.function === 'read'">
-        <template v-if="targetItem || targetItems">
-            <template v-if="isReadSingle && props.defaultView">
-                <SchemaForm :formName="formName" :title="props.title" :subtitle="props.subtitle" :id="formName" v-if="formDescription" :description="formDescription" :model="targetItem" :needCorrectExistingValues="false"> </SchemaForm>
-            </template>
-            <template v-else>
-                <slot :item="targetItem" :items="targetItems" :schema="schemaItem"></slot>
+    <div class="data-item">
+        <template v-if="isCreateUpdate">
+            <!-- Container element -->
+            <div class="form-container">
+                <SchemaForm
+                    :formName="formName"
+                    :fields="props.fields"
+                    :title="props.title"
+                    :subtitle="props.subtitle"
+                    :id="formName"
+                    v-if="formDescription"
+                    :description="formDescription"
+                    :model="vm.model"
+                    @modelChange="onModelChange($event)"
+                    :needCorrectExistingValues="false"
+                    :formLabelType="props.formLabelType"
+                    :floatLabelVariant="props.floatLabelVariant"
+                    class="form"
+                >
+                </SchemaForm>
+            </div>
+            <Button v-if="props.saveButton" icon="pi pi-save" aria-label="Save Form" @click="saveModel()"> Save </Button>
+        </template>
+        <template v-else-if="props.function === 'read'">
+            <template v-if="targetItem || targetItems">
+                <template v-if="isReadSingle && props.defaultView">
+                    <SchemaForm :formName="formName" :title="props.title" :subtitle="props.subtitle" :id="formName" v-if="formDescription" :description="formDescription" :model="targetItem" :needCorrectExistingValues="false"> </SchemaForm>
+                </template>
+                <template v-else>
+                    <slot :item="targetItem" :items="targetItems" :schema="schemaItem"></slot>
+                </template>
             </template>
         </template>
-    </template>
-  </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -248,6 +248,7 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
     --background-color: white;
     --text-color: black;
     --base-font-size: 14px;
+    --form-max-width: 600px;
 
     // Title
     --form-title-size: 2em;
@@ -266,6 +267,9 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
     width: 100%; // Required - container needs dimension
     container-type: inline-size;
     container-name: form;
+    display: flex;
+    justify-content: center;
+
     // min-height: 100%;
 
     .form {
@@ -289,6 +293,7 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
 
         background-color: var(--background-color);
         font-size: var(--base-font-size);
+        max-width: var(--form-max-width);
 
         > .title {
             font-size: var(--form-title-size);
@@ -327,11 +332,20 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
             letter-spacing: 2px;
             // margin: 5px;
         }
+        .toggle-visibility {
+            &.show {
+                display: block;
+            }
+            &.hide {
+                display: none;
+            }
+        }
 
         .field-wrapper {
             display: flex;
             flex-direction: column;
             margin-bottom: 10px;
+
             label {
                 font-weight: 500;
                 letter-spacing: 2px;
