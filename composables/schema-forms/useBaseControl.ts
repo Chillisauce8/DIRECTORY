@@ -169,7 +169,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
 
   function processXMinimumForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXNumberValue(props.description.xMinimum, vm.context, props.description);
+      value = schemaFormsProcessingHelper.getXNumberValue(props.description.xMinimum, props.context, props.description);
     }
 
     if (!isEqual(value, props.description.xMinimumValue)) {
@@ -183,7 +183,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
 
   function processXMaximumForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXNumberValue(props.description.xMaximum, vm.context, props.description);
+      value = schemaFormsProcessingHelper.getXNumberValue(props.description.xMaximum, props.context, props.description);
     }
 
     if (!isEqual(value, props.description.xMaximumValue)) {
@@ -221,7 +221,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
 
   function processXCalculateForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXCalculatedValues(props.description, vm.context);
+      value = schemaFormsProcessingHelper.getXCalculatedValues(props.description, props.context);
     }
 
     if (!isEqual(value, props.description.xCalculateValue)) {
@@ -235,7 +235,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
 
   function processXReadOnlyForModelChanges(value?: any) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXReadOnlyValue(props.description.xReadonly, vm.context);
+      value = schemaFormsProcessingHelper.getXReadOnlyValue(props.description.xReadonly, props.context);
     }
 
     if (!isEqual(value, props.description.xReadOnlyValue)) {
@@ -257,7 +257,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
 
   function processXOptionsForModelChanges(value: any, plusMode: boolean = false) {
     if (!Array.isArray(value) && value.path) {
-      const arrayValues = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, value.path);
+      const arrayValues = schemaFormsProcessingHelper.deepFindValueInContext(props.context, value.path);
       value = schemaFormsProcessingHelper.prepareEnumValues(arrayValues, value.titlePath, value.valuePath);
     }
 

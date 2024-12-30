@@ -119,7 +119,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
   function _prepareSelectValues() {
     im.cachedPossibleValues = filterPossibleValues();
 
-    let parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context,
+    let parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context,
       props.description.path, true);
 
     if (parentModel && Array.isArray(parentModel)) {
@@ -176,10 +176,10 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
       possibleValues = props.description.options;
     } else if (props.description.xFilter) {
       possibleValues = schemaFormsProcessingHelper.filterFieldValues(props.description.xFilter,
-        props.description.values, vm.context);
+        props.description.values, props.context);
     } else if (props.description.rawData?.filter) {
       possibleValues = schemaFormsProcessingHelper.filterFieldValues2(props.description,
-        props.description.values, vm.context);
+        props.description.values, props.context);
     } else if (props.description.xEnumValues) {
       possibleValues = props.description.xEnumValues;
     } else if (props.description.xOptionsValues) {
@@ -249,7 +249,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
         return item && values.indexOf(item.value || item) !== -1;
       });
 
-      // if (vm.model.length === 0 && !vm.context.resultModel._doc) {
+      // if (vm.model.length === 0 && !props.context.resultModel._doc) {
       //   vm.model = null;
       // }
 

@@ -41,7 +41,7 @@
                                     v-if="item.blockComponent === BlockComponents.value"
                                     :description="item.description"
                                     :model="vm.model[rowIndex][item.description.name]"
-                                    :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
+                                    :context="sharedFunctions.createInnerFieldContext(props.context, props.description.header.name, rowIndex)"
                                     @modelChange="onModelChange(rowIndex, item.description.name, $event)"
                                     :formLabelType="props.formLabelType"
                                     :floatLabelVariant="props.floatLabelVariant"
@@ -51,7 +51,7 @@
                                 <!-- Render dynamic field block for complex components -->
                                 <template v-if="item.blockComponent !== BlockComponents.value">
                                     <DynamicFieldBlock :description="item" :model="vm.model[rowIndex]"
-                                         :context="sharedFunctions.createInnerFieldContext(props.description.header.name, rowIndex)"
+                                         :context="sharedFunctions.createInnerFieldContext(props.context, props.description.header.name, rowIndex)"
                                                        @modelChange="onModelChange(rowIndex, null, $event)">
                                     </DynamicFieldBlock>
                                 </template>

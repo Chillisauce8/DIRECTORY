@@ -20,13 +20,16 @@
                             :description="item.description"
                             :model="vm.model[item.description.name]"
                             @modelChange="onModelChange(item.description.name, $event)"
-                            :context="sharedFunctions.createInnerFieldContext(props.description.name, lineIndex)"
+                            :context="sharedFunctions.createInnerFieldContext(props.context, props.description.name, lineIndex)"
                             :formLabelType="props.formLabelType"
                             :floatLabelVariant="props.floatLabelVariant"
                         >
                         </DynamicField>
 
-                        <DynamicFieldBlock v-if="item.blockComponent !== BlockComponents.value" :description="item" :context="vm.context" :model="vm.model" @modelChange="onModelChange(null, $event)"> </DynamicFieldBlock>
+                        <DynamicFieldBlock v-if="item.blockComponent !== BlockComponents.value" :description="item"
+                                           :context="props.context" :model="vm.model"
+                                           @modelChange="onModelChange(null, $event)">
+                        </DynamicFieldBlock>
                     </template>
                 </template>
             </div>

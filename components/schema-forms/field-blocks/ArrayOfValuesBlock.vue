@@ -20,7 +20,7 @@
                         :description="vm.rowDescriptions[index]"
                         :model="vm.model[index]"
                         @modelChange="onModelChange($event, index)"
-                        :context="sharedFunctions.createInnerFieldContext(props.description.name, index)"
+                        :context="sharedFunctions.createInnerFieldContext(props.context, props.description.name, index)"
                         :index="index"
                         :noWrapper="true"
                         @initDone="onControlInitDone($event)"

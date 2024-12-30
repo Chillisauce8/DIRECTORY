@@ -4,7 +4,7 @@
         :is="componentInstance"
         :model="fakeModel"
         @modelChange="onModelChange($event)"
-        :context="vm.context"
+        :context="props.context"
         :description="props.description.description"
         :formLabelType="props.formLabelType"
         :floatLabelVariant="props.floatLabelVariant"
@@ -30,17 +30,6 @@ export interface DynamicControlProps extends BaseFieldProps {
     floatLabelVariant?: FloatLabelVariant;
 }
 
-export interface FormProps extends BaseFieldProps {
-    id?: string;
-    classes?: string;
-    title?: string;
-    subtitle?: string;
-    formName?: string;
-    needCorrectExistingValues?: boolean;
-    fields?: Object;
-    formLabelType?: FormLabelType;
-    floatLabelVariant?: FloatLabelVariant;
-}
 
 const ValueBlock = resolveComponent('ValueBlock');
 const ArrayOfObjectsBlock = resolveComponent('ArrayOfObjectsBlock');
@@ -79,7 +68,7 @@ const fakeModel = computed(() => {
 
     if (sharedFunctions.shouldSetValueForRealModelValue()) {
         // const parentPath = sharedFunctions.getParentPath();
-        // const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+        // const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
         //
         // return pick(parentModel, sharedFunctions.getDescription().content.map((item: any) =>
         //   item.description.name));
@@ -93,9 +82,9 @@ const fakeModel = computed(() => {
 function onModelChange(value: any) {
     const key = _getKeyForInnerModel();
 
-    if (sharedFunctions.getDescription() && sharedFunctions.getDescription().isContainer && vm.context) {
+    if (sharedFunctions.getDescription() && sharedFunctions.getDescription().isContainer && props.context) {
         // const parentPath = sharedFunctions.getParentPath();
-        // let parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+        // let parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
         //
         // // const previousValue = parentModel[key];
         //
@@ -151,7 +140,7 @@ function initializeModel() {
 
     if (sharedFunctions.shouldSetValueForRealModelValue()) {
         const parentPath = sharedFunctions.getParentPath();
-        const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+        const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
 
         vm.model = pick(
             parentModel,
@@ -159,7 +148,7 @@ function initializeModel() {
         );
 
         // const parentPath = sharedFunctions.getParentPath();
-        // parentModelToInit = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+        // parentModelToInit = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
     } else {
         vm.model = props.model || {};
         parentModelToInit = props.model;

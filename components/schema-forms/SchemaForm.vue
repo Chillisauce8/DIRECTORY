@@ -7,7 +7,10 @@
 
         <div class="field-block" v-if="!!context">
             <template v-for="(contentDescription, contentIndex) in props.description.content">
-                <DynamicFieldBlock :model="vm.model" @modelChange="onModelChange($event)" :context="context" :description="contentDescription" :formLabelType="formLabelType" :floatLabelVariant="floatLabelVariant"> </DynamicFieldBlock>
+                <DynamicFieldBlock :model="vm.model" @modelChange="onModelChange($event)" :context="context"
+                                   :description="contentDescription" :formLabelType="formLabelType"
+                                   :floatLabelVariant="floatLabelVariant">
+                </DynamicFieldBlock>
             </template>
         </div>
         <Toast />
@@ -116,7 +119,7 @@ onUpdated(() => {
 
 // Watch for changes in the form model
 watch(
-    () => props?.model,
+    () => vm?.model,
     (value: any) => {
         if (value) {
             context.value = {
@@ -161,7 +164,7 @@ function initField() {
     };
     // });
 
-    vm.context = context.value;
+    // vm.context = context.value;
 
     initShouldAddHeaderNameToModelPath();
 }

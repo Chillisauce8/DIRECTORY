@@ -267,7 +267,7 @@ export default function useBaseArrayFieldControl(props: BaseFieldProps, emits: B
     }
 
     const res = schemaFormsProcessingHelper.getXNumberValue(props.description.xMinItems,
-      vm.context, props.description);
+      props.context, props.description);
 
     if (!isEqual(res, props.description.xMinItemsValue)) {
 
@@ -287,7 +287,7 @@ export default function useBaseArrayFieldControl(props: BaseFieldProps, emits: B
     }
 
     const res = schemaFormsProcessingHelper.getXNumberValue(props.description.xMaxItems,
-      vm.context, props.description);
+      props.context, props.description);
 
     if (!isEqual(res, props.description.xMaxItemsValue)) {
 

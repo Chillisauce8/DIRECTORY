@@ -1,19 +1,19 @@
 <template>
     <div class="field" v-if="initDone && props.noWrapper" v-show="!props.description.xHideValue">
-        <component :is="componentInstance" :description="props.description" :context="vm.context"
+        <component :is="componentInstance" :description="props.description" :context="props.context"
                    :model="vm.model" @modelChange="onModelChange($event)"
                    @initDone="onDynamicComponentInitDone($event)">
         </component>
         <slot></slot>
     </div>
-
     <div v-else-if="initDone && !props.noWrapper" class="field-wrapper" :class="prepareClasses"
          v-show="!props.description.xHideValue" :id="props.index == undefined ? props.description.id : null">
         <template v-if="props.formLabelType === 'float-label'">
             <FloatLabel class="float-label" :variant="props.floatLabelVariant">
                 <label>{{ sharedFunctions.getTitle() }}</label>
                 <div class="field">
-                    <component :is="componentInstance" :description="props.description" :context="vm.context"
+                    <component :is="componentInstance" :description="props.description"
+                               :context="props.context"
                                :model="vm.model" @modelChange="onModelChange($event)"
                                @initDone="onDynamicComponentInitDone($event)">
                     </component>
@@ -25,7 +25,8 @@
             <span :class="props.formLabelType">
                 <label>{{ sharedFunctions.getTitle() }}</label>
                 <div class="field">
-                    <component :is="componentInstance" :description="props.description" :context="vm.context"
+                    <component :is="componentInstance" :description="props.description"
+                               :context="props.context"
                                :model="vm.model" @modelChange="onModelChange($event)"
                                @initDone="onDynamicComponentInitDone($event)">
                     </component>

@@ -70,7 +70,6 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
   const vm = reactive({
     model: props.model,
-    context: props.context,
     title: '',
     componentName: props.description.component,
   });
@@ -121,7 +120,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     getModel: () => {
       // if (sharedFunctions.shouldSetValueForRealModelValue()) {
       //   const parentPath = sharedFunctions.getParentPath();
-      //   const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+      //   const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
       //   return parentModel[sharedFunctions.getDescription().name];
       // }
 
@@ -147,7 +146,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     setModel: (value: any, updated?: boolean) => {
       value = sharedFunctions.correctModelBeforeSet(value);
 
-      // if (isContainerTag() && vm.context) {
+      // if (isContainerTag() && props.context) {
       //   setModelValueForContainerTagDescription(value);
       // } else {
         im._previousValue = im._innerModel;
@@ -251,13 +250,13 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     processXFeatures: () => {
-      vm.context = {
-        ...vm.context,
-        // ...vm.context.resultModel,
-        resultModel: vm.context.resultModel,
-        indexes: vm.context.indexes,
-        _cachedFunction: vm.context._cachedFunction,
-      }
+      // props.context = {
+      //   ...props.context,
+      //   // ...props.context.resultModel,
+      //   resultModel: props.context.resultModel,
+      //   indexes: props.context.indexes,
+      //   _cachedFunction: props.context._cachedFunction,
+      // }
 
       let fieldDescription;
 
@@ -269,7 +268,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         fieldDescription = props.description?.header || props.description;
       }
 
-      const features = xFeaturesHelper.getControlFeatures(fieldDescription, vm.context);
+      const features = xFeaturesHelper.getControlFeatures(fieldDescription, props.context);
 
       if ('hide' in features) {
         processXHidedForModelChanges(features['hide']);
@@ -307,7 +306,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     shouldBeRequired: (description: any): boolean => {
-      return !!schemaFormsProcessingHelper.shouldFieldBeRequired(description.xRequired, vm.context);
+      return !!schemaFormsProcessingHelper.shouldFieldBeRequired(description.xRequired, props.context);
     },
 
     shouldBeConstructed: (description: any, context: any = null, prevValue: any = null,
@@ -329,7 +328,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         return false;
       };
 
-      context = context || vm.context;
+      context = context || props.context;
 
       let shouldBeConstructedResult = true;
 
@@ -339,7 +338,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       const writeOnly = (features['writeOnly'] || features['depreciated']);
 
       const shouldHide = isUndefined(hide) ?
-        schemaFormsProcessingHelper.shouldFieldBeHidden(description, description.xHide, context) : hide;
+        schemaFormsProcessingHelper.shouldFieldBeHidden(description, context) : hide;
 
       description.xHideValue = shouldHide;
 
@@ -411,20 +410,20 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       emits('modelChange', value || sharedFunctions.getModel());
     },
 
-    createInnerFieldContext: (filedName: string, fieldPathIndex: number) => {
-      if (im.innerContexts[fieldPathIndex]) {
-        return im.innerContexts[fieldPathIndex];
-      }
+    createInnerFieldContext: (context, filedName: string, fieldPathIndex: number) => {
+      // if (im.innerContexts[fieldPathIndex]) {
+      //   return im.innerContexts[fieldPathIndex];
+      // }
 
       const innerContext: any = {
-        ...vm.context,
-        indexes: cloneDeep(vm.context.indexes)
+        ...context,
+        indexes: cloneDeep(context.indexes)
       };
 
       innerContext.indexes[filedName] = fieldPathIndex;
 
       // @ts-ignore
-      im.innerContexts[fieldPathIndex] = innerContext;
+      // im.innerContexts[fieldPathIndex] = innerContext;
 
       return innerContext;
     },
@@ -484,7 +483,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
     },
 
     shouldSetValueForRealModelValue: (): boolean => {
-      return isContainerTag() && vm.context;
+      return isContainerTag() && props.context;
     },
 
     isReadonly: (): boolean => {
@@ -565,7 +564,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
     value = sharedFunctions.correctModelBeforeSet(value);
 
-    // if (isContainerTag() && vm.context) {
+    // if (isContainerTag() && props.context) {
     //   setModelValueForContainerTagDescription(value);
     // } else {
       im._previousValue = im._innerModel;
@@ -663,8 +662,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
   function processXHidedForModelChanges(value?: boolean) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.shouldFieldBeHidden(props.description,
-        _getPropertyDescription('xHide'), vm.context);
+      value = schemaFormsProcessingHelper.shouldFieldBeHidden(props.description, props.context);
     }
 
     if (!isEqual(value, props.description.xHideValue)) {
@@ -678,7 +676,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
   function processXTitleForModelChanges(value?: string) {
     if (isUndefined(value)) {
-      value = schemaFormsProcessingHelper.getXTitleValue(props.description.xTitle, vm.context,
+      value = schemaFormsProcessingHelper.getXTitleValue(props.description.xTitle, props.context,
         props.description);
     }
 
@@ -692,7 +690,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
   }
 
   function processXDefaultForModelChanges(value: any) {
-    value = schemaFormsProcessingHelper.resolveSpecialValue(value, props.description, vm.context, false);
+    value = schemaFormsProcessingHelper.resolveSpecialValue(value, props.description, props.context, false);
 
     if (!isEqual(value, props.description.xDefaultValue)) {
       const previousXDefaultValue = props.description.xDefaultValue;
@@ -708,7 +706,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       }
 
       // if (Array.isArray(vm.model)) {
-      //   if (vm.model.length === 0 && !vm.context.resultModel._doc) {
+      //   if (vm.model.length === 0 && !props.context.resultModel._doc) {
       //     vm.model = undefined;
       //   }
       // }
@@ -722,7 +720,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
     if (!isEqual(value, vm.model) && value !== undefined) {
       const parentPath = sharedFunctions.getParentPath();
-      const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+      const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
 
       if (parentModel) {
         parentModel[sharedFunctions.getDescription().name] = value;
@@ -758,7 +756,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
   function setModelValueForContainerTagDescription(value: any) {
     const parentPath = sharedFunctions.getParentPath();
-    const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(vm.context, parentPath);
+    const parentModel = schemaFormsProcessingHelper.deepFindValueInContext(props.context, parentPath);
 
     if (isUndefined(im._previousValue) && isUndefined(value)) {
       return;
