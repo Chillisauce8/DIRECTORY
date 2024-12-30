@@ -39,10 +39,16 @@ const model = ref([
                 to: '/apps/market-test'
             },
             {
-                label: 'Task List to DB',
+                label: 'Task List v1',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/apps/tasklist/IndexTest'
             },
+            {
+                label: 'Tasks List v2',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/tasks'
+            },
+
             {
                 label: 'Test Form',
                 icon: 'pi pi-fw pi-check-square',
@@ -63,11 +69,7 @@ const model = ref([
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/categories-grid'
             },
-            {
-                label: 'Tasks Grid',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/tasks'
-            },
+
             {
                 label: 'Test Grid',
                 icon: 'pi pi-fw pi-check-square',
