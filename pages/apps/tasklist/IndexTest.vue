@@ -1,5 +1,5 @@
 <script setup lang="ts">
-interface ITask {
+interface IItem {
     _doc: string;
     completed: any;
 }
@@ -8,11 +8,9 @@ import { ref, onBeforeMount } from 'vue';
 import List from './List.vue';
 
 const dataLoaded = ref(false);
-
-const dialogVisible = ref(false); // New ref for dialog visibility
-const dialogHeader = ref(''); // New ref for dialog header
-
-const selectedTask = ref(null);
+const dialogVisible = ref(false);
+const dialogHeader = ref('');
+const selectedItem = ref<IItem | null>(null);
 
 onBeforeMount(async () => {
     dataLoaded.value = true;
@@ -26,32 +24,29 @@ function onDataItemMounted(result: { hooks: any }) {
     deleteRawFunc = result.hooks?.deleteRawFunc;
 }
 
-const onCheckboxChange = async (updatedTask: ITask) => {
+const onCheckboxChange = async (updatedItem: IItem) => {
     if (saveRawFunc) {
-        await saveRawFunc(updatedTask);
+        await saveRawFunc(updatedItem);
     }
-
     reloadData();
 };
 
-const onDeleteTask = async (deletedTask: ITask) => {
-    await deleteRawFunc(deletedTask._doc);
+const onDeleteItem = async (deletedItem: IItem) => {
+    await deleteRawFunc(deletedItem._doc);
     reloadData();
 };
 
-const openEditDialog = (task: ITask) => {
-    selectedTask.value = task;
-    dialogHeader.value = 'Edit Task';
+const openEditDialog = (item: IItem) => {
+    selectedItem.value = item;
+    dialogHeader.value = 'Edit Item';
     dialogVisible.value = true;
 };
 
 const openCreateDialog = () => {
-    selectedTask.value = null;
-    dialogHeader.value = 'Create Task';
+    selectedItem.value = null;
+    dialogHeader.value = 'Create Item';
     dialogVisible.value = true;
 };
-
-// Remove onDialogSave and onDialogCancel functions
 
 function reloadData() {
     return new Promise<void>((resolve) => {
@@ -59,7 +54,7 @@ function reloadData() {
         setTimeout(() => {
             dataLoaded.value = true;
             resolve();
-        }, 100);
+        }, 500);
     });
 }
 </script>
@@ -68,24 +63,24 @@ function reloadData() {
     <div class="card">
         <template v-if="dataLoaded">
             <div class="flex justify-content-between align-items-center mb-5">
-                <span class="text-900 text-xl font-semibold">Task List</span>
-                <Button class="font-semibold" outlined icon="pi pi-plus" label="Create Task" @click="openCreateDialog()"></Button>
+                <span class="text-900 text-xl font-semibold">Item List</span>
+                <Button class="font-semibold" outlined icon="pi pi-plus" label="Create Item" @click="openCreateDialog()"></Button>
             </div>
 
             <DataItem function="read" collection="events" :find="{ completed: { $ne: true } }" v-slot="{ items }" @mounted="onDataItemMounted">
-                <List :task-list="items" title="ToDo" @checkbox:change="onCheckboxChange" @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog"> </List>
+                <List :task-list="items" title="ToDo" @checkbox:change="onCheckboxChange" @delete:task="onDeleteItem" @open:edit:dialog="openEditDialog"> </List>
             </DataItem>
 
             <DataItem function="read" collection="events" :find="{ completed: true }" v-slot="{ items }">
-                <List :task-list="items" title="Completed" @checkbox:change="onCheckboxChange" @delete:task="onDeleteTask" @open:edit:dialog="openEditDialog"> </List>
+                <List :task-list="items" title="Completed" @checkbox:change="onCheckboxChange" @delete:task="onDeleteItem" @open:edit:dialog="openEditDialog"> </List>
             </DataItem>
         </template>
 
         <DataItem
             collection="events"
-            :function="selectedTask?._doc ? 'update' : 'create'"
-            :id="selectedTask?._doc"
-            :initialItem="selectedTask"
+            :function="selectedItem?._doc ? 'update' : 'create'"
+            :id="selectedItem?._doc"
+            :initialItem="selectedItem"
             @save="reloadData"
             saveButton
             cancelButton
