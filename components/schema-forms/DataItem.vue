@@ -1,40 +1,72 @@
 <template>
     <div class="data-item">
-        <template v-if="isCreateUpdate">
-            <!-- Container element -->
-            <div class="form-container">
-                <SchemaForm
-                    :formName="formName"
-                    :fields="props.fields"
-                    :title="props.title"
-                    :subtitle="props.subtitle"
-                    :id="formName"
-                    v-if="formDescription"
-                    :description="formDescription"
-                    :model="vm.model"
-                    @modelChange="onModelChange($event)"
-                    :needCorrectExistingValues="false"
-                    :formLabelType="props.formLabelType"
-                    :floatLabelVariant="props.floatLabelVariant"
-                    class="form"
-                >
-                </SchemaForm>
-                <div class="form-button-container">
-                    <Button class="cancel-button form-button" v-if="props.cancelButton" icon="pi pi-times" v-bind="{ ...defaultCancelButtonProps, ...props.cancelButtonProps }" @click="cancelForm" />
-                    <Button class="save-button form-button" v-if="props.saveButton" icon="pi pi-check" v-bind="{ ...defaultSaveButtonProps, ...props.saveButtonProps }" @click="saveModel" />
+        <Dialog v-if="props.dialogEdit" :visible="props.visible" @update:visible="(val) => emits('update:visible', val)" :modal="true" :style="{ width: '50rem' }" :closable="true" :header="props.dialogHeader" @hide="cancelForm">
+            <!-- Form content for dialog -->
+            <template v-if="isCreateUpdate">
+                <div class="form-container">
+                    <SchemaForm
+                        :formName="formName"
+                        :fields="props.fields"
+                        :title="props.title"
+                        :subtitle="props.subtitle"
+                        :id="formName"
+                        v-if="formDescription"
+                        :description="formDescription"
+                        :model="vm.model"
+                        @modelChange="onModelChange($event)"
+                        :needCorrectExistingValues="false"
+                        :formLabelType="props.formLabelType"
+                        :floatLabelVariant="props.floatLabelVariant"
+                        class="form"
+                    >
+                    </SchemaForm>
+                    <div class="form-button-container">
+                        <Button v-if="props.cancelButton" class="cancel-button form-button" icon="pi pi-times" v-bind="{ ...defaultCancelButtonProps, ...props.cancelButtonProps }" @click="cancelForm" />
+                        <Button v-if="props.saveButton" class="save-button form-button" icon="pi pi-check" v-bind="{ ...defaultSaveButtonProps, ...props.saveButtonProps }" @click="saveModel" />
+                    </div>
                 </div>
-            </div>
-        </template>
-        <template v-else-if="props.function === 'read'">
-            <template v-if="targetItem || targetItems">
-                <template v-if="isReadSingle && props.defaultView">
-                    <SchemaForm :formName="formName" :title="props.title" :subtitle="props.subtitle" :id="formName" v-if="formDescription" :description="formDescription" :model="targetItem" :needCorrectExistingValues="false"> </SchemaForm>
-                </template>
-                <template v-else>
-                    <slot :item="targetItem" :items="targetItems" :schema="schemaItem"></slot>
+            </template>
+        </Dialog>
+
+        <div v-else>
+            <!-- Non-dialog content -->
+            <template v-if="isCreateUpdate">
+                <div class="form-container">
+                    <!-- Same form content as above -->
+                    <SchemaForm
+                        :formName="formName"
+                        :fields="props.fields"
+                        :title="props.title"
+                        :subtitle="props.subtitle"
+                        :id="formName"
+                        v-if="formDescription"
+                        :description="formDescription"
+                        :model="vm.model"
+                        @modelChange="onModelChange($event)"
+                        :needCorrectExistingValues="false"
+                        :formLabelType="props.formLabelType"
+                        :floatLabelVariant="props.floatLabelVariant"
+                        class="form"
+                    >
+                    </SchemaForm>
+                    <div class="form-button-container">
+                        <Button v-if="props.cancelButton" class="cancel-button form-button" icon="pi pi-times" v-bind="{ ...defaultCancelButtonProps, ...props.cancelButtonProps }" @click="cancelForm" />
+                        <Button v-if="props.saveButton" class="save-button form-button" icon="pi pi-check" v-bind="{ ...defaultSaveButtonProps, ...props.saveButtonProps }" @click="saveModel" />
+                    </div>
+                </div>
+            </template>
+            <template v-else-if="props.function === 'read'">
+                <!-- Existing read template content -->
+                <template v-if="targetItem || targetItems">
+                    <template v-if="isReadSingle && props.defaultView">
+                        <SchemaForm :formName="formName" :title="props.title" :subtitle="props.subtitle" :id="formName" v-if="formDescription" :description="formDescription" :model="targetItem" :needCorrectExistingValues="false"> </SchemaForm>
+                    </template>
+                    <template v-else>
+                        <slot :item="targetItem" :items="targetItems" :schema="schemaItem"></slot>
+                    </template>
                 </template>
             </template>
-        </template>
+        </div>
     </div>
 </template>
 
@@ -43,6 +75,7 @@ import useSchemaFormController from '~/composables/schema-forms/useSchemaFormCon
 import { httpService } from '~/service/http/http.service';
 import { DEFAULT_FORM_LABEL_TYPE, DEFAULT_FLOAT_LABEL_VARIANT } from '~/types/schema-forms';
 import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
+import { useToast } from 'primevue/usetoast';
 
 interface FieldProps {
     collection: string;
@@ -54,6 +87,7 @@ interface FieldProps {
     subtitle?: string;
     schema?: boolean;
     initialData?: any;
+    dialogEdit?: boolean;
     defaultView?: boolean;
     saveButton?: boolean;
     cancelButton?: boolean;
@@ -61,6 +95,9 @@ interface FieldProps {
     floatLabelVariant?: FloatLabelVariant;
     saveButtonProps?: Object;
     cancelButtonProps?: Object;
+    dialogHeader?: string;
+    visible?: boolean;
+    initialItem?: any; // Changed from initialTask
 }
 
 const defaultSaveButtonProps = {
@@ -80,10 +117,13 @@ const props = withDefaults(defineProps<FieldProps>(), {
     formLabelType: DEFAULT_FORM_LABEL_TYPE,
     floatLabelVariant: DEFAULT_FLOAT_LABEL_VARIANT,
     saveButtonProps: () => ({}),
-    cancelButtonProps: () => ({})
+    cancelButtonProps: () => ({}),
+    dialogEdit: false,
+    dialogHeader: '',
+    visible: false
 });
 // @ts-ignore
-const emits = defineEmits(['mounted', 'changed', 'cancel', 'save']);
+const emits = defineEmits(['mounted', 'changed', 'cancel', 'save', 'update:visible']);
 
 const isCreateUpdate = ['create', 'update'].includes(props.function);
 const isReadSingle = props.function === 'read' && !!props.id;
@@ -95,11 +135,11 @@ const collectionName = props.collection;
 const formName = props.collection + '-form';
 const { vm, formDescription, sharedFunctions } = useSchemaFormController(formName, props.fields);
 
-let dataToSave: any;
-
 const targetItem = ref(null);
 const targetItems = ref(null);
 const schemaItem = ref(null);
+
+const toast = useToast();
 
 sharedFunctions.getSchemaName = () => {
     return collectionName;
@@ -202,31 +242,89 @@ onDeactivated(() => {
 
 // Track form data like CreateTaskDialogWithDb did
 const formData = ref(null);
+const item = ref({}); // Changed from task
 
 function onModelChange(value: any) {
-    dataToSave = value;
+    // Ensure we preserve the _doc ID when it's an update
+    if (props.function === 'update' && props.initialItem?._doc) {
+        item.value = { ...value, _doc: props.initialItem._doc };
+    } else {
+        item.value = value;
+    }
     formData.value = value;
-    emits('changed', { data: value });
+    emits('changed', { data: item.value, saveDataFunc: saveRaw });
 }
 
+// Add new refs and methods for dialog handling
+const selectedItem = ref(props.initialItem || null); // Changed from selectedTask
+
+// Modify save and cancel methods
 async function saveModel() {
     try {
-        const savedData = await sharedFunctions.save(dataToSave);
-        // First emit save with the form data
-        emits('save', formData.value);
+        // For updates, ensure we're using the correct function and ID
+        if (props.function === 'update' && props.initialItem?._doc) {
+            const savedData = await sharedFunctions.updateTarget({ ...item.value, _doc: props.initialItem._doc });
+            emits('save', savedData);
+        } else {
+            const savedData = await sharedFunctions.createTarget(item.value);
+            emits('save', savedData);
+        }
+
+        // Reset form state
+        vm.model = {};
+        formData.value = null;
+        item.value = {};
+        selectedItem.value = null;
+        emits('update:visible', false); // Add this line
+
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Saved successfully', life: 3000 });
     } catch (error) {
         console.error('Save failed:', error);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to save', life: 3000 });
+        throw error;
     }
 }
 
 function cancelForm() {
     // Reset all form state
     vm.model = {};
-    dataToSave = null;
     formData.value = null;
-    // Emit cancel event
+    item.value = {};
+    selectedItem.value = null;
+    emits('update:visible', false); // Add this line
     emits('cancel');
 }
+
+// Watch for initialItem changes
+watch(
+    () => props.initialItem,
+    (newItem) => {
+        selectedItem.value = newItem;
+        if (newItem) {
+            // Ensure we preserve the _doc ID when setting the model
+            vm.model = { ...newItem };
+            item.value = { ...newItem };
+        }
+    },
+    { immediate: true }
+);
+
+// Add expose at the end of script setup
+defineExpose({
+    saveModel,
+    cancelForm
+});
+
+// Add watch for visible prop to handle initialItem
+watch(
+    () => props.visible,
+    (newVisible) => {
+        if (newVisible && props.initialItem) {
+            vm.model = { ...props.initialItem };
+        }
+    },
+    { immediate: true }
+);
 
 async function saveRaw(dataToSave: any) {
     return sharedFunctions.saveRaw(dataToSave);
@@ -278,12 +376,6 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
         return { value: nodePart, schema: schemaPart };
     }
 }
-
-// Add expose at the end of script setup
-defineExpose({
-    saveModel,
-    cancelForm
-});
 </script>
 
 <style lang="scss">

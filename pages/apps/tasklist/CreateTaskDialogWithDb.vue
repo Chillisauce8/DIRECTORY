@@ -13,13 +13,11 @@ const props = defineProps({
 const task = ref({});
 let saveData: (data: any) => Promise<void>;
 
-onMounted(() => {
+onMounted(() => {});
 
-});
-
-function dataChanged(result: {data: any, saveDataFunc: (data: any) => Promise<void>}) {
-  task.value = result.data;
-  saveData = result.saveDataFunc;
+function dataChanged(result: { data: any; saveDataFunc: (data: any) => Promise<void> }) {
+    task.value = result.data;
+    saveData = result.saveDataFunc;
 }
 
 const onHide = () => {
@@ -30,19 +28,14 @@ const onSave = async () => {
     await saveData(task.value);
     emit('save', task.value);
 };
-
 </script>
 
 <template>
-  <div class="flex items-center gap-4 mb-4">
-      <DataItem collection="events"
-                :function="props.selectedTaskId ? 'update' : 'create'"
-                @changed="dataChanged($event)"
-                :id="props.selectedTaskId">
-      </DataItem>
-  </div>
-  <div class="flex justify-end gap-2">
-      <Button class="w-8rem mr-3" outlined icon="pi pi-times" label="Cancel" @click="onHide()"></Button>
-      <Button class="w-8rem" icon="pi pi-check" label="Save" @click="onSave()"></Button>
-  </div>
+    <div class="flex items-center gap-4 mb-4">
+        <DataItem collection="events" :function="props.selectedTaskId ? 'update' : 'create'" @changed="dataChanged($event)" :id="props.selectedTaskId"> </DataItem>
+    </div>
+    <div class="flex justify-end gap-2">
+        <Button class="w-8rem mr-3" outlined icon="pi pi-times" label="Cancel" @click="onHide()"></Button>
+        <Button class="w-8rem" icon="pi pi-check" label="Save" @click="onSave()"></Button>
+    </div>
 </template>

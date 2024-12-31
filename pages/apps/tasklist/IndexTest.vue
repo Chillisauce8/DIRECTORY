@@ -6,9 +6,6 @@ interface ITask {
 
 import { ref, onBeforeMount } from 'vue';
 import List from './List.vue';
-import { useToast } from 'primevue/usetoast';
-
-const toast = useToast();
 
 const dataLoaded = ref(false);
 
@@ -43,38 +40,27 @@ const onDeleteTask = async (deletedTask: ITask) => {
 };
 
 const openEditDialog = (task: ITask) => {
-    dialogVisible.value = true;
-    dialogHeader.value = 'Edit Task';
-
     selectedTask.value = task;
+    dialogHeader.value = 'Edit Task';
+    dialogVisible.value = true;
 };
 
 const openCreateDialog = () => {
-    dialogVisible.value = true;
+    selectedTask.value = null;
     dialogHeader.value = 'Create Task';
-
-    selectedTask.value = null;
+    dialogVisible.value = true;
 };
 
-const onDialogSave = (data: any) => {
-    dialogVisible.value = false;
-    selectedTask.value = null;
-    reloadData();
-};
-
-const onDialogCancel = () => {
-    dialogVisible.value = false;
-    selectedTask.value = null;
-};
-
-// Remove other dialog related functions that are now redundant
+// Remove onDialogSave and onDialogCancel functions
 
 function reloadData() {
-    dataLoaded.value = false;
-
-    setTimeout(() => {
-        dataLoaded.value = true;
-    }, 100);
+    return new Promise<void>((resolve) => {
+        dataLoaded.value = false;
+        setTimeout(() => {
+            dataLoaded.value = true;
+            resolve();
+        }, 100);
+    });
 }
 </script>
 
@@ -95,8 +81,18 @@ function reloadData() {
             </DataItem>
         </template>
 
-        <Dialog v-model:visible="dialogVisible" :header="dialogHeader" modal :style="{ width: '50rem' }" :closable="true" @hide="onDialogCancel">
-            <DataItem collection="events" :function="selectedTask?._doc ? 'update' : 'create'" :id="selectedTask?._doc" @save="onDialogSave" @cancel="onDialogCancel" saveButton cancelButton />
-        </Dialog>
+        <DataItem
+            collection="events"
+            :function="selectedTask?._doc ? 'update' : 'create'"
+            :id="selectedTask?._doc"
+            :initialItem="selectedTask"
+            @save="reloadData"
+            saveButton
+            cancelButton
+            dialogEdit
+            :visible="dialogVisible"
+            @update:visible="(val) => (dialogVisible = val)"
+            :dialogHeader="dialogHeader"
+        />
     </div>
 </template>
