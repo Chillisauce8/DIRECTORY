@@ -19,8 +19,11 @@
                     class="form"
                 >
                 </SchemaForm>
+                <div class="form-button-container">
+                    <Button class="cancel-button form-button" v-if="props.cancelButton" icon="pi pi-times" v-bind="{ ...defaultCancelButtonProps, ...props.cancelButtonProps }" @click="cancelForm" />
+                    <Button class="save-button form-button" v-if="props.saveButton" icon="pi pi-check" v-bind="{ ...defaultSaveButtonProps, ...props.saveButtonProps }" @click="saveModel" />
+                </div>
             </div>
-            <Button v-if="props.saveButton" icon="pi pi-save" aria-label="Save Form" @click="saveModel()"> Save </Button>
         </template>
         <template v-else-if="props.function === 'read'">
             <template v-if="targetItem || targetItems">
@@ -53,17 +56,34 @@ interface FieldProps {
     initialData?: any;
     defaultView?: boolean;
     saveButton?: boolean;
+    cancelButton?: boolean;
     formLabelType?: FormLabelType;
     floatLabelVariant?: FloatLabelVariant;
+    saveButtonProps?: Object;
+    cancelButtonProps?: Object;
 }
+
+const defaultSaveButtonProps = {
+    label: 'Save',
+    type: 'button',
+    severity: 'primary'
+};
+
+const defaultCancelButtonProps = {
+    label: 'Cancel',
+    type: 'button',
+    severity: 'secondary'
+};
 
 // @ts-ignore
 const props = withDefaults(defineProps<FieldProps>(), {
     formLabelType: DEFAULT_FORM_LABEL_TYPE,
-    floatLabelVariant: DEFAULT_FLOAT_LABEL_VARIANT
+    floatLabelVariant: DEFAULT_FLOAT_LABEL_VARIANT,
+    saveButtonProps: () => ({}),
+    cancelButtonProps: () => ({})
 });
 // @ts-ignore
-const emits = defineEmits(['mounted', 'changed']);
+const emits = defineEmits(['mounted', 'changed', 'cancel', 'save']);
 
 const isCreateUpdate = ['create', 'update'].includes(props.function);
 const isReadSingle = props.function === 'read' && !!props.id;
@@ -180,13 +200,32 @@ onDeactivated(() => {
     sharedFunctions.onDeactivated();
 });
 
+// Track form data like CreateTaskDialogWithDb did
+const formData = ref(null);
+
 function onModelChange(value: any) {
     dataToSave = value;
-    emits('changed', { data: dataToSave, saveDataFunc: saveModel });
+    formData.value = value;
+    emits('changed', { data: value });
 }
 
 async function saveModel() {
-    return sharedFunctions.save(dataToSave);
+    try {
+        const savedData = await sharedFunctions.save(dataToSave);
+        // First emit save with the form data
+        emits('save', formData.value);
+    } catch (error) {
+        console.error('Save failed:', error);
+    }
+}
+
+function cancelForm() {
+    // Reset all form state
+    vm.model = {};
+    dataToSave = null;
+    formData.value = null;
+    // Emit cancel event
+    emits('cancel');
 }
 
 async function saveRaw(dataToSave: any) {
@@ -239,6 +278,12 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
         return { value: nodePart, schema: schemaPart };
     }
 }
+
+// Add expose at the end of script setup
+defineExpose({
+    saveModel,
+    cancelForm
+});
 </script>
 
 <style lang="scss">
@@ -263,36 +308,37 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
     --field-subtext-color: grey;
     --error-message-color: crimson;
 
+    --min-button-width: 200px;
+
     // Enable container queries
     width: 100%; // Required - container needs dimension
     container-type: inline-size;
     container-name: form;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 
     // min-height: 100%;
 
     .form {
         // Container query rules
-        @container form (min-width: 1001px) {
-            --background-color: rgb(205, 205, 219);
-            --base-font-size: 16px;
-        }
-        @container form (max-width: 1000px) {
-            --background-color: rgb(220, 203, 203);
+
+        @container form (min-width: 600px) {
+            //      --background-color: rgb(220, 203, 203);
             --base-font-size: 14px;
         }
-        @container form  (max-width: 600px) {
-            --background-color: rgb(221, 224, 221);
+        @container form  (max-width: 500px) {
+            //     --background-color: rgb(221, 224, 221);
             --base-font-size: 12px;
         }
         @container form (max-width: 400px) {
-            --background-color: white;
+            //     --background-color: white;
             --base-font-size: 10px;
         }
 
         background-color: var(--background-color);
         font-size: var(--base-font-size);
+        width: 100%;
         max-width: var(--form-max-width);
 
         > .title {
@@ -397,6 +443,16 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
                 background-color: grey;
                 border-color: grey;
             }
+        }
+    }
+    .form-button-container {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        gap: 1em;
+        margin-top: 1em;
+        .form-button {
+            min-width: var(--min-button-width);
         }
     }
 }

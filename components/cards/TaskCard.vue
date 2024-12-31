@@ -13,6 +13,7 @@
                 <InputText type="text" v-model="editableName" />
                 <MultiSelect v-model="selectedCategoryIds" display="chip" :options="categoryList" optionLabel="name" optionValue="id" filter placeholder="Select a Category" :maxSelectedLabels="1" />
                 <Button type="submit" severity="secondary" label="Submit" />
+                <CreateTaskDialogWithDb :selectedTaskId="id" />
             </form>
         </card-text-wrapper>
     </div>
@@ -22,6 +23,7 @@
 import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, showProp, categoriesProp } from '@/types/props';
 import type { Category, Vehicle } from '@/types/props';
+import CreateTaskDialogWithDb from '~/pages/apps/tasklist/CreateTaskDialogWithDb.vue';
 
 interface Status {
     state: string;
@@ -35,6 +37,7 @@ interface Status {
 // Update props to match Events structure
 const props = defineProps({
     id: { type: String, required: true },
+
     imageId: imageIdProp,
     name: nameProp,
     mode: modeProp,

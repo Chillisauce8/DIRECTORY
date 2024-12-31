@@ -24,7 +24,7 @@
 
         <template #card="{ event, mode: cardMode, selected, show, onNameUpdate, onCategoriesUpdate, onEventSelectionUpdate }">
             <TaskCard
-                :id="event.id"
+                :id="event._id"
                 :imageId="event.files[0]?.id"
                 :name="event.name"
                 :description="event.description"
