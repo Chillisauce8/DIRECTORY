@@ -1,13 +1,16 @@
 <template>
-    <header class="card-text-wrapper">
-        <slot />
-    </header>
+    <transition name="card-text">
+        <header class="card-text-wrapper" v-if="!(mode === 'edit' && selected)">
+            <slot />
+        </header>
+    </transition>
 </template>
 
 <script setup>
-// Set up a reactive variable to control visibility
-
-// You can toggle this variable in your component logic to show/hide the wrapper
+defineProps({
+    mode: { type: String, required: true },
+    selected: { type: Boolean, required: true }
+});
 </script>
 
 <style lang="scss">
@@ -20,19 +23,10 @@
     justify-content: space-evenly;
     align-items: stretch;
     overflow: hidden;
-    transition: all 1s ease-in-out;
-    /*
-    &.show {
-        opacity: 1;
-        max-height: 300px; // Set to the desired max height of the content
-    }
+    // removed transition property
 
-    &.hide {
-        opacity: 0;
-        max-height: 0;
-        overflow: hidden;
-        padding: 0;
+    &.card-text-enter-active {
+        animation: fadein 1s ease-in forwards; // removed 1s delay
     }
-      */
 }
 </style>

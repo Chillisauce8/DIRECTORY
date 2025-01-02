@@ -20,7 +20,9 @@
                         class="form"
                     >
                     </SchemaForm>
+
                     <div class="form-button-container">
+                        <Button v-if="props.deleteButton && props.initialItem?._doc" class="delete-button form-button" icon="pi pi-trash" v-bind="{ ...defaultDeleteButtonProps, ...props.deleteButtonProps }" @click="handleDelete" />
                         <Button v-if="props.cancelButton" class="cancel-button form-button" icon="pi pi-times" v-bind="{ ...defaultCancelButtonProps, ...props.cancelButtonProps }" @click="cancelForm" />
                         <Button v-if="props.saveButton" class="save-button form-button" icon="pi pi-check" v-bind="{ ...defaultSaveButtonProps, ...props.saveButtonProps }" @click="saveModel" />
                     </div>
@@ -50,6 +52,7 @@
                     >
                     </SchemaForm>
                     <div class="form-button-container">
+                        <Button v-if="props.deleteButton && props.initialItem?._doc" class="delete-button form-button" icon="pi pi-trash" v-bind="{ ...defaultDeleteButtonProps, ...props.deleteButtonProps }" @click="handleDelete" />
                         <Button v-if="props.cancelButton" class="cancel-button form-button" icon="pi pi-times" v-bind="{ ...defaultCancelButtonProps, ...props.cancelButtonProps }" @click="cancelForm" />
                         <Button v-if="props.saveButton" class="save-button form-button" icon="pi pi-check" v-bind="{ ...defaultSaveButtonProps, ...props.saveButtonProps }" @click="saveModel" />
                     </div>
@@ -71,18 +74,27 @@
 </template>
 
 <script setup lang="ts">
+// This component is a versatile data management component that can:
+// 1. Create new items
+// 2. Read existing items (single or multiple)
+// 3. Update existing items
+// 4. Delete items
+// It can work either in a dialog mode or inline mode
+
+// Import core functionality
 import useSchemaFormController from '~/composables/schema-forms/useSchemaFormController';
 import { httpService } from '~/service/http/http.service';
 import { DEFAULT_FORM_LABEL_TYPE, DEFAULT_FLOAT_LABEL_VARIANT } from '~/types/schema-forms';
 import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
 import { useToast } from 'primevue/usetoast';
 
+// Define what props (input parameters) the component accepts
 interface FieldProps {
-    collection: string;
-    function: 'create' | 'read' | 'update';
-    find?: Object;
-    fields?: Object;
-    id?: string;
+    collection: string; // The database collection to work with
+    function: 'create' | 'read' | 'update'; // What operation to perform
+    find?: Object; // Search criteria for reading multiple items
+    fields?: Object; // Which fields to include/exclude
+    id?: string; // ID of item when reading/updating single item
     title?: string;
     subtitle?: string;
     schema?: boolean;
@@ -98,12 +110,15 @@ interface FieldProps {
     dialogHeader?: string;
     visible?: boolean;
     initialItem?: any; // Changed from initialTask
+    deleteButton?: boolean;
+    deleteButtonProps?: Object;
 }
 
+// Default properties for our buttons
 const defaultSaveButtonProps = {
     label: 'Save',
     type: 'button',
-    severity: 'primary'
+    severity: 'secondary'
 };
 
 const defaultCancelButtonProps = {
@@ -112,6 +127,13 @@ const defaultCancelButtonProps = {
     severity: 'secondary'
 };
 
+const defaultDeleteButtonProps = {
+    label: 'Delete',
+    type: 'button',
+    severity: 'danger'
+};
+
+// Main component setup
 // @ts-ignore
 const props = withDefaults(defineProps<FieldProps>(), {
     formLabelType: DEFAULT_FORM_LABEL_TYPE,
@@ -120,24 +142,28 @@ const props = withDefaults(defineProps<FieldProps>(), {
     cancelButtonProps: () => ({}),
     dialogEdit: false,
     dialogHeader: '',
-    visible: false
+    visible: false,
+    deleteButtonProps: () => ({})
 });
 // @ts-ignore
-const emits = defineEmits(['mounted', 'changed', 'cancel', 'save', 'update:visible']);
+const emits = defineEmits(['mounted', 'changed', 'cancel', 'save', 'delete', 'update:visible']);
 
-const isCreateUpdate = ['create', 'update'].includes(props.function);
-const isReadSingle = props.function === 'read' && !!props.id;
-const isReadMulti = props.function === 'read' && !props.id;
+// Helper flags to determine component behavior
+const isCreateUpdate = ['create', 'update'].includes(props.function); // Are we creating/updating?
+const isReadSingle = props.function === 'read' && !!props.id; // Are we reading one item?
+const isReadMulti = props.function === 'read' && !props.id; // Are we reading multiple items?
 const needSchema = props.schema;
 
 const collectionName = props.collection;
 
+// Setup form controller and data management
 const formName = props.collection + '-form';
 const { vm, formDescription, sharedFunctions } = useSchemaFormController(formName, props.fields);
 
-const targetItem = ref(null);
-const targetItems = ref(null);
-const schemaItem = ref(null);
+// References to hold our data
+const targetItem = ref(null); // For single item operations
+const targetItems = ref(null); // For multiple item operations
+const schemaItem = ref(null); // Holds the data structure definition
 
 const toast = useToast();
 
@@ -145,7 +171,9 @@ sharedFunctions.getSchemaName = () => {
     return collectionName;
 };
 
+// API interaction functions
 sharedFunctions.createTarget = async (dataToSave: any): Promise<any> => {
+    // Create new item in database
     return httpService.post(`/api/create/${collectionName}`, dataToSave).then((response: any) => {
         return response.data;
     });
@@ -193,7 +221,7 @@ sharedFunctions.isEditMode = () => {
 };
 
 onMounted(async () => {
-    emits('mounted', { hooks: { saveRawFunc: saveRaw, deleteRawFunc: deleteRaw } });
+    emits('mounted', { hooks: { deleteRawFunc: deleteRaw } });
 
     if (isCreateUpdate) {
         sharedFunctions.doOnMounted();
@@ -244,8 +272,9 @@ onDeactivated(() => {
 const formData = ref(null);
 const item = ref({}); // Changed from task
 
+// Watch for changes in the form
 function onModelChange(value: any) {
-    // Ensure we preserve the _doc ID when it's an update
+    // When form data changes, update our local copy and preserve ID if updating
     if (props.function === 'update' && props.initialItem?._doc) {
         item.value = { ...value, _doc: props.initialItem._doc };
     } else {
@@ -258,9 +287,10 @@ function onModelChange(value: any) {
 // Add new refs and methods for dialog handling
 const selectedItem = ref(props.initialItem || null); // Changed from selectedTask
 
-// Modify save and cancel methods
+// Save functionality
 async function saveModel() {
     try {
+        // Handle both create and update cases
         // For updates, ensure we're using the correct function and ID
         if (props.function === 'update' && props.initialItem?._doc) {
             const savedData = await sharedFunctions.updateTarget({ ...item.value, _doc: props.initialItem._doc });
@@ -285,7 +315,9 @@ async function saveModel() {
     }
 }
 
+// Reset form functionality
 function cancelForm() {
+    // Clear all form data and close dialog if open
     // Reset all form state
     vm.model = {};
     formData.value = null;
@@ -295,10 +327,35 @@ function cancelForm() {
     emits('cancel');
 }
 
+// Delete functionality
+async function handleDelete() {
+    try {
+        // Delete item and clean up form
+        if (props.initialItem?._doc) {
+            await sharedFunctions.deleteTarget(props.initialItem._doc);
+            emits('delete');
+
+            // Reset form state
+            vm.model = {};
+            formData.value = null;
+            item.value = {};
+            selectedItem.value = null;
+            emits('update:visible', false);
+
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Deleted successfully', life: 3000 });
+        }
+    } catch (error) {
+        console.error('Delete failed:', error);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete', life: 3000 });
+        throw error;
+    }
+}
+
 // Watch for initialItem changes
 watch(
     () => props.initialItem,
     (newItem) => {
+        // Update form when initial item changes
         selectedItem.value = newItem;
         if (newItem) {
             // Ensure we preserve the _doc ID when setting the model
@@ -312,7 +369,8 @@ watch(
 // Add expose at the end of script setup
 defineExpose({
     saveModel,
-    cancelForm
+    cancelForm,
+    handleDelete
 });
 
 // Add watch for visible prop to handle initialItem
@@ -326,15 +384,14 @@ watch(
     { immediate: true }
 );
 
-async function saveRaw(dataToSave: any) {
-    return sharedFunctions.saveRaw(dataToSave);
-}
-
 async function deleteRaw(dataId: string) {
     return sharedFunctions.deleteRaw(dataId);
 }
 
+// Helper function to merge schema definition with actual data
 function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
+    // Recursively combines schema definition with actual data
+    // Used to ensure data follows the correct structure
     let value: any;
 
     if (schemaPart._type === 'collections') {
@@ -545,6 +602,7 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
         margin-top: 1em;
         .form-button {
             min-width: var(--min-button-width);
+            flex-grow: 1;
         }
     }
 }

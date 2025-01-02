@@ -16,12 +16,16 @@
         :listings="listingList"
         :category-options="categoryOptions"
         :listing-collection="collectionName"
+        :on-item-created="handleItemCreated"
     >
         <template #controls>
             <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
             <ShowControl v-model="selectedCategoryShowOptions" :show-options="categoriesShowOptions" />
             <!-- <SortControl :sort-options="categoriesSortOptions" /> -->
             <SearchControl :search-fields="searchFields" />
+        </template>
+        <template #edit-controls>
+            <EditArrayControl :options="categoryOptions" editField="categories" placeholder="Edit Categories" class="edit-array-control w-full md:w-80" />
         </template>
 
         <template #card="{ listing, mode: cardMode, selected, show, onListingSelectionUpdate }">
@@ -42,10 +46,6 @@
                 "
             >
             </category-card>
-        </template>
-
-        <template #edit-controls>
-            <EditArrayControl :options="categoryOptions" editField="categories" placeholder="Edit Categories" class="edit-array-control w-full md:w-80" />
         </template>
     </grid-container>
 </template>
@@ -96,6 +96,17 @@ function prepareListingItem(category: CategoryDbNode): Listing<any> {
 
 function onDbNodeUpdate(dbNode: CategoryDbNode) {
     updateDbNodeInListingList(dbNode);
+}
+
+async function handleItemCreated(newItem: any) {
+    // Add the new item to the listing list
+    const listing = prepareListingItem(newItem);
+    listingList.value = [...listingList.value, listing];
+
+    // If it's a category group, update options
+    if (newItem.type === 'Category Group') {
+        categoryOptions.value = [...categoryOptions.value, { id: newItem._doc, name: newItem.name }];
+    }
 }
 </script>
 

@@ -176,28 +176,5 @@ async function handleSubmit() {
     .p-inputtext {
         font-size: 12px;
     }
-
-    @keyframes fadein {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
-
-    @keyframes update-height {
-        0% {
-            max-height: 0px;
-            overflow: hidden;
-        }
-        99% {
-            overflow: hidden;
-        }
-        100% {
-            max-height: 500px;
-            overflow: initial;
-        }
-    }
 }
 </style>

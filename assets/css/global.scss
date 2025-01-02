@@ -1,8 +1,8 @@
 @charset "UTF-8";
 
 main {
-  container-type: inline-size;
-  container-name: main;
+    container-type: inline-size;
+    container-name: main;
 }
 
 /*
@@ -13,5 +13,4 @@ main {
 @import 'reset';
 @import 'themes';
 @import 'font-family';
-
-
+@import 'transitions';

@@ -5,9 +5,7 @@
             <ConfirmDialog />
             <div class="filter-controls flex flex-col lg:flex-row gap-4">
                 <!-- Default Controls -->
-                <FunctionControl v-model="mode" @update:modelValue="onModeUpdate"
-                                 :display="functionControlDisplay" :visibleControls="visibleFunctionControls"
-                                 :defaultControl="defaultFunctionControl" />
+                <FunctionControl v-model="mode" @update:modelValue="onModeUpdate" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
 
                 <!-- Update slot binding to pass listings -->
                 <slot name="controls" :items="listings" :selected-categories="selectedCategories" :show="show" />
@@ -16,18 +14,11 @@
                 <DisplayControl v-model="selectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
                 <slot name="add-controls">
                     <template v-if="props.listingCollection">
-                        <AddControl @click="addCollectionNodeDialog = true" />
-
-                        <Dialog v-model:visible="addCollectionNodeDialog" :style="{ width: '450px' }"
-                                :header="'Add new node to \'' + props.listingCollection + '\' collection'" :modal="true"
-                                class="p-fluid">
-                            <DataItem :collection="props.listingCollection" function="create" @changed="handleCreateNodeChanges">
-                            </DataItem>
-
-                            <template #footer>
-                                <Button label="Save" icon="pi pi-check" @click="createNode" />
+                        <CrudControl :collection="listingCollection" function="create" @save="handleCreateSave">
+                            <template #default="{ onClick }">
+                                <Button class="font-semibold" outlined icon="pi pi-plus" label="Add New" @click="onClick" />
                             </template>
-                        </Dialog>
+                        </CrudControl>
                     </template>
                 </slot>
             </div>
@@ -53,11 +44,9 @@
             </template>
         </fancy-box>
 
-        <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings"
-                       @start="onStart" @end="onEnd">
+        <vue-draggable v-else-if="mode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
             <template v-for="(listing, index) in draggableListings" :key="listing.id">
-                <CardWrapper v-bind="getCardWrapperProps(listing)"
-                             @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
+                <CardWrapper v-bind="getCardWrapperProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
                     <slot name="card" v-bind="getCardProps(listing)" />
                 </CardWrapper>
             </template>
@@ -81,6 +70,7 @@ import { useToast } from 'primevue/usetoast';
 import type { Category, Item, Listing, SearchQueryConfig, SortOption } from '@/composables/useListControls';
 import { useGridHandleCreateNodeFn, useGridHandleRemoveNodeFn, useGridHandleUpdateNodeFn } from '~/composables/grid.composables';
 import { uniqBy, uniq } from '~/service/utils';
+import CrudControl from '../controls/CrudControl.vue';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
@@ -170,6 +160,10 @@ const props = defineProps({
     listingCollection: {
         type: String
     },
+    onItemCreated: {
+        type: Function as PropType<(item: any) => Promise<void>>,
+        default: null
+    }
 });
 
 const emit = defineEmits<{
@@ -187,7 +181,6 @@ const mode = ref<FunctionMode>(props.defaultFunctionControl);
 const show = ref<string[]>(props?.show ?? ['name', 'categories']);
 const selectedSize = ref(CARD_SIZES.find((option: CardSize) => option.label === props.defaultCardSize) || CARD_SIZES[0]);
 const selectedCategories = ref<Category[]>([]);
-const addCollectionNodeDialog = ref(false);
 
 // --- Computed ---
 // Rename this computed property to be more specific
@@ -312,17 +305,17 @@ const updateArrayField: UpdateArrayFieldFn = async (field, items, action) => {
         let fieldValues;
 
         if (action === 'add') {
-          fieldValues = [...dbNode[field], ...items];
+            fieldValues = [...dbNode[field], ...items];
 
-          if (fieldValues.length) {
-            if (fieldValues[0].id) {
-              fieldValues = uniqBy(fieldValues, 'id');
-            } else {
-              fieldValues = uniq(fieldValues);
+            if (fieldValues.length) {
+                if (fieldValues[0].id) {
+                    fieldValues = uniqBy(fieldValues, 'id');
+                } else {
+                    fieldValues = uniq(fieldValues);
+                }
             }
-          }
         } else {
-          fieldValues = dbNode[field].filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id));
+            fieldValues = dbNode[field].filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id));
         }
 
         const updatedDbNode = {
@@ -480,16 +473,10 @@ function handleListingSelectionUpdate(id: string, selected: boolean) {
     }
 }
 
-let dataOfNodeToCreate: any = null;
-
-function handleCreateNodeChanges(changedEvent: { data: any; saveDataFunc: () => Promise<void> }) {
-    dataOfNodeToCreate = changedEvent.data;
-}
-
-async function createNode() {
-    await handleCreateNodeFn(dataOfNodeToCreate);
-
-    addCollectionNodeDialog.value = false;
+async function handleCreateSave(savedData: any) {
+    if (props.onItemCreated) {
+        await props.onItemCreated(savedData);
+    }
 }
 // --- Provides ---
 provide('updateArrayField', updateArrayField);

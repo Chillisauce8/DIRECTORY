@@ -1,8 +1,8 @@
 <template>
     <div class="category-card">
         <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
-        <card-text-wrapper :class="getCardTextWrapperClass">
-            <editable-group class="card-details" collection="categories" :data="props.dataItem" :edit="props.mode === 'edit' && selected" @submit="onEditableGroupSubmit($event)">
+        <card-text-wrapper :class="getCardTextWrapperClass" :mode="props.mode" :selected="selected">
+            <!--         <editable-group class="card-details" collection="categories" :data="props.dataItem" :edit="props.mode === 'edit' && selected" @submit="onEditableGroupSubmit($event)">
                 <editable field="name">
                     <h1>{{ props.name }}</h1>
                 </editable>
@@ -12,8 +12,13 @@
                 <editable field="categoryGroup">
                     <h1>{{ props.categoryGroup.name }}</h1>
                 </editable>
-            </editable-group>
+                    </editable-group>
+                -->
+            <h1>{{ props.name }}</h1>
+            <h1>Type: {{ props.type }}</h1>
+            <h1>{{ props.categoryGroup.name }}</h1>
         </card-text-wrapper>
+        <CardEditWrapper :mode="props.mode" :selected="selected" collection="categories" :dataItem="props.dataItem" @save="onEditableGroupSubmit" />
     </div>
 </template>
 
@@ -21,6 +26,7 @@
 import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
 import type { Category } from '@/types/props';
+import CardEditWrapper from './common/CardEditWrapper.vue';
 
 const props = defineProps({
     id: { type: String, required: true },
