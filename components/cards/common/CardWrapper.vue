@@ -11,6 +11,9 @@
         @click="toggleSelected($event)"
     >
         <slot />
+        <div v-if="mode" class="mode-icons">
+            <SvgIcon :svg="modeIcon" :class="mode" />
+        </div>
     </component>
 </template>
 
@@ -52,6 +55,23 @@ const toggleSelected = ($event) => {
     }
 };
 
+const modeIcon = computed(() => {
+    const baseIcons: Record<string, string> = {
+        select: 'check-circle',
+        edit: 'edit',
+        view: 'eye',
+        order: 'move'
+    };
+
+    // If selected and in edit mode, always show check-circle
+    if (props.selected && props.mode === 'edit') {
+        return 'check-circle';
+    }
+
+    // Otherwise use the base icon
+    return props.mode ? baseIcons[props.mode] : '';
+});
+
 /* Computed classes */
 const computedClasses = computed(() => ({
     selected: isSelected.value,
@@ -81,6 +101,9 @@ const computedClasses = computed(() => ({
     &.edit,
     &.order {
         .mode-icons {
+            position: absolute;
+            top: 0px;
+            right: 0px;
             display: flex;
             width: 100%;
             height: 100%;
@@ -89,16 +112,22 @@ const computedClasses = computed(() => ({
             opacity: 0;
             transition: all 1s ease;
             .icon {
+                border-radius: 50%;
                 width: 24px;
                 height: 24px;
             }
         }
-        :hover {
+        &:hover {
             img {
                 filter: brightness(80%);
             }
             .mode-icons {
-                opacity: 0.8;
+                opacity: 1;
+                .icon {
+                    svg {
+                        stroke: var(--primary-color);
+                    }
+                }
             }
         }
     }
@@ -111,7 +140,6 @@ const computedClasses = computed(() => ({
             opacity: 1;
             .icon {
                 background-color: var(--primary-color);
-                border-radius: 50%;
                 svg {
                     stroke: white;
                 }
