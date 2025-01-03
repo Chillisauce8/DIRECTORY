@@ -384,6 +384,10 @@ watch(
     { immediate: true }
 );
 
+async function saveRaw(dataToSave: any) {
+  return sharedFunctions.saveRaw(dataToSave);
+}
+
 async function deleteRaw(dataId: string) {
     return sharedFunctions.deleteRaw(dataId);
 }
