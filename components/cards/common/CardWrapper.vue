@@ -105,8 +105,8 @@ const computedClasses = computed(() => ({
             top: 0px;
             right: 0px;
             display: flex;
-            width: 100%;
-            height: 100%;
+            //   width: 100%;
+            //  height: 100%;
             justify-content: flex-end;
             padding: 5px;
             opacity: 0;
