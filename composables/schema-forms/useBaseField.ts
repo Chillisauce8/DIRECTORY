@@ -309,8 +309,7 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       return !!schemaFormsProcessingHelper.shouldFieldBeRequired(description.xRequired, props.context);
     },
 
-    shouldBeConstructed: (description: any, context: any = null, prevValue: any = null,
-                        updateModel: boolean = true): boolean => {
+    shouldBeConstructed: (description: any, context: any = null, updateModel: boolean = true): boolean => {
 
       const shouldBeInited = () => {
         const isArrayDirective = im?.refs?.self && 'canAddMore' in im?.refs?.self;
@@ -328,17 +327,17 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         return false;
       };
 
+      const prevValue = description.shouldBeConstructedPrevValue;
+
       context = context || props.context;
 
       let shouldBeConstructedResult = true;
 
       const features = xFeaturesHelper.getControlFeatures(description, context);
 
-      const hide = features['hide'];
       const writeOnly = (features['writeOnly'] || features['depreciated']);
 
-      const shouldHide = isUndefined(hide) ?
-        schemaFormsProcessingHelper.shouldFieldBeHidden(description, context) : hide;
+      const shouldHide = schemaFormsProcessingHelper.shouldFieldBeHidden(description, context);
 
       description.xHideValue = shouldHide;
 
@@ -370,6 +369,17 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
       if (description.xHide && !isEqual(!shouldBeConstructedResult, description.xRemoveValue)) {
         description.xRemoveValue = !shouldBeConstructedResult;
       }
+
+      if (description.wasEverConstructed) {
+        // we will hide it then but should be removed from model and unregistered
+        return true;
+      }
+
+      if (shouldBeConstructedResult) {
+        description.wasEverConstructed = true;
+      }
+
+      description.shouldBeConstructedPrevValue = shouldBeConstructedResult;
 
       return shouldBeConstructedResult;
     },

@@ -1,13 +1,16 @@
 <template>
-    <div class="field" v-if="initDone && props.noWrapper" v-show="!props.description.xHideValue">
-        <component :is="componentInstance" :description="props.description" :context="props.context"
+    <div class="field" v-if="initDone && props.noWrapper"
+         v-show="!props.description.xHideValue">
+        <component :is="componentInstance" :description="props.description"
+                   :context="props.context"
                    :model="vm.model" @modelChange="onModelChange($event)"
                    @initDone="onDynamicComponentInitDone($event)">
         </component>
         <slot></slot>
     </div>
-    <div v-else-if="initDone && !props.noWrapper" class="field-wrapper" :class="prepareClasses"
-         v-show="!props.description.xHideValue" :id="props.index == undefined ? props.description.id : null">
+    <div v-else-if="initDone && !props.noWrapper"
+         class="field-wrapper" :class="prepareClasses"
+         :id="props.index == undefined ? props.description.id : null">
         <template v-if="props.formLabelType === 'float-label'">
             <FloatLabel class="float-label" :variant="props.floatLabelVariant">
                 <label>{{ sharedFunctions.getTitle() }}</label>
@@ -118,7 +121,7 @@ const componentInstance = computed(() => {
 });
 
 const prepareClasses = computed(() => {
-    const result = [];
+    const result: string[] = [];
 
     if (props.description.class) {
         result.push(props.description.class);
@@ -128,6 +131,18 @@ const prepareClasses = computed(() => {
         result.push(innerComponentName.value);
     } else if (props.description.type) {
         result.push(props.description.type);
+    }
+
+    if (props.description.xHideValue !== undefined) {
+      result.push('toggle-visibility');
+    }
+
+    if (props.description.xHideValue === true) {
+      result.push('hide');
+    }
+
+    if (props.description.xHideValue === false) {
+      result.push('show');
     }
 
     return result.join(' ');

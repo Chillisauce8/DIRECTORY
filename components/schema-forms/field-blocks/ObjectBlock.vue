@@ -14,7 +14,8 @@
         <template v-for="(line, lineIndex) in vm.lines" v-show="!isAllLineHidden(line)">
             <div class="field-block">
                 <template v-for="item in line">
-                    <template v-if="shouldItemBeConstructed(item)" v-tooltip.bottom="item.description.description">
+                    <template v-if="shouldItemBeConstructed(item)"
+                              v-tooltip.bottom="item.description.description">
                         <DynamicField
                             v-if="item.blockComponent === BlockComponents.value"
                             :description="item.description"
@@ -126,7 +127,7 @@ onDeactivated(() => {
  */
 function isAllLineHidden(line: Array<any>): boolean {
     return line.every((elem: any) => {
-        return elem.description.xHideValue || elem.description.xRemoveValue || !sharedFunctions.shouldBeConstructed(elem.description, undefined, null, false);
+        return elem.description.xHideValue || elem.description.xRemoveValue || !sharedFunctions.shouldBeConstructed(elem.description, undefined, null);
     });
 }
 
@@ -162,14 +163,7 @@ function onModelChange(descriptionName: string | null, $event: any) {
  * Keeps track of previous state to handle conditional rendering
  */
 function shouldItemBeConstructed(item: any): boolean {
-    const result = sharedFunctions.shouldBeConstructed(item.description, null, item.shouldItemBeConstructedPrevValue || null);
-
-    if (item.shouldItemBeConstructedPrevValue === false && result) {
-        //
-    }
-
-    item.shouldItemBeConstructedPrevValue = result;
-    return result;
+    return sharedFunctions.shouldBeConstructed(item.description);
 }
 </script>
 

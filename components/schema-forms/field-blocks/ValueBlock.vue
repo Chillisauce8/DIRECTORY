@@ -1,7 +1,6 @@
 <template>
     <DynamicField
-        v-if="shouldFieldBeConstructed"
-        v-show="!props.description.xHideValue"
+        v-if="sharedFunctions.shouldBeConstructed(props.description)"
         :description="props.description"
         :model="vm.model"
         @modelChange="onModelChange($event)"
@@ -53,8 +52,6 @@ const shouldFieldBeConstructed = ref(false);
  * Checks if field should be shown and sets up initial state
  */
 function doOnMounted(instance: ComponentInternalInstance | null) {
-    refreshShouldBeConstructedValues();
-
     if (shouldFieldBeConstructed) {
         refreshDescription();
         initField();
@@ -139,14 +136,6 @@ function deleteModel(): void {
 }
 
 /**
- * Determines if the field should be shown based on conditions
- * Updates the shouldFieldBeConstructed ref
- */
-function refreshShouldBeConstructedValues() {
-    shouldFieldBeConstructed.value = sharedFunctions.shouldBeConstructed(props.description, undefined, shouldFieldBeConstructed.value);
-}
-
-/**
  * Updates the description text shown for the field
  */
 function refreshDescription() {
@@ -159,7 +148,6 @@ function refreshDescription() {
  */
 function processXFeatures() {
     const result = processXFeaturesBase();
-    refreshShouldBeConstructedValues();
     refreshDescription();
     return result;
 }
