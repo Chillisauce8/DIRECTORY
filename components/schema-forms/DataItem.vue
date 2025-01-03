@@ -385,7 +385,7 @@ watch(
 );
 
 async function saveRaw(dataToSave: any) {
-  return sharedFunctions.saveRaw(dataToSave);
+    return sharedFunctions.saveRaw(dataToSave);
 }
 
 async function deleteRaw(dataId: string) {
@@ -532,11 +532,16 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
             // margin: 5px;
         }
         .toggle-visibility {
+            // display: none;
+            opacity: 0;
             &.show {
-                display: block;
+                // display: block;
+                opacity: 0;
+                animation: fadein 1s ease-in forwards, update-height 1s ease-in forwards;
             }
             &.hide {
-                display: none;
+                opacity: 0;
+                animation: fadeout 0.5s ease-in forwards, collapse-height 0.5s ease-in forwards;
             }
         }
 
