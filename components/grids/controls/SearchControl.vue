@@ -1,10 +1,8 @@
 <template>
     <div class="search-control">
-        <span class="p-input-icon-left p-input-icon-right">
-            <InputText v-model="searchValue" @input="handleInput" type="text" placeholder="Search" />
-            <i v-if="searchValue" class="pi pi-times" @click="clearSearch" />
-            <i v-else class="pi pi-search" />
-        </span>
+        <InputText v-model="searchValue" @input="handleInput" type="text" placeholder="Search" />
+        <i v-if="searchValue" class="pi pi-times" @click="clearSearch" />
+        <i v-else class="pi pi-search" />
     </div>
 </template>
 
@@ -55,16 +53,17 @@ function clearSearch() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .search-control {
-    width: 100%;
-    display: inline-flex;
+    // width: 100%;
+    //  display: inline-flex;
     position: relative;
 
     .p-inputtext {
-        width: 100%;
-        padding-left: 2.5rem;
-        padding-right: 2.5rem;
+        //  width: 100%;
+        // padding-left: 2.5rem;
+        font-size: 1em;
+        padding-right: 2rem;
     }
 
     i {
@@ -73,10 +72,6 @@ function clearSearch() {
         transform: translateY(-50%);
         color: var(--text-color-secondary);
         right: 0.75rem;
-    }
-
-    @media (min-width: 768px) {
-        width: 150px;
     }
 }
 </style>

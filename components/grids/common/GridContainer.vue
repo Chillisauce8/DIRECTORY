@@ -3,7 +3,7 @@
         <div class="grid-controls">
             <Toast />
             <ConfirmDialog />
-            <div class="filter-controls flex flex-col lg:flex-row gap-4">
+            <div class="filter-controls">
                 <!-- Default Controls -->
                 <FunctionControl v-model="mode" @update:modelValue="onModeUpdate" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
 
@@ -503,6 +503,17 @@ provide('updateItemsSorting', (sort: SortOption) => (selectedSort.value = sort))
         position: sticky;
         top: 0px;
         z-index: 1;
+        font-size: 14px;
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            //     background-color: aquamarine;
+            //   height: 60px;
+            .p-button {
+                margin: 0;
+            }
+        }
         .select-controls {
             padding-top: calc(var(--grid-gap) / 2);
             display: flex;
@@ -513,11 +524,14 @@ provide('updateItemsSorting', (sort: SortOption) => (selectedSort.value = sort))
             padding-top: calc(var(--grid-gap) / 2);
         }
         .icon {
-            width: 24px;
-            height: 24px;
+            width: 1.36em;
+            height: 1.36em;
         }
         .p-togglebutton-label {
             text-transform: capitalize;
+        }
+        .p-togglebutton {
+            font-size: 1em;
         }
         .p-iconfield .p-inputtext:not(:last-child) {
             width: 100%; // NEEDED FOR BUG IN PRIME VUE???

@@ -3,7 +3,7 @@ import environment from './environment';
 
 import { useTheme } from './composables/useTheme';
 
-import commonjs from 'vite-plugin-commonjs'
+import commonjs from 'vite-plugin-commonjs';
 
 const { DefaultTheme } = useTheme();
 
@@ -32,9 +32,7 @@ export default defineNuxtConfig({
 
     ssr: environment.ssr ?? true,
 
-    css: ['@/assets/css/global.scss', '@/assets/styles.scss', '@/assets/tailwind.css', 'primeicons/primeicons.css',
-      '@uppy/core/dist/style.css', '@uppy/dashboard/dist/style.css', '@uppy/drag-drop/dist/style.css',
-      '@uppy/progress-bar/dist/style.css'],
+    css: ['@/assets/css/global.scss', '@/assets/styles.scss', '@/assets/tailwind.css', 'primeicons/primeicons.css', '@uppy/core/dist/style.css', '@uppy/dashboard/dist/style.css', '@uppy/drag-drop/dist/style.css', '@uppy/progress-bar/dist/style.css'],
 
     image: {
         cloudinary: {
@@ -122,23 +120,23 @@ export default defineNuxtConfig({
 
     vite: {
         plugins: [
-          commonjs({
-            filter(id) {
-              if (id.includes('node_modules/')) {
-                return true
-              }
-            },
-            advanced: {
-              importRules: (id: string) => {
-                //
-                // if (id.includes('/node_modules/lodash/_root.js')) {
-                //   console.log(id);
-                //   return `__CJS__import__0__`;
-                // }
-                return "namedFirst";
-              }
-            }
-          })
+            commonjs({
+                filter(id) {
+                    if (id.includes('node_modules/')) {
+                        return true;
+                    }
+                },
+                advanced: {
+                    importRules: (id: string) => {
+                        //
+                        // if (id.includes('/node_modules/lodash/_root.js')) {
+                        //   console.log(id);
+                        //   return `__CJS__import__0__`;
+                        // }
+                        return 'namedFirst';
+                    }
+                }
+            })
         ],
         css: {
             preprocessorOptions: {
@@ -156,7 +154,7 @@ export default defineNuxtConfig({
         optimizeDeps: {
             exclude: ['fsevents'],
             noDiscovery: true,
-            include: ['quill', 'lodash'],
+            include: ['quill', 'lodash']
         },
         build: {
             rollupOptions: {
@@ -206,11 +204,7 @@ export default defineNuxtConfig({
                 path: '/market/:slug+',
                 file: '@/pages/market/slug.vue'
             });
-            pages.push({
-                name: 'market-test',
-                path: '/apps/market-test',
-                file: '@/pages/apps/market-test/List.vue'
-            });
+
             pages.push({
                 name: 'index',
                 path: '/',

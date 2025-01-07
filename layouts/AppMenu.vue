@@ -36,12 +36,12 @@ const model = ref([
             {
                 label: 'Market test',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/apps/market-test'
+                to: '/new/market-test/List'
             },
             {
                 label: 'Task List v1',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/apps/tasklist/IndexTest'
+                to: '/new/tasklist/IndexTest'
             },
             {
                 label: 'Tasks List v2',

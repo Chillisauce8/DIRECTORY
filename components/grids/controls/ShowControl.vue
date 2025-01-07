@@ -1,6 +1,6 @@
 <template>
     <div class="show-control">
-        <MultiSelect v-model="model" :options="showOptions" :class="className" display="chip" placeholder="Show Fields" />
+        <MultiSelect v-model="model" :options="showOptions" display="chip" placeholder="Show Fields" />
     </div>
 </template>
 
@@ -9,8 +9,7 @@ import type { PropType } from 'vue';
 import { classNameProp } from '@/types/props';
 
 const props = defineProps({
-    showOptions: { type: Array as PropType<string[]>, required: true },
-    className: classNameProp
+    showOptions: { type: Array as PropType<string[]>, required: true }
 });
 
 const model = defineModel<string[]>();
@@ -18,6 +17,8 @@ const model = defineModel<string[]>();
 
 <style lang="scss">
 .show-control {
-    min-width: 150px;
+    .div {
+        min-width: 150px;
+    }
 }
 </style>
