@@ -213,8 +213,17 @@ const filteredListings = computed(() => {
         props.filters.forEach((filter) => {
             if (filter.selected.length) {
                 result = result.filter((item) => {
-                    const fieldValues = item[filter.field]?.map((i: any) => i.id) || [];
-                    return filter.selected.some((selected) => fieldValues.includes(selected.id));
+                    const fieldValue = item[filter.field];
+                    if (!fieldValue) return false;
+
+                    // Handle array fields (like categories)
+                    if (Array.isArray(fieldValue)) {
+                        const fieldValues = fieldValue.map((i: any) => i.id);
+                        return filter.selected.some((selected) => fieldValues.includes(selected.id));
+                    }
+
+                    // Handle non-array fields (like categoryGroup)
+                    return filter.selected.some((selected) => fieldValue.id === selected.id);
                 });
             }
         });

@@ -5,7 +5,8 @@
             {
                 field: 'categoryGroup',
                 options: categoryOptions,
-                selected: selectedCategories
+                selected: selectedCategories,
+                isArray: false // Make sure this is set
             }
         ]"
         :visibleFunctionControls="['select', 'edit']"
@@ -53,6 +54,7 @@
 <script setup lang="ts">
 import { Listing } from '~/composables/useListControls';
 import { CategoryDbNode } from '~/service/cars/categories.service';
+import GridContainer from '~/components/grids/common/GridContainer.vue';
 
 const collectionName = 'categories';
 
