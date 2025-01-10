@@ -5,7 +5,6 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { eventService } from '~/service/EventService';
-import Dialog from 'primevue/dialog';
 
 onMounted(async () => {
     loadEvents();
@@ -66,8 +65,7 @@ const handleSave = async () => {
     <div class="grid">
         <div class="col-12">
             <div class="card">
-                <h5>Calendar</h5>
-                <InputText type="text" placeholder="TEST" />
+                <!--    <h5>Calendar</h5> -->
 
                 <FullCalendar :events="events" :options="options" />
 
@@ -77,11 +75,13 @@ const handleSave = async () => {
     </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
+/*
 :deep(.fc-header-toolbar) {
     .fc-button {
         line-height: 1;
         min-height: 2.07rem;
     }
 }
+*/
 </style>

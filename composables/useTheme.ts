@@ -439,13 +439,13 @@ export const useTheme = () => {
                         color: '{surface.200}'
                     },
                     formField: {
-                        background: '{surface.0}',
+                        background: '{surface.50}',
                         disabledBackground: '{surface.200}',
                         filledBackground: '{surface.50}',
                         filledHoverBackground: '{surface.50}',
                         filledFocusBackground: '{surface.50}',
-                        borderColor: '{surface.300}',
-                        hoverBorderColor: '{surface.400}',
+                        borderColor: '{surface.100}',
+                        hoverBorderColor: '{surface.200}',
                         focusBorderColor: '{primary.color}',
                         invalidBorderColor: '{red.400}',
                         color: '{surface.700}',
@@ -456,7 +456,7 @@ export const useTheme = () => {
                         floatLabelFocusColor: '{primary.600}',
                         floatLabelActiveColor: '{surface.500}',
                         floatLabelInvalidColor: '{form.field.invalid.placeholder.color}',
-                        iconColor: '{surface.400}',
+                        iconColor: '{surface.200}',
                         shadow: '0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05)'
                     },
                     text: {

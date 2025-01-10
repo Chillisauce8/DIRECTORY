@@ -23,7 +23,7 @@
 import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, showProp, categoriesProp } from '@/types/props';
 import type { Category, Vehicle } from '@/types/props';
-import CreateTaskDialogWithDb from '~/pages/apps/tasklist/CreateTaskDialogWithDb.vue';
+import CreateTaskDialogWithDb from '~/pages/new/tasklist/CreateTaskDialogWithDb.vue';
 
 interface Status {
     state: string;
