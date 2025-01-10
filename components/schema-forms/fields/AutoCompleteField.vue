@@ -1,18 +1,16 @@
 <template>
-    <div class="field">
-      <div class="input-wrapper">
-        <AutoComplete v-model="vm.model"
-                      class="AutoComplete"
-                      @update:modelValue="onModelChange($event)"
-                      dropdown
-                      :suggestions="suggestions"
-                      :optionLabel="(suggestions?.[0]?.title || vm.model?.title) ? 'title' : undefined"
-                      @complete="onSearchStringChange"
-                      :invalid="$v?.$error"/>
-      </div>
-      <FieldError class="error-message" :vuelidate-field="$v">
-      </FieldError>
-    </div>
+  <div class="input-wrapper">
+    <AutoComplete v-model="vm.model"
+                  class="AutoComplete"
+                  @update:modelValue="onModelChange($event)"
+                  dropdown
+                  :suggestions="suggestions"
+                  :optionLabel="(suggestions?.[0]?.title || vm.model?.title) ? 'title' : undefined"
+                  @complete="onSearchStringChange"
+                  :invalid="$v?.$error"/>
+  </div>
+  <FieldError class="error-message" :vuelidate-field="$v">
+  </FieldError>
 </template>
 
 
