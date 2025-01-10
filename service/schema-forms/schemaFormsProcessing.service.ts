@@ -493,6 +493,8 @@ export class SchemaFormsProcessingHelper {
 
     // TODO: update validation code ***
     for (const field of this.registeredForms[formName]['fields']) {
+      field.ref.setupState.sharedFunctions.touch();
+
       if (!field.ref.setupState.sharedFunctions.isValid() &&
         (!field.ref.props.description.xHideValue || !field.ref.props.description.xHide?.persist)) {
         return false;

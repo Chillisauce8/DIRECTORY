@@ -75,6 +75,7 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
   function touch() {
     if (im.$v) {
       im.$v.$touch();
+      im.$v.$validate();
     }
   }
 
@@ -144,10 +145,6 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
       processXMaximumForModelChanges(features['maximum']);
     }
 
-    if ('required' in features) {
-      processXRequiredForModelChanges(features['required']);
-    }
-
     if ('enum' in features) {
       processXEnumForModelChanges(features['enum']);
     }
@@ -191,20 +188,6 @@ export default function useBaseControl(props: BaseControlProps, emits: BaseContr
 
       if (value !== undefined) {
         props.description.maximum = value;
-      }
-    }
-  }
-
-  function processXRequiredForModelChanges(value?: any) {
-    if (isUndefined(value)) {
-      value = sharedFunctions.shouldBeRequired(props.description);
-    }
-
-    if (!isEqual(value, props.description.xRequiredValue)) {
-      props.description.xRequiredValue = value;
-
-      if (value !== undefined) {
-        props.description.required = value;
       }
     }
   }

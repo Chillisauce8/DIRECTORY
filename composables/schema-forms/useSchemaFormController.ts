@@ -152,13 +152,15 @@ export default function useSchemaFormController(formName: string, fields?: Objec
           vm.formIsChanged = false;
           vm.dataSaved = true;
 
-          toast.add({ severity: 'success', summary: 'Success Message', detail: 'Saved Successfully', life: 3000 });
+          // toast.add({ severity: 'success', summary: 'Success Message', detail: 'Saved Successfully', life: 3000 });
 
           if (!sharedFunctions.isEditMode()) {
             sharedFunctions.onCreated(data?._doc ?? data?.id ?? data?.public_id);
           } else if (sharedFunctions.needPageReload()) {
             setTimeout(() => window.location.reload(), 100);
           }
+
+          return result;
         })
         .catch((result: any) => {
           saveErrorHandler(result);

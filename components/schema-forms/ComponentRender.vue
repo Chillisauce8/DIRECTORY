@@ -10,7 +10,8 @@
         >
         </component>
     </div>
-    <FieldError class="error-message" v-if="props.validator" :vuelidate-field="props.validator.vuelidateField"> </FieldError>
+    <FieldError class="error-message" v-if="props.validator" :vuelidate-field="props.validator">
+    </FieldError>
 </template>
 
 <script setup lang="ts">
@@ -30,6 +31,7 @@ export interface SchemaComponentEmits {
 
 // @ts-ignore
 const props = defineProps<SchemaComponentProps>();
+console.log('TEST');
 // @ts-ignore
 const emits = defineEmits<SchemaComponentEmits>();
 

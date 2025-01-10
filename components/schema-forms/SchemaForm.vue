@@ -51,9 +51,6 @@ const props = withDefaults(defineProps<FormProps>(), {
 const formLabelType = computed(() => props.formLabelType);
 const floatLabelVariant = computed(() => props.floatLabelVariant);
 
-export interface FormEmits extends BaseFieldEmits {
-    (e: 'formDone', value: boolean): void;
-}
 
 // @ts-ignore
 const emits = defineEmits<{

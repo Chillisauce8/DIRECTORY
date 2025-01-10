@@ -302,6 +302,10 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         processXSetForModelChanges(features['set']);
       }
 
+      if ('required' in features) {
+        processXRequiredForModelChanges(features['required']);
+      }
+
       return features;
     },
 
@@ -734,6 +738,20 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
 
       if (parentModel) {
         parentModel[sharedFunctions.getDescription().name] = value;
+      }
+    }
+  }
+
+  function processXRequiredForModelChanges(value?: any) {
+    if (isUndefined(value)) {
+      value = sharedFunctions.shouldBeRequired(props.description);
+    }
+
+    if (!isEqual(value, props.description.xRequiredValue)) {
+      props.description.xRequiredValue = value;
+
+      if (value !== undefined) {
+        props.description.required = value;
       }
     }
   }

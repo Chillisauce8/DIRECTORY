@@ -18,7 +18,8 @@
             <h1>Type: {{ props.type }}</h1>
             <h1>{{ props.categoryGroup.name }}</h1>
         </card-text-wrapper>
-        <CardEditWrapper :mode="props.mode" :selected="selected" collection="categories" :dataItem="props.dataItem" @save="onEditableGroupSubmit" />
+        <CardEditWrapper :mode="props.mode" :selected="selected" collection="categories"
+                         :dataItem="props.dataItem" @save="onEditableGroupSubmit" />
     </div>
 </template>
 

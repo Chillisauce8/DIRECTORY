@@ -7,10 +7,10 @@
                       dropdown
                       :suggestions="suggestions"
                       :optionLabel="(suggestions?.[0]?.title || vm.model?.title) ? 'title' : undefined"
-                      @complete="onSearchStringChange" />
+                      @complete="onSearchStringChange"
+                      :invalid="$v?.$error"/>
       </div>
-      <FieldError class="error-message"
-                  :vuelidate-field="$v.model">
+      <FieldError class="error-message" :vuelidate-field="$v">
       </FieldError>
     </div>
 </template>
@@ -22,17 +22,17 @@ import { useVuelidate } from '@vuelidate/core';
 // @ts-ignore
 import { required } from '@vuelidate/validators'
 import useBaseSelectableControl from '~/composables/schema-forms/useBaseSelectableControl';
-import type { BaseControlProps } from '~/composables/schema-forms/useBaseControl';
-import type { BaseFieldEmits } from '~/composables/schema-forms/useBaseField';
+import type { BaseControlProps, BaseControlEmits } from '~/composables/schema-forms/useBaseControl';
 // @ts-ignore
 import { getCurrentInstance } from 'vue';
 import FieldError from '~/components/schema-forms/FieldError.vue';
+import type { ComponentInternalInstance } from '@vue/runtime-core';
 
 
 // @ts-ignore
 const props = defineProps<BaseControlProps>();
 // @ts-ignore
-const emits = defineEmits<BaseFieldEmits>();
+const emits = defineEmits<BaseControlEmits>();
 
 
 const {vm, im, sharedFunctions} = useBaseSelectableControl(props, emits);
@@ -65,8 +65,8 @@ const validateRules = computed(() => {
 const $v = useVuelidate(validateRules, vm, {$autoDirty: true});
 
 
-function doOnMounted() {
-  doOnMountedBase();
+function doOnMounted(componentInternalInstance: ComponentInternalInstance | null, validator?: any) {
+  doOnMountedBase(componentInternalInstance, validator);
 
   autocompleteInitValue = autocompleteItemTextGetter(vm.model);
 

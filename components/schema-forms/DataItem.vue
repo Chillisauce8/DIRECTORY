@@ -293,10 +293,20 @@ async function saveModel() {
         // Handle both create and update cases
         // For updates, ensure we're using the correct function and ID
         if (props.function === 'update' && props.initialItem?._doc) {
-            const savedData = await sharedFunctions.updateTarget({ ...item.value, _doc: props.initialItem._doc });
+            const savedData = await sharedFunctions.save({ ...item.value, _doc: props.initialItem._doc });
+
+            if (!savedData) {
+              return;
+            }
+
             emits('save', savedData);
         } else {
-            const savedData = await sharedFunctions.createTarget(item.value);
+            const savedData = await sharedFunctions.save(item.value);
+
+            if (!savedData) {
+              return;
+            }
+
             emits('save', savedData);
         }
 

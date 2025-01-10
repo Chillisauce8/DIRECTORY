@@ -1,7 +1,7 @@
-import { isString } from '~/service/utils';
-
 export const X_KEYS = ['hide', 'show', 'required', 'default', 'readOnly', 'writeOnly', 'title', 'description', 'default',
-  'enum', 'x-enum', 'options', 'optionsPlus', 'set', 'dependencies', 'depreciated', 'concatenate', 'calculate'];
+  'enum', 'enum', 'options', 'optionsPlus', 'set', 'dependencies', 'depreciated', 'concatenate', 'calculate']
+  .map(item => [item, 'x-' + item]).flat();
+
 
 export const X_KEYS_OPERATORS = ['if', 'then', 'else', 'switch', 'cases', 'value'];
 
