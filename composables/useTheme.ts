@@ -397,7 +397,7 @@ export const useTheme = () => {
                     shadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)'
                 },
                 modal: {
-                    borderRadius: '{border.radius.xl}',
+                    borderRadius: '{border.radius.md}',
                     padding: '1.25rem',
                     shadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)'
                 },
@@ -444,8 +444,8 @@ export const useTheme = () => {
                         filledBackground: '{surface.50}',
                         filledHoverBackground: '{surface.50}',
                         filledFocusBackground: '{surface.50}',
-                        borderColor: '{surface.100}',
-                        hoverBorderColor: '{surface.200}',
+                        borderColor: '{surface.50}',
+                        hoverBorderColor: '{surface.100}',
                         focusBorderColor: '{primary.color}',
                         invalidBorderColor: '{red.400}',
                         color: '{surface.700}',
