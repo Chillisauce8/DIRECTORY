@@ -210,6 +210,52 @@ export default defineNuxtConfig({
                 path: '/',
                 file: '@/pages/index.vue'
             });
+            pages.push({
+                name: 'mail',
+                path: '/new/mail/',
+                file: '@/pages/new/mail/Index.vue',
+                children: [
+                    {
+                        path: '/new/mail/inbox',
+                        name: 'mail-inbox',
+                        file: '@/pages/new/mail/MailTypes.vue'
+                    },
+                    {
+                        path: '/new/mail/compose',
+                        name: 'mail-compose',
+                        file: '@/pages/new/mail/ComposeNew.vue'
+                    },
+                    {
+                        path: '/new/mail/detail/:id',
+                        name: 'mail-detail',
+                        file: '@/pages/new/mail/Detail.vue'
+                    },
+                    {
+                        path: '/new/mail/starred',
+                        file: '@/pages/new/mail/MailTypes.vue'
+                    },
+                    {
+                        path: '/new/mail/spam',
+                        file: '@/pages/new/mail/MailTypes.vue'
+                    },
+                    {
+                        path: '/new/mail/important',
+                        file: '@/pages/new/mail/MailTypes.vue'
+                    },
+                    {
+                        path: '/new/mail/sent',
+                        file: '@/pages/new/mail/MailTypes.vue'
+                    },
+                    {
+                        path: '/new/mail/archived',
+                        file: '@/pages/new/mail/MailTypes.vue'
+                    },
+                    {
+                        path: '/new/mail/trash',
+                        file: '@/pages/new/mail/MailTypes.vue'
+                    }
+                ]
+            });
         }
     },
 

@@ -18,26 +18,27 @@ const model = ref([
                 to: '/new/calendar'
             },
             {
-                label: 'Markets',
+                label: 'Files Grid',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/files-grid'
+            },
+            {
+                label: 'Categories Grid',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/categories-grid'
+            },
+            {
+                label: 'Markets Grid',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/market'
             },
+
             {
                 label: 'Vehicle Page Design',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/car'
             },
-            {
-                label: 'Vehicle Card Design',
-                icon: 'pi pi-fw pi-image',
-                to: '/new/carddesign'
-            },
 
-            {
-                label: 'Market test',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/market-test/List'
-            },
             {
                 label: 'Task List v1',
                 icon: 'pi pi-fw pi-check-square',
@@ -47,6 +48,11 @@ const model = ref([
                 label: 'Tasks List v2',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/tasks'
+            },
+            {
+                label: 'Messages',
+                icon: 'pi pi-fw pi-comments',
+                to: '/new/mail/inbox'
             },
 
             {
@@ -59,21 +65,16 @@ const model = ref([
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/testFormLayout'
             },
-            {
-                label: 'Files Grid',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/files-grid'
-            },
-            {
-                label: 'Categories Grid',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/categories-grid'
-            },
 
             {
                 label: 'Test Grid',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/test-grid'
+            },
+            {
+                label: 'Market test',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/market-test/List'
             },
             {
                 label: 'Images Fetching',

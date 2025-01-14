@@ -2,30 +2,27 @@
     <!-- Main container for the array of objects form block -->
     <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
         <!-- Only render if initialization is complete and header should be constructed -->
-        <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)"
-                  v-show="!props.description.xHideValue">
-
+        <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue">
             <!-- Main form fields container -->
             <div class="field-block">
                 <!-- Iterate through each row in the model -->
                 <template v-for="(row, rowIndex) in vm.model" :key="rowIndex">
                     <!-- Header section with title and speed dial actions -->
                     <div class="array-of-object-header">
-                      <!-- Title with optional info tooltip -->
-                      <h1 class="title array-of-object" v-if="props.description.header.title">
-                        <template v-if="rowIndex === 0">
-                          {{ sharedFunctions.getTitle() }}
+                        <!-- Title with optional info tooltip -->
+                        <h1 class="title array-of-object" v-if="props.description.header.title">
+                            <template v-if="rowIndex === 0">
+                                {{ sharedFunctions.getTitle() }}
 
-                          <!-- Information icon with tooltip -->
-                          <span v-if="sharedFunctions.getDescriptionText()"
-                                v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                              <SvgIcon svg="info" />
-                            </span>
-                        </template>
-                      </h1>
+                                <!-- Information icon with tooltip -->
+                                <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+                                    <SvgIcon svg="info" />
+                                </span>
+                            </template>
+                        </h1>
 
-                      <!-- Speed dial menu for row actions (only shows if model has items) -->
-                      <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems(rowIndex)" direction="left" />
+                        <!-- Speed dial menu for row actions (only shows if model has items) -->
+                        <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems(rowIndex)" direction="left" />
                     </div>
 
                     <!-- Iterate through lines within each row -->
@@ -33,9 +30,7 @@
                         <!-- Iterate through items within each line -->
                         <template v-for="(item, itemIndex) in line">
                             <!-- Container for each form field -->
-                            <template :style="{ width: item.description.xFlex + '%' }"
-                                      v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)"
-                                      v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
+                            <template :style="{ width: item.description.xFlex + '%' }" v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)" v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
                                 <!-- Render dynamic field for basic value inputs -->
                                 <DynamicField
                                     v-if="item.blockComponent === BlockComponents.value"
@@ -50,37 +45,34 @@
 
                                 <!-- Render dynamic field block for complex components -->
                                 <template v-if="item.blockComponent !== BlockComponents.value">
-                                    <DynamicFieldBlock :description="item" :model="vm.model[rowIndex]"
-                                         :context="sharedFunctions.createInnerFieldContext(props.context, props.description.header.name, rowIndex)"
-                                                       @modelChange="onModelChange(rowIndex, null, $event)">
+                                    <DynamicFieldBlock
+                                        :description="item"
+                                        :model="vm.model[rowIndex]"
+                                        :context="sharedFunctions.createInnerFieldContext(props.context, props.description.header.name, rowIndex)"
+                                        @modelChange="onModelChange(rowIndex, null, $event)"
+                                    >
                                     </DynamicFieldBlock>
                                 </template>
                             </template>
                         </template>
                     </template>
-
                 </template>
 
                 <!-- Empty state with add buttons -->
                 <div v-if="!vm.model?.length">
-                  <div class="array-of-object-header">
-                    <h1 class="title array-of-object" v-if="props.description.header.title">
-                      {{ sharedFunctions.getTitle() }}
+                    <div class="array-of-object-header">
+                        <h1 class="title array-of-object" v-if="props.description.header.title">
+                            {{ sharedFunctions.getTitle() }}
 
-                      <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
-                          <SvgIcon svg="info" />
-                      </span>
-                    </h1>
-                    <!-- Add button for selection mode -->
-                    <Button icon="pi pi-plus" aria-label="Add First Row"
-                            v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode">
-                    </Button>
-                    <!-- Add button for normal mode -->
-                    <Button icon="pi pi-plus" aria-label="Add First Row"
-                            v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode"
-                            @click="addFirstRow()">
-                    </Button>
-                  </div>
+                            <span v-if="sharedFunctions.getDescriptionText()" v-tooltip.bottom="sharedFunctions.getDescriptionText()">
+                                <SvgIcon svg="info" />
+                            </span>
+                        </h1>
+                        <!-- Add button for selection mode -->
+                        <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && vm.isSelectionMode"> </Button>
+                        <!-- Add button for normal mode -->
+                        <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode" @click="addFirstRow()"> </Button>
+                    </div>
                 </div>
             </div>
 
@@ -88,11 +80,11 @@
             <ContextMenu ref="menu" :model="getContextMenuItems(vm.selectionValues)" />
 
             <!-- Validation error messages -->
-            <div v-if="!sharedFunctions.isValidMaxItems()" class="text-color_red field_wrap">Max items value is {{ props.description.xMaxItemsValue }}</div>
+            <FieldError :vuelidateField="{ $dirty: true, maxItems: !sharedFunctions.isValidMaxItems() }" :customValidationMessageMap="{ maxItems: `Max items value is ${props.description.xMaxItemsValue}` }" />
 
-            <div v-if="!sharedFunctions.isValidMinItems()" class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
+            <FieldError :vuelidateField="{ $dirty: true, minItems: !sharedFunctions.isValidMinItems() }" :customValidationMessageMap="{ minItems: `Min items value is ${props.description.xMinItemsValue}` }" />
 
-            <div v-if="!ifValidUniqueItems()" class="text-color_red field_wrap">Items are not unique</div>
+            <FieldError :vuelidateField="{ $dirty: true, uniqueItems: !ifValidUniqueItems() }" :customValidationMessageMap="{ uniqueItems: 'Items are not unique' }" />
         </template>
     </section>
 </template>
@@ -104,6 +96,7 @@ import { uniqWith } from '~/service/utils';
 import { getCurrentInstance } from 'vue';
 import { BlockComponents } from '~/service/schema-forms/blockComponents';
 import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
+import FieldError from '../FieldError.vue';
 
 interface ArrayProps extends BaseFieldProps {
     formLabelType?: FormLabelType;

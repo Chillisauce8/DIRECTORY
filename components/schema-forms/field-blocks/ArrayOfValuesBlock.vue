@@ -2,8 +2,7 @@
     <!-- Main wrapper for the array field component -->
     <div class="field-wrapper" :class="innerComponentName" :id="props.description.id">
         <!-- Only show content if initialization is done and component should be constructed -->
-        <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)"
-                  v-show="!props.description.xHideValue">
+        <template v-if="initDone && sharedFunctions?.shouldBeConstructed(props.description)" v-show="!props.description.xHideValue">
             <!-- Field label with optional tooltip for description -->
             <label v-if="props.description.title">
                 {{ sharedFunctions.getTitle() }}
@@ -38,11 +37,11 @@
             </div>
 
             <!-- Validation error messages -->
-            <div v-if="!sharedFunctions.isValidMaxItems()" class="text-color_red field_wrap">Max items value is {{ props.description.xMaxItemsValue }}</div>
+            <FieldError :vuelidateField="{ $dirty: true, maxItems: !sharedFunctions.isValidMaxItems() }" :customValidationMessageMap="{ maxItems: `Max items value is ${props.description.xMaxItemsValue}` }" />
 
-            <div v-if="!sharedFunctions.isValidMinItems()" class="text-color_red field_wrap">Min items value is {{ props.description.xMinItemsValue }}</div>
+            <FieldError :vuelidateField="{ $dirty: true, minItems: !sharedFunctions.isValidMinItems() }" :customValidationMessageMap="{ minItems: `Min items value is ${props.description.xMinItemsValue}` }" />
 
-            <div v-if="!sharedFunctions.ifValidUniqueItems()" class="text-color_red field_wrap">Items are not unique</div>
+            <FieldError :vuelidateField="{ $dirty: true, uniqueItems: !sharedFunctions.ifValidUniqueItems() }" :customValidationMessageMap="{ uniqueItems: 'Items are not unique' }" />
         </template>
     </div>
 </template>
@@ -53,6 +52,7 @@ import useBaseArrayFieldControl from '~/composables/schema-forms/useBaseArrayFie
 import type { BaseFieldEmits, BaseFieldProps } from '~/composables/schema-forms/useBaseField';
 import { getCurrentInstance } from 'vue';
 import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
+import FieldError from '../FieldError.vue';
 
 // Props interface extending base field properties
 interface ArrayValuesProps extends BaseFieldProps {
