@@ -1,38 +1,44 @@
 <template>
-    <div class="p-error field-error" v-if="inputValidationHasError()">{{ getInputValidationErrorMessage() }}</div>
+    <div v-for="(message, type) in validationMessages" :key="type" class="p-error field-error" v-if="hasError(type)">
+        {{ message }}
+    </div>
 </template>
 
 <script setup lang="ts">
 import type { BaseValidation, Validation } from '@vuelidate/core';
 
-import { getTopValidationError, getValidationErrorMessage } from '~/service/forms-validators';
-
 interface CSErrorProps {
+    // Support both single validation and multiple validations
     vuelidateField?: BaseValidation | Validation;
     customValidationMessageMap?: { [errorType: string]: string };
+    // New props for multiple validation support
+    validations?: { [key: string]: () => boolean };
+    messages?: { [key: string]: string };
 }
 
 const props = defineProps<CSErrorProps>();
 
-function inputValidationHasError(): boolean {
-    if (!props?.vuelidateField) {
-        return false;
+function hasError(type?: string): boolean {
+    // Handle multiple validations case
+    if (props.validations && type) {
+        return !props.validations[type]();
     }
 
-    if (!props?.vuelidateField?.$dirty) {
-        return false;
-    }
-
+    // Handle single validation case (existing logic)
+    if (!props?.vuelidateField) return false;
+    if (!props?.vuelidateField?.$dirty) return false;
     return !!getTopValidationError(props?.vuelidateField) ?? false;
 }
 
-function getInputValidationErrorMessage(): string | null {
-    if (!props?.vuelidateField) {
-        return null;
+const validationMessages = computed(() => {
+    // Handle multiple validations case
+    if (props.validations && props.messages) {
+        return props.messages;
     }
 
-    return getValidationErrorMessage(props.vuelidateField, props.customValidationMessageMap);
-}
+    // Handle single validation case
+    return props.customValidationMessageMap || {};
+});
 </script>
 
 <style>

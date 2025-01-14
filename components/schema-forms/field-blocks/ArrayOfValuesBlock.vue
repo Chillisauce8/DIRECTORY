@@ -37,11 +37,18 @@
             </div>
 
             <!-- Validation error messages -->
-            <FieldError :vuelidateField="{ $dirty: true, maxItems: !sharedFunctions.isValidMaxItems() }" :customValidationMessageMap="{ maxItems: `Max items value is ${props.description.xMaxItemsValue}` }" />
-
-            <FieldError :vuelidateField="{ $dirty: true, minItems: !sharedFunctions.isValidMinItems() }" :customValidationMessageMap="{ minItems: `Min items value is ${props.description.xMinItemsValue}` }" />
-
-            <FieldError :vuelidateField="{ $dirty: true, uniqueItems: !sharedFunctions.ifValidUniqueItems() }" :customValidationMessageMap="{ uniqueItems: 'Items are not unique' }" />
+            <FieldError
+                :validations="{
+                    maxItems: sharedFunctions.isValidMaxItems,
+                    minItems: sharedFunctions.isValidMinItems,
+                    uniqueItems: sharedFunctions.ifValidUniqueItems
+                }"
+                :messages="{
+                    maxItems: `Max items value is ${props.description.xMaxItemsValue}`,
+                    minItems: `Min items value is ${props.description.xMinItemsValue}`,
+                    uniqueItems: 'Items are not unique'
+                }"
+            />
         </template>
     </div>
 </template>

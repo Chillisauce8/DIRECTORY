@@ -79,12 +79,19 @@
             <!-- Context menu for selection mode -->
             <ContextMenu ref="menu" :model="getContextMenuItems(vm.selectionValues)" />
 
-            <!-- Validation error messages -->
-            <FieldError :vuelidateField="{ $dirty: true, maxItems: !sharedFunctions.isValidMaxItems() }" :customValidationMessageMap="{ maxItems: `Max items value is ${props.description.xMaxItemsValue}` }" />
-
-            <FieldError :vuelidateField="{ $dirty: true, minItems: !sharedFunctions.isValidMinItems() }" :customValidationMessageMap="{ minItems: `Min items value is ${props.description.xMinItemsValue}` }" />
-
-            <FieldError :vuelidateField="{ $dirty: true, uniqueItems: !ifValidUniqueItems() }" :customValidationMessageMap="{ uniqueItems: 'Items are not unique' }" />
+            <!-- Replace multiple FieldError components with single enhanced version -->
+            <FieldError
+                :validations="{
+                    maxItems: sharedFunctions.isValidMaxItems,
+                    minItems: sharedFunctions.isValidMinItems,
+                    uniqueItems: ifValidUniqueItems
+                }"
+                :messages="{
+                    maxItems: `Max items value is ${props.description.xMaxItemsValue}`,
+                    minItems: `Min items value is ${props.description.xMinItemsValue}`,
+                    uniqueItems: 'Items are not unique'
+                }"
+            />
         </template>
     </section>
 </template>
