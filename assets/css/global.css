@@ -222,4 +222,7 @@ Brandon Grotesque - https://fonts.adobe.com/fonts/brandon-grotesque
     max-height: 0px;
     overflow: hidden;
   }
+}
+:root {
+  --not-an-empty-rule-set: 10px;
 }/*# sourceMappingURL=global.css.map */

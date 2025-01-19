@@ -9,7 +9,6 @@
     transform: scale(var(--grow-size));
   }
 }
-/* Form components variables */
 /* https://flagicons.lipis.dev/ */
 .fib, .fi {
   background-size: contain;

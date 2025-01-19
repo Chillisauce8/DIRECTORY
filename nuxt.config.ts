@@ -86,7 +86,7 @@ export default defineNuxtConfig({
                 //           children: `
                 // (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
                 // new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                // j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                // j=d.createElement(s),dl=l!='dataLayer'?'&l='+l;'';j.async=true;j.src=
                 // 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
                 // })(window,document,'script','dataLayer','GTM-TN9S8S6');
                 //           `,
@@ -211,48 +211,58 @@ export default defineNuxtConfig({
                 file: '@/pages/index.vue'
             });
             pages.push({
-                name: 'mail',
-                path: '/new/mail/',
-                file: '@/pages/new/mail/Index.vue',
+                name: 'message',
+                path: '/new/message',
+                file: '@/pages/new/Message.vue',
                 children: [
                     {
-                        path: '/new/mail/inbox',
-                        name: 'mail-inbox',
-                        file: '@/pages/new/mail/MailTypes.vue'
+                        path: '',
+                        redirect: '/new/message/inbox'
                     },
                     {
-                        path: '/new/mail/compose',
-                        name: 'mail-compose',
-                        file: '@/pages/new/mail/ComposeNew.vue'
+                        path: 'inbox',
+                        name: 'message-inbox',
+                        props: true
                     },
                     {
-                        path: '/new/mail/detail/:id',
-                        name: 'mail-detail',
-                        file: '@/pages/new/mail/Detail.vue'
+                        path: 'compose',
+                        name: 'message-compose',
+                        props: { mode: 'new' }
                     },
                     {
-                        path: '/new/mail/starred',
-                        file: '@/pages/new/mail/MailTypes.vue'
+                        path: 'detail/:id',
+                        name: 'message-detail',
+                        props: true
                     },
                     {
-                        path: '/new/mail/spam',
-                        file: '@/pages/new/mail/MailTypes.vue'
+                        path: 'starred',
+                        name: 'message-starred',
+                        props: true
                     },
                     {
-                        path: '/new/mail/important',
-                        file: '@/pages/new/mail/MailTypes.vue'
+                        path: 'spam',
+                        name: 'message-spam',
+                        props: true
                     },
                     {
-                        path: '/new/mail/sent',
-                        file: '@/pages/new/mail/MailTypes.vue'
+                        path: 'important',
+                        name: 'message-important',
+                        props: true
                     },
                     {
-                        path: '/new/mail/archived',
-                        file: '@/pages/new/mail/MailTypes.vue'
+                        path: 'sent',
+                        name: 'message-sent',
+                        props: true
                     },
                     {
-                        path: '/new/mail/trash',
-                        file: '@/pages/new/mail/MailTypes.vue'
+                        path: 'archived',
+                        name: 'message-archived',
+                        props: true
+                    },
+                    {
+                        path: 'trash',
+                        name: 'message-trash',
+                        props: true
                     }
                 ]
             });
@@ -291,46 +301,46 @@ export default defineNuxtConfig({
             pages.push({
                 name: 'mail',
                 path: '/apps/mail/',
-                file: '@/pages/apps/mail/Index.vue',
+                file: '@/pages/apps/mail/MessageList.vue',
                 children: [
                     {
                         path: '/apps/mail/inbox',
                         name: 'mail-inbox',
-                        file: '@/pages/apps/mail/MailTypes.vue'
+                        file: '@/pages/apps/mail/MessageTypes.vue'
                     },
                     {
                         path: '/apps/mail/compose',
                         name: 'mail-compose',
-                        file: '@/pages/apps/mail/ComposeNew.vue'
+                        file: '@/pages/apps/mail/MessageNew.vue'
                     },
                     {
                         path: '/apps/mail/detail/:id',
                         name: 'mail-detail',
-                        file: '@/pages/apps/mail/Detail.vue'
+                        file: '@/pages/apps/mail/MessageDetail.vue'
                     },
                     {
                         path: '/apps/mail/starred',
-                        file: '@/pages/apps/mail/MailTypes.vue'
+                        file: '@/pages/apps/mail/MessageTypes.vue'
                     },
                     {
                         path: '/apps/mail/spam',
-                        file: '@/pages/apps/mail/MailTypes.vue'
+                        file: '@/pages/apps/mail/MessageTypes.vue'
                     },
                     {
                         path: '/apps/mail/important',
-                        file: '@/pages/apps/mail/MailTypes.vue'
+                        file: '@/pages/apps/mail/MessageTypes.vue'
                     },
                     {
                         path: '/apps/mail/sent',
-                        file: '@/pages/apps/mail/MailTypes.vue'
+                        file: '@/pages/apps/mail/MessageTypes.vue'
                     },
                     {
                         path: '/apps/mail/archived',
-                        file: '@/pages/apps/mail/MailTypes.vue'
+                        file: '@/pages/apps/mail/MessageTypes.vue'
                     },
                     {
                         path: '/apps/mail/trash',
-                        file: '@/pages/apps/mail/MailTypes.vue'
+                        file: '@/pages/apps/mail/MessageTypes.vue'
                     }
                 ]
             });

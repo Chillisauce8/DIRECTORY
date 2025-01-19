@@ -52,7 +52,7 @@ const model = ref([
             {
                 label: 'Messages',
                 icon: 'pi pi-fw pi-comments',
-                to: '/new/mail/inbox'
+                to: '/new/message/inbox'
             },
 
             {
