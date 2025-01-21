@@ -1,6 +1,8 @@
 import { computed, reactive, ref, watch } from 'vue';
 import type { Ref } from 'vue';
 
+const DESKTOP_WIDTH = 991; // Add this line
+
 interface LayoutConfig {
     preset: string;
     primary: string;
@@ -120,7 +122,8 @@ export function useLayout() {
             layoutState.overlayMenuActive = !layoutState.overlayMenuActive;
         }
 
-        if (window.innerWidth > 991) {
+        if (window.innerWidth > DESKTOP_WIDTH) {
+            // Replace 991
             layoutState.staticMenuDesktopInactive = !layoutState.staticMenuDesktopInactive;
         } else {
             layoutState.staticMenuMobileActive = !layoutState.staticMenuMobileActive;
@@ -184,11 +187,10 @@ export function useLayout() {
 
     const isDarkTheme = computed(() => layoutConfig.darkTheme);
     const isSidebarActive = computed(() => layoutState.overlayMenuActive || layoutState.staticMenuMobileActive || layoutState.overlaySubmenuActive);
-    const isDesktop = computed(() => window.innerWidth > 991);
+    const isDesktop = computed(() => window.innerWidth > DESKTOP_WIDTH); // Replace 991
     const isSlim = computed(() => layoutConfig.menuMode === 'slim');
     const isSlimPlus = computed(() => layoutConfig.menuMode === 'slim-plus');
-    const isHorizontal = computed(() => layoutConfig.menuMode === 'horizontal');
-
+    const isHorizontal = computed(() => layoutConfig.menuMode === 'horizontal'); // Add this line
     const getPrimary = computed(() => layoutConfig.primary);
     const getSurface = computed(() => layoutConfig.surface);
 

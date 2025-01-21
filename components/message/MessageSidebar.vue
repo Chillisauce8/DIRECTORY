@@ -33,8 +33,9 @@ function navigate(item) {
 
 <style lang="scss">
 .message-sidebar {
+    width: 100%;
     .compose-btn {
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
         width: 100%;
     }
 
@@ -51,9 +52,8 @@ function navigate(item) {
         padding: 0;
         overflow: auto;
 
-        @media (min-width: $lg) {
+        @container main (min-width: #{$message-container-break}) {
             flex-direction: column;
-            gap: 0.5rem;
         }
     }
 
@@ -68,7 +68,7 @@ function navigate(item) {
         flex: auto;
         transition: background-color 150ms ease;
 
-        @media (min-width: $lg) {
+        @container main (min-width: #{$message-container-break}) {
             justify-content: flex-start;
             flex: 1;
         }
@@ -87,7 +87,7 @@ function navigate(item) {
         font-size: 1.125rem;
         transition: color 150ms ease;
 
-        @media (min-width: $lg) {
+        @container main (min-width: #{$message-container-break}) {
             margin-right: 1rem;
         }
 
@@ -101,7 +101,7 @@ function navigate(item) {
         font-weight: 500;
         display: none;
 
-        @media (min-width: $lg) {
+        @container main (min-width: #{$message-container-break}) {
             display: inline;
         }
 
@@ -123,7 +123,7 @@ function navigate(item) {
         text-align: center;
         display: none;
 
-        @media (min-width: $lg) {
+        @container main (min-width: #{$message-container-break}) {
             display: inline;
         }
     }

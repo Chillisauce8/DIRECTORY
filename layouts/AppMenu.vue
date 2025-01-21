@@ -58,12 +58,12 @@ const model = ref([
             {
                 label: 'Test Form',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/new/testForm'
+                to: '/new/test-Form'
             },
             {
                 label: 'Test Form Field Layout',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/new/testFormLayout'
+                to: '/new/test-form-layout'
             },
 
             {
@@ -79,7 +79,7 @@ const model = ref([
             {
                 label: 'Images Fetching',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/new/imagesfetching'
+                to: '/new/images-fetching'
             }
         ]
     }

@@ -79,7 +79,7 @@ function goBack() {
         gap: 1.5rem;
         border-top: 1px solid var(--surface-200);
 
-        @media (min-width: $md) {
+        @container main (min-width: $md) {
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
@@ -119,7 +119,7 @@ function goBack() {
             gap: 1rem;
             padding: 0 1.5rem;
 
-            @media (min-width: $md) {
+            @container main (min-width: $md) {
                 padding: 0;
             }
 

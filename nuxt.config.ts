@@ -191,8 +191,8 @@ export default defineNuxtConfig({
         'pages:extend': (pages: any[]) => {
             pages.push({
                 name: 'Edit Test Form',
-                path: '/new/testForm/:id',
-                file: '@/pages/new/testForm.vue'
+                path: '/new/test-form/:id',
+                file: '@/pages/new/test-form.vue'
             });
             pages.push({
                 name: 'Market List',

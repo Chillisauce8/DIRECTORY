@@ -236,12 +236,12 @@ function onNavigateToDetailPage(id: string) {
     // Menu Column has odd css to overcome td widths in the grid - could be better!
 
     .star-column {
-        @media (max-width: $md) {
+        @container main (max-width: $md) {
             display: none;
         }
     }
     .important-column {
-        @media (max-width: $md) {
+        @container main (max-width: $md) {
             display: none;
         }
     }
@@ -258,7 +258,7 @@ function onNavigateToDetailPage(id: string) {
         }
     }
     .sender-column {
-        @media (max-width: $lg) {
+        @container main (max-width: #{$message-container-break}) {
             display: none;
         }
 
@@ -276,7 +276,7 @@ function onNavigateToDetailPage(id: string) {
             .mail-info-mobile {
                 font-weight: 600;
                 color: var(--surface-900);
-                @media (min-width: $lg) {
+                @container main (min-width: #{$message-container-break}) {
                     display: none;
                 }
             }
@@ -292,7 +292,7 @@ function onNavigateToDetailPage(id: string) {
     }
     .date-column {
         width: 120px;
-        @media (max-width: $lg) {
+        @container main (max-width: #{$message-container-break}) {
             display: none;
         }
 
@@ -336,7 +336,10 @@ function onNavigateToDetailPage(id: string) {
     .search-field {
         margin-left: auto;
         position: relative;
-        left: 100px;
+
+        @container main (min-width: #{$message-container-break}) {
+            left: 120px;
+        }
     }
 }
 </style>
