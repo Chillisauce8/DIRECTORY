@@ -199,7 +199,7 @@ export default function useBaseArrayFieldControl(props: BaseFieldProps, emits: B
 
   function shouldItemBeConstructed(description: any, index: number) {
     const filedName = description.header ? description.header.name : description.name;
-    const context = sharedFunctions.createInnerFieldContext(filedName, index);
+    const context = sharedFunctions.createInnerFieldContext(props.context, filedName, index);
     return sharedFunctions.shouldBeConstructed(description, context);
   }
 
