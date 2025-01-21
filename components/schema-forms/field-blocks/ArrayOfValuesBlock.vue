@@ -12,29 +12,33 @@
                 </span>
             </label>
 
-            <!-- Loop through each item in the array to create dynamic fields -->
-            <template v-for="(line, index) in vm.model" :key="index">
-                <template v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
-                    <DynamicField
-                        :description="vm.rowDescriptions[index]"
-                        :model="vm.model[index]"
-                        @modelChange="onModelChange($event, index)"
-                        :context="sharedFunctions.createInnerFieldContext(props.context, props.description.name, index)"
-                        :index="index"
-                        :noWrapper="true"
-                        @initDone="onControlInitDone($event)"
-                        :formLabelType="props.formLabelType"
-                        :floatLabelVariant="props.floatLabelVariant"
-                    >
-                        <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()" direction="left" style="position: relative" />
-                    </DynamicField>
-                </template>
-            </template>
+            <TransitionGroup name="form-field">
+              <!-- Loop through each item in the array to create dynamic fields -->
+              <template v-for="(line, index) in vm.model" :key="index">
+                  <template v-if="sharedFunctions.shouldItemBeConstructed(vm.rowDescriptions[index], index)">
+                      <DynamicField
+                          :description="vm.rowDescriptions[index]"
+                          :model="vm.model[index]"
+                          @modelChange="onModelChange($event, index)"
+                          :context="sharedFunctions.createInnerFieldContext(props.context, props.description.name, index)"
+                          :index="index"
+                          :noWrapper="true"
+                          @initDone="onControlInitDone($event)"
+                          :formLabelType="props.formLabelType"
+                          :floatLabelVariant="props.floatLabelVariant"
+                      >
+                          <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()" direction="left" style="position: relative" />
+                      </DynamicField>
+                  </template>
+              </template>
+            </TransitionGroup >
 
-            <!-- Show add button when array is empty -->
-            <div class="empty row start-center" v-if="!vm?.model?.length">
-                <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore()" @click="sharedFunctions.addFirstRow()"> </Button>
-            </div>
+            <Transition name="form-field">
+              <!-- Show add button when array is empty -->
+              <div class="empty row start-center" v-if="!vm?.model?.length">
+                  <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore()" @click="sharedFunctions.addFirstRow()"> </Button>
+              </div>
+            </Transition>
 
             <!-- Validation error messages -->
             <FieldError

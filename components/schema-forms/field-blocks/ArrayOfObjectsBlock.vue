@@ -3,8 +3,10 @@
     <section :class="sharedFunctions.prepareClasses('array')" :id="props.description.id">
         <!-- Only render if initialization is complete and header should be constructed -->
         <template v-if="initDone && sharedFunctions.shouldBeConstructed(props.description.header)" v-show="!props.description.xHideValue">
+
             <!-- Main form fields container -->
             <div class="field-block">
+              <TransitionGroup  name="form-field">
                 <!-- Iterate through each row in the model -->
                 <template v-for="(row, rowIndex) in vm.model" :key="rowIndex">
                     <!-- Header section with title and speed dial actions -->
@@ -57,7 +59,9 @@
                         </template>
                     </template>
                 </template>
+              </TransitionGroup >
 
+              <Transition name="form-field">
                 <!-- Empty state with add buttons -->
                 <div v-if="!vm.model?.length">
                     <div class="array-of-object-header">
@@ -74,6 +78,7 @@
                         <Button icon="pi pi-plus" aria-label="Add First Row" v-if="!sharedFunctions.isReadonly() && sharedFunctions.canAddMore() && !vm.isSelectionMode" @click="addFirstRow()"> </Button>
                     </div>
                 </div>
+              </Transition>
             </div>
 
             <!-- Context menu for selection mode -->
