@@ -185,6 +185,16 @@ Brandon Grotesque - https://fonts.adobe.com/fonts/brandon-grotesque
   src: url('assets/fonts/euclid/EuclidFlex-Bold-WebS.woff2') format('woff2');
 }
 */
+/* Enter animations */
+.form-field-enter-active {
+  animation: fadein 0.5s ease-in forwards, update-height 0.5s ease-in forwards;
+}
+
+/* Leave animations */
+.form-field-leave-active {
+  animation: fadeout 0.5s ease-out forwards, collapse-height 0.5s ease-out forwards;
+}
+
 @keyframes fadein {
   from {
     opacity: 0;
