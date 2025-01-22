@@ -52,7 +52,7 @@ function navigate(item) {
         padding: 0;
         overflow: auto;
 
-        @container main (min-width: #{$message-container-break}) {
+        @container main (min-width: #{$message-container-lg}) {
             flex-direction: column;
         }
     }
@@ -68,7 +68,7 @@ function navigate(item) {
         flex: auto;
         transition: background-color 150ms ease;
 
-        @container main (min-width: #{$message-container-break}) {
+        @container main (min-width: #{$message-container-lg}) {
             justify-content: flex-start;
             flex: 1;
         }
@@ -87,7 +87,7 @@ function navigate(item) {
         font-size: 1.125rem;
         transition: color 150ms ease;
 
-        @container main (min-width: #{$message-container-break}) {
+        @container main (min-width: #{$message-container-lg}) {
             margin-right: 1rem;
         }
 
@@ -101,7 +101,7 @@ function navigate(item) {
         font-weight: 500;
         display: none;
 
-        @container main (min-width: #{$message-container-break}) {
+        @container main (min-width: #{$message-container-lg}) {
             display: inline;
         }
 
@@ -123,7 +123,7 @@ function navigate(item) {
         text-align: center;
         display: none;
 
-        @container main (min-width: #{$message-container-break}) {
+        @container main (min-width: #{$message-container-lg}) {
             display: inline;
         }
     }

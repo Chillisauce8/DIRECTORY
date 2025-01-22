@@ -117,15 +117,16 @@ const currentComponent = computed(() => {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding: 1rem;
     background-color: var(--p-content-background);
 
-    @container main (min-width:  #{$message-container-break}) {
+    @container main (min-width:  #{$message-container-lg}) {
         flex-direction: row;
     }
 
     .sidebar {
         padding: 1rem;
-        @container main (min-width: #{$message-container-break}) {
+        @container main (min-width: #{$message-container-lg}) {
             width: 170px;
         }
     }

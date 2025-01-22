@@ -1,4 +1,6 @@
-<template>
+<!-- // IS this used???
+<
+    template>
     <div class="layout-container">
         <nav class="top-nav-container">
             <TopNav />
@@ -58,3 +60,4 @@ const { layoutConfig, layoutState } = useLayout();
     }
 }
 </style>
+-->

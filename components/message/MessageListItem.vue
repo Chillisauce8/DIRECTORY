@@ -186,7 +186,12 @@ function onNavigateToDetailPage(id: string) {
             <template #body="{ data }">
                 <div class="cell-content cursor-pointer" @click="onNavigateToDetailPage(data.id)" :ref="(el) => registerRowRef(el, data.id)" @mouseenter="toggleRowActions(data.id, true)" @mouseleave="toggleRowActions(data.id, false)">
                     <div class="title-wrapper">
-                        <div class="mail-info-mobile">{{ data.from || data.to }}</div>
+                        <div class="title-top">
+                            <div class="mail-info-mobile">{{ data.from || data.to }}</div>
+                            <div class="date-text-mobile">
+                                {{ data.date }}
+                            </div>
+                        </div>
                         <div class="mail-title">{{ data.title }}</div>
                     </div>
                 </div>
@@ -197,9 +202,9 @@ function onNavigateToDetailPage(id: string) {
             <template #body="{ data }">
                 <div class="cell-content show-date-text" :ref="(el) => registerRowRef(el, data.id)" @mouseenter="toggleRowActions(data.id, true)" @mouseleave="toggleRowActions(data.id, false)">
                     <div class="date-wrapper">
-                        <span class="date-text">
+                        <div class="date-text">
                             {{ data.date }}
-                        </span>
+                        </div>
                         <div class="action-buttons">
                             <Button @click="handleReply(data)" type="button" icon="pi pi-reply" class="action-button" v-tooltip.top="'Reply'" />
                             <Button @click="handleMessageAction('archive', data)" type="button" icon="pi pi-inbox" class="action-button" v-tooltip.top="'Archive'" />
@@ -236,12 +241,12 @@ function onNavigateToDetailPage(id: string) {
     // Menu Column has odd css to overcome td widths in the grid - could be better!
 
     .star-column {
-        @container main (max-width: $md) {
+        @container main (max-width: #{$message-container-md}) {
             display: none;
         }
     }
     .important-column {
-        @container main (max-width: $md) {
+        @container main (max-width:  #{$message-container-md}) {
             display: none;
         }
     }
@@ -258,7 +263,7 @@ function onNavigateToDetailPage(id: string) {
         }
     }
     .sender-column {
-        @container main (max-width: #{$message-container-break}) {
+        @container main (max-width: #{$message-container-lg}) {
             display: none;
         }
 
@@ -268,31 +273,69 @@ function onNavigateToDetailPage(id: string) {
     }
 
     .title-column {
+        min-width: 0;
+        flex: 1;
+
+        .cell-content {
+            min-width: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: var(--call-padding);
+        }
+
         .title-wrapper {
             display: flex;
             flex-direction: column;
+            min-width: 0;
             width: 100%;
+            gap: 0.25rem; // Adds small spacing between title and top info
 
-            .mail-info-mobile {
-                font-weight: 600;
-                color: var(--surface-900);
-                @container main (min-width: #{$message-container-break}) {
-                    display: none;
+            .title-top {
+                display: flex;
+                justify-content: space-between;
+                min-width: 0;
+                width: 100%;
+
+                .date-text-mobile {
+                    @container main (min-width: #{$message-container-md}) {
+                        display: none;
+                    }
+                }
+
+                .mail-info-mobile {
+                    font-weight: 600;
+                    color: var(--surface-900);
+                    @container main (min-width: #{$message-container-lg}) {
+                        display: none;
+                    }
                 }
             }
 
             .mail-title {
+                width: 100%;
                 font-weight: 500;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                max-width: 30rem;
+                //    white-space: nowrap;
+                //    overflow: hidden;
+                //    text-overflow: ellipsis;
+                max-width: 100%;
+                //  padding-right: 1rem; // Gives some space at the end of truncated text
+            }
+        }
+
+        // Handle search field in header
+        .search-field {
+            margin-left: auto;
+            position: relative;
+
+            @container main (min-width: #{$message-container-md}) {
+                left: 120px;
             }
         }
     }
     .date-column {
         width: 120px;
-        @container main (max-width: #{$message-container-break}) {
+        @container main (max-width: #{$message-container-md}) {
             display: none;
         }
 
@@ -337,7 +380,7 @@ function onNavigateToDetailPage(id: string) {
         margin-left: auto;
         position: relative;
 
-        @container main (min-width: #{$message-container-break}) {
+        @container main (min-width: #{$message-container-md}) {
             left: 120px;
         }
     }
