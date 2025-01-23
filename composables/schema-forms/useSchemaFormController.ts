@@ -204,6 +204,7 @@ export default function useSchemaFormController(formName: string, fields?: Objec
     let knownFields = vm.schemaFormsBuildHelper.schemaParser.getAllPaths();
 
     knownFields.push('title');
+    knownFields.push('_id');
     knownFields.push('_type');
     knownFields.push('_hash');
     knownFields.push('_metadata');
