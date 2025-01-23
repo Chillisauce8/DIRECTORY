@@ -1,6 +1,6 @@
 <template>
-    <grid-container-events
-        v-model:selected-categories="selectedCategories"
+    <grid-container
+        functionControlDisplay="icon"
         :filters="[
             {
                 field: 'categories',
@@ -8,12 +8,15 @@
                 selected: selectedCategories
             }
         ]"
-        functionControlDisplay="icon"
         :visibleFunctionControls="['view', 'select', 'edit', 'order']"
         defaultFunctionControl="view"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
         :show="selectedMediaShowOptions"
+        :listings="listingList"
+        :category-options="categoryOptions"
+        :listing-collection="collectionName"
+        :on-item-created="handleItemCreated"
     >
         <template #controls>
             <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
@@ -22,46 +25,57 @@
             <SearchControl :search-fields="searchFields" />
         </template>
 
-        <template #card="{ event, mode: cardMode, selected, show, onNameUpdate, onCategoriesUpdate, onEventSelectionUpdate }">
+        <template #card="{ listing, mode: cardMode, selected, show, onListingSelectionUpdate }">
             <TaskCard
-                :id="event._id"
-                :imageId="event.files[0]?.id"
-                :name="event.name"
-                :description="event.description"
-                :vehicles="event.vehicles"
-                :status="event.status"
-                :files="event.files"
-                :start="event.start"
-                :end="event.end"
-                :duration="event.duration"
+                :id="listing.id"
+                :imageId="listing.files?.[0]?.id"
+                :name="listing.name"
+                :description="listing.description"
+                :vehicles="listing.vehicles"
+                :status="listing.status"
+                :files="listing.files"
+                :start="listing.start"
+                :end="listing.end"
+                :duration="listing.duration"
                 :mode="cardMode"
                 :selected="selected"
                 :show="show"
-                :categories="event.categories"
-                @update:name="onNameUpdate"
-                @update:categories="onCategoriesUpdate"
-                @update:selected="onEventSelectionUpdate"
+                :categories="listing.categories"
+                :data-item="listing.dbNode"
+                @update:data-item="
+                    onDbNodeUpdate($event);
+                    onListingSelectionUpdate(false);
+                "
             />
         </template>
 
         <template #edit-controls>
             <EditArrayControl :options="categoryOptions" editField="categories" class="edit-array-control w-full md:w-80" />
         </template>
-    </grid-container-events>
+    </grid-container>
 </template>
 
 <script setup lang="ts">
+import { Listing } from '~/composables/useListControls';
+import GridContainer from '~/components/grids/common/GridContainer.vue';
+
+const collectionName = 'events'; // Changed from 'tasks' to 'events'
+
+const { listingList, updateDbNodeInListingList } = await useGrid({
+    collectionName,
+    prepareListingItem
+});
+
 const selectedCategories = ref([]);
 const selectedMediaShowOptions = ref(['name', 'categories', 'description', 'start']);
 const categoryOptions = useCategories();
 
-// Update mediaShowOptions to include all available fields
 const mediaShowOptions = ['name', 'categories', 'description', 'vehicles', 'start', 'status'];
 
 const mediaSortOptions = [
     { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
     { label: 'Name (Z-A)', sort: 'name', order: 'desc' }
-] as { label: string; sort: string; order: 'asc' | 'desc' }[]; // Remove the as const
+] as { label: string; sort: string; order: 'asc' | 'desc' }[];
 
 const filterControlConfig = {
     display: 'chip',
@@ -77,13 +91,32 @@ const searchFields = [
     { field: 'categories', label: 'Categories' }
 ];
 
+function prepareListingItem(task: any): Listing<any> {
+    return {
+        id: task._id,
+        name: task.name,
+        description: task.description,
+        vehicles: task.vehicles || [],
+        status: task.status || [],
+        files: task.files || [],
+        start: task.start,
+        end: task.end,
+        duration: task.duration,
+        categories: task.categories || [],
+        dbNode: task
+    };
+}
+
+function onDbNodeUpdate(dbNode: any) {
+    updateDbNodeInListingList(dbNode);
+}
+
+async function handleItemCreated(newItem: any) {
+    const listing = prepareListingItem(newItem);
+    listingList.value = [...listingList.value, listing];
+}
+
 function test(v: string[]) {
     console.log(v);
 }
-
-// Remove these as they're not needed anymore
-// const emit = defineEmits<{
-//     'update:selected': [payload: { id: string; selected: boolean }];
-// }>();
-// function handleItemSelection(id: string, selected: boolean) { ... }
 </script>

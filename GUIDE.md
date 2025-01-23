@@ -1,141 +1,87 @@
 # AI Style Guide for Nuxt 3 / Vue 3 Application
 
-## Overview
-
-This document provides style and coding standards to ensure consistent, clean, and maintainable code in the Nuxt 3 / Vue 3 application.
-
-### Key Context
+## Project Overview
 
 -   **Framework:** Nuxt 3 with Vue 3
 -   **Language:** TypeScript
--   **UI Library:** [PrimeVue](https://primevue.org/)
+-   **UI Library:** PrimeVue
 -   **Styling:** SCSS with native CSS variables
--   **Database:** MongoDB with its native driver
+-   **Database:** MongoDB (native driver)
 -   **Form Validation:** Vuelidate
+-   **Testing:** Vitest
 
----
+## Core Development Standards
 
-## Coding Best Practices
+### Component Structure
 
-### General Guidelines
+1. Use `<script setup lang="ts">` exclusively for component scripts
+2. Follow component naming conventions:
+    - Files: PascalCase (e.g., `MyComponent.vue`)
+    - Root element class: kebab-case (e.g., `my-component`)
 
-1. Follow Nuxt 3's best practices for:
-    - Folder structure
-    - File naming conventions
-    - Code formatting
-2. Adhere to the **DRY (Don't Repeat Yourself)** principle.
-3. Write clear and concise comments explaining the purpose and behavior of code blocks.
-4. Use `<script setup lang="ts">` exclusively for scripts in components.
+### CSS Standards
 
----
+1. Structure
 
-#CSS
+    - Use `<style lang="scss">` without `scoped`
+    - Employ native CSS nesting
+    - Match CSS nesting to component structure
+    - Keep styles DRY (Don't Repeat Yourself)
 
-## Component Styling
-
-### Structure
-
--   **Style Tags:**
-    ```html
-    <style lang="scss"></style>
-    ```
--   **Outer Wrapper Class:**
-    The root element of each component must have a class named after the component in kebab-case.  
-    For example:
-    ```html
-    <template>
-        <div class="my-component">...</div>
-    </template>
-    ```
--   **CSS Nesting:**  
-    Use native CSS nesting to scope styles within the component class. Example:
+2. Class Organization
 
     ```scss
-    .my-component {
-        // styles
-        .child-element {
-            // styles
-            .grandchild-element {
-                // styles
-                .great-grandchild-element {
-                    // styles
-                }
-            }
+    // Helper Classes
+    // Reusable utility classes here
+
+    // Semantic Classes - in Template order
+    .component-name {
+        // Component styles following template structure
+    }
+    ```
+
+3. Variables
+
+    - Use CSS variables for theming:
+        ```css
+        :root {
+            --primary-color: #3498db;
         }
-    }
-    ```
+        ```
+    - Use SASS variables for breakpoints only:
+        - $sm, $md, $lg, $xl, $xxl (2xl)
+    - Define SASS variables in external .scss files only
 
--   Nest the css as close as possible and sensible to the HTML component structure (where html elements have named classes).
--   Simplify CSS and ensure that you use inheritance as part of the nesting structure.
--   Avoid `scoped` attributes in `<style>` tags to prevent conflicts with advanced nesting.
+4. Best Practices
+    - No inline styles
+    - No scoped styles
+    - No component-level SASS variables
+    - No CSS variables in media queries
 
-### Class Naming
+### Database Guidelines
 
--   Keep class names short and simple.
--   Avoid the BEM (Block Element Modifier) naming convention as native CSS nesting is used.
+-   Use MongoDB native driver
+-   Create modular, reusable database operations
 
----
+### Testing
 
-## CSS Guidelines
+-   Use Vitest for unit testing
+-   Store tests in `/tests/unit/` directory
 
-1. Use **native CSS variables** for reusability and customization:
-    ```css
-    :root {
-        --primary-color: #3498db;
-    }
-    ```
-2. Avoid SASS variables in favor of CSS variables.
-3. Clearly define classes for all HTML elements that require styling.
-4. Never use inline style - add a semantic class name and add the associated style in the <style>
-5. When replacing screen responsive media querys written in tailwind class ( https://tailwindcss.com/docs/responsive-design ) - convert them to the following sass variables:
+### Form Validation
 
-sm -> $sm
-md -> $md
-lg -> $lg
-xl -> $xl
-2xl -> $xxl ($2xl is not valid sass variable name - therefore $xxl)
+-   Implement using Vuelidate
+-   Provide clear error messages
 
-6. Do NOT re-define these sass variables (or any other sass variable) in individual components. ALL sass variables are defined in external .scss files.
-7. Ensure not to use css variables within media queries as they don't currently work (hence why we use sass variables instead)
-8. Important - Order the 'sematic' classes in the <style> tag in the same order as they appear in tbe <Template - including the nesting. This makes it easy to compare, navigate and cross reference. NOTE - Semantic classes are usually unique - unlike helper classes. Where a class is a helper class rather than semantic class DO NOT include it in the nesting as this will cause duplication. Keep the css code DRY.
-9. Add the helper classes above all the sematic classes.
-10. Add a comment above the helper classes: // Helper Classes
-11. Add a comment above the semantic classes: // Sematic Classes - in Template order
+## Important Rules
 
----
+1. Never replace existing code with placeholder comments
+2. Always provide complete code changes
+3. Follow Nuxt 3's folder structure conventions
+4. Write clear, concise comments
+5. Regularly refactor for maintainability
 
-## Validation
+## Additional Resources
 
--   Form validation is implemented using **Vuelidate**.
--   Ensure clear and actionable validation error messages are displayed to users.
-
----
-
-## Database
-
--   The database used is **MongoDB** with its native driver.
--   Write reusable and modular database operations to simplify maintenance.
-
----
-
-## Alerts for Non-Standard Practices
-
--   If file naming, folder structure, or any other conventions deviate from Nuxt 3's best practices:
-    -   Alert the user with a clear explanation.
-    -   Provide a recommended solution.
-
----
-
-## Additional Notes
-
--   Aim for **simplicity and readability** in all code.
--   Regularly review and refactor code to maintain quality.
--   Consult the Nuxt 3 documentation for updates and refinements in best practices.
-
-# IMPORTANT Notes
-
-1. NEVER remove existing code from components and replace with comments like // ...existing props... OR //...exisitng code. ALWAYS make sure the correct code is replaced or added in FULL ! THIS IS VITALLY IMPORTANT!!
-
----
-
-**End of Style Guide**
+-   [PrimeVue Documentation](https://primevue.org/)
+-   [Nuxt 3 Best Practices](https://nuxt.com/docs/guide/concepts/auto-imports)
