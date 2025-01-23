@@ -6,6 +6,7 @@
 
 <script setup lang="ts">
 import type { BaseValidation, Validation } from '@vuelidate/core';
+import { getTopValidationError } from '~/service/forms-validators';
 
 interface CSErrorProps {
     // Support both single validation and multiple validations
