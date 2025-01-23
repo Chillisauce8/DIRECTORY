@@ -23,7 +23,7 @@ import { ref, computed } from 'vue';
 /* Define component props */
 const props = defineProps({
     id: { type: String, required: true },
-    mode: { type: String, default: '' },
+    mode: { type: String, default: '', required: false },
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     selected: { type: Boolean, required: true },

@@ -63,7 +63,9 @@ const { listingList, updateDbNodeInListingList } = await useGrid({
     prepareListingItem
 });
 
-const categoryOptions = ref<any[]>(listingList.value.filter(({ dbNode }) => dbNode.type === 'Category Group').map(({ dbNode }) => ({ id: dbNode._doc, name: dbNode.name })));
+const categoryOptions = ref<any[]>(listingList.value
+  .filter(({ dbNode }) => dbNode.type === 'Category Group')
+  .map(({ dbNode }) => ({ id: dbNode._id, name: dbNode.name })));
 const selectedCategories = ref([]);
 const selectedCategoryShowOptions = ref(['name']);
 
@@ -86,7 +88,7 @@ const searchFields = [{ field: 'name', label: 'Name' }];
 
 function prepareListingItem(category: CategoryDbNode): Listing<any> {
     return {
-        id: category._doc,
+        id: category._id,
         name: category.name,
         type: category.type,
         categoryGroup: category.categoryGroup,
@@ -107,7 +109,7 @@ async function handleItemCreated(newItem: any) {
 
     // If it's a category group, update options
     if (newItem.type === 'Category Group') {
-        categoryOptions.value = [...categoryOptions.value, { id: newItem._doc, name: newItem.name }];
+        categoryOptions.value = [...categoryOptions.value, { id: newItem._id, name: newItem.name }];
     }
 }
 </script>

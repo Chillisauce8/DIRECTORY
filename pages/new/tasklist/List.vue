@@ -82,6 +82,7 @@ const handleSave = (savedData) => {
                 </div>
             </li>
         </ul>
-        <CrudControl ref="crudControlRef" collection="events" function="update" :initialItem="clickedTask" :itemId="clickedTask?._doc" noButton @save="handleSave" />
+        <CrudControl ref="crudControlRef" collection="events" function="update" :initialItem="clickedTask"
+                     :itemId="clickedTask?._id" noButton @save="handleSave" />
     </div>
 </template>

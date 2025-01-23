@@ -439,7 +439,6 @@ export class XFeaturesHelper {
     // TODO: SUPPLIER
     // if (this.currentSupplier?.getId()) {
     //   globalContext['supplier'] = {
-    //     '_doc': this.currentSupplier.getId(),
     //     'id': this.currentSupplier.getId(),
     //     'name': this.currentSupplier.getName(),
     //   };

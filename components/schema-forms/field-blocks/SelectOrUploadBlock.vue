@@ -77,11 +77,13 @@
                 <!--        </FileUpload>-->
             </div>
 
-            <OrderList v-if="vm.model?.length" v-model="vm.model" dataKey="_doc" breakpoint="575px" scrollHeight="20rem" @update:selection="listSelectionChanged($event)">
+            <OrderList v-if="vm.model?.length" v-model="vm.model" dataKey="_id" breakpoint="575px" scrollHeight="20rem"
+                       @update:selection="listSelectionChanged($event)">
                 <template #item="{ item, index }">
                     <div class="flex flex-wrap p-1 items-center gap-4 w-full">
                         <template v-if="item.type === FileType.Image">
-                            <ImageWrapper class="shrink-0 rounded" :id="item._doc" :alt="item.name" :width="30" :height="30" dpr="1" :singleImage="true" />
+                            <ImageWrapper class="shrink-0 rounded" :id="item._id" :alt="item.name" :width="30"
+                                          :height="30" dpr="1" :singleImage="true" />
                         </template>
 
                         <div class="flex flex-col">
@@ -166,11 +168,11 @@ async function loadFilteredFiles() {
 function openSelectImageDialog() {
     showSelectDialog.value = true;
 
-    const modelIdList = vm.model.map((item: any) => item._doc);
+    const modelIdList = vm.model.map((item: any) => item._id);
 
     if (filteredFiles.value) {
         for (const item of filteredFiles.value) {
-            if (modelIdList.includes(item._doc)) {
+            if (modelIdList.includes(item._id)) {
                 item.selected = true;
             } else {
                 item.selected = false;
@@ -182,36 +184,37 @@ function openSelectImageDialog() {
 function handleAddFiles() {
     showSelectDialog.value = false;
 
-    const selectedFiles: any = filteredFiles.value.filter((item: any) => item.selected).map((item: any) => pick(item, ['_doc', 'name', 'description', 'rating', 'type']));
+    const selectedFiles: any = filteredFiles.value.filter((item: any) => item.selected).map((item: any) => pick(item,
+      ['_id', 'name', 'description', 'rating', 'type']));
 
     if (!vm.model) {
         vm.model = [];
     }
 
-    const selectedFilesIdList = selectedFiles.map((item: any) => item._doc);
+    const selectedFilesIdList = selectedFiles.map((item: any) => item._id);
 
     vm.model = vm.model.filter((item: any) => {
-        if (selectedFilesIdList.includes(item._doc)) {
+        if (selectedFilesIdList.includes(item._id)) {
             return true;
         }
 
         return false;
     });
 
-    const modelIdList = vm.model.map((item: any) => item._doc);
+    const modelIdList = vm.model.map((item: any) => item._id);
 
     for (const selectedFile of selectedFiles) {
-        if (!modelIdList.includes(selectedFile._doc)) {
+        if (!modelIdList.includes(selectedFile._id)) {
             vm.model.push(selectedFile);
         }
     }
 }
 
 function listSelectionChanged($event: any[]) {
-    const modelIdList = vm.model.map((item: any) => item._doc);
+    const modelIdList = vm.model.map((item: any) => item._id);
 
     const value = $event.filter((item: any) => {
-        if (modelIdList.includes(item._doc)) {
+        if (modelIdList.includes(item._id)) {
             return true;
         }
 
@@ -222,10 +225,10 @@ function listSelectionChanged($event: any[]) {
 }
 
 function removeSelectedImages() {
-    const selectedFilesIdList = selectedFiled.value.map((item: any) => item._doc);
+    const selectedFilesIdList = selectedFiled.value.map((item: any) => item._id);
 
     vm.model = vm.model.filter((item: any) => {
-        if (selectedFilesIdList.includes(item._doc)) {
+        if (selectedFilesIdList.includes(item._id)) {
             return false;
         }
 
@@ -233,10 +236,10 @@ function removeSelectedImages() {
     });
 
     if (selectedFiled.value) {
-        const modelIdList = vm.model.map((item: any) => item._doc);
+        const modelIdList = vm.model.map((item: any) => item._id);
 
         const value = selectedFiled.value.filter((item: any) => {
-            if (modelIdList.includes(item._doc)) {
+            if (modelIdList.includes(item._id)) {
                 return true;
             }
 
@@ -325,7 +328,7 @@ function removeSelectedImages() {
 //     const result = await fileUploaderService.upload(config);
 //
 //     if (result) {
-//       const model = pick(result, ['_doc', 'name', 'description', 'rating', 'type']);
+//       const model = pick(result, ['_id', 'name', 'description', 'rating', 'type']);
 //       vm.model.push(model);
 //
 //       loadFilteredFiles();
@@ -381,7 +384,7 @@ function removeSelectedImages() {
 
 function onFileUploaded(result) {
     if (result) {
-        const model = pick(result, ['_doc', 'name', 'description', 'rating', 'type']);
+        const model = pick(result, ['_id', 'name', 'description', 'rating', 'type']);
         vm.model.push(model);
 
         loadFilteredFiles();

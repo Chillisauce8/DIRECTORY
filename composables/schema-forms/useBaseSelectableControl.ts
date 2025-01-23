@@ -249,7 +249,7 @@ export default function useBaseSelectableControl(props: BaseControlProps, emits:
         return item && values.indexOf(item.value || item) !== -1;
       });
 
-      // if (vm.model.length === 0 && !props.context.resultModel._doc) {
+      // if (vm.model.length === 0 && !props.context.resultModel._id) {
       //   vm.model = null;
       // }
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface thisItem {
-    _doc: string;
+    _id: string;
 }
 
 import { ref, onBeforeMount } from 'vue';
@@ -20,7 +20,7 @@ function onDataItemMounted(result: { hooks: any }) {
 }
 
 const onDeleteItem = async (deletedItem: thisItem) => {
-    await deleteRawFunc(deletedItem._doc);
+    await deleteRawFunc(deletedItem._id);
     reloadData();
 };
 
@@ -65,8 +65,8 @@ function reloadData() {
         <!-- Remove this since functionality is now in AddControl -->
         <!-- <DataItem
             collection="events"
-            :function="selectedItem?._doc ? 'update' : 'create'"
-            :id="selectedItem?._doc"
+            :function="selectedItem?._id ? 'update' : 'create'"
+            :id="selectedItem?._id"
             :initialItem="selectedItem"
             @save="reloadData"
             @delete="reloadData"

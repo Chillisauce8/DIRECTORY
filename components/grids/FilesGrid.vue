@@ -87,7 +87,7 @@ const { listingList, updateDbNodeInListingList } = await useGrid({
 
 const categoryList = await categoriesService.getList();
 
-const categoryOptions = ref<any[]>(categoryList.map((category) => ({ id: category._doc, name: category.name })));
+const categoryOptions = ref<any[]>(categoryList.map((category) => ({ id: category._id, name: category.name })));
 const selectedCategories = ref([]);
 const selectedFilesShowOptions = ref(['name']);
 
@@ -115,10 +115,10 @@ const fileDialog = ref(false);
 
 function prepareListingItem(file: FileDbNode): Listing<FileDbNode> {
     return {
-        id: file._doc,
+        id: file._id,
         name: file.name,
         categories: file?.categories ?? [],
-        images: file.type !== FileType.Document ? [{ id: file._doc, alt: file.name }] : [],
+        images: file.type !== FileType.Document ? [{ id: file._id, alt: file.name }] : [],
         dbNode: file
     };
 }

@@ -3,12 +3,11 @@ import type {HttpService} from '~/service/http/http.service';
 import {httpService} from '~/service/http/http.service';
 
 
-export type DbNodeIDFields = '_id' | '_doc';
+export type DbNodeIDFields = '_id';
 
 
 export interface DbNode {
   _id: string;
-  _doc: string;
   [prop: string]: any;
 }
 
@@ -44,7 +43,7 @@ export class DbNodeCRUDService {
   }
 
   async delete<Node extends DbNode = any>(collectionName: string, dbNode: DbNode): Promise<Node> {
-    const id = dbNode?._doc ?? dbNode?._id;
+    const id = dbNode?._id;
 
     return this.httpService.delete<Node>(`/api/delete/${collectionName}/${id}`)
       .then(({data}) => data as Node);

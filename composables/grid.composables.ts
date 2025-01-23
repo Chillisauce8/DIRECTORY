@@ -51,11 +51,11 @@ export async function useGrid<DBNode extends DbNode = any>(config: GridConfig<DB
 
   function updateDbNodeInListingList(dbNode: DBNode) {
     listingList.value = listingList.value
-      .map(l => l.id === dbNode._doc ? prepareListingItem(dbNode) : l) as Listing<DBNode>[];
+      .map(l => l.id === dbNode._id ? prepareListingItem(dbNode) : l) as Listing<DBNode>[];
   }
 
   function removeDbNodeFromListingList(dbNode: DBNode) {
-    listingList.value = listingList.value.filter(l => l.id !== dbNode._doc);
+    listingList.value = listingList.value.filter(l => l.id !== dbNode._id);
   }
 
   async function handleCreateNode(dbNode: DBNode) {

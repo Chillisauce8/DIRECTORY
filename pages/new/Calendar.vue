@@ -69,7 +69,9 @@ const handleSave = async () => {
 
                 <FullCalendar :events="events" :options="options" />
 
-                <CrudControl ref="crudControlRef" collection="events" :function="selectedEvent?._doc ? 'update' : 'create'" :initialItem="selectedEvent" :itemId="selectedEvent?._doc" noButton @save="handleSave" />
+                <CrudControl ref="crudControlRef" collection="events" :function="selectedEvent?._id ?
+                  'update' : 'create'" :initialItem="selectedEvent" :itemId="selectedEvent?._id"
+                             noButton @save="handleSave" />
             </div>
         </div>
     </div>

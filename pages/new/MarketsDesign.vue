@@ -66,7 +66,6 @@ const breadcrumb = ref([{ label: 'Austin-Healey' }, { label: '100' }, { label: '
 
 const market = ref({
     _id: '669a4824b66b93c06179784c',
-    _doc: '669a4824b66b93c06179784a',
     name: 'Austin-Healey 100M',
     years: ['1955', '1956'],
     classicUrl: 'https://www.classic.com/m/austin-healey/100/bn2/100m',
@@ -115,7 +114,6 @@ const market = ref({
 const markets = ref([
     {
         _id: '669a481cb66b93c061797819',
-        _doc: '669a481cb66b93c061797817',
         name: 'Austin-Healey 100-6 - BN4',
         years: ['1956', '1957', '1958', '1959'],
         classicUrl: 'https://www.classic.com/m/austin-healey/100-6/bn4',
@@ -157,7 +155,6 @@ const markets = ref([
     },
     {
         _id: '669a481db66b93c06179781f',
-        _doc: '669a481db66b93c06179781d',
         name: 'Austin-Healey Sprite - Mk I',
         years: ['1958', '1959', '1960', '1961'],
         classicUrl: 'https://www.classic.com/m/austin-healey/sprite/mk-i',
@@ -199,7 +196,6 @@ const markets = ref([
     },
     {
         _id: '669a481eb66b93c061797828',
-        _doc: '669a481eb66b93c061797826',
         name: 'Austin-Healey Sprite - Mk II',
         years: ['1961', '1962', '1963', '1964'],
         classicUrl: 'https://www.classic.com/m/austin-healey/sprite/mk-ii',
@@ -241,7 +237,6 @@ const markets = ref([
     },
     {
         _id: '669a4820b66b93c061797831',
-        _doc: '669a4820b66b93c06179782f',
         name: 'Austin-Healey 100 - BN2',
         years: ['1955', '1956'],
         classicUrl: 'https://www.classic.com/m/austin-healey/100/bn2',
@@ -283,7 +278,6 @@ const markets = ref([
     },
     {
         _id: '669a481bb66b93c061797810',
-        _doc: '669a481ab66b93c06179780e',
         name: 'Austin-Healey 100-6',
         years: ['1956', '1957', '1958', '1959'],
         classicUrl: 'https://www.classic.com/m/austin-healey/100-6',
@@ -320,7 +314,6 @@ const markets = ref([
     },
     {
         _id: '669a4823b66b93c061797846',
-        _doc: '669a4823b66b93c061797844',
         name: 'Austin-Healey 100S',
         years: ['1953'],
         classicUrl: 'https://www.classic.com/m/austin-healey/100/bn1/100s',
@@ -367,7 +360,6 @@ const markets = ref([
     },
     {
         _id: '669a4824b66b93c06179784c',
-        _doc: '669a4824b66b93c06179784a',
         name: 'Austin-Healey 100M',
         years: ['1955', '1956'],
         classicUrl: 'https://www.classic.com/m/austin-healey/100/bn2/100m',
@@ -477,7 +469,6 @@ const listings = ref([
             marketId: '669a4825b66b93c061797850',
             modificationHistory: ['2024-07-26']
         },
-        _doc: '66aa30548c33c087a26eca9e',
         created: {
             userType: 'auto',
             isSwp: false,
@@ -553,7 +544,6 @@ const listings = ref([
             marketId: '669a481fb66b93c06179782c',
             modificationHistory: ['2024-07-28']
         },
-        _doc: '66aa313d8c33c087a26ed0e3',
         created: {
             userType: 'auto',
             isSwp: false,
@@ -628,7 +618,6 @@ const listings = ref([
             marketId: '669a4821b66b93c061797838',
             modificationHistory: []
         },
-        _doc: '66abc9ae7041acb7204a6d20',
         created: {
             userType: 'auto',
             isSwp: false,
@@ -703,7 +692,6 @@ const listings = ref([
             marketId: '669a481eb66b93c061797826',
             modificationHistory: []
         },
-        _doc: '66abcb4bb89674a5a26f28c6',
         created: {
             userType: 'auto',
             isSwp: false,
@@ -778,7 +766,6 @@ const listings = ref([
             marketId: '669a4824b66b93c06179784a',
             modificationHistory: []
         },
-        _doc: '66aca51be5767fd572ffe50a',
         created: {
             userType: 'auto',
             isSwp: false,

@@ -2,7 +2,7 @@
   <DataItem class="edit-form"
             function="update"
             :collection="props.collection"
-            :id="props.dataItem._doc"
+            :id="props.dataItem._id"
             :fields="props.fields"
             :initial-data="props.dataItem"
             @changed="onDataItemChange">
@@ -13,7 +13,6 @@
 <script setup lang="ts">
 interface DataItem {
   _id: string;
-  _doc: string;
   [prop: string]: any;
 }
 

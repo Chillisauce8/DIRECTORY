@@ -22,7 +22,7 @@
                     </SchemaForm>
 
                     <div class="form-button-container">
-                        <Button v-if="props.deleteButton && props.initialItem?._doc" class="delete-button form-button" icon="pi pi-trash" v-bind="{ ...defaultDeleteButtonProps, ...props.deleteButtonProps }" @click="handleDelete" />
+                        <Button v-if="props.deleteButton && props.initialItem?._id" class="delete-button form-button" icon="pi pi-trash" v-bind="{ ...defaultDeleteButtonProps, ...props.deleteButtonProps }" @click="handleDelete" />
                         <Button v-if="props.cancelButton" class="cancel-button form-button" icon="pi pi-times" v-bind="{ ...defaultCancelButtonProps, ...props.cancelButtonProps }" @click="cancelForm" />
                         <Button v-if="props.saveButton" class="save-button form-button" icon="pi pi-check" v-bind="{ ...defaultSaveButtonProps, ...props.saveButtonProps }" @click="saveModel" />
                     </div>
@@ -52,7 +52,7 @@
                     >
                     </SchemaForm>
                     <div class="form-button-container">
-                        <Button v-if="props.deleteButton && props.initialItem?._doc" class="delete-button form-button" icon="pi pi-trash" v-bind="{ ...defaultDeleteButtonProps, ...props.deleteButtonProps }" @click="handleDelete" />
+                        <Button v-if="props.deleteButton && props.initialItem?._id" class="delete-button form-button" icon="pi pi-trash" v-bind="{ ...defaultDeleteButtonProps, ...props.deleteButtonProps }" @click="handleDelete" />
                         <Button v-if="props.cancelButton" class="cancel-button form-button" icon="pi pi-times" v-bind="{ ...defaultCancelButtonProps, ...props.cancelButtonProps }" @click="cancelForm" />
                         <Button v-if="props.saveButton" class="save-button form-button" icon="pi pi-check" v-bind="{ ...defaultSaveButtonProps, ...props.saveButtonProps }" @click="saveModel" />
                     </div>
@@ -275,8 +275,8 @@ const item = ref({}); // Changed from task
 // Watch for changes in the form
 function onModelChange(value: any) {
     // When form data changes, update our local copy and preserve ID if updating
-    if (props.function === 'update' && props.initialItem?._doc) {
-        item.value = { ...value, _doc: props.initialItem._doc };
+    if (props.function === 'update' && props.initialItem?._id) {
+        item.value = { ...value, _id: props.initialItem._id };
     } else {
         item.value = value;
     }
@@ -292,8 +292,8 @@ async function saveModel() {
     try {
         // Handle both create and update cases
         // For updates, ensure we're using the correct function and ID
-        if (props.function === 'update' && props.initialItem?._doc) {
-            const savedData = await sharedFunctions.save({ ...item.value, _doc: props.initialItem._doc });
+        if (props.function === 'update' && props.initialItem?._id) {
+            const savedData = await sharedFunctions.save({ ...item.value, _id: props.initialItem._id });
 
             if (!savedData) {
               return;
@@ -341,8 +341,8 @@ function cancelForm() {
 async function handleDelete() {
     try {
         // Delete item and clean up form
-        if (props.initialItem?._doc) {
-            await sharedFunctions.deleteTarget(props.initialItem._doc);
+        if (props.initialItem?._id) {
+            await sharedFunctions.deleteTarget(props.initialItem._id);
             emits('delete');
 
             // Reset form state
@@ -368,7 +368,6 @@ watch(
         // Update form when initial item changes
         selectedItem.value = newItem;
         if (newItem) {
-            // Ensure we preserve the _doc ID when setting the model
             vm.model = { ...newItem };
             item.value = { ...newItem };
         }

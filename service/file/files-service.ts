@@ -11,7 +11,6 @@ export interface FileImageInfo {
 
 export interface FileDbNode {
     _id: string;
-    _doc: string;
     name: string;
     type: FileType;
     categories: any[],

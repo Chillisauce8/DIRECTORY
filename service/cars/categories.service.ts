@@ -18,7 +18,6 @@ interface ImageRelator {
 
 export interface CategoryDbNode {
     _id: string;
-    _doc: string;
     name: string;
     type: string;
     categoryGroup: CategoryRelator;

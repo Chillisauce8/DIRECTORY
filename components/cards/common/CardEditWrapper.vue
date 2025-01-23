@@ -1,7 +1,7 @@
 <template>
     <transition name="card-edit">
         <div class="card-edit-wrapper" v-if="showWrapper">
-            <CrudControl :collection="collection" function="update" :dialogEdit="false" :itemId="dataItem._doc"
+            <CrudControl :collection="collection" function="update" :dialogEdit="false" :itemId="dataItem._id"
                          :initialItem="dataItem" noButton preventDefault @save="onSave" />
         </div>
     </transition>

@@ -138,7 +138,7 @@ export class ListingsService {
       },
       h: {
         $fields: {
-          '_doc': 1,
+          '_id': 1,
           'content': 1,
           'sale': 1,
           'spec': 1,

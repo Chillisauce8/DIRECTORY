@@ -719,12 +719,6 @@ export default function useBaseField(props: BaseFieldProps, emits: BaseFieldEmit
         sharedFunctions.correctExistingRelatorsValue();
       }
 
-      // if (Array.isArray(vm.model)) {
-      //   if (vm.model.length === 0 && !props.context.resultModel._doc) {
-      //     vm.model = undefined;
-      //   }
-      // }
-
       sharedFunctions.fillEmptyModel();
     }
   }

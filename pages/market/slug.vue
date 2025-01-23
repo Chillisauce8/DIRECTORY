@@ -125,7 +125,7 @@ async function init() {
   const marketSlugList = market.value.path.map(i => i.slug);
 
   breadcrumb.value = breadcrumbParts;
-  marketList.value = await marketsService.getSubMarketList(market.value._doc);
+  marketList.value = await marketsService.getSubMarketList(market.value._id);
   listingList.value = await listingsService.getListingListForMarket(marketSlugList);
 }
 

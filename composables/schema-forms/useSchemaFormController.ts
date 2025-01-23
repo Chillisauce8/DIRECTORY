@@ -104,7 +104,7 @@ export default function useSchemaFormController(formName: string, fields?: Objec
 
     saveRaw: async (dataToSave: any): Promise<void> => {
       let savePromise;
-      if (dataToSave?._doc) {
+      if (dataToSave?._id) {
         savePromise = sharedFunctions.updateTarget(dataToSave);
       } else {
         savePromise = sharedFunctions.createTarget(dataToSave);
@@ -155,7 +155,7 @@ export default function useSchemaFormController(formName: string, fields?: Objec
           // toast.add({ severity: 'success', summary: 'Success Message', detail: 'Saved Successfully', life: 3000 });
 
           if (!sharedFunctions.isEditMode()) {
-            sharedFunctions.onCreated(data?._doc ?? data?.id ?? data?.public_id);
+            sharedFunctions.onCreated(data?._id ?? data?.id ?? data?.public_id);
           } else if (sharedFunctions.needPageReload()) {
             setTimeout(() => window.location.reload(), 100);
           }
@@ -204,7 +204,6 @@ export default function useSchemaFormController(formName: string, fields?: Objec
     let knownFields = vm.schemaFormsBuildHelper.schemaParser.getAllPaths();
 
     knownFields.push('title');
-    knownFields.push('_doc');
     knownFields.push('_type');
     knownFields.push('_hash');
     knownFields.push('_metadata');

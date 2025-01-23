@@ -20,7 +20,6 @@ interface MarketMeta {
 
 export interface Market {
   _id?: string;
-  _doc?: string;
   name: string;
   path: MarketPathItem[];
   years: string[];
@@ -31,7 +30,7 @@ export interface Market {
 
 
 
-export type TopLevelMarket = Pick<Market, '_doc' | 'name' | 'metadata' | 'path'>;
+export type TopLevelMarket = Pick<Market, '_id' | 'name' | 'metadata' | 'path'>;
 
 
 export class MarketsService {
@@ -46,7 +45,7 @@ export class MarketsService {
         'metadata.parentMarketId': {$exists: false},
       },
       h: {
-        $fields: {_doc: 1, metadata: 1, name: 1, classicDescription: 1, path: 1},
+        $fields: {_id: 1, metadata: 1, name: 1, classicDescription: 1, path: 1},
       },
     })).data as TopLevelMarket[];
   }
