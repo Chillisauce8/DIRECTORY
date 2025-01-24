@@ -19,6 +19,7 @@ import { computed } from 'vue';
 import { imageIdProp, nameProp, modeProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
 import type { Category, Vehicle } from '@/types/props';
 import CardEditWrapper from './common/CardEditWrapper.vue';
+import { useCard } from '~/composables/useCard';
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -56,13 +57,7 @@ const categoryNames = computed(() => {
     return props.categories.map((category) => category.name).join(', ');
 });
 
-const getCardTextWrapperClass = computed(() => {
-    return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
-});
-
-function onEditableGroupSubmit($event) {
-    emit('update:data-item', $event);
-}
+const { getCardTextWrapperClass, onEditableGroupSubmit } = useCard(props);
 </script>
 
 <style lang="scss">

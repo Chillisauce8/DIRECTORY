@@ -18,6 +18,7 @@
 import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
 import type { Category } from '@/types/props';
+import { useCard } from '~/composables/useCard';
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -38,19 +39,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:selected', 'update:data-item', 'update:categories']);
 
-// Remove localSelected and direct binding to ensure reactivity
-function handleSelection(value: boolean) {
-    emit('update:selected', value);
-}
-
-// Dynamic class logic for card text wrapper
-const getCardTextWrapperClass = computed(() => {
-    return (props.mode === 'edit' && props.selected) || props.show.length > 0 ? 'show' : 'hide';
-});
-
-function onEditableGroupSubmit($event) {
-    emit('update:data-item', $event);
-}
+const { getCardTextWrapperClass, onEditableGroupSubmit, handleSelection } = useCard(props);
 </script>
 
 <style lang="scss">

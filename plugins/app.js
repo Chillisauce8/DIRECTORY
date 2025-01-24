@@ -1,4 +1,4 @@
-import BlockViewer from '@/components/BlockViewer.vue';
+import BlockViewer from '~/components/DeleteBlockViewer.vue';
 import InputText from 'primevue/inputtext';
 import AutoComplete from "primevue/autocomplete";
 import Textarea from "primevue/textarea";

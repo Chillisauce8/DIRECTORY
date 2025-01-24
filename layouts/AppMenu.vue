@@ -65,12 +65,6 @@ const model = ref([
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/test-form-layout'
             },
-
-            {
-                label: 'Test Grid',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/test-grid'
-            },
             {
                 label: 'Market test',
                 icon: 'pi pi-fw pi-check-square',
