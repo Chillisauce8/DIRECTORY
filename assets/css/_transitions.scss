@@ -10,6 +10,13 @@
     animation: fadeout 0.5s ease-out forwards, collapse-height 0.5s ease-out forwards;
 }
 
+.card-edit-enter-active {
+    animation: fadein 1s ease-in forwards, update-height 1s ease-in forwards;
+}
+.card-edit-leave-active {
+    animation: fadeout 0.5s ease-in forwards, collapse-height 1s ease-in forwards;
+}
+
 @keyframes fadein {
     from {
         opacity: 0;

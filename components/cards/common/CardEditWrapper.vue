@@ -1,8 +1,7 @@
 <template>
     <transition name="card-edit">
         <div class="card-edit-wrapper" v-if="showWrapper">
-            <CrudControl :collection="collection" function="update" :dialogEdit="false" :itemId="dataItem._id"
-                         :initialItem="dataItem" noButton preventDefault @save="onSave" />
+            <CrudControl :collection="collection" function="update" :dialogEdit="false" :itemId="dataItem._id" :initialItem="dataItem" noButton preventDefault @save="onSave" />
         </div>
     </transition>
 </template>
@@ -35,11 +34,5 @@ function onSave(event: any) {
 <style lang="scss">
 .card-edit-wrapper {
     padding: 1rem;
-    &.card-edit-enter-active {
-        animation: fadein 1s ease-in forwards, update-height 1s ease-in forwards;
-    }
-    &.card-edit-leave-active {
-        animation: fadeout 0.5s ease-in forwards, collapse-height 1s ease-in forwards;
-    }
 }
 </style>
