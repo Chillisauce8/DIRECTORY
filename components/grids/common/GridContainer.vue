@@ -1,5 +1,5 @@
 <template>
-    <div :class="['grid-container', selectedSize?.display || '', modeStore.currentMode]">
+    <div :class="['grid-container', displayStore.displayClass, modeStore.currentMode]">
         <div class="grid-controls">
             <Toast />
             <ConfirmDialog />
@@ -11,7 +11,7 @@
                 <slot name="controls" :items="listings" :selected-categories="selectedCategories" :show="show" />
 
                 <!-- Default Display Control -->
-                <DisplayControl v-model="selectedSize" :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
+                <DisplayControl :visibleSizes="visibleCardSizes" />
                 <slot name="add-controls">
                     <template v-if="props.listingCollection">
                         <CrudControl :collection="listingCollection" function="create" @save="handleCreateSave">
@@ -72,6 +72,7 @@ import { useGridHandleCreateNodeFn, useGridHandleRemoveNodeFn, useGridHandleUpda
 import { uniqBy, uniq } from '~/service/utils';
 import CrudControl from '../controls/CrudControl.vue';
 import { useModeStore } from '~/stores/useModeStore';
+import { useDisplayStore } from '~/stores/useDisplayStore';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
@@ -177,12 +178,11 @@ const confirm = useConfirm();
 const toast = useToast();
 
 const listings = ref<Listing[]>(props?.listings ?? useListings());
-const show = ref<string[]>(props?.show ?? ['name', 'categories']);
-const selectedSize = ref(CARD_SIZES.find((option: CardSize) => option.label === props.defaultCardSize) || CARD_SIZES[0]);
 const selectedCategories = ref<Category[]>([]);
 
 const selectionStore = useSelectionStore();
 const modeStore = useModeStore();
+const displayStore = useDisplayStore();
 
 // --- Computed ---
 // Rename this computed property to be more specific
@@ -387,7 +387,7 @@ function getCardProps(listing: Listing) {
     return {
         listing,
         mode: unref(modeStore.currentMode),
-        show: show.value,
+        show: displayStore.currentShow,
         dbNode: listing.dbNode,
         onNameUpdate: (newName: string) => handleNameUpdate(listing.id, newName),
         onCategoriesUpdate: (newCategories: Category[]) => handleCategoriesUpdate(listing.id, newCategories),
@@ -401,7 +401,7 @@ function getCardWrapperProps(listing: Listing) {
         imageId: listing?.images?.[0]?.id,
         name: listing?.name,
         mode: unref(modeStore.currentMode),
-        show: show.value,
+        show: displayStore.currentShow,
         listing
     };
 }
@@ -428,7 +428,7 @@ watch(filteredListings, (newListings) => {
 watch(
     () => props.show,
     (newShow) => {
-        show.value = newShow;
+        displayStore.setShow(newShow);
     }
 );
 
@@ -494,7 +494,7 @@ async function handleCreateSave(savedData: any) {
 }
 // --- Provides ---
 provide('updateArrayField', updateArrayField);
-provide('updateShow', (fields: string[]) => (show.value = fields));
+provide('updateShow', (fields: string[]) => (displayStore.show = fields));
 provide('updateSearchQueryConfig', (config: SearchQueryConfig) => (searchQueryConfig.value = config));
 provide('updateItemsSorting', (sort: SortOption) => (selectedSort.value = sort));
 </script>

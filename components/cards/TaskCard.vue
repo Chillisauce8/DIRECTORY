@@ -1,16 +1,16 @@
 <template>
     <div class="task-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
+        <card-picture v-if="cardData.imageId" :id="cardData.imageId" :name="cardData.name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
         <card-text-wrapper :class="getCardTextWrapperClass">
             <div class="card-details">
-                <h1 v-if="displayStore.currentShow.includes('name')" class="name">{{ name }}</h1>
+                <h1 v-if="displayStore.currentShow.includes('name')" class="name">{{ cardData.name }}</h1>
                 <h1 v-if="displayStore.currentShow.includes('categories')" class="categories">{{ categoryNames }}</h1>
                 <div v-if="displayStore.currentShow.includes('start')" class="start">{{ formattedStartDate }}</div>
-                <div v-if="displayStore.currentShow.includes('description') && description" class="description">{{ description }}</div>
+                <div v-if="displayStore.currentShow.includes('description') && cardData.description" class="description">{{ cardData.description }}</div>
                 <div v-if="displayStore.currentShow.includes('vehicles')" class="vehicles">{{ vehicleNames }}</div>
             </div>
         </card-text-wrapper>
-        <CardEditWrapper collection="events" :data-item="props.dataItem" @save="onEditableGroupSubmit" />
+        <CardEditWrapper collection="events" :data-item="cardData" @save="onEditableGroupSubmit" />
     </div>
 </template>
 
@@ -23,6 +23,7 @@ import { useCard } from '~/composables/useCard';
 import { useSelectionStore } from '~/stores/useSelectionStore';
 import { useModeStore } from '~/stores/useModeStore';
 import { useDisplayStore } from '~/stores/useDisplayStore';
+import { useCardStore } from '~/stores/useCardStore';
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -47,6 +48,13 @@ const emit = defineEmits(['update:data-item']);
 
 const modeStore = useModeStore();
 const displayStore = useDisplayStore();
+const cardStore = useCardStore();
+
+// Create a computed property for the card data
+const cardData = computed(() => {
+    const storeData = cardStore.getCard('events', props.id);
+    return storeData || props.dataItem;
+});
 
 // Computed properties
 const formattedStartDate = computed(() => {
@@ -54,12 +62,13 @@ const formattedStartDate = computed(() => {
     return new Date(props.start).toLocaleDateString();
 });
 
+// Update computed properties to use cardData
 const vehicleNames = computed(() => {
-    return props.vehicles.map((v) => v.name).join(', ');
+    return cardData.value.vehicles?.map((v) => v.name).join(', ') || '';
 });
 
 const categoryNames = computed(() => {
-    return props.categories.map((category) => category.name).join(', ');
+    return cardData.value.categories?.map((category) => category.name).join(', ') || '';
 });
 
 const { getCardTextWrapperClass, onEditableGroupSubmit } = useCard({

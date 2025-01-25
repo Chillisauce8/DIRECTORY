@@ -10,6 +10,7 @@
 import { ref, watch, computed } from 'vue';
 import { useSelectionStore } from '~/stores/useSelectionStore';
 import { useModeStore } from '~/stores/useModeStore';
+import { useCardStore } from '~/stores/useCardStore';
 
 const props = defineProps({
     collection: { type: String, required: true },
@@ -19,10 +20,12 @@ const props = defineProps({
 const emit = defineEmits(['save']);
 const selectionStore = useSelectionStore();
 const modeStore = useModeStore();
+const cardStore = useCardStore();
 
 const showWrapper = computed(() => modeStore.isEditMode && selectionStore.isSelected(props.dataItem._id));
 
 function onSave(event: any) {
+    cardStore.updateCard(props.collection, props.dataItem._id, event);
     emit('save', event);
     selectionStore.deselect(props.dataItem._id);
 }

@@ -1,24 +1,12 @@
 <template>
     <div class="category-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" />
+        <card-picture v-if="cardData.imageId" :id="cardData.imageId" :name="cardData.name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" />
         <card-text-wrapper :class="getCardTextWrapperClass">
-            <!--         <editable-group class="card-details" collection="categories" :data="props.dataItem" :edit="props.mode === 'edit' && selected" @submit="onEditableGroupSubmit($event)">
-                <editable field="name">
-                    <h1>{{ props.name }}</h1>
-                </editable>
-                <editable field="type">
-                    <h1>Type: {{ props.type }}</h1>
-                </editable>
-                <editable field="categoryGroup">
-                    <h1>{{ props.categoryGroup.name }}</h1>
-                </editable>
-                    </editable-group>
-                -->
-            <h1>{{ props.name }}</h1>
-            <h1>Type: {{ props.type }}</h1>
-            <h1>{{ props.categoryGroup.name }}</h1>
+            <h1>{{ cardData.name }}</h1>
+            <h1>Type: {{ cardData.type }}</h1>
+            <h1>{{ cardData.categoryGroup?.name }}</h1>
         </card-text-wrapper>
-        <CardEditWrapper collection="categories" :data-item="props.dataItem" @save="onEditableGroupSubmit" />
+        <CardEditWrapper collection="categories" :data-item="cardData" @save="onEditableGroupSubmit" />
     </div>
 </template>
 
@@ -31,6 +19,7 @@ import { useCard } from '~/composables/useCard';
 import { useSelectionStore } from '~/stores/useSelectionStore';
 import { useModeStore } from '~/stores/useModeStore';
 import { useDisplayStore } from '~/stores/useDisplayStore';
+import { useCardStore } from '~/stores/useCardStore';
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -57,6 +46,14 @@ const emit = defineEmits(['update:data-item', 'update:categories']);
 const { getCardTextWrapperClass, onEditableGroupSubmit, handleSelection } = useCard({
     ...props,
     show: displayStore.currentShow
+});
+
+const cardStore = useCardStore();
+
+// Create a computed property for the card data
+const cardData = computed(() => {
+    const storeData = cardStore.getCard('categories', props.id);
+    return storeData || props.dataItem;
 });
 </script>
 
