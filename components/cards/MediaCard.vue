@@ -1,8 +1,8 @@
 <template>
     <div class="media-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" :selected="selected" />
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" />
         <card-text-wrapper :class="getCardTextWrapperClass">
-            <editable-group class="card-details" collection="files" :data="props.dataItem" :edit="props.mode === 'edit' && selected" @submit="onEditableGroupSubmit($event)">
+            <editable-group class="card-details" collection="files" :data="props.dataItem" :edit="props.mode === 'edit' && isSelected" @submit="onEditableGroupSubmit($event)">
                 <editable field="name">
                     <h1>{{ props.name }}</h1>
                 </editable>
@@ -19,6 +19,7 @@ import { ref, computed, watch } from 'vue';
 import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
 import type { Category } from '@/types/props';
 import { useCard } from '~/composables/useCard';
+import { useSelectionStore } from '~/stores/useSelectionStore';
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -32,12 +33,14 @@ const props = defineProps({
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     gallery: { type: String, default: 'gallery' },
-    selected: { type: Boolean, required: true },
     onNameUpdate: { type: Function as PropType<(name: string) => void>, required: true },
     onCategoriesUpdate: { type: Function as PropType<(categories: Category[]) => void>, required: true }
 });
 
-const emit = defineEmits(['update:selected', 'update:data-item', 'update:categories']);
+const selectionStore = useSelectionStore();
+const isSelected = computed(() => selectionStore.isSelected(props.id));
+
+const emit = defineEmits(['update:data-item', 'update:categories']);
 
 const { getCardTextWrapperClass, onEditableGroupSubmit, handleSelection } = useCard(props);
 </script>

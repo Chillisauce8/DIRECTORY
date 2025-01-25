@@ -6,28 +6,23 @@
     </transition>
 </template>
 
-<script lang="ts" setup>
-import { ref, watch } from 'vue';
+<script setup lang="ts">
+import { ref, watch, computed } from 'vue';
+import { useSelectionStore } from '~/stores/useSelectionStore';
 
 const props = defineProps({
     mode: { type: String, required: true },
-    selected: { type: Boolean, required: true },
     collection: { type: String, required: true },
     dataItem: { type: Object, required: true }
 });
 
 const emit = defineEmits(['save']);
-const showWrapper = ref(props.mode === 'edit' && props.selected);
-
-watch(
-    () => props.mode === 'edit' && props.selected,
-    (newValue) => {
-        showWrapper.value = newValue;
-    }
-);
+const selectionStore = useSelectionStore();
+const showWrapper = computed(() => props.mode === 'edit' && selectionStore.isSelected(props.dataItem._id));
 
 function onSave(event: any) {
     emit('save', event);
+    selectionStore.deselect(props.dataItem._id);
 }
 </script>
 

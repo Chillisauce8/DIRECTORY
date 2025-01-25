@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-// --- Imports ---
+import { useSelectionStore } from '~/stores/useSelectionStore';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
@@ -176,11 +176,12 @@ const confirm = useConfirm();
 const toast = useToast();
 
 const listings = ref<Listing[]>(props?.listings ?? useListings());
-const selectedItems = ref<string[]>([]);
 const mode = ref<FunctionMode>(props.defaultFunctionControl);
 const show = ref<string[]>(props?.show ?? ['name', 'categories']);
 const selectedSize = ref(CARD_SIZES.find((option: CardSize) => option.label === props.defaultCardSize) || CARD_SIZES[0]);
 const selectedCategories = ref<Category[]>([]);
+
+const selectionStore = useSelectionStore();
 
 // --- Computed ---
 // Rename this computed property to be more specific
@@ -192,11 +193,7 @@ const categoryFilters = computed(() => [
     }
 ]);
 
-const hasSelectedCards = computed(() => {
-    const hasSelected = selectedItems.value.length > 0;
-    console.log('hasSelectedCards computed:', { hasSelected, items: selectedItems.value });
-    return hasSelected;
-});
+const hasSelectedCards = computed(() => selectionStore.hasSelectedItems);
 
 const filteredListings = computed(() => {
     let result = unref(listings.value);
@@ -235,7 +232,7 @@ const filteredListings = computed(() => {
 const draggableListings = ref([...filteredListings.value]);
 
 // Replace selectAll computed with isAllSelected
-const isAllSelected = computed(() => filteredListings.value.length > 0 && selectedItems.value.length === filteredListings.value.length);
+const isAllSelected = computed(() => filteredListings.value.length > 0 && selectionStore.selectedItems.length === filteredListings.value.length);
 
 const filters = computed(() => [
     {
@@ -250,22 +247,26 @@ const filters = computed(() => [
 function handleItemSelection(id: string, selected: boolean): void {
     console.log('CardList handleItemSelection:', { id, selected });
     if (selected) {
-        selectedItems.value = [...new Set([...selectedItems.value, id])];
+        selectionStore.add(id);
     } else {
-        selectedItems.value = selectedItems.value.filter((item) => item !== id);
+        selectionStore.remove(id);
     }
-    console.log('Updated selectedItems:', selectedItems.value);
+    console.log('Updated selectedItems:', selectionStore.selectedItems);
 }
 
 function toggleSelectAll(value: boolean) {
     console.log('toggleSelectAll:', value);
-    selectedItems.value = value ? filteredListings.value.map((listing) => listing.id) : [];
+    if (value) {
+        selectionStore.setMultiple(filteredListings.value.map((listing) => listing.id));
+    } else {
+        selectionStore.clear();
+    }
 }
 
 // CRUD operations
 async function deleteSelectedItems() {
     if (props.listingCollection) {
-        for (const listingId of selectedItems.value) {
+        for (const listingId of selectionStore.selectedItems) {
             const dbNode = listings.value.find((listing) => listing.id === listingId)?.dbNode;
 
             if (!dbNode) {
@@ -276,11 +277,11 @@ async function deleteSelectedItems() {
         }
     }
 
-    selectedItems.value = [];
+    selectionStore.clear();
 }
 
 function addSelectedItems() {
-    emit('add-selected', selectedItems.value);
+    emit('add-selected', selectionStore.selectedItems);
 }
 
 function confirmDelete() {
@@ -302,7 +303,7 @@ function confirmDelete() {
 
 // Update handlers
 const updateArrayField: UpdateArrayFieldFn = async (field, items, action) => {
-    for (const selectedItemId of selectedItems.value) {
+    for (const selectedItemId of selectionStore.selectedItems) {
         const listing = listings.value.find((listing) => listing.id === selectedItemId);
 
         if (!listing) {
@@ -335,7 +336,7 @@ const updateArrayField: UpdateArrayFieldFn = async (field, items, action) => {
         await handleUpdateNodeFn(updatedDbNode);
     }
 
-    selectedItems.value = [];
+    selectionStore.clear();
 };
 
 // function handleUpdateField(field: string, items: Item[], action: 'add' | 'remove') {
@@ -382,13 +383,9 @@ function searchItems<T extends Record<string, any>>(items: T[], searchQueryConfi
 }
 
 function getCardProps(listing: Listing) {
-    const isSelected = selectedItems.value.includes(listing.id);
-    console.log('getCardProps:', { listingId: listing.id, isSelected });
-
     return {
         listing,
         mode: unref(mode),
-        selected: isSelected,
         show: show.value,
         dbNode: listing.dbNode,
         onNameUpdate: (newName: string) => handleNameUpdate(listing.id, newName),
@@ -398,14 +395,11 @@ function getCardProps(listing: Listing) {
 }
 
 function getCardWrapperProps(listing: Listing) {
-    const isSelected = selectedItems.value.includes(listing.id);
-
     return {
         id: listing.id,
         imageId: listing?.images?.[0]?.id,
         name: listing?.name,
         mode: unref(mode),
-        selected: isSelected,
         show: show.value,
         listing
     };
@@ -421,7 +415,7 @@ function onEnd(): void {
 }
 
 function onModeUpdate(mode: FunctionMode) {
-    selectedItems.value = [];
+    selectionStore.clear();
 }
 
 // --- Watchers ---
@@ -437,7 +431,7 @@ watch(
 );
 
 watch(
-    selectedItems,
+    () => selectionStore.selectedItems,
     (newVal, oldVal) => {
         console.log('selectedItems changed:', {
             old: oldVal,
@@ -476,9 +470,9 @@ function handleCategoriesUpdate(id: string, newCategories: Category[]) {
 
 function handleListingSelectionUpdate(id: string, selected: boolean) {
     if (selected) {
-        selectedItems.value = [...selectedItems.value, id];
+        selectionStore.add(id);
     } else {
-        selectedItems.value = selectedItems.value.filter((item) => item !== id);
+        selectionStore.remove(id);
     }
 }
 

@@ -18,7 +18,7 @@
             <h1>Type: {{ props.type }}</h1>
             <h1>{{ props.categoryGroup.name }}</h1>
         </card-text-wrapper>
-        <CardEditWrapper :mode="props.mode" :selected="selected" collection="categories" :dataItem="props.dataItem" @save="onEditableGroupSubmit" />
+        <CardEditWrapper :mode="props.mode" collection="categories" :data-item="props.dataItem" @save="onEditableGroupSubmit" />
     </div>
 </template>
 
@@ -28,6 +28,7 @@ import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp
 import type { Category } from '@/types/props';
 import CardEditWrapper from './common/CardEditWrapper.vue';
 import { useCard } from '~/composables/useCard';
+import { useSelectionStore } from '~/stores/useSelectionStore';
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -43,12 +44,14 @@ const props = defineProps({
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     gallery: { type: String, default: 'gallery' },
-    selected: { type: Boolean, required: true },
     onNameUpdate: { type: Function as PropType<(name: string) => void>, required: true },
     onCategoriesUpdate: { type: Function as PropType<(categories: Category[]) => void>, required: true }
 });
 
-const emit = defineEmits(['update:selected', 'update:data-item', 'update:categories']);
+const selectionStore = useSelectionStore();
+const isSelected = computed(() => selectionStore.isSelected(props.id));
+
+const emit = defineEmits(['update:data-item', 'update:categories']);
 
 const { getCardTextWrapperClass, onEditableGroupSubmit, handleSelection } = useCard(props);
 </script>

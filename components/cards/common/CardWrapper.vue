@@ -19,6 +19,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useSelectionStore } from '~/stores/useSelectionStore';
 
 /* Define component props */
 const props = defineProps({
@@ -26,32 +27,24 @@ const props = defineProps({
     mode: { type: String, default: '', required: false },
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
-    selected: { type: Boolean, required: true },
     imageId: { type: String, default: '' },
     gallery: { type: String, default: 'gallery' },
     show: { type: Array, default: () => [] }
 });
 
-/* Emit for two-way binding */
-const emit = defineEmits(['update:selected']);
-const fullSizeSrc = computed(() => `https://media.chillisauce.com/image/upload/c_fill,q_auto,f_auto/${props.imageId}`);
+/* Remove emit since we're using the store */
+const emit = defineEmits([]);
 
-/* Local selected state */
-const isSelected = ref(props.selected);
+/* Use store for selection state */
+const selectionStore = useSelectionStore();
 
-/* Watch for external changes to selected prop */
-watch(
-    () => props.selected,
-    (newVal) => {
-        isSelected.value = newVal;
-    }
-);
+/* Replace isSelected ref with computed */
+const isSelected = computed(() => selectionStore.isSelected(props.id));
 
 /* Toggle selected state on click */
 const toggleSelected = ($event) => {
     if (props.clickable && !$event.defaultPrevented) {
-        isSelected.value = !isSelected.value;
-        emit('update:selected', isSelected.value); // Emit updated value
+        selectionStore.toggle(props.id);
     }
 };
 

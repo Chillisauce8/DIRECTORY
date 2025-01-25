@@ -1,7 +1,7 @@
 <template>
     <div class="task-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :mode="mode" :selected="selected" />
-        <card-text-wrapper :class="getCardTextWrapperClass" :mode="props.mode" :selected="selected">
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :mode="mode" />
+        <card-text-wrapper :class="getCardTextWrapperClass" :mode="props.mode">
             <div class="card-details">
                 <h1 v-if="show.includes('name')" class="name">{{ name }}</h1>
                 <h1 v-if="show.includes('categories')" class="categories">{{ categoryNames }}</h1>
@@ -10,7 +10,7 @@
                 <div v-if="show.includes('vehicles')" class="vehicles">{{ vehicleNames }}</div>
             </div>
         </card-text-wrapper>
-        <CardEditWrapper :mode="props.mode" :selected="selected" collection="events" :dataItem="props.dataItem" @save="onEditableGroupSubmit" />
+        <CardEditWrapper :mode="props.mode" collection="events" :data-item="props.dataItem" @save="onEditableGroupSubmit" />
     </div>
 </template>
 
@@ -20,6 +20,7 @@ import { imageIdProp, nameProp, modeProp, showProp, categoriesProp, dataItemProp
 import type { Category, Vehicle } from '@/types/props';
 import CardEditWrapper from './common/CardEditWrapper.vue';
 import { useCard } from '~/composables/useCard';
+import { useSelectionStore } from '~/stores/useSelectionStore';
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -37,11 +38,13 @@ const props = defineProps({
     duration: {
         type: Object as PropType<{ value: number; unit: string }>,
         default: () => ({ value: 0, unit: 'mins' })
-    },
-    selected: { type: Boolean, required: true }
+    }
 });
 
-const emit = defineEmits(['update:selected', 'update:data-item']);
+const selectionStore = useSelectionStore();
+const isSelected = computed(() => selectionStore.isSelected(props.id));
+
+const emit = defineEmits(['update:data-item']);
 
 // Computed properties
 const formattedStartDate = computed(() => {
