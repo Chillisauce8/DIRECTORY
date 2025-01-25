@@ -1,16 +1,6 @@
 <template>
     <div class="function-control">
-        <SelectButton
-            v-if="showSelector"
-            :modelValue="modelValue"
-            @update:modelValue="$emit('update:modelValue', $event)"
-            :options="filteredControls"
-            optionValue="value"
-            optionLabel="label"
-            dataKey="value"
-            :allowEmpty="false"
-            class="function-control"
-        >
+        <SelectButton v-if="showSelector" :modelValue="modeStore.currentMode" @update:modelValue="updateMode" :options="filteredControls" optionValue="value" optionLabel="label" dataKey="value" :allowEmpty="false" class="function-control">
             <template v-if="display === 'icon'" #option="slotProps">
                 <SvgIcon :svg="slotProps.option.icon" :label="slotProps.option.label" labelPosition="hover" />
             </template>
@@ -20,8 +10,8 @@
 
 <script setup lang="ts">
 import { computed, type PropType } from 'vue';
-
-type FunctionMode = 'view' | 'select' | 'edit' | 'order';
+import { useModeStore } from '~/stores/useModeStore';
+import type { FunctionMode } from '~/stores/useModeStore';
 
 const functionControls = [
     { label: 'View', icon: 'eye', value: 'view' as FunctionMode },
@@ -31,10 +21,6 @@ const functionControls = [
 ];
 
 const props = defineProps({
-    modelValue: {
-        type: String as PropType<FunctionMode>,
-        required: true
-    },
     display: {
         type: String as PropType<'text' | 'icon'>,
         default: 'text'
@@ -49,6 +35,8 @@ const props = defineProps({
     }
 });
 
+const modeStore = useModeStore();
+
 const emit = defineEmits(['update:modelValue']);
 
 const showSelector = computed(() => Array.isArray(props.visibleControls) && props.visibleControls.length > 1);
@@ -60,4 +48,9 @@ const filteredControls = computed(() => {
     }
     return functionControls.filter((func) => props.visibleControls?.includes(func.value));
 });
+
+function updateMode(newMode: FunctionMode) {
+    modeStore.setMode(newMode);
+    emit('update:modelValue', newMode);
+}
 </script>

@@ -1,35 +1,34 @@
 <template>
     <div class="task-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :mode="mode" />
-        <card-text-wrapper :class="getCardTextWrapperClass" :mode="props.mode">
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
+        <card-text-wrapper :class="getCardTextWrapperClass">
             <div class="card-details">
-                <h1 v-if="show.includes('name')" class="name">{{ name }}</h1>
-                <h1 v-if="show.includes('categories')" class="categories">{{ categoryNames }}</h1>
-                <div v-if="show.includes('start')" class="start">{{ formattedStartDate }}</div>
-                <div v-if="show.includes('description') && description" class="description">{{ description }}</div>
-                <div v-if="show.includes('vehicles')" class="vehicles">{{ vehicleNames }}</div>
+                <h1 v-if="displayStore.currentShow.includes('name')" class="name">{{ name }}</h1>
+                <h1 v-if="displayStore.currentShow.includes('categories')" class="categories">{{ categoryNames }}</h1>
+                <div v-if="displayStore.currentShow.includes('start')" class="start">{{ formattedStartDate }}</div>
+                <div v-if="displayStore.currentShow.includes('description') && description" class="description">{{ description }}</div>
+                <div v-if="displayStore.currentShow.includes('vehicles')" class="vehicles">{{ vehicleNames }}</div>
             </div>
         </card-text-wrapper>
-        <CardEditWrapper :mode="props.mode" collection="events" :data-item="props.dataItem" @save="onEditableGroupSubmit" />
+        <CardEditWrapper collection="events" :data-item="props.dataItem" @save="onEditableGroupSubmit" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { imageIdProp, nameProp, modeProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
+import { imageIdProp, nameProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
 import type { Category, Vehicle } from '@/types/props';
 import CardEditWrapper from './common/CardEditWrapper.vue';
 import { useCard } from '~/composables/useCard';
 import { useSelectionStore } from '~/stores/useSelectionStore';
+import { useModeStore } from '~/stores/useModeStore';
+import { useDisplayStore } from '~/stores/useDisplayStore';
 
 const props = defineProps({
     id: { type: String, required: true },
     imageId: imageIdProp,
     name: nameProp,
     dataItem: dataItemProp,
-    mode: modeProp,
-    show: showProp,
-    categories: categoriesProp,
     description: { type: String, default: '' },
     vehicles: { type: Array as PropType<Vehicle[]>, default: () => [] },
     files: { type: Array as PropType<{ id: string; alt: string; type: string }[]>, default: () => [] },
@@ -46,6 +45,9 @@ const isSelected = computed(() => selectionStore.isSelected(props.id));
 
 const emit = defineEmits(['update:data-item']);
 
+const modeStore = useModeStore();
+const displayStore = useDisplayStore();
+
 // Computed properties
 const formattedStartDate = computed(() => {
     if (!props.start) return '';
@@ -60,7 +62,10 @@ const categoryNames = computed(() => {
     return props.categories.map((category) => category.name).join(', ');
 });
 
-const { getCardTextWrapperClass, onEditableGroupSubmit } = useCard(props);
+const { getCardTextWrapperClass, onEditableGroupSubmit } = useCard({
+    ...props,
+    show: displayStore.currentShow
+});
 </script>
 
 <style lang="scss">

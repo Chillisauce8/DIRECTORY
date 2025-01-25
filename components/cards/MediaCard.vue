@@ -1,8 +1,8 @@
 <template>
     <div class="media-card">
-        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" :mode="mode" />
+        <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" />
         <card-text-wrapper :class="getCardTextWrapperClass">
-            <editable-group class="card-details" collection="files" :data="props.dataItem" :edit="props.mode === 'edit' && isSelected" @submit="onEditableGroupSubmit($event)">
+            <editable-group class="card-details" collection="files" :data="props.dataItem" :edit="modeStore.isEditMode && isSelected" @submit="onEditableGroupSubmit($event)">
                 <editable field="name">
                     <h1>{{ props.name }}</h1>
                 </editable>
@@ -16,17 +16,18 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { imageIdProp, nameProp, modeProp, loveableProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
+import { imageIdProp, nameProp, loveableProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
 import type { Category } from '@/types/props';
 import { useCard } from '~/composables/useCard';
 import { useSelectionStore } from '~/stores/useSelectionStore';
+import { useModeStore } from '~/stores/useModeStore';
+import { useDisplayStore } from '~/stores/useDisplayStore';
 
 const props = defineProps({
     id: { type: String, required: true },
     imageId: imageIdProp,
     name: nameProp,
     dataItem: dataItemProp,
-    mode: modeProp,
     loveable: loveableProp,
     show: showProp,
     categories: categoriesProp,
@@ -42,7 +43,13 @@ const isSelected = computed(() => selectionStore.isSelected(props.id));
 
 const emit = defineEmits(['update:data-item', 'update:categories']);
 
-const { getCardTextWrapperClass, onEditableGroupSubmit, handleSelection } = useCard(props);
+const modeStore = useModeStore();
+const displayStore = useDisplayStore();
+
+const { getCardTextWrapperClass, onEditableGroupSubmit, handleSelection } = useCard({
+    ...props,
+    show: displayStore.currentShow
+});
 </script>
 
 <style lang="scss">

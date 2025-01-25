@@ -9,16 +9,18 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
 import { useSelectionStore } from '~/stores/useSelectionStore';
+import { useModeStore } from '~/stores/useModeStore';
 
 const props = defineProps({
-    mode: { type: String, required: true },
     collection: { type: String, required: true },
     dataItem: { type: Object, required: true }
 });
 
 const emit = defineEmits(['save']);
 const selectionStore = useSelectionStore();
-const showWrapper = computed(() => props.mode === 'edit' && selectionStore.isSelected(props.dataItem._id));
+const modeStore = useModeStore();
+
+const showWrapper = computed(() => modeStore.isEditMode && selectionStore.isSelected(props.dataItem._id));
 
 function onSave(event: any) {
     emit('save', event);

@@ -1,9 +1,9 @@
 <template>
     <!-- Dynamic root element with classes and click event -->
     <component
-        :is="mode === 'view' ? 'a' : 'article'"
-        :href="mode === 'view' ? fullSizeSrc : undefined"
-        :data-fancybox="mode === 'view' ? gallery : undefined"
+        :is="modeStore.currentMode === 'view' ? 'a' : 'article'"
+        :href="modeStore.currentMode === 'view' ? fullSizeSrc : undefined"
+        :data-fancybox="modeStore.currentMode === 'view' ? gallery : undefined"
         class="card-wrapper"
         :class="computedClasses"
         :id="id"
@@ -11,8 +11,8 @@
         @click="toggleSelected($event)"
     >
         <slot />
-        <div v-if="mode" class="mode-icons">
-            <SvgIcon :svg="modeIcon" :class="mode" />
+        <div v-if="modeStore.currentMode" class="mode-icons">
+            <SvgIcon :svg="modeIcon" :class="modeStore.currentMode" />
         </div>
     </component>
 </template>
@@ -20,16 +20,16 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useSelectionStore } from '~/stores/useSelectionStore';
+import { useModeStore } from '~/stores/useModeStore';
+import { useDisplayStore } from '~/stores/useDisplayStore';
 
 /* Define component props */
 const props = defineProps({
     id: { type: String, required: true },
-    mode: { type: String, default: '', required: false },
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     imageId: { type: String, default: '' },
-    gallery: { type: String, default: 'gallery' },
-    show: { type: Array, default: () => [] }
+    gallery: { type: String, default: 'gallery' }
 });
 
 /* Remove emit since we're using the store */
@@ -37,6 +37,8 @@ const emit = defineEmits([]);
 
 /* Use store for selection state */
 const selectionStore = useSelectionStore();
+const modeStore = useModeStore();
+const displayStore = useDisplayStore();
 
 /* Replace isSelected ref with computed */
 const isSelected = computed(() => selectionStore.isSelected(props.id));
@@ -57,19 +59,19 @@ const modeIcon = computed(() => {
     };
 
     // If selected and in edit mode, always show check-circle
-    if (props.selected && props.mode === 'edit') {
+    if (isSelected.value && modeStore.isEditMode) {
         return 'check-circle';
     }
 
     // Otherwise use the base icon
-    return props.mode ? baseIcons[props.mode] : '';
+    return modeStore.currentMode ? baseIcons[modeStore.currentMode] : '';
 });
 
 /* Computed classes */
 const computedClasses = computed(() => ({
     selected: isSelected.value,
-    [props.mode]: props.mode,
-    ...Object.fromEntries(props.show.map((item) => [item, true]))
+    [modeStore.currentMode]: true,
+    ...Object.fromEntries(displayStore.currentShow.map((item) => [item, true]))
 }));
 </script>
 
