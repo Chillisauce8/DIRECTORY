@@ -8,7 +8,7 @@
                 <ModeControl v-model="modeStore.currentMode" @update:modelValue="onModeUpdate" :display="modeControlDisplay" :visibleControls="visibleModeControls" :defaultControl="defaultModeControl" />
 
                 <!-- Update slot binding to pass listings -->
-                <slot name="controls" :items="listings" :selected-categories="selectedCategories" :show="show" />
+                <slot name="controls" :items="listings" :selected-categories="selectedCategories" />
 
                 <!-- Default Display Control -->
                 <DisplayControl :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { useSelectedStore } from '~/stores/useSelectedStore';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
@@ -73,6 +73,7 @@ import { uniqBy, uniq } from '~/service/utils';
 import CrudControl from '../controls/CrudControl.vue';
 import { useModeStore } from '~/stores/useModeStore';
 import { useDisplayStore } from '~/stores/useDisplayStore';
+import { useShowStore } from '~/stores/useShowStore';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
@@ -154,10 +155,6 @@ const props = defineProps({
         type: Array as PropType<FilterConfig[]>,
         default: () => []
     },
-    show: {
-        type: Array as PropType<string[]>,
-        default: () => ['name', 'categories']
-    },
     listings: {
         type: Array as PropType<Listing[]>,
         default: () => []
@@ -183,9 +180,10 @@ const toast = useToast();
 const listings = ref<Listing[]>(props?.listings ?? useListings());
 const selectedCategories = ref<Category[]>([]);
 
-const selectionStore = useSelectionStore();
+const selectionStore = useSelectedStore();
 const modeStore = useModeStore();
 const displayStore = useDisplayStore();
+const showStore = useShowStore();
 
 // --- Computed ---
 // Rename this computed property to be more specific
@@ -403,7 +401,7 @@ function getCardProps(listing: Listing) {
     return {
         listing,
         mode: unref(modeStore.currentMode),
-        show: displayStore.currentShow,
+        show: showStore.currentShow, // Updated to use showStore
         dbNode: listing.dbNode,
         onNameUpdate: (newName: string) => handleNameUpdate(listing.id, newName),
         onCategoriesUpdate: (newCategories: Category[]) => handleCategoriesUpdate(listing.id, newCategories),
@@ -417,7 +415,7 @@ function getCardWrapperProps(listing: Listing) {
         imageId: listing?.images?.[0]?.id,
         name: listing?.name,
         mode: unref(modeStore.currentMode),
-        show: displayStore.currentShow,
+        show: showStore.currentShow, // Updated to use showStore
         listing
     };
 }
@@ -440,13 +438,6 @@ function onModeUpdate(newMode: ModeType) {
 watch(filteredListings, (newListings) => {
     draggableListings.value = [...newListings];
 });
-
-watch(
-    () => props.show,
-    (newShow) => {
-        displayStore.setShow(newShow);
-    }
-);
 
 watch(
     () => selectionStore.selectedItems,

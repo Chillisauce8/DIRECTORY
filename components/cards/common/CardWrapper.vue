@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { useSelectedStore } from '~/stores/useSelectedStore';
 import { useModeStore } from '~/stores/useModeStore';
 import { useDisplayStore } from '~/stores/useDisplayStore';
 
@@ -36,7 +36,7 @@ const props = defineProps({
 const emit = defineEmits([]);
 
 /* Use store for selection state */
-const selectionStore = useSelectionStore();
+const selectionStore = useSelectedStore();
 const modeStore = useModeStore();
 const displayStore = useDisplayStore();
 
@@ -49,6 +49,14 @@ const toggleSelected = ($event) => {
         selectionStore.toggle(props.id);
     }
 };
+
+/* Add fullSizeSrc computed property */
+const fullSizeSrc = computed(() => {
+    if (props.imageId) {
+        return `/api/images/${props.imageId}`;
+    }
+    return undefined;
+});
 
 const modeIcon = computed(() => {
     const baseIcons: Record<string, string> = {

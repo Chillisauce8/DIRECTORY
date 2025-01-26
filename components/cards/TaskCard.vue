@@ -20,7 +20,7 @@ import { imageIdProp, nameProp, showProp, categoriesProp, dataItemProp } from '@
 import type { Category, Vehicle } from '@/types/props';
 import CardEditWrapper from './common/CardEditWrapper.vue';
 import { useCard } from '~/composables/useCard';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { useSelectedStore } from '~/stores/useSelectedStore';
 import { useModeStore } from '~/stores/useModeStore';
 import { useDisplayStore } from '~/stores/useDisplayStore';
 import { useCardStore } from '~/stores/useCardStore';
@@ -41,7 +41,7 @@ const props = defineProps({
     }
 });
 
-const selectionStore = useSelectionStore();
+const selectionStore = useSelectedStore();
 const isSelected = computed(() => selectionStore.isSelected(props.id));
 
 const emit = defineEmits(['update:data-item']);

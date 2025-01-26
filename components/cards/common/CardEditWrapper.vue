@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { useSelectedStore } from '~/stores/useSelectedStore';
 import { useModeStore } from '~/stores/useModeStore';
 import { useCardStore } from '~/stores/useCardStore';
 
@@ -18,7 +18,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['save']);
-const selectionStore = useSelectionStore();
+const selectionStore = useSelectedStore();
 const modeStore = useModeStore();
 const cardStore = useCardStore();
 

@@ -1,10 +1,10 @@
 <template>
     <div class="media-card">
         <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" />
-        <card-text-wrapper :class="getCardTextWrapperClass">
+        <card-text-wrapper :class="getCardTextWrapperClass" :selected="isSelected">
             <div class="card-details">
-                <h1 v-if="displayStore.currentShow.includes('name')" class="name">{{ name }}</h1>
-                <h1 v-if="displayStore.currentShow.includes('categories')" class="categories">{{ categories.map((category) => category.name).join(', ') }}</h1>
+                <h1 v-if="showStore.currentShow.includes('name')" class="name">{{ name }}</h1>
+                <h1 v-if="showStore.currentShow.includes('categories')" class="categories">{{ categories.map((category) => category.name).join(', ') }}</h1>
             </div>
         </card-text-wrapper>
         <CardEditWrapper collection="files" :data-item="dataItem" @save="onEditableGroupSubmit" />
@@ -13,13 +13,14 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { imageIdProp, nameProp, loveableProp, showProp, categoriesProp, dataItemProp } from '@/types/props';
+import { imageIdProp, nameProp, loveableProp, categoriesProp, dataItemProp } from '@/types/props';
 import type { Category } from '@/types/props';
 import { useCard } from '~/composables/useCard';
-import { useSelectionStore } from '~/stores/useSelectionStore';
+import { useSelectedStore } from '~/stores/useSelectedStore';
 import { useModeStore } from '~/stores/useModeStore';
 import { useDisplayStore } from '~/stores/useDisplayStore';
 import CardEditWrapper from './common/CardEditWrapper.vue';
+import { useShowStore } from '~/stores/useShowStore';
 
 const props = defineProps({
     id: { type: String, required: true },
@@ -27,26 +28,43 @@ const props = defineProps({
     name: nameProp,
     dataItem: dataItemProp,
     loveable: loveableProp,
-    show: showProp,
     categories: categoriesProp,
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
-    gallery: { type: String, default: 'gallery' },
-    onNameUpdate: { type: Function as PropType<(name: string) => void>, required: true },
-    onCategoriesUpdate: { type: Function as PropType<(categories: Category[]) => void>, required: true }
+    gallery: { type: String, default: 'gallery' }
 });
 
-const selectionStore = useSelectionStore();
+const selectionStore = useSelectedStore();
 const isSelected = computed(() => selectionStore.isSelected(props.id));
 
 const emit = defineEmits(['update:data-item', 'update:categories']);
 
 const modeStore = useModeStore();
 const displayStore = useDisplayStore();
+const showStore = useShowStore();
+
+// Add debug watcher for showStore
+watch(
+    () => showStore.currentShow,
+    (newValue) => {
+        console.log('MediaCard: showStore.currentShow changed:', newValue);
+    },
+    { immediate: true, deep: true }
+);
+
+// Add debug computed
+const showDebug = computed(() => {
+    console.log('MediaCard: Computing show values:', {
+        name: showStore.currentShow.includes('name'),
+        categories: showStore.currentShow.includes('categories'),
+        currentShow: showStore.currentShow
+    });
+    return showStore.currentShow;
+});
 
 const { getCardTextWrapperClass, onEditableGroupSubmit, handleSelection } = useCard({
     ...props,
-    show: displayStore.currentShow
+    show: showDebug.value // Use debug computed to track updates
 });
 </script>
 
@@ -61,10 +79,6 @@ const { getCardTextWrapperClass, onEditableGroupSubmit, handleSelection } = useC
         }
     }
     .card-details {
-        &:not(.categories) .categories,
-        &:not(.name) .name {
-            display: none;
-        }
         .name {
             font-family: var(--primary-font-family);
             font-size: 15px;

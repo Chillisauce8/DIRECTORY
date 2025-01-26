@@ -13,16 +13,15 @@
         defaultModeControl="view"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
-        :show="selectedMediaShowOptions"
     >
         <template #controls>
             <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
-            <ShowControl v-model="selectedMediaShowOptions" :show-options="mediaShowOptions" />
+            <ShowControl :show-options="mediaShowOptions" />
             <SortControl :sort-options="mediaSortOptions" />
             <SearchControl :search-fields="searchFields" />
         </template>
 
-        <template #card="{ listing, mode: cardMode, selected, show, onNameUpdate, onCategoriesUpdate }">
+        <template #card="{ listing, mode: cardMode, selected, onNameUpdate, onCategoriesUpdate }">
             <MediaCard
                 :id="listing.id"
                 :imageId="listing.images[0].id"
@@ -30,7 +29,6 @@
                 :mode="cardMode"
                 :loveable="listing.loveable"
                 :selected="selected"
-                :show="show"
                 :categories="listing.categories"
                 :onNameUpdate="onNameUpdate"
                 :onCategoriesUpdate="onCategoriesUpdate"
@@ -44,9 +42,10 @@
 </template>
 
 <script setup lang="ts">
+import { useShowStore } from '~/stores/useShowStore';
+
 const categoryOptions = useCategories();
 const selectedCategories = ref([]);
-const selectedMediaShowOptions = ref(['name']);
 
 // Simple configuration objects
 const mediaShowOptions = ['name', 'categories'];
@@ -68,4 +67,11 @@ const searchFields = [
     { field: 'name', label: 'Name' },
     { field: 'categories', label: 'Categories' }
 ];
+
+const showStore = useShowStore();
+
+// Initialize showStore with all available options instead of just 'name'
+onMounted(() => {
+    showStore.setShow(mediaShowOptions);
+});
 </script>

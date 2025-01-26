@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-export const useSelectionStore = defineStore('selection', {
+export const useSelectedStore = defineStore('selection', {
     state: () => ({
         selectedItems: new Set<string>()
     }),

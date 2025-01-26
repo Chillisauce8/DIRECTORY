@@ -1,16 +1,36 @@
 <template>
     <transition name="card-text">
-        <header class="card-text-wrapper" v-if="!(mode === 'edit' && selected)">
+        <header class="card-text-wrapper" v-if="!(modeStore.currentMode === 'edit' && isSelected)">
             <slot />
         </header>
     </transition>
 </template>
 
 <script setup>
-defineProps({
-    mode: { type: String, required: true },
+import { useModeStore } from '~/stores/useModeStore';
+import { useSelectedStore } from '~/stores/useSelectedStore';
+
+const props = defineProps({
     selected: { type: Boolean, required: true }
 });
+
+const modeStore = useModeStore();
+const selectionStore = useSelectedStore();
+
+const isSelected = computed(() => props.selected);
+
+// Add debug watcher for v-if condition
+watch(
+    () => !(modeStore.currentMode === 'edit' && isSelected.value),
+    (newValue) => {
+        console.log('CardTextWrapper: visibility changed:', {
+            mode: modeStore.currentMode,
+            isSelected: isSelected.value,
+            visible: newValue
+        });
+    },
+    { immediate: true }
+);
 </script>
 
 <style lang="scss">
