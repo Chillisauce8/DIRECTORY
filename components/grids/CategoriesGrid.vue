@@ -1,6 +1,6 @@
 <template>
     <grid-container
-        functionControlDisplay="icon"
+        modeControlDisplay="icon"
         :filters="[
             {
                 field: 'categoryGroup',
@@ -9,8 +9,8 @@
                 isArray: false // Make sure this is set
             }
         ]"
-        :visibleFunctionControls="['select', 'edit']"
-        defaultFunctionControl="select"
+        :visibleModeControls="['select', 'edit']"
+        defaultModeControl="select"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
         :show="selectedCategoryShowOptions"
@@ -63,9 +63,7 @@ const { listingList, updateDbNodeInListingList } = await useGrid({
     prepareListingItem
 });
 
-const categoryOptions = ref<any[]>(listingList.value
-  .filter(({ dbNode }) => dbNode.type === 'Category Group')
-  .map(({ dbNode }) => ({ id: dbNode._id, name: dbNode.name })));
+const categoryOptions = ref<any[]>(listingList.value.filter(({ dbNode }) => dbNode.type === 'Category Group').map(({ dbNode }) => ({ id: dbNode._id, name: dbNode.name })));
 const selectedCategories = ref([]);
 const selectedCategoryShowOptions = ref(['name']);
 

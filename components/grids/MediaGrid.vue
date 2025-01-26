@@ -8,9 +8,9 @@
                 selected: selectedCategories
             }
         ]"
-        functionControlDisplay="icon"
-        :visibleFunctionControls="['view', 'select', 'edit', 'order']"
-        defaultFunctionControl="view"
+        modeControlDisplay="icon"
+        :visibleModeControls="['view', 'select', 'edit', 'order']"
+        defaultModeControl="view"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
         :show="selectedMediaShowOptions"

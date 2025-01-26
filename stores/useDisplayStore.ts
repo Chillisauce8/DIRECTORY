@@ -14,7 +14,7 @@ export const CARD_SIZES: readonly CardSize[] = [
 
 export const useDisplayStore = defineStore('display', {
     state: () => ({
-        selectedSize: CARD_SIZES[1], // Default to 'Big Cards'
+        selectedSize: null as CardSize | null,
         show: ['name', 'categories'] as string[]
     }),
 
@@ -28,8 +28,8 @@ export const useDisplayStore = defineStore('display', {
     },
 
     getters: {
-        currentSize: (state) => state.selectedSize,
+        currentSize: (state) => state.selectedSize || CARD_SIZES.find((size) => size.label === 'Big Cards') || CARD_SIZES[1],
         currentShow: (state) => state.show,
-        displayClass: (state) => state.selectedSize.display
+        displayClass: (state) => state.selectedSize?.display || CARD_SIZES[1].display
     }
 });

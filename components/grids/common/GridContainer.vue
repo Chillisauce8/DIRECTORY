@@ -1,17 +1,17 @@
 <template>
-    <div :class="['grid-container', displayStore.displayClass, modeStore.currentMode]">
+    <div :class="containerClasses">
         <div class="grid-controls">
             <Toast />
             <ConfirmDialog />
             <div class="filter-controls">
                 <!-- Default Controls -->
-                <FunctionControl v-model="modeStore.currentMode" @update:modelValue="onModeUpdate" :display="functionControlDisplay" :visibleControls="visibleFunctionControls" :defaultControl="defaultFunctionControl" />
+                <ModeControl v-model="modeStore.currentMode" @update:modelValue="onModeUpdate" :display="modeControlDisplay" :visibleControls="visibleModeControls" :defaultControl="defaultModeControl" />
 
                 <!-- Update slot binding to pass listings -->
                 <slot name="controls" :items="listings" :selected-categories="selectedCategories" :show="show" />
 
                 <!-- Default Display Control -->
-                <DisplayControl :visibleSizes="visibleCardSizes" />
+                <DisplayControl :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
                 <slot name="add-controls">
                     <template v-if="props.listingCollection">
                         <CrudControl :collection="listingCollection" function="create" @save="handleCreateSave">
@@ -76,7 +76,7 @@ import { useDisplayStore } from '~/stores/useDisplayStore';
 
 // --- Types ---
 type UpdateFunction = (items: any[]) => void;
-type FunctionMode = 'view' | 'select' | 'edit' | 'order';
+type ModeType = 'view' | 'select' | 'edit' | 'order'; // Renamed from FunctionMode
 type UpdateArrayFieldFn = (field: string, items: Item[], action: 'add' | 'remove') => Promise<void>;
 
 interface FilterConfig {
@@ -116,16 +116,19 @@ const selectedSort = ref<SortOption | null>(null);
 const searchQueryConfig = ref<SearchQueryConfig | null>(null);
 
 const props = defineProps({
-    functionControlDisplay: {
+    modeControlDisplay: {
+        // Renamed from functionControlDisplay
         type: String as PropType<'text' | 'icon'>,
         default: 'text'
     },
-    visibleFunctionControls: {
-        type: Array as PropType<FunctionMode[] | null>,
-        default: () => ['view', 'select', 'edit', 'order'] as FunctionMode[]
+    visibleModeControls: {
+        // Renamed from visibleFunctionControls
+        type: Array as PropType<ModeType[] | null>,
+        default: () => ['view', 'select', 'edit', 'order'] as ModeType[]
     },
-    defaultFunctionControl: {
-        type: String as PropType<FunctionMode>,
+    defaultModeControl: {
+        // Renamed from defaultFunctionControl
+        type: String as PropType<ModeType>,
         default: 'view'
     },
     visibleCardSizes: {
@@ -242,6 +245,19 @@ const filters = computed(() => [
         selected: selectedCategories.value
     }
 ]);
+
+// Add computed property for classes
+const containerClasses = computed(() => ['grid-container', displayStore.displayClass, modeStore.currentMode]);
+
+// Initialize display size from props
+onMounted(() => {
+    if (props.defaultCardSize) {
+        const defaultSize = CARD_SIZES.find((size) => size.label === props.defaultCardSize);
+        if (defaultSize) {
+            displayStore.setSize(defaultSize);
+        }
+    }
+});
 
 // --- Methods ---
 // Selection handling
@@ -415,7 +431,7 @@ function onEnd(): void {
     console.log('end drag');
 }
 
-function onModeUpdate(newMode: FunctionMode) {
+function onModeUpdate(newMode: ModeType) {
     modeStore.setMode(newMode);
     selectionStore.clear();
 }

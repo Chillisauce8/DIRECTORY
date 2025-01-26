@@ -2,15 +2,12 @@
     <div class="media-card">
         <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" />
         <card-text-wrapper :class="getCardTextWrapperClass">
-            <editable-group class="card-details" collection="files" :data="props.dataItem" :edit="modeStore.isEditMode && isSelected" @submit="onEditableGroupSubmit($event)">
-                <editable field="name">
-                    <h1>{{ props.name }}</h1>
-                </editable>
-                <editable field="categories">
-                    <h1>{{ props.categories.map((category) => category.name).join(', ') }}</h1>
-                </editable>
-            </editable-group>
+            <div class="card-details">
+                <h1 v-if="displayStore.currentShow.includes('name')" class="name">{{ name }}</h1>
+                <h1 v-if="displayStore.currentShow.includes('categories')" class="categories">{{ categories.map((category) => category.name).join(', ') }}</h1>
+            </div>
         </card-text-wrapper>
+        <CardEditWrapper collection="files" :data-item="dataItem" @save="onEditableGroupSubmit" />
     </div>
 </template>
 
@@ -22,6 +19,7 @@ import { useCard } from '~/composables/useCard';
 import { useSelectionStore } from '~/stores/useSelectionStore';
 import { useModeStore } from '~/stores/useModeStore';
 import { useDisplayStore } from '~/stores/useDisplayStore';
+import CardEditWrapper from './common/CardEditWrapper.vue';
 
 const props = defineProps({
     id: { type: String, required: true },

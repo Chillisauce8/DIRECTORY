@@ -1,6 +1,6 @@
 <template>
     <grid-container
-        functionControlDisplay="icon"
+        modeControlDisplay="icon"
         :filters="[
             {
                 field: 'categories',
@@ -8,8 +8,8 @@
                 selected: selectedCategories
             }
         ]"
-        :visibleFunctionControls="['view', 'select', 'edit', 'order']"
-        defaultFunctionControl="view"
+        :visibleModeControls="['view', 'select', 'edit', 'order']"
+        defaultModeControl="view"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
         :show="selectedMediaShowOptions"
