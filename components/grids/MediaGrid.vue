@@ -13,6 +13,7 @@
         defaultModeControl="view"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
+        :listingCollection="'files'"
     >
         <template #controls>
             <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
@@ -21,18 +22,8 @@
             <SearchControl :search-fields="searchFields" />
         </template>
 
-        <template #card="{ listing, mode: cardMode, selected, onNameUpdate, onCategoriesUpdate }">
-            <MediaCard
-                :id="listing.id"
-                :imageId="listing.images[0].id"
-                :name="listing.name"
-                :mode="cardMode"
-                :loveable="listing.loveable"
-                :selected="selected"
-                :categories="listing.categories"
-                :onNameUpdate="onNameUpdate"
-                :onCategoriesUpdate="onCategoriesUpdate"
-            />
+        <template #card="{ listing }">
+            <MediaCard :id="listing.id" :data-item="listing" :categories="listing.categories" v-model:data-item="listing" />
         </template>
 
         <template #edit-controls>

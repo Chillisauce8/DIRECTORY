@@ -37,26 +37,20 @@
         </div>
 
         <fancy-box v-if="modeStore.currentMode === 'view'" class="list-grid" :options="{ Carousel: { infinite: true } }">
-            <template v-for="(listing, index) in filteredListings" :key="listing.id">
-                <CardWrapper v-bind="getCardWrapperProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
-                    <slot name="card" v-bind="getCardProps(listing)" />
-                </CardWrapper>
+            <template v-for="listing in filteredListings" :key="listing.id">
+                <slot name="card" :listing="listing" />
             </template>
         </fancy-box>
 
         <vue-draggable v-else-if="modeStore.currentMode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <template v-for="(listing, index) in draggableListings" :key="listing.id">
-                <CardWrapper v-bind="getCardWrapperProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
-                    <slot name="card" v-bind="getCardProps(listing)" />
-                </CardWrapper>
+            <template v-for="listing in draggableListings" :key="listing.id">
+                <slot name="card" :listing="listing" />
             </template>
         </vue-draggable>
 
         <div v-else class="list-grid">
             <template v-for="listing in filteredListings" :key="listing.id">
-                <CardWrapper v-bind="getCardWrapperProps(listing)" @update:selected="(val: boolean) => handleItemSelection(listing.id, val)">
-                    <slot name="card" v-bind="getCardProps(listing)" />
-                </CardWrapper>
+                <slot name="card" :listing="listing" />
             </template>
         </div>
     </div>
@@ -397,20 +391,16 @@ function searchItems<T extends Record<string, any>>(items: T[], searchQueryConfi
     );
 }
 
+// Remove getCardProps since it's no longer needed - each card handles its own props
+
 function getCardProps(listing: Listing) {
     return {
-        listing,
-        dbNode: listing.dbNode,
-        onNameUpdate: (newName: string) => handleNameUpdate(listing.id, newName),
-        onCategoriesUpdate: (newCategories: Category[]) => handleCategoriesUpdate(listing.id, newCategories),
-        onListingSelectionUpdate: (selected: boolean) => handleListingSelectionUpdate(listing.id, selected)
-    };
-}
-
-function getCardWrapperProps(listing: Listing) {
-    return {
         id: listing.id,
-        imageId: listing?.images?.[0]?.id
+        imageId: listing?.images?.[0]?.id,
+        dataItem: listing,
+        collection: props.listingCollection,
+        clickable: true,
+        searchTerms: listing.name
     };
 }
 

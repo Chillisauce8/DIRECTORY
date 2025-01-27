@@ -6,14 +6,13 @@
                 field: 'categoryGroup',
                 options: categoryOptions,
                 selected: selectedCategories,
-                isArray: false // Make sure this is set
+                isArray: false
             }
         ]"
         :visibleModeControls="['select', 'edit']"
         defaultModeControl="select"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
-        :show="selectedCategoryShowOptions"
         :listings="listingList"
         :category-options="categoryOptions"
         :listing-collection="collectionName"
@@ -22,31 +21,15 @@
         <template #controls>
             <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
             <ShowControl v-model="selectedCategoryShowOptions" :show-options="categoriesShowOptions" />
-            <!-- <SortControl :sort-options="categoriesSortOptions" /> -->
             <SearchControl :search-fields="searchFields" />
         </template>
-        <template #edit-controls>
-            <EditArrayControl :options="categoryOptions" editField="categories" placeholder="Edit Categories" class="edit-array-control w-full md:w-80" />
+
+        <template #card="{ listing }">
+            <category-card :id="listing.id" :data-item="listing" @update:data-item="onDbNodeUpdate" />
         </template>
 
-        <template #card="{ listing, mode: cardMode, selected, show, onListingSelectionUpdate }">
-            <category-card
-                :id="listing.id"
-                :imageId="listing?.images?.[0]?.id"
-                :name="listing.name"
-                :type="listing.type"
-                :mode="cardMode"
-                :loveable="listing.loveable"
-                :selected="selected"
-                :show="show"
-                :data-item="listing.dbNode"
-                :categoryGroup="listing.categoryGroup"
-                @update:data-item="
-                    onDbNodeUpdate($event);
-                    onListingSelectionUpdate(false);
-                "
-            >
-            </category-card>
+        <template #edit-controls>
+            <EditArrayControl :options="categoryOptions" editField="categories" placeholder="Edit Categories" class="edit-array-control w-full md:w-80" />
         </template>
     </grid-container>
 </template>
@@ -68,10 +51,6 @@ const selectedCategories = ref([]);
 const selectedCategoryShowOptions = ref(['name']);
 
 const categoriesShowOptions = ['name', 'categories'];
-// const categoriesSortOptions = [
-//     { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
-//     { label: 'Name (Z-A)', sort: 'name', order: 'desc' }
-// ];
 
 const filterControlConfig = {
     display: 'chip',
@@ -91,7 +70,6 @@ function prepareListingItem(category: CategoryDbNode): Listing<any> {
         type: category.type,
         categoryGroup: category.categoryGroup,
         categories: category?.categories ?? [],
-        // Fix the images array handling
         images: category?.images?.length
             ? category.images.map((i) => ({
                   id: i.image?.id || null,
@@ -102,7 +80,6 @@ function prepareListingItem(category: CategoryDbNode): Listing<any> {
     };
 }
 
-// Add debug logging
 watch(
     () => listingList.value,
     (newValue) => {
@@ -115,11 +92,9 @@ watch(
 );
 
 async function handleItemCreated(newItem: any) {
-    // Add the new item to the listing list
     const listing = prepareListingItem(newItem);
     listingList.value = [...listingList.value, listing];
 
-    // If it's a category group, update options
     if (newItem.type === 'Category Group') {
         categoryOptions.value = [...categoryOptions.value, { id: newItem._id, name: newItem.name }];
     }

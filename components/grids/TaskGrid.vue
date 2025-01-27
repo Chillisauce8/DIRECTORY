@@ -12,7 +12,6 @@
         defaultModeControl="view"
         defaultCardSize="Big Cards"
         :searchFields="searchFields"
-        :show="selectedMediaShowOptions"
         :listings="listingList"
         :category-options="categoryOptions"
         :listing-collection="collectionName"
@@ -20,33 +19,13 @@
     >
         <template #controls>
             <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
-            <ShowControl v-model="selectedMediaShowOptions" @update:modelValue="test" :show-options="mediaShowOptions" />
+            <ShowControl v-model="selectedMediaShowOptions" :show-options="mediaShowOptions" />
             <SortControl :sort-options="mediaSortOptions" />
             <SearchControl :search-fields="searchFields" />
         </template>
 
-        <template #card="{ listing, mode: cardMode, selected, show, onListingSelectionUpdate }">
-            <TaskCard
-                :id="listing.id"
-                :imageId="listing.files?.[0]?.id"
-                :name="listing.name"
-                :description="listing.description"
-                :vehicles="listing.vehicles"
-                :status="listing.status"
-                :files="listing.files"
-                :start="listing.start"
-                :end="listing.end"
-                :duration="listing.duration"
-                :mode="cardMode"
-                :selected="selected"
-                :show="show"
-                :categories="listing.categories"
-                :data-item="listing.dbNode"
-                @update:data-item="
-                    onDbNodeUpdate($event);
-                    onListingSelectionUpdate(false);
-                "
-            />
+        <template #card="{ listing }">
+            <TaskCard :id="listing.id" :data-item="listing" @update:data-item="onDbNodeUpdate" />
         </template>
 
         <template #edit-controls>
