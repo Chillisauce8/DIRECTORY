@@ -2,13 +2,11 @@
     <div class="task-card">
         <card-picture v-if="cardData.imageId" :id="cardData.imageId" :name="cardData.name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
         <card-text-wrapper :class="getCardTextWrapperClass">
-            <div class="card-details">
-                <h1 v-if="displayStore.currentShow.includes('name')" class="name">{{ cardData.name }}</h1>
-                <h1 v-if="displayStore.currentShow.includes('categories')" class="categories">{{ categoryNames }}</h1>
-                <div v-if="displayStore.currentShow.includes('start')" class="start">{{ formattedStartDate }}</div>
-                <div v-if="displayStore.currentShow.includes('description') && cardData.description" class="description">{{ cardData.description }}</div>
-                <div v-if="displayStore.currentShow.includes('vehicles')" class="vehicles">{{ vehicleNames }}</div>
-            </div>
+            <h1 v-if="displayStore.currentShow.includes('name')" class="name">{{ cardData.name }}</h1>
+            <h1 v-if="displayStore.currentShow.includes('categories')" class="categories">{{ categoryNames }}</h1>
+            <div v-if="displayStore.currentShow.includes('start')" class="start">{{ formattedStartDate }}</div>
+            <div v-if="displayStore.currentShow.includes('description') && cardData.description" class="description">{{ cardData.description }}</div>
+            <div v-if="displayStore.currentShow.includes('vehicles')" class="vehicles">{{ vehicleNames }}</div>
         </card-text-wrapper>
         <CardEditWrapper collection="events" :data-item="cardData" @save="onEditableGroupSubmit" />
     </div>
@@ -72,62 +70,11 @@ const categoryNames = computed(() => {
 });
 
 const { getCardTextWrapperClass, onEditableGroupSubmit } = useCard({
-    ...props,
-    show: displayStore.currentShow
+    ...props
 });
 </script>
 
 <style lang="scss">
 .task-card {
-    picture {
-        @include aspect-ratio(3, 2);
-    }
-    &.edit.selected {
-        .card-details {
-            display: none;
-        }
-    }
-    .card-details {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        padding: 0.5rem;
-
-        .name {
-            font-family: var(--primary-font-family);
-            font-size: 15px;
-            font-weight: 100;
-            margin: 5px 0;
-        }
-        .categories {
-            font-family: var(--primary-font-family);
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-        .description {
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-        }
-        .start {
-            font-size: 0.75rem;
-            color: var(--text-color-secondary);
-        }
-        .vehicles {
-            font-size: 0.75rem;
-            font-style: italic;
-        }
-    }
-    .form {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        > *:not(:last-child) {
-            margin-bottom: 10px;
-        }
-        .p-inputtext {
-            font-size: 12px;
-        }
-    }
 }
 </style>

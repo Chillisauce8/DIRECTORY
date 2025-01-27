@@ -1,6 +1,6 @@
 <template>
     <transition name="card-edit">
-        <div class="card-edit-wrapper" v-if="showWrapper">
+        <div class="card-edit-wrapper" v-if="showEdit">
             <CrudControl :collection="collection" function="update" :dialogEdit="false" :itemId="dataItem._id" :initialItem="dataItem" noButton preventDefault @save="onSave" />
         </div>
     </transition>
@@ -22,7 +22,21 @@ const selectionStore = useSelectedStore();
 const modeStore = useModeStore();
 const cardStore = useCardStore();
 
-const showWrapper = computed(() => modeStore.isEditMode && selectionStore.isSelected(props.dataItem._id));
+const showEdit = computed(() => modeStore.isEditMode && selectionStore.isSelected(props.dataItem._id));
+
+// Optional debug watcher
+watch(
+    showEdit,
+    (newValue) => {
+        console.log('CardEditWrapper visibility:', {
+            id: props.dataItem._id,
+            mode: modeStore.currentMode,
+            isSelected: selectionStore.isSelected(props.dataItem._id),
+            showEdit: newValue
+        });
+    },
+    { immediate: true }
+);
 
 function onSave(event: any) {
     cardStore.updateCard(props.collection, props.dataItem._id, event);

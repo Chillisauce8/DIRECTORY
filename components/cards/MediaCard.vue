@@ -1,11 +1,10 @@
 <template>
+    <!-- Remove mode and show attributes since they're handled by stores -->
     <div class="media-card">
         <card-picture v-if="imageId" :id="imageId" :name="name" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" :loveable="loveable" />
         <card-text-wrapper :class="getCardTextWrapperClass" :selected="isSelected">
-            <div class="card-details">
-                <h1 v-if="showStore.currentShow.includes('name')" class="name">{{ name }}</h1>
-                <h1 v-if="showStore.currentShow.includes('categories')" class="categories">{{ categories.map((category) => category.name).join(', ') }}</h1>
-            </div>
+            <h1 v-if="showStore.currentShow.includes('name')" class="name">{{ name }}</h1>
+            <h1 v-if="showStore.currentShow.includes('categories')" class="categories">{{ categories.map((category) => category.name).join(', ') }}</h1>
         </card-text-wrapper>
         <CardEditWrapper collection="files" :data-item="dataItem" @save="onEditableGroupSubmit" />
     </div>
@@ -32,6 +31,9 @@ const props = defineProps({
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     gallery: { type: String, default: 'gallery' }
+    // Remove redundant props that are handled by stores:
+    // mode: { type: String },
+    // show: { type: Array }
 });
 
 const selectionStore = useSelectedStore();
@@ -69,28 +71,8 @@ const { getCardTextWrapperClass, onEditableGroupSubmit, handleSelection } = useC
 </script>
 
 <style lang="scss">
+// All styles can be removed as they're now handled by the common components
 .media-card {
-    picture {
-        @include aspect-ratio(3, 2);
-    }
-    &.edit.selected {
-        .card-details {
-            display: none;
-        }
-    }
-    .card-details {
-        .name {
-            font-family: var(--primary-font-family);
-            font-size: 15px;
-            font-weight: 100;
-            margin: 5px 0;
-        }
-        .categories {
-            font-family: var(--primary-font-family);
-            font-size: 12px;
-            font-weight: 500;
-            text-transform: uppercase;
-        }
-    }
+    // Custom styles only if needed
 }
 </style>

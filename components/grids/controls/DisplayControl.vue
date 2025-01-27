@@ -1,9 +1,9 @@
 <template>
-    <Select v-if="showSelector" :modelValue="currentSize" @update:modelValue="updateSize" :options="filteredSizes" optionLabel="label" :allowEmpty="false" class="display-control">
+    <SelectButton v-if="showSelector" :modelValue="currentSize" @update:modelValue="updateSize" :options="filteredSizes" optionLabel="label" :allowEmpty="false" class="display-control">
         <template #option="slotProps">
             <SvgIcon :svg="slotProps.option.icon" :label="slotProps.option.label" labelPosition="hover" />
         </template>
-    </Select>
+    </SelectButton>
 </template>
 
 <script setup lang="ts">

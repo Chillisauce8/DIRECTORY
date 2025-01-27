@@ -91,14 +91,28 @@ function prepareListingItem(category: CategoryDbNode): Listing<any> {
         type: category.type,
         categoryGroup: category.categoryGroup,
         categories: category?.categories ?? [],
-        images: (category?.images ?? []).map((i) => ({ id: i.image.id, alt: i.image.name })),
+        // Fix the images array handling
+        images: category?.images?.length
+            ? category.images.map((i) => ({
+                  id: i.image?.id || null,
+                  alt: i.image?.name || ''
+              }))
+            : [],
         dbNode: category
     };
 }
 
-function onDbNodeUpdate(dbNode: CategoryDbNode) {
-    updateDbNodeInListingList(dbNode);
-}
+// Add debug logging
+watch(
+    () => listingList.value,
+    (newValue) => {
+        console.log('listingList updated:', newValue);
+        if (newValue?.length) {
+            console.log('First item images:', newValue[0].images);
+        }
+    },
+    { deep: true }
+);
 
 async function handleItemCreated(newItem: any) {
     // Add the new item to the listing list

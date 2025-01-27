@@ -72,3 +72,19 @@ export interface CardWrapperProps {
     gallery: string;
     show: string[];
 }
+
+// Add CardProps interface
+export interface CardProps {
+    id: string;
+    imageId?: string;
+    name?: string;
+    dataItem?: any;
+    loveable?: boolean;
+    categories?: Category[];
+    selected?: boolean;
+    clickable?: boolean;
+    searchTerms?: string;
+    gallery?: string;
+    type?: string;
+    categoryGroup?: any;
+}

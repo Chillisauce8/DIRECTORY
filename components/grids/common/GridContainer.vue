@@ -400,8 +400,6 @@ function searchItems<T extends Record<string, any>>(items: T[], searchQueryConfi
 function getCardProps(listing: Listing) {
     return {
         listing,
-        mode: unref(modeStore.currentMode),
-        show: showStore.currentShow, // Updated to use showStore
         dbNode: listing.dbNode,
         onNameUpdate: (newName: string) => handleNameUpdate(listing.id, newName),
         onCategoriesUpdate: (newCategories: Category[]) => handleCategoriesUpdate(listing.id, newCategories),
@@ -412,11 +410,7 @@ function getCardProps(listing: Listing) {
 function getCardWrapperProps(listing: Listing) {
     return {
         id: listing.id,
-        imageId: listing?.images?.[0]?.id,
-        name: listing?.name,
-        mode: unref(modeStore.currentMode),
-        show: showStore.currentShow, // Updated to use showStore
-        listing
+        imageId: listing?.images?.[0]?.id
     };
 }
 

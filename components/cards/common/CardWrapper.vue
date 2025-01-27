@@ -78,8 +78,8 @@ const modeIcon = computed(() => {
 /* Computed classes */
 const computedClasses = computed(() => ({
     selected: isSelected.value,
-    [modeStore.currentMode]: true,
-    ...Object.fromEntries(displayStore.currentShow.map((item) => [item, true]))
+    [modeStore.currentMode]: true
+    // Remove displayStore.currentShow mapping since it's no longer needed
 }));
 </script>
 
@@ -157,6 +157,23 @@ const computedClasses = computed(() => ({
     & .swp-picture img {
         border-top-left-radius: var(--corner-outer);
         border-top-right-radius: var(--corner-outer);
+    }
+
+    // Add common card picture styling
+    .swp-picture {
+        picture {
+            @include aspect-ratio(3, 2);
+        }
+        img {
+            transition: all 0.7s ease;
+        }
+    }
+
+    // Add common edit.selected behavior
+    &.edit.selected {
+        .card-details {
+            display: none;
+        }
     }
 }
 </style>
