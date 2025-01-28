@@ -27,7 +27,8 @@
                           :formLabelType="props.formLabelType"
                           :floatLabelVariant="props.floatLabelVariant"
                       >
-                          <SpeedDial :model="createSpeedDialItems(index)" v-if="!sharedFunctions.isReadonly()" direction="left" style="position: relative" />
+                          <SpeedDial :model="createSpeedDialItems(index, vm.model[index])" v-if="!sharedFunctions.isReadonly()"
+                                     direction="left" style="position: relative" />
                       </DynamicField>
                   </template>
               </template>
@@ -99,7 +100,17 @@ onDeactivated(() => {
  * Creates the speed dial menu items for each array row
  * Returns buttons for: add, delete, move up, and move down
  */
-function createSpeedDialItems(index: number) {
+function createSpeedDialItems(index: number, model: any) {
+    if (model === null || model === undefined) {
+      return [
+        {
+          icon: 'pi pi-times',
+          command: () => sharedFunctions.deleteRow(index),
+          visible: () => sharedFunctions.canRemoveMore()
+        },
+      ];
+    }
+
     return [
         {
             icon: 'pi pi-plus',

@@ -24,7 +24,7 @@
                         </h1>
 
                         <!-- Speed dial menu for row actions (only shows if model has items) -->
-                        <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems(rowIndex)" direction="left" />
+                        <SpeedDial v-if="vm.model?.length" :model="createSpeedDialItems(rowIndex, vm.model[rowIndex])" direction="left" />
                     </div>
 
                     <!-- Iterate through lines within each row -->
@@ -32,7 +32,9 @@
                         <!-- Iterate through items within each line -->
                         <template v-for="(item, itemIndex) in line">
                             <!-- Container for each form field -->
-                            <template :style="{ width: item.description.xFlex + '%' }" v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)" v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
+                            <template :style="{ width: item.description.xFlex + '%' }"
+                                      v-if="sharedFunctions.shouldItemBeConstructed(item.description, rowIndex)"
+                                      v-tooltip.bottom="sharedFunctions.getDescriptionText(item)">
                                 <!-- Render dynamic field for basic value inputs -->
                                 <DynamicField
                                     v-if="item.blockComponent === BlockComponents.value"
@@ -205,8 +207,23 @@ function getContextMenuItems(selectionValues: string[]) {
  * Creates the speed dial menu items (floating action buttons)
  * Includes actions like add, delete, move up/down, and copy row
  */
-function createSpeedDialItems(index: number) {
-    // const index = vm.model.length - 1;
+function createSpeedDialItems(index: number, model: any) {
+    const isEmpty = !model || Object.keys(model).length === 0 ||
+      Object.keys(model).every(key => {
+        return model[key] === '' || model[key] === null || model[key] === undefined;
+      });
+
+    if (isEmpty) {
+      return [
+        {
+          icon: 'pi pi-times',
+          command: () => sharedFunctions.deleteRow(index),
+          visible: () => sharedFunctions.canRemoveMore() &&
+            !(props.description.header.required && index === 0 && vm.model.length === 1)
+        },
+      ];
+    }
+
     return [
         {
             icon: 'pi pi-plus',
@@ -221,7 +238,8 @@ function createSpeedDialItems(index: number) {
         {
             icon: 'pi pi-times',
             command: () => sharedFunctions.deleteRow(index),
-            visible: () => sharedFunctions.canRemoveMore() && !(props.description.header.required && index === 0 && vm.model.length === 1)
+            visible: () => sharedFunctions.canRemoveMore() &&
+              !(props.description.header.required && index === 0 && vm.model.length === 1)
         },
         {
             icon: 'pi pi-chevron-up',
