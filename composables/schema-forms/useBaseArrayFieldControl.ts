@@ -244,7 +244,7 @@ export default function useBaseArrayFieldControl(props: BaseFieldProps, emits: B
   }
 
   function needToShowDeleteArrayItemsDialog(): boolean {
-    return true;
+    return props.description?.deleteMultiple;
   }
 
   function processXFeatures() {

@@ -133,6 +133,8 @@ export class SchemaParser {
       result['changeOperators'] = properties.changeOperators;
     }
 
+    result['deleteMultiple'] = properties['deleteMultiple'] || item['deleteMultiple'];
+
     this.parseSelectionFeature(path, item);
 
     result['rawData'] = this.parseRawData(properties, item);
