@@ -79,8 +79,8 @@ export class SchemaFormsProcessingHelper {
   shouldFieldBeHidden(description: any, context: any): boolean|undefined {
     const features = this.xFeaturesHelper.getControlFeatures(description, context);
 
-    if (features['show'] === false) {
-      return true;
+    if (features['show'] !== undefined) {
+      return !features['show'];
     }
 
     return features['hide'];
