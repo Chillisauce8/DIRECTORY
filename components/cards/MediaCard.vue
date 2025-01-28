@@ -1,5 +1,5 @@
 <template>
-    <BaseCard :id="id" collection="files" :image-id="imageId" :name="name" :loveable="loveable" :data-item="dataItem" :clickable="clickable" :search-terms="searchTerms" @update:data-item="$emit('update:data-item', $event)">
+    <BaseCard v-bind="cardProps" @update:data-item="$emit('update:data-item', $event)">
         <template #card-content="{ data }">
             <h1 v-if="showStore.currentShow.includes('name')" class="name">{{ data.name }}</h1>
             <h1 v-if="showStore.currentShow.includes('categories')" class="categories">
@@ -10,21 +10,18 @@
 </template>
 
 <script setup lang="ts">
-import { imageIdProp, nameProp, loveableProp, categoriesProp, dataItemProp } from '@/types/props';
+import { commonCardProps } from '@/types/props';
 import { useShowStore } from '~/stores/useShowStore';
+import { computed } from 'vue';
+
+const props = defineProps(commonCardProps);
 
 const showStore = useShowStore();
 
-defineProps({
-    id: { type: String, required: true },
-    imageId: imageIdProp,
-    name: nameProp,
-    dataItem: dataItemProp,
-    loveable: loveableProp,
-    categories: categoriesProp,
-    clickable: { type: Boolean, default: true },
-    searchTerms: { type: String, default: '' }
-});
+const cardProps = computed(() => ({
+    ...props,
+    collection: 'files'
+}));
 
 defineEmits(['update:data-item']);
 </script>

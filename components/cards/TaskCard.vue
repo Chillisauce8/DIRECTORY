@@ -1,5 +1,5 @@
 <template>
-    <BaseCard :id="id" collection="events" :image-id="imageId" :name="name" :data-item="dataItem" :clickable="clickable" :search-terms="searchTerms" @update:data-item="$emit('update:data-item', $event)">
+    <BaseCard v-bind="cardProps" @update:data-item="$emit('update:data-item', $event)">
         <template #card-content="{ data }">
             <h1 v-if="displayStore.currentShow.includes('name')" class="name">{{ data.name }}</h1>
             <h1 v-if="displayStore.currentShow.includes('categories')" class="categories">
@@ -19,24 +19,27 @@
 </template>
 
 <script setup lang="ts">
-import { imageIdProp, nameProp, dataItemProp } from '@/types/props';
-import type { Vehicle } from '@/types/props';
+import { commonCardProps } from '@/types/props';
+import { computed } from 'vue';
 import { useDisplayStore } from '~/stores/useDisplayStore';
 
 const displayStore = useDisplayStore();
 
-defineProps({
-    id: { type: String, required: true },
-    imageId: imageIdProp,
-    name: nameProp,
-    dataItem: dataItemProp,
+const props = defineProps({
+    ...commonCardProps,
     description: { type: String, default: '' },
-    vehicles: { type: Array as PropType<Vehicle[]>, default: () => [] },
+    vehicles: { type: Array, default: () => [] },
+    status: { type: String, default: '' },
+    files: { type: Array, default: () => [] },
     start: { type: String },
     end: { type: String },
-    clickable: { type: Boolean, default: true },
-    searchTerms: { type: String, default: '' }
+    duration: { type: String }
 });
+
+const cardProps = computed(() => ({
+    ...props,
+    collection: 'events'
+}));
 
 defineEmits(['update:data-item']);
 

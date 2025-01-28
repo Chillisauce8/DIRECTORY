@@ -88,3 +88,15 @@ export interface CardProps {
     type?: string;
     categoryGroup?: any;
 }
+
+export const commonCardProps = {
+    id: { type: String, required: true },
+    clickable: { type: Boolean, default: true },
+    searchTerms: { type: String, default: '' },
+    dataItem: dataItemProp,
+    collection: { type: String, required: true },
+    imageId: imageIdProp,
+    name: nameProp,
+    loveable: loveableProp,
+    categories: categoriesProp
+} as const;

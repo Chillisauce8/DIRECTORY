@@ -21,42 +21,50 @@
 </template>
 
 <script setup lang="ts">
+// Import required dependencies
 import { computed, ref } from 'vue';
 import { imageIdProp, nameProp, loveableProp, dataItemProp } from '@/types/props';
-import { useCard } from '~/composables/useCard';
 import { useCardStore } from '~/stores/useCardStore';
 import { useSelectedStore } from '~/stores/useSelectedStore';
 import { useModeStore } from '~/stores/useModeStore';
+import { useShowStore } from '~/stores/useShowStore';
 
+// Define component props with their types and defaults
 const props = defineProps({
-    id: { type: String, required: true },
-    collection: { type: String, required: true },
-    imageId: imageIdProp,
-    name: nameProp,
-    loveable: loveableProp,
-    dataItem: dataItemProp,
-    clickable: { type: Boolean, default: true },
-    searchTerms: { type: String, default: '' },
-    gallery: { type: String, default: 'gallery' }
+    id: { type: String, required: true }, // Unique identifier for the card
+    collection: { type: String, required: true }, // Collection name the card belongs to
+    imageId: imageIdProp, // ID of the card's image
+    name: nameProp, // Name of the card
+    loveable: loveableProp, // Whether the card can be marked as favorite
+    dataItem: dataItemProp, // Data object for the card
+    clickable: { type: Boolean, default: true }, // Whether the card is clickable
+    searchTerms: { type: String, default: '' }, // Terms for searching
+    gallery: { type: String, default: 'gallery' } // Gallery identifier
 });
 
+// Define emitted events
 const emit = defineEmits(['update:data-item']);
 
-// Store instances
+// Initialize store instances
 const cardStore = useCardStore();
 const selectionStore = useSelectedStore();
 const modeStore = useModeStore();
+const showStore = useShowStore();
 
 // Computed properties
+// Get card data from store or props
 const cardData = computed(() => {
     const storeData = cardStore.getCard(props.collection, props.id);
     return storeData || props.dataItem;
 });
 
+// Check if card is selected
 const isSelected = computed(() => selectionStore.isSelected(props.id));
 
+// Generate full size image source URL
 const fullSizeSrc = computed(() => (props.imageId ? `/api/images/${props.imageId}` : undefined));
 
+// Determine which mode icon to display
 const modeIcon = computed(() => {
     const baseIcons = {
         select: 'check-circle',
@@ -72,6 +80,7 @@ const modeIcon = computed(() => {
     return modeStore.currentMode ? baseIcons[modeStore.currentMode] : '';
 });
 
+// Generate CSS classes for the card
 const cardClasses = computed(() => ({
     selected: isSelected.value,
     [modeStore.currentMode]: true,
@@ -79,23 +88,26 @@ const cardClasses = computed(() => ({
     'is-dragging': isDragging.value
 }));
 
-// Use common card functionality
-const { getCardTextWrapperClass, onEditableGroupSubmit } = useCard(props);
+// Moved from useCard
+const getCardTextWrapperClass = computed(() => {
+    return (modeStore.currentMode === 'edit' && isSelected.value) || showStore.currentShow.length > 0 ? 'show' : 'hide';
+});
 
 // Event handlers
+// Handle save events from card editor
 const handleEditSave = (event: any) => {
     cardStore.updateCard(props.collection, props.id, event);
-    onEditableGroupSubmit(event);
     emit('update:data-item', event);
 };
 
+// Handle click events on the card
 const handleClick = (event: MouseEvent) => {
     if (props.clickable && !event.defaultPrevented) {
         selectionStore.toggle(props.id);
     }
 };
 
-// For drag support
+// State for drag support
 const isDragging = ref(false);
 </script>
 
@@ -117,8 +129,8 @@ const isDragging = ref(false);
     .swp-picture {
         img {
             transition: all 0.7s ease;
-            border-top-left-radius: var(--corner-outer);
-            border-top-right-radius: var(--corner-outer);
+            border-top-left-radius: var (--corner-outer);
+            border-top-right-radius: var (--corner-outer);
         }
 
         picture {
