@@ -6,23 +6,12 @@
         class="base-card"
         :class="cardClasses"
         :id="props.dataItem._id"
-        :data-search="searchTerms"
         @click="handleClick"
     >
-        <!--
-        <card-picture
-            v-if="hasValidImage"
-            :_id="cardProperties.value.imageId || cardData?.images?.[0]?._id"
-            :name="cardProperties.value.name"
-            :loveable="cardProperties.value.loveable"
-            widths="290:870"
-            :increment="290"
-            aspectRatio="3:2"
-            loading="lazy"
-        />
--->
+        <card-picture v-if="hasValidImage" :_id="imageId" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
+
         <!-- Show CardTextWrapper only when not in edit mode or card not selected -->
-        <card-text-wrapper v-if="!showEditWrapper" :class="getCardTextWrapperClass">
+        <card-text-wrapper v-if="!showEditWrapper">
             <slot name="card-content" :data="cardData" />
         </card-text-wrapper>
 
@@ -38,7 +27,6 @@
 <script setup lang="ts">
 // Import required dependencies
 import { computed, ref, watch } from 'vue';
-import { imageIdProp, nameProp, loveableProp, dataItemProp } from '@/types/props';
 import { useCardStore } from '~/stores/useCardStore';
 import { useSelectedStore } from '~/stores/useSelectedStore';
 import { useModeStore } from '~/stores/useModeStore';
@@ -49,24 +37,21 @@ const props = defineProps({
     dataItem: { type: Object, required: true },
     collection: { type: String, required: true },
     clickable: { type: Boolean, default: true },
-    searchTerms: { type: String, default: '' },
-    gallery: { type: String, default: 'gallery' }
+    loveable: { type: Boolean, default: false },
+    gallery: { type: String, default: 'gallery' },
+    imageIdPath: { type: String, required: false } // path to find image ID in dataItem
 });
+
+// Function to get nested value from object using dot notation
+const getNestedValue = (obj: any, path: string) => {
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+};
 
 // Compute all card properties from dataItem directly
 const cardProperties = computed(() => ({
     _id: props.dataItem._id,
-    imageId: props.dataItem.imageId,
-    name: props.dataItem.name,
-    loveable: props.dataItem.loveable
+    name: props.dataItem.name
 }));
-
-// Add debug logging
-console.log('BaseCard props on mount:', {
-    _id: cardProperties.value._id,
-    clickable: props.clickable,
-    propsRaw: props
-});
 
 // Define emitted events
 const emit = defineEmits(['update:data-item']);
@@ -75,7 +60,6 @@ const emit = defineEmits(['update:data-item']);
 const cardStore = useCardStore();
 const selectionStore = useSelectedStore();
 const modeStore = useModeStore();
-const showStore = useShowStore();
 
 // Computed properties
 // Get card data from store or props
@@ -87,8 +71,10 @@ const cardData = computed(() => {
 // Check if card is selected
 const isSelected = computed(() => selectionStore.isSelected(cardProperties.value._id));
 
-// Generate full size image source URL
-const fullSizeSrc = computed(() => (cardProperties.value.imageId ? `/api/images/${cardProperties.value.imageId}` : undefined));
+// Add computed properties for image handling
+const imageId = computed(() => (props.imageIdPath ? getNestedValue(props.dataItem, props.imageIdPath) : undefined));
+const hasValidImage = computed(() => typeof imageId.value === 'string' && imageId.value.length > 0);
+const fullSizeSrc = computed(() => (hasValidImage.value ? `/api/images/${imageId.value}` : undefined));
 
 // Determine which mode icon to display
 const modeIcon = computed(() => {
@@ -110,58 +96,29 @@ const modeIcon = computed(() => {
 const cardClasses = computed(() => ({
     selected: isSelected.value,
     [modeStore.currentMode]: true,
-    [`${props.collection}-card`]: true,
     'is-dragging': isDragging.value
 }));
-
-// Moved from useCard
-const getCardTextWrapperClass = computed(() => {
-    return (modeStore.currentMode === 'edit' && isSelected.value) || showStore.currentShow.length > 0 ? 'show' : 'hide';
-});
 
 // Add new computed property to control wrapper visibility
 const showEditWrapper = computed(() => modeStore.isEditMode && isSelected.value);
 
-// Add computed property for image check
-const hasValidImage = computed(() => {
-    return Boolean(imageId || cardData.value?.images?.[0]?._id);
-});
-
 // Event handlers
-// Handle save events from card editor
 const handleEditSave = (event: any) => {
-    console.log('BaseCard - handleEditSave', { id: cardProperties.value._id });
     cardStore.updateCard(props.collection, cardProperties.value._id, event);
     emit('update:data-item', event);
-    selectionStore.deselect(cardProperties.value._id); // This should be sufficient to update selection state
+    selectionStore.deselect(cardProperties.value._id);
 };
 
-// Handle click events on the card
 const handleClick = (event: MouseEvent) => {
-    console.log('BaseCard - Click handler:', {
-        id: cardProperties.value._id,
-        clickable: props.clickable,
-        defaultPrevented: event.defaultPrevented
-    });
-
     if (props.clickable && !event.defaultPrevented) {
-        console.log('BaseCard - Before selection toggle:', {
-            id: cardProperties.value._id,
-            currentlySelected: selectionStore.isSelected(cardProperties.value._id)
-        });
         selectionStore.toggle(cardProperties.value._id);
     }
 };
 
-// Add a watcher for selection state changes
+// Remove console.log watcher and keep simple selection state watcher
 watch(
     () => selectionStore.isSelected(cardProperties.value._id),
-    (newValue) => {
-        console.log('BaseCard - Selection state changed:', {
-            id: cardProperties.value._id,
-            isSelected: newValue
-        });
-    }
+    () => {}
 );
 
 // State for drag support
@@ -200,7 +157,16 @@ const isDragging = ref(false);
             filter: brightness(40%);
         }
         .icon {
-            background-color: red;
+            background-color: var(--primary-color);
+        }
+        &.select,
+        &.edit {
+            .mode-icons {
+                opacity: 1;
+                svg {
+                    stroke: white;
+                }
+            }
         }
     }
 

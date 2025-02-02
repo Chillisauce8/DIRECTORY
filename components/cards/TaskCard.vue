@@ -1,5 +1,5 @@
 <template>
-    <BaseCard :dataItem="dataItem" collection="events">
+    <BaseCard :data-item="dataItem" collection="events" image-id-path="" class="task-card">
         <template #card-content="{ data }">
             <h1 v-if="showStore.currentShow.includes('name')" class="name">{{ data.name }}</h1>
             <h1 v-if="showStore.currentShow.includes('categories') && data.categories" class="categories">
