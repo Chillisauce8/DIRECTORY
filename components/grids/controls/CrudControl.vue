@@ -72,8 +72,14 @@ const defaultSeverity: Record<CrudFunction, string> = {
 };
 
 async function handleSave(savedData: any) {
+    console.log('CrudControl - Save started', {
+        collection: props.collection,
+        savedData
+    });
+    console.log('CrudControl - Handling save');
     dialogVisible.value = false;
     emit('save', savedData);
+    console.log('CrudControl - Save handled');
 }
 
 async function handleDelete(deletedData: any) {
@@ -94,4 +100,17 @@ defineExpose({
     handleSave,
     handleDelete
 });
+
+// Add condition logging
+watch(
+    () => props.collection,
+    (newVal) => {
+        console.log('CrudControl - Collection changed:', {
+            collection: newVal,
+            dialogVisible: dialogVisible.value,
+            dialogEdit: props.dialogEdit,
+            shouldShow: (dialogVisible.value || !props.dialogEdit) && newVal
+        });
+    }
+);
 </script>

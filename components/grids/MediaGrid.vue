@@ -23,7 +23,7 @@
         </template>
 
         <template #card="{ listing }">
-            <MediaCard :id="listing.id" :data-item="listing" :categories="listing.categories" v-model:data-item="listing" />
+            <MediaCard :_id="listing._id" :data-item="listing" :categories="listing.categories" v-model:data-item="listing" />
         </template>
 
         <template #edit-controls>

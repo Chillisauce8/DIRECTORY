@@ -1,3 +1,8 @@
+/**
+ * Store for managing card display size and layout
+ * Used exclusively by DisplayControl component to switch between different card layouts
+ * Not to be confused with useShowStore which controls field visibility
+ */
 import { defineStore } from 'pinia';
 
 export interface CardSize {

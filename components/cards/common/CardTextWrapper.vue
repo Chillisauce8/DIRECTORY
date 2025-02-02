@@ -13,9 +13,7 @@ import { computed } from 'vue';
 import { useModeStore } from '~/stores/useModeStore';
 import { useSelectedStore } from '~/stores/useSelectedStore';
 
-const props = defineProps({
-    id: { type: String, required: true }
-});
+const props = defineProps({});
 
 const modeStore = useModeStore();
 const selectionStore = useSelectedStore();

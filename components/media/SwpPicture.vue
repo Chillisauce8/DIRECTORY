@@ -4,10 +4,10 @@
         <picture v-for="(image, index) in normalizedImages" :key="index" :class="'image-' + (index + 1)">
             <!-- Render sources only if `src` prop is not provided -->
             <template v-if="!src">
-                <source v-for="(source, srcIndex) in normalizedSources" :key="srcIndex" :media="source.media" :srcset="constructSrcSet(source, image.id)" :sizes="sizes || source.sizes || defaultSizes(source.widths)" />
+                <source v-for="(source, srcIndex) in normalizedSources" :key="srcIndex" :media="source.media" :srcset="constructSrcSet(source, image._id)" :sizes="sizes || source.sizes || defaultSizes(source.widths)" />
             </template>
             <!-- Fallback image with src from prop or constructed srcset -->
-            <img :src="src || constructSrcSet(normalizedSources[0], image.id).split(',')[0].split(' ')[0]" :alt="image.alt || ''" :loading="loading || 'lazy'" />
+            <img :src="src || constructSrcSet(normalizedSources[0], image._id).split(',')[0].split(' ')[0]" :alt="image.alt || ''" :loading="loading || 'lazy'" />
         </picture>
 
         <!-- Overlay with slot -->
@@ -25,10 +25,10 @@ const baseUrl = 'https://media.chillisauce.com/image/upload/';
 
 // Define component props
 const props = defineProps<{
-    id?: string;
+    _id?: string; // Changed from id to _id
     alt?: string;
     src?: string;
-    images?: Array<{ id: string; alt?: string }>;
+    images?: Array<{ _id: string; alt?: string }>; // Changed from id to _id
     loading?: 'eager' | 'lazy';
     widths: string;
     sizes?: string;
@@ -51,7 +51,7 @@ const emit = defineEmits(['update:src']);
 const defaultSizes = (widthRange: string): string => `${widthRange.split(':')[0]}px`;
 
 // Normalize images array; use props if images prop is empty
-const normalizedImages = computed(() => (props.images?.length ? props.images : [{ id: props.id!, alt: props.alt }]));
+const normalizedImages = computed(() => (props.images?.length ? props.images : [{ _id: props._id!, alt: props.alt }]));
 
 // Normalize sources array; default to one source if sources prop is empty
 const normalizedSources = computed(() => (props.sources?.length ? props.sources : [{ media: '', sizes: defaultSizes(props.widths), widths: props.widths, modifiers: [], aspectRatio: props.aspectRatio ?? '', increment: props.increment ?? 200 }]));
@@ -73,7 +73,7 @@ const constructSrcSet = (source: { widths: string; modifiers?: string[]; aspectR
 
 // Compute the full-size image src for the fallback img tag
 const fullSizeImageModifiers = ['c_fill', 'q_auto', 'f_auto'];
-const fullSizeSrc = computed(() => (props.id ? `${baseUrl}${fullSizeImageModifiers.join(',')}/${props.id}` : ''));
+const fullSizeSrc = computed(() => (props._id ? `${baseUrl}${fullSizeImageModifiers.join(',')}/${props._id}` : ''));
 
 // Emit full-size src to parent component on mount
 emit('update:src', fullSizeSrc.value);

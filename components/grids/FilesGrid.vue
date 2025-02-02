@@ -39,7 +39,7 @@
             </Dialog>
         </template>
 
-        <template #card="{ listing, mode: cardMode, selected, show, onListingSelectionUpdate }">
+        <template #card="{ listing, mode: cardMode, selected, show }">
             <MediaCard
                 :id="listing.id"
                 :imageId="listing?.images?.[0]?.id"
@@ -50,10 +50,7 @@
                 :show="show"
                 :data-item="listing.dbNode"
                 :categories="listing.categories"
-                @update:data-item="
-                    onDbNodeUpdate($event);
-                    onListingSelectionUpdate(false);
-                "
+                @update:data-item="onDbNodeUpdate($event)"
             >
             </MediaCard>
         </template>
@@ -68,7 +65,7 @@
 import { FileDbNode } from '~/service/file/files-service';
 import type { Listing } from '~/composables/useListControls';
 import { FileType } from '~/service/file/file-helper-service';
-import { useGrid } from '~/composables/grid.composables';
+import { useGrid } from '~/composables/useGrid';
 import { useCategoriesService } from '~/service/cars/categories.service';
 import { useToast } from 'primevue/usetoast';
 
@@ -115,10 +112,10 @@ const fileDialog = ref(false);
 
 function prepareListingItem(file: FileDbNode): Listing<FileDbNode> {
     return {
-        id: file._id,
+        _id: file._id, // Keep _id consistent
         name: file.name,
         categories: file?.categories ?? [],
-        images: file.type !== FileType.Document ? [{ id: file._id, alt: file.name }] : [],
+        images: file.type !== FileType.Document ? [{ _id: file._id, alt: file.name }] : [], // Update image _id too
         dbNode: file
     };
 }

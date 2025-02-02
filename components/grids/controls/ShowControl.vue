@@ -1,48 +1,48 @@
 <template>
     <div class="show-control">
-        <MultiSelect v-model="showStore.currentShow" :options="showOptions" display="chip" placeholder="Show Fields" @change="handleShowChange" />
+        <MultiSelect v-model="selectedFields" :options="allFields" display="chip" placeholder="Show Fields" @change="handleShowChange" />
     </div>
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
+import { computed, type PropType, onMounted } from 'vue';
 import { useShowStore } from '~/stores/useShowStore';
 
 const props = defineProps({
-    showOptions: {
-        type: Array as PropType<string[]>,
+    modelValue: {
+        type: Array as PropType<[string, boolean][]>,
         required: true
     }
 });
 
+const emit = defineEmits<{
+    'update:modelValue': [value: [string, boolean][]];
+}>();
+
 const showStore = useShowStore();
 
-console.log('ShowControl mounted, options:', props.showOptions);
-console.log('Initial showStore.currentShow:', showStore.currentShow);
+const selectedFields = computed(() => {
+    const fields = props.modelValue.filter(([_, isSelected]) => isSelected).map(([field]) => field);
+    console.debug('ShowControl selectedFields:', fields);
+    return fields;
+});
+
+const allFields = computed(() => props.modelValue.map(([field]) => field));
+
+onMounted(() => {
+    const initialSelected = props.modelValue.filter(([_, isSelected]) => isSelected).map(([field]) => field);
+    console.debug('ShowControl initializing with:', initialSelected);
+    showStore.setShow(initialSelected);
+});
 
 const handleShowChange = (event: any) => {
-    console.log('ShowControl change event:', event);
-    // Ensure we're working with an array
-    const value = Array.isArray(event.value) ? event.value : Array.isArray(event) ? event : event.value ? [event.value] : ['name'];
+    const selectedValues = Array.isArray(event.value) ? event.value : [event.value];
+    const newConfig = props.modelValue.map(([field]) => {
+        const isSelected = selectedValues.includes(field);
+        return [field, isSelected] as [string, boolean];
+    });
 
-    showStore.setShow(value);
-    console.log('After setShow, currentShow:', showStore.currentShow);
+    showStore.setShow(selectedValues);
+    emit('update:modelValue', newConfig);
 };
-
-// Watch for store changes
-watch(
-    () => showStore.currentShow,
-    (newValue) => {
-        console.log('showStore.currentShow changed:', newValue);
-    },
-    { deep: true }
-);
 </script>
-
-<style lang="scss">
-.show-control {
-    .div {
-        min-width: 150px;
-    }
-}
-</style>

@@ -1,30 +1,24 @@
 <template>
     <div class="sort-control">
-        <Dropdown v-model="selectedSort" @update:modelValue="processSelectedSortUpdate" :options="sortOptions" optionLabel="label" placeholder="Sort by..." />
+        <Dropdown v-model="selectedSort" :options="props.sortOptions" optionLabel="label" placeholder="Sort by..." />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { PropType } from 'vue';
-import type { SortOption, UpdateItemsSortingFn } from '~/composables/useListControls';
+import { computed } from 'vue';
+import { useSortStore, type SortOption } from '~/stores/useSortStore';
 
 const props = defineProps({
-    sortOptions: {
-        type: Array as PropType<SortOption[]>,
-        default: () => []
-    }
+    sortOptions: { type: Array as () => SortOption[], default: () => [] }
 });
 
-const selectedSort = ref<SortOption>(props?.sortOptions?.[0] ?? null);
+const sortStore = useSortStore();
 
-const updateItemSorting = inject<UpdateItemsSortingFn>('updateItemsSorting', () => {});
-
-if (selectedSort?.value) {
-    processSelectedSortUpdate(selectedSort.value);
-}
-
-function processSelectedSortUpdate(sort: SortOption) {
-    updateItemSorting(sort);
-}
+// Use computed getter/setter to work with the store
+const selectedSort = computed({
+    get: () => sortStore.currentSort || props.sortOptions[0] || null,
+    set: (value: SortOption | null) => {
+        if (value) sortStore.setSort(value);
+    }
+});
 </script>

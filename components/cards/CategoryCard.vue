@@ -1,27 +1,25 @@
 <template>
-    <BaseCard v-bind="cardProps" @update:data-item="$emit('update:data-item', $event)">
+    <BaseCard :dataItem="dataItem" collection="categories">
         <template #card-content="{ data }">
-            <h1 v-if="data?.name">{{ data.name }}</h1>
-            <h1 v-if="data?.type">Type: {{ data.type }}</h1>
-            <h1 v-if="data?.categoryGroup?.name">{{ data.categoryGroup.name }}</h1>
+            <div class="card-content">
+                <h1 v-if="showStore.currentShow.includes('name')">{{ data.name }}</h1>
+                <h1 v-if="showStore.currentShow.includes('type')">Type: {{ data.type }}</h1>
+                <h1 v-if="showStore.currentShow.includes('categoryGroup') && data.categoryGroup">Group: {{ data.categoryGroup.title }}</h1>
+            </div>
         </template>
     </BaseCard>
 </template>
 
 <script setup lang="ts">
-import { commonCardProps } from '@/types/props';
-import { computed } from 'vue';
+import type { Categories } from '@/types/collections/Categories';
+import { useShowStore } from '~/stores/useShowStore';
 
-const props = defineProps({
-    ...commonCardProps,
-    categoryGroup: { type: Object, default: () => ({}) },
-    type: { type: String, default: '' }
-});
-
-const cardProps = computed(() => ({
-    ...props,
-    collection: 'categories'
-}));
-
-defineEmits(['update:data-item']);
+defineProps<{ dataItem: Categories }>();
+const showStore = useShowStore();
 </script>
+
+<style lang="scss" scoped>
+.card-content {
+    padding: 1rem;
+}
+</style>

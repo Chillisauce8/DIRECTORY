@@ -12,6 +12,10 @@
 
 ## Core Development Standards
 
+## Use if "\_id"
+
+Uses "\_id" throughout the application, when referencing to node/document ID's. This maintains consistency with MongoDB's native identifier format and mean there is no need to convert to different variable name (EG mapping "\_id" to "id" etc.)
+
 ### Component Structure
 
 1. Use `<script setup lang="ts">` exclusively for component scripts

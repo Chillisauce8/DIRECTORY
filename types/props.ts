@@ -3,12 +3,12 @@ import type { PropType } from 'vue';
 export type FunctionMode = 'view' | 'select' | 'edit' | 'order';
 
 export interface Category {
-    id: number;
+    _id: string; // Changed from id: number
     name: string;
 }
 
 export interface Image {
-    id: string;
+    _id: string; // Changed from id: string
     alt: string;
 }
 
@@ -40,7 +40,7 @@ export const loveableProp = {
 
 export const imageIdProp = {
     type: String,
-    required: true as const
+    required: false
 };
 
 export const nameProp = {
@@ -62,35 +62,8 @@ export interface ShowProps {
     show: string[];
 }
 
-export interface CardWrapperProps {
-    id: string;
-    mode: string;
-    clickable: boolean;
-    searchTerms: string;
-    selected: boolean;
-    imageId?: string;
-    gallery: string;
-    show: string[];
-}
-
-// Add CardProps interface
-export interface CardProps {
-    id: string;
-    imageId?: string;
-    name?: string;
-    dataItem?: any;
-    loveable?: boolean;
-    categories?: Category[];
-    selected?: boolean;
-    clickable?: boolean;
-    searchTerms?: string;
-    gallery?: string;
-    type?: string;
-    categoryGroup?: any;
-}
-
 export const commonCardProps = {
-    id: { type: String, required: true },
+    _id: { type: String, required: true }, // Changed from id to _id
     clickable: { type: Boolean, default: true },
     searchTerms: { type: String, default: '' },
     dataItem: dataItemProp,

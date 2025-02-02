@@ -1,56 +1,52 @@
 <template>
     <div class="search-control">
-        <InputText v-model="searchValue" @input="handleInput" type="text" placeholder="Search" />
+        <InputText v-model="searchValue" type="text" placeholder="Search" />
         <i v-if="searchValue" class="pi pi-times" @click="clearSearch" />
         <i v-else class="pi pi-search" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 import type { PropType } from 'vue';
 import InputText from 'primevue/inputtext';
-import type { SearchField, UpdateSearchQueryConfigFn } from '~/composables/useListControls';
+import { useSearchStore } from '~/stores/useSearchStore';
+
+// Use type from store
+type SearchField = NonNullable<ReturnType<typeof useSearchStore>['searchFields']>[number];
 
 const props = defineProps({
     searchFields: {
         type: Array as PropType<SearchField[]>,
         default: () => [{ field: 'name', label: 'Name' }]
     },
-    minSearchLength: {
-        type: Number,
-        default: 1
+    modelValue: {
+        type: String,
+        default: ''
     }
 });
 
-const searchValue = ref('');
+const emit = defineEmits<{
+    'update:modelValue': (value: string) => void;
+}>();
 
-const updateSearchQueryConfig = inject<UpdateSearchQueryConfigFn>('updateSearchQueryConfig', () => {});
+const searchStore = useSearchStore();
 
-// Modify handleInput to be more robust
-function handleInput() {
-    if (!props.searchFields?.length) {
-        return;
+// Simplified computed that updates both v-model and store
+const searchValue = computed({
+    get: () => props.modelValue,
+    set: (value: string) => {
+        emit('update:modelValue', value);
+        searchStore.setSearch(value, props.searchFields);
     }
-
-    if (props?.minSearchLength && searchValue.value.length < props?.minSearchLength) {
-        return;
-    }
-
-    updateSearchQueryConfig({
-        searchFields: props.searchFields,
-        searchQuery: searchValue.value
-    });
-}
+});
 
 function clearSearch() {
     searchValue.value = '';
-
-    updateSearchQueryConfig({
-        searchFields: props.searchFields,
-        searchQuery: ''
-    });
+    searchStore.clear();
 }
+
+// Remove handleInput function as it's no longer needed since the store handles everything
 </script>
 
 <style lang="scss">

@@ -18,10 +18,10 @@ const props = defineProps<{
     loveable?: boolean;
     loved?: boolean;
     selected?: boolean;
-    id?: string;
+    _id?: string; // Changed from id to _id
     alt?: string;
     src?: string;
-    images?: Array<{ id: string; alt?: string }>;
+    images?: Array<{ _id: string; alt?: string }>; // Changed from id to _id
     loading?: 'eager' | 'lazy';
     widths: string;
     sizes?: string;

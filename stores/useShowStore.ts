@@ -1,3 +1,8 @@
+/**
+ * Store for managing which fields are shown in cards
+ * Used by ShowControl component and card components to control field visibility
+ * Not to be confused with useDisplayStore which controls card layout/size
+ */
 import { defineStore } from 'pinia';
 
 export const useShowStore = defineStore('show', {

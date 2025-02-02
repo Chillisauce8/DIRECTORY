@@ -1,5 +1,5 @@
 <template>
-    <div :class="containerClasses">
+    <div class="grid-container" :class="containerClasses">
         <div class="grid-controls">
             <Toast />
             <ConfirmDialog />
@@ -7,10 +7,8 @@
                 <!-- Default Controls -->
                 <ModeControl v-model="modeStore.currentMode" @update:modelValue="onModeUpdate" :display="modeControlDisplay" :visibleControls="visibleModeControls" :defaultControl="defaultModeControl" />
 
-                <!-- Update slot binding to pass listings -->
-                <slot name="controls" :items="listings" :selected-categories="selectedCategories" />
+                <slot name="controls" :items="listings" />
 
-                <!-- Default Display Control -->
                 <DisplayControl :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
                 <slot name="add-controls">
                     <template v-if="props.listingCollection">
@@ -37,19 +35,19 @@
         </div>
 
         <fancy-box v-if="modeStore.currentMode === 'view'" class="list-grid" :options="{ Carousel: { infinite: true } }">
-            <template v-for="listing in filteredListings" :key="listing.id">
+            <template v-for="listing in filteredListings" :key="listing._id">
                 <slot name="card" :listing="listing" />
             </template>
         </fancy-box>
 
         <vue-draggable v-else-if="modeStore.currentMode === 'order'" class="list-grid" v-model="draggableListings" @start="onStart" @end="onEnd">
-            <template v-for="listing in draggableListings" :key="listing.id">
+            <template v-for="listing in draggableListings" :key="listing._id">
                 <slot name="card" :listing="listing" />
             </template>
         </vue-draggable>
 
         <div v-else class="list-grid">
-            <template v-for="listing in filteredListings" :key="listing.id">
+            <template v-for="listing in filteredListings" :key="listing._id">
                 <slot name="card" :listing="listing" />
             </template>
         </div>
@@ -57,383 +55,296 @@
 </template>
 
 <script setup lang="ts">
+// ==========================================================
+// Imports: External Libraries, Composables and Components
+// ==========================================================
+import { ref, computed, watch, onMounted, inject, unref } from 'vue';
+import { getNestedValue } from '~/composables/useFilters';
 import { useSelectedStore } from '~/stores/useSelectedStore';
+import { useModeStore } from '~/stores/useModeStore';
+// Updated import for CARD_SIZES and CardSize from useDisplayStore
+import { useDisplayStore, CARD_SIZES, type CardSize } from '~/stores/useDisplayStore';
+import { useShowStore } from '~/stores/useShowStore';
+import { useSearchStore } from '~/stores/useSearchStore';
+import { useFilterStore } from '~/stores/useFilterStore';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
-import type { Category, Item, Listing, SearchQueryConfig, SortOption } from '@/composables/useListControls';
-import { useGridHandleCreateNodeFn, useGridHandleRemoveNodeFn, useGridHandleUpdateNodeFn } from '~/composables/grid.composables';
-import { uniqBy, uniq } from '~/service/utils';
 import CrudControl from '../controls/CrudControl.vue';
-import { useModeStore } from '~/stores/useModeStore';
-import { useDisplayStore } from '~/stores/useDisplayStore';
-import { useShowStore } from '~/stores/useShowStore';
+import { uniqBy, uniq } from '~/service/utils';
 
-// --- Types ---
-type UpdateFunction = (items: any[]) => void;
-type ModeType = 'view' | 'select' | 'edit' | 'order'; // Renamed from FunctionMode
+import ModeControl from '../controls/ModeControl.vue';
+import DisplayControl from '../controls/DisplayControl.vue';
+import Toast from 'primevue/toast';
+import ConfirmDialog from 'primevue/confirmdialog';
+import Button from 'primevue/button';
+import ToggleButton from 'primevue/togglebutton';
+
+// ...other component imports (ModeControl, DisplayControl, Toast, ConfirmDialog, etc.)
+
+// ==========================================================
+// Type Definitions & Interfaces
+// ==========================================================
+type ModeType = 'view' | 'select' | 'edit' | 'order';
 type UpdateArrayFieldFn = (field: string, items: Item[], action: 'add' | 'remove') => Promise<void>;
 
-interface FilterConfig {
-    field: string;
-    options: Item[];
-    selected: Item[];
+interface DbNode {
+    _id: string;
+    [key: string]: any;
 }
 
-interface FilterUpdate {
-    selectedCategories?: any[];
-    selectedTags?: any[];
-    [key: string]: any[] | undefined;
+interface Item {
+    id?: string;
+    name?: string;
+    value?: any;
+    [key: string]: any;
 }
 
-interface CardSize {
-    label: string;
-    icon: string;
-    display: string;
+interface Listing {
+    _id: string;
+    name: string;
+    images?: any[];
+    dbNode?: any;
+    [key: string]: any;
 }
 
-const handleCreateNodeFn = useGridHandleCreateNodeFn();
-const handleUpdateNodeFn = useGridHandleUpdateNodeFn();
-const handleDeleteNodeFn = useGridHandleRemoveNodeFn();
+import { useSortStore, type SortOption } from '~/stores/useSortStore';
 
-// --- Constants ---
-const CARD_SIZES: readonly CardSize[] = [
-    { label: 'Small Cards', icon: 'cardssmall', display: 'display-small-cards' },
-    { label: 'Big Cards', icon: 'cardsbig', display: 'display-big-cards' },
-    { label: 'List', icon: 'list', display: 'display-list' }
-] as const;
+const sortStore = useSortStore();
 
-// --- Models & Props ---
-const sort = defineModel<SortOption | null>('sort', { default: null });
-const searchQuery = defineModel<string>('searchQuery', { default: '' });
+// ==========================================================
+// Injected Functions (CRUD Handlers)
+// ==========================================================
+import { GridCreateNodeFn, GridRemoveNodeFn, GridUpdateNodeFn, type GridCreateNodeFn as GridCreateNodeType, type GridModifyNodeFn } from '~/composables/useGrid';
 
-const selectedSort = ref<SortOption | null>(null);
-const searchQueryConfig = ref<SearchQueryConfig | null>(null);
+// Fix the injections to use proper typing
+const handleCreateNodeFn = inject(GridCreateNodeFn) as typeof GridCreateNodeType;
+const handleUpdateNodeFn = inject(GridUpdateNodeFn) as GridModifyNodeFn;
+const handleDeleteNodeFn = inject(GridRemoveNodeFn) as GridModifyNodeFn;
 
+// ==========================================================
+// Constants
+// ==========================================================
+
+// ==========================================================
+// Models, Props and Emits
+// ==========================================================
 const props = defineProps({
-    modeControlDisplay: {
-        // Renamed from functionControlDisplay
-        type: String as PropType<'text' | 'icon'>,
-        default: 'text'
-    },
-    visibleModeControls: {
-        // Renamed from visibleFunctionControls
-        type: Array as PropType<ModeType[] | null>,
-        default: () => ['view', 'select', 'edit', 'order'] as ModeType[]
-    },
-    defaultModeControl: {
-        // Renamed from defaultFunctionControl
-        type: String as PropType<ModeType>,
-        default: 'view'
-    },
-    visibleCardSizes: {
-        type: Array as PropType<string[] | null>,
-        default: () => ['Small Cards', 'Big Cards', 'List']
-    },
-    defaultCardSize: {
-        type: String,
-        default: 'Big Cards'
-    },
+    modeControlDisplay: { type: String as PropType<'text' | 'icon'>, default: 'text' },
+    visibleModeControls: { type: Array as PropType<ModeType[] | null>, default: () => ['view', 'select', 'edit', 'order'] },
+    defaultModeControl: { type: String as PropType<ModeType>, default: 'view' },
+    visibleCardSizes: { type: Array as PropType<string[] | null>, default: () => ['Small Cards', 'Big Cards', 'List'] },
+    defaultCardSize: { type: String, default: 'Big Cards' },
     gallery: { type: String, default: 'gallery' },
     minSearchLength: { type: Number, default: 1 },
     initialSize: { type: String, default: 'Big Cards' },
-    categoryOptions: {
-        type: Array as PropType<Item[]>,
-        default: () => []
-    },
-    filterUpdates: {
-        type: Object as PropType<FilterUpdate>,
-        default: () => ({})
-    },
-    filters: {
-        type: Array as PropType<FilterConfig[]>,
-        default: () => []
-    },
-    listings: {
-        type: Array as PropType<Listing[]>,
-        default: () => []
-    },
-    listingCollection: {
-        type: String
-    },
-    onItemCreated: {
-        type: Function as PropType<(item: any) => Promise<void>>,
-        default: null
-    }
+    categoryOptions: { type: Array as PropType<Item[]>, default: () => [] },
+    filterUpdates: { type: Object as PropType<FilterUpdate>, default: () => ({}) },
+    filters: { type: Array as PropType<FilterConfig[]>, default: () => [] },
+    listings: { type: Array as PropType<Listing[]>, default: () => [] },
+    listingCollection: { type: String },
+    onItemCreated: { type: Function as PropType<(item: any) => Promise<void>>, default: null },
+    sort: { type: Object as PropType<SortOption | null>, default: null },
+    searchQuery: { type: String, default: '' }
 });
-
 const emit = defineEmits<{
     'add-selected': [string[]];
-    'update:filterUpdates': [FilterUpdate];
+    'update:data-item': [DbNode];
 }>();
 
-// --- State ---
+// ==========================================================
+// State: Third-party Instances, Reactivity and Stores
+// ==========================================================
 const confirm = useConfirm();
 const toast = useToast();
 
 const listings = ref<Listing[]>(props?.listings ?? useListings());
-const selectedCategories = ref<Category[]>([]);
-
-const selectionStore = useSelectedStore();
+const selectedStore = useSelectedStore();
 const modeStore = useModeStore();
 const displayStore = useDisplayStore();
 const showStore = useShowStore();
+const searchStore = useSearchStore();
+const filterStore = useFilterStore();
 
-// --- Computed ---
-// Rename this computed property to be more specific
-const categoryFilters = computed(() => [
-    {
-        field: 'categories',
-        options: props.categoryOptions || [],
-        selected: selectedCategories.value
-    }
-]);
+// ==========================================================
+// Computed Properties
+// ==========================================================
+// Check if any items are currently selected
+const hasSelectedCards = computed(() => selectedStore.hasSelectedItems);
 
-const hasSelectedCards = computed(() => selectionStore.hasSelectedItems);
-
+// Filter listings based on search and filters; then sort if needed
 const filteredListings = computed(() => {
-    let result = unref(listings.value);
+    let result = listings.value;
+    // Cache the lowercased search query once
+    const searchQuery = searchStore.searchQuery.toLowerCase();
 
-    if (searchQueryConfig.value) {
-        result = searchItems(result, searchQueryConfig.value);
+    // Apply search filtering (only if there's a query)
+    if (searchQuery) {
+        result = result.filter((item) =>
+            searchStore.searchFields.some((field) => {
+                const value = item[field.field];
+                return value && String(value).toLowerCase().includes(searchQuery);
+            })
+        );
     }
 
-    if (selectedSort.value) {
-        result = sortItems(result, selectedSort.value);
-    }
-
+    // Apply custom filters
     if (props.filters?.length) {
         props.filters.forEach((filter) => {
-            if (filter.selected.length) {
+            const selectedValues = filterStore.getSelectedFilters(filter.field);
+            if (selectedValues?.length) {
                 result = result.filter((item) => {
-                    const fieldValue = item[filter.field];
+                    const fieldValue = getNestedValue(item, filter.field);
                     if (!fieldValue) return false;
-
-                    // Handle array fields (like categories)
-                    if (Array.isArray(fieldValue)) {
-                        const fieldValues = fieldValue.map((i: any) => i.id);
-                        return filter.selected.some((selected) => fieldValues.includes(selected.id));
-                    }
-
-                    // Handle non-array fields (like categoryGroup)
-                    return filter.selected.some((selected) => fieldValue.id === selected.id);
+                    // Normalize item values once for each item
+                    const itemValues = Array.isArray(fieldValue) ? fieldValue.map((v) => (typeof v === 'object' ? v.name : v)) : [typeof fieldValue === 'object' ? fieldValue.name : fieldValue];
+                    return selectedValues.some((selected) => itemValues.includes(typeof selected === 'object' ? selected.value : selected));
                 });
             }
+        });
+    }
+
+    // Apply sorting if needed with proper type guard
+    const currentSort = sortStore.currentSort;
+    if (currentSort && currentSort.sort) {
+        result = [...result].sort((a, b) => {
+            const aVal = a[currentSort.sort];
+            const bVal = b[currentSort.sort];
+            return currentSort.order === 'asc' ? String(aVal).localeCompare(String(bVal)) : String(bVal).localeCompare(String(aVal));
         });
     }
 
     return result;
 });
 
+// Track draggable version of listings
 const draggableListings = ref([...filteredListings.value]);
 
-// Replace selectAll computed with isAllSelected
-const isAllSelected = computed(() => filteredListings.value.length > 0 && selectionStore.selectedItems.length === filteredListings.value.length);
-
-const filters = computed(() => [
-    {
-        field: 'categories',
-        options: props.categoryOptions || [],
-        selected: selectedCategories.value
-    }
-]);
-
-// Add computed property for classes
-const containerClasses = computed(() => ['grid-container', displayStore.displayClass, modeStore.currentMode]);
-
-// Initialize display size from props
-onMounted(() => {
-    if (props.defaultCardSize) {
-        const defaultSize = CARD_SIZES.find((size) => size.label === props.defaultCardSize);
-        if (defaultSize) {
-            displayStore.setSize(defaultSize);
-        }
-    }
+// Check if all visible listings are selected
+const isAllSelected = computed(() => {
+    const filteredIds = filteredListings.value.map((listing) => listing._id);
+    // Convert selected items to a Set for O(1) lookups
+    const selectedSet = new Set(selectedStore.selectedItems);
+    return filteredIds.length > 0 && filteredIds.every((id) => selectedSet.has(id));
 });
 
-// --- Methods ---
-// Selection handling
-function handleItemSelection(id: string, selected: boolean): void {
-    console.log('CardList handleItemSelection:', { id, selected });
-    if (selected) {
-        selectionStore.add(id);
-    } else {
-        selectionStore.remove(id);
-    }
-    console.log('Updated selectedItems:', selectionStore.selectedItems);
-}
+// Manage container CSS classes based on display and mode
+const containerClasses = computed(() => [displayStore.displayClass, modeStore.currentMode]);
 
+// ==========================================================
+// Methods: CRUD Operations, Selections, Drag Handlers, etc.
+// ==========================================================
 function toggleSelectAll(value: boolean) {
-    console.log('toggleSelectAll:', value);
+    const filteredIds = filteredListings.value.map((listing) => listing._id);
     if (value) {
-        selectionStore.setMultiple(filteredListings.value.map((listing) => listing.id));
+        selectedStore.setMultiple(filteredIds);
     } else {
-        selectionStore.clear();
+        selectedStore.clear();
     }
 }
 
-// CRUD operations
+// Update the delete function with better error handling and logging
 async function deleteSelectedItems() {
     if (props.listingCollection) {
-        for (const listingId of selectionStore.selectedItems) {
-            const dbNode = listings.value.find((listing) => listing.id === listingId)?.dbNode;
+        try {
+            console.debug('Starting deletion of items:', selectedStore.selectedItems);
 
-            if (!dbNode) {
-                continue;
+            for (const listingId of selectedStore.selectedItems) {
+                const listing = listings.value.find((listing) => listing._id === listingId);
+                if (!listing?.dbNode) {
+                    console.error('No dbNode found for listing:', listingId);
+                    continue;
+                }
+
+                console.debug('Deleting item:', listing.dbNode);
+                await handleDeleteNodeFn(listing.dbNode);
+                console.debug('Successfully deleted item:', listingId);
+
+                // Remove from local listings after successful delete
+                listings.value = listings.value.filter((item) => item._id !== listingId);
             }
 
-            await handleDeleteNodeFn(dbNode);
-        }
-    }
-
-    selectionStore.clear();
-}
-
-function addSelectedItems() {
-    emit('add-selected', selectionStore.selectedItems);
-}
-
-function confirmDelete() {
-    confirm.require({
-        header: 'Confirm Delete',
-        rejectProps: { label: 'Cancel', severity: 'secondary', outlined: true },
-        acceptProps: { label: 'Delete', severity: 'danger' },
-        accept: () => {
-            deleteSelectedItems();
             toast.add({
                 severity: 'success',
                 summary: 'Success',
                 detail: 'Selected items have been deleted',
                 life: 3000
             });
+
+            selectedStore.clear();
+        } catch (error) {
+            console.error('Delete operation failed:', error);
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: `Failed to delete selected items: ${error.message}`,
+                life: 3000
+            });
+        }
+    }
+}
+
+function addSelectedItems() {
+    emit('add-selected', selectedStore.selectedItems);
+}
+
+function confirmDelete() {
+    confirm.require({
+        header: 'Confirm Delete',
+        message: 'Are you sure you want to delete the selected items?',
+        rejectProps: { label: 'Cancel', severity: 'secondary', outlined: true },
+        acceptProps: { label: 'Delete', severity: 'danger' },
+        accept: async () => {
+            await deleteSelectedItems();
+            confirm.close(); // Close the dialog after deletion completes
+        },
+        reject: () => {
+            confirm.close(); // Also close on reject
         }
     });
 }
 
-// Update handlers
+// Updates a particular field in a listing by applying add or remove actions
 const updateArrayField: UpdateArrayFieldFn = async (field, items, action) => {
-    for (const selectedItemId of selectionStore.selectedItems) {
+    for (const selectedItemId of selectedStore.selectedItems) {
         const listing = listings.value.find((listing) => listing.id === selectedItemId);
-
-        if (!listing) {
-            continue;
-        }
-
+        if (!listing) continue;
         const dbNode = listing.dbNode;
-
         let fieldValues;
-
         if (action === 'add') {
             fieldValues = [...dbNode[field], ...items];
-
             if (fieldValues.length) {
-                if (fieldValues[0].id) {
-                    fieldValues = uniqBy(fieldValues, 'id');
-                } else {
-                    fieldValues = uniq(fieldValues);
-                }
+                fieldValues = fieldValues[0].id ? uniqBy(fieldValues, 'id') : uniq(fieldValues);
             }
         } else {
             fieldValues = dbNode[field].filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id));
         }
-
-        const updatedDbNode = {
-            ...dbNode,
-            [field]: fieldValues
-        };
-
+        const updatedDbNode = { ...dbNode, [field]: fieldValues };
         await handleUpdateNodeFn(updatedDbNode);
     }
-
-    selectionStore.clear();
+    selectedStore.clear();
 };
 
-// function handleUpdateField(field: string, items: Item[], action: 'add' | 'remove') {
-//     updateArrayField(field, items, action);
-//
-//     const filterConfig = props.filters.find((f) => f.field === field);
-//     if (filterConfig) {
-//         const updatedSelected =
-//             action === 'add' ? [...filterConfig.selected, ...items.filter((item) => !filterConfig.selected.some((selected) => selected.id === item.id))] : filterConfig.selected.filter((selected) => !items.some((item) => item.id === selected.id));
-//
-//         emit('update:filterUpdates', {
-//             ...props.filterUpdates,
-//             [`selected${field.charAt(0).toUpperCase() + field.slice(1)}`]: updatedSelected
-//         });
-//     }
-// }
-
-function sortItems<T>(items: T[], selectedSort: SortOption): T[] {
-    if (!selectedSort) {
-        return items;
-    }
-
-    const { sort, order } = selectedSort;
-
-    return [...items].sort((a: any, b: any) => {
-        const aVal = a[sort];
-        const bVal = b[sort];
-        return order === 'asc' ? (aVal > bVal ? 1 : -1) : aVal < bVal ? 1 : -1;
-    });
-}
-
-function searchItems<T extends Record<string, any>>(items: T[], searchQueryConfig: SearchQueryConfig): T[] {
-    if (!searchQueryConfig) {
-        return items;
-    }
-
-    const searchTerm = searchQueryConfig.searchQuery.toLowerCase().trim();
-    return items.filter((item) =>
-        searchQueryConfig.searchFields.some((field) => {
-            const value = item[field.field];
-            return value != null && String(value).toLowerCase().includes(searchTerm);
-        })
-    );
-}
-
-// Remove getCardProps since it's no longer needed - each card handles its own props
-
-function getCardProps(listing: Listing) {
-    return {
-        id: listing.id,
-        imageId: listing?.images?.[0]?.id,
-        dataItem: listing,
-        collection: props.listingCollection,
-        clickable: true,
-        searchTerms: listing.name
-    };
-}
-
-// Drag handlers
+// Drag event handlers
 function onStart(): void {
     console.log('start drag');
 }
-
 function onEnd(): void {
     console.log('end drag');
 }
 
+// Handles mode changes; clears selection if switching away from edit/select modes
 function onModeUpdate(newMode: ModeType) {
     modeStore.setMode(newMode);
-    selectionStore.clear();
+    selectedStore.clear();
 }
 
-// --- Watchers ---
+// ==========================================================
+// Watchers: React to Changes in Listings, Mode, etc.
+// ==========================================================
 watch(filteredListings, (newListings) => {
     draggableListings.value = [...newListings];
 });
-
-watch(
-    () => selectionStore.selectedItems,
-    (newVal, oldVal) => {
-        console.log('selectedItems changed:', {
-            old: oldVal,
-            new: newVal,
-            hasSelected: newVal.length > 0
-        });
-    },
-    { deep: true }
-);
 
 watch(
     () => props.listings,
@@ -446,48 +357,69 @@ watch(
     () => modeStore.currentMode,
     (newMode) => {
         if (newMode === 'view' || newMode === 'order') {
-            selectionStore.clear();
+            selectedStore.clear();
         }
     }
 );
 
-// Add these functions to handle updates
-function handleNameUpdate(id: string, newName: string) {
-    listings.value = listings.value.map((listing) => {
-        if (listing.id === id) {
-            return { ...listing, name: newName };
+// Add watcher for sort prop changes
+watch(
+    () => props.sort,
+    (newSort) => {
+        if (newSort) {
+            sortStore.setSort(newSort);
         }
-        return listing;
-    });
-}
-
-function handleCategoriesUpdate(id: string, newCategories: Category[]) {
-    listings.value = listings.value.map((listing) => {
-        if (listing.id === id) {
-            return { ...listing, categories: newCategories };
-        }
-        return listing;
-    });
-}
-
-function handleListingSelectionUpdate(id: string, selected: boolean) {
-    if (selected) {
-        selectionStore.add(id);
-    } else {
-        selectionStore.remove(id);
     }
-}
+);
 
+// ==========================================================
+// Lifecycle: onMounted Initialization
+// ==========================================================
+onMounted(() => {
+    if (props.defaultCardSize) {
+        const defaultSize = CARD_SIZES.find((size) => size.label === props.defaultCardSize);
+        if (defaultSize) {
+            displayStore.setSize(defaultSize);
+        }
+    }
+    if (props.sort) {
+        sortStore.setSort(props.sort);
+    }
+});
+
+// ==========================================================
+// Update Handlers and Provides: Handling external updates to listings
+// ==========================================================
 async function handleCreateSave(savedData: any) {
     if (props.onItemCreated) {
         await props.onItemCreated(savedData);
     }
 }
-// --- Provides ---
+
+function handleDbNodeUpdate(dbNode: DbNode) {
+    updateDbNodeInListingList(dbNode);
+    emit('update:data-item', dbNode);
+}
+
+async function handleItemCreated(newItem: DbNode) {
+    listings.value = [...listings.value, { ...newItem, dbNode: newItem }];
+    emit('item-created', newItem);
+}
+
+// Add the missing function
+function updateDbNodeInListingList(dbNode: DbNode) {
+    const index = listings.value.findIndex((listing) => listing._id === dbNode._id);
+    if (index !== -1) {
+        listings.value[index] = { ...listings.value[index], dbNode };
+    }
+}
+
+// Provide functions for external usage
+provide('handleDbNodeUpdate', handleDbNodeUpdate);
+provide('handleItemCreated', handleItemCreated);
 provide('updateArrayField', updateArrayField);
 provide('updateShow', (fields: string[]) => (displayStore.show = fields));
-provide('updateSearchQueryConfig', (config: SearchQueryConfig) => (searchQueryConfig.value = config));
-provide('updateItemsSorting', (sort: SortOption) => (selectedSort.value = sort));
+provide('updateItemsSorting', (sort: SortOption) => sortStore.setSort(sort));
 </script>
 
 <style lang="scss">

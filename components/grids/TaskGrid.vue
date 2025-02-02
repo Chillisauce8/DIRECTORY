@@ -1,101 +1,114 @@
 <template>
     <grid-container
-        modeControlDisplay="icon"
-        :filters="[
-            {
-                field: 'categories',
-                options: categoryOptions,
-                selected: selectedCategories
-            }
-        ]"
-        :visibleModeControls="['view', 'select', 'edit', 'order']"
-        defaultModeControl="view"
-        defaultCardSize="Big Cards"
-        :searchFields="searchFields"
+        :mode-control-display="modeControlDisplay"
+        :filters="filters"
+        :visible-mode-controls="visibleModeControls"
+        :default-mode-control="defaultModeControl"
+        :default-card-size="defaultCardSize"
+        :visible-card-sizes="visibleCardSizes"
+        :search-fields="searchFields"
         :listings="listingList"
-        :category-options="categoryOptions"
         :listing-collection="collectionName"
         :on-item-created="handleItemCreated"
+        :sort="selectedSort"
     >
         <template #controls>
-            <FilterControl :options="categoryOptions" v-model="selectedCategories" v-bind="filterControlConfig" />
-            <ShowControl v-model="selectedMediaShowOptions" :show-options="mediaShowOptions" />
-            <SortControl :sort-options="mediaSortOptions" />
+            <FilterControl :options="listingList" :filter-field="filterField" :placeholder="filterPlaceholder" v-model="selectedFilters" />
+            <ShowControl v-model="showFields" />
+            <SortControl v-model="selectedSort" :sort-options="sortOptions" />
             <SearchControl :search-fields="searchFields" />
         </template>
 
-        <template #card="{ listing }">
-            <TaskCard :id="listing.id" :data-item="listing" @update:data-item="onDbNodeUpdate" />
+        <template #edit-controls>
+            <EditArrayControl :options="categoryOptions" :edit-field="editField" />
         </template>
 
-        <template #edit-controls>
-            <EditArrayControl :options="categoryOptions" editField="categories" class="edit-array-control w-full md:w-80" />
+        <template #card="{ listing }">
+            <TaskCard :data-item="listing" />
         </template>
     </grid-container>
 </template>
 
 <script setup lang="ts">
-import { Listing } from '~/composables/useListControls';
+import type { Event } from '~/types/collections/Events';
 import GridContainer from '~/components/grids/common/GridContainer.vue';
+import { ref, computed, watch } from 'vue';
+import { useFilterStore } from '~/stores/useFilterStore';
+import { useSortStore } from '~/stores/useSortStore';
 
-const collectionName = 'events'; // Changed from 'tasks' to 'events'
+// Collection Configuration
+const collectionName = 'events';
+const { listingList } = await useGrid<Event>({ collectionName });
 
-const { listingList, updateDbNodeInListingList } = await useGrid({
-    collectionName,
-    prepareListingItem
+// Mode Control Configuration
+const modeControlDisplay = 'icon';
+const visibleModeControls = ['view', 'select', 'edit', 'order'] as const;
+const defaultModeControl = 'view';
+
+// Display Control Configuration
+const defaultCardSize = 'Big Cards';
+const visibleCardSizes = ['Small Cards', 'Big Cards', 'List'] as const;
+
+// Filter Control Configuration
+const filterPlaceholder = 'Filter by Category';
+const filterField = 'categories.name';
+
+// Filter Configuration
+const filterStore = useFilterStore();
+
+// Add computed property for two-way binding
+const selectedFilters = computed({
+    get: () => filterStore.getSelectedFilters(filterField),
+    set: (value) => filterStore.setFilter(filterField, value)
 });
 
-const selectedCategories = ref([]);
-const selectedMediaShowOptions = ref(['name', 'categories', 'description', 'start']);
-const categoryOptions = useCategories();
+const filters = computed(() => [
+    {
+        field: filterField,
+        selected: filterStore.getSelectedFilters(filterField)
+    }
+]);
 
-const mediaShowOptions = ['name', 'categories', 'description', 'vehicles', 'start', 'status'];
+// Show Control Configuration
+const showFields = ref([
+    ['name', true],
+    ['categories', true],
+    ['description', false],
+    ['start', false]
+]);
 
-const mediaSortOptions = [
+// Sort Control Configuration
+const sortOptions = [
     { label: 'Name (A-Z)', sort: 'name', order: 'asc' },
     { label: 'Name (Z-A)', sort: 'name', order: 'desc' }
-] as { label: string; sort: string; order: 'asc' | 'desc' }[];
+] as const;
 
-const filterControlConfig = {
-    display: 'chip',
-    optionLabel: 'name',
-    filter: true,
-    placeholder: 'Filter by Category',
-    maxSelectedLabels: 2,
-    className: 'category-control md:w-60'
-} as const;
-
+// Search Control Configuration
 const searchFields = [
     { field: 'name', label: 'Name' },
     { field: 'categories', label: 'Categories' }
-];
+] as const;
 
-function prepareListingItem(task: any): Listing<any> {
-    return {
-        id: task._id,
-        name: task.name,
-        description: task.description,
-        vehicles: task.vehicles || [],
-        status: task.status || [],
-        files: task.files || [],
-        start: task.start,
-        end: task.end,
-        duration: task.duration,
-        categories: task.categories || [],
-        dbNode: task
-    };
-}
+// Edit Control Configuration
+const editField = 'categories';
 
-function onDbNodeUpdate(dbNode: any) {
-    updateDbNodeInListingList(dbNode);
-}
+// Add reactive variables for sort
+const sortStore = useSortStore();
 
-async function handleItemCreated(newItem: any) {
-    const listing = prepareListingItem(newItem);
-    listingList.value = [...listingList.value, listing];
-}
+const selectedSort = computed({
+    get: () => sortStore.currentSort,
+    set: (value) => {
+        if (value) sortStore.setSort(value);
+    }
+});
 
-function test(v: string[]) {
-    console.log(v);
-}
+// Event Handlers
+const handleItemCreated = async (newItem: Event) => {
+    if (listingList.value) {
+        listingList.value = [...listingList.value, newItem];
+    }
+};
+
+// Remove the watch on selectedCategories since we're using the store now
+// watch(selectedCategories, (newVal) => console.debug('TaskGrid selectedCategories changed:', newVal));
 </script>

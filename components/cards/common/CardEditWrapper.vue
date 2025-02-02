@@ -1,13 +1,15 @@
 <template>
+    <!-- CardEditWrapper mount -->
     <transition name="card-edit">
         <div class="card-edit-wrapper" v-if="showEdit">
-            <CrudControl :collection="collection" function="update" :dialogEdit="false" :itemId="dataItem._id" :initialItem="dataItem" noButton preventDefault @save="onSave" />
+            <CrudControl :collection="collection" function="update" :dialogEdit="false" :itemId="itemId" :initialItem="props.dataItem" noButton preventDefault @save="onSave" />
         </div>
     </transition>
+    <!-- CardEditWrapper end -->
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, nextTick } from 'vue';
 import { useSelectedStore } from '~/stores/useSelectedStore';
 import { useModeStore } from '~/stores/useModeStore';
 import { useCardStore } from '~/stores/useCardStore';
@@ -22,7 +24,30 @@ const selectionStore = useSelectedStore();
 const modeStore = useModeStore();
 const cardStore = useCardStore();
 
-const showEdit = computed(() => modeStore.isEditMode && selectionStore.isSelected(props.dataItem._id));
+// Update itemId computation to check both _id and id
+const itemId = computed(() => {
+    const id = props.dataItem?._id || props.dataItem?.id;
+    console.log('CardEditWrapper - Computing itemId:', {
+        dataItem: props.dataItem,
+        _id: props.dataItem?._id,
+        id: props.dataItem?.id,
+        finalId: id
+    });
+    return id;
+});
+
+const showEdit = computed(() => {
+    const isEditMode = modeStore.isEditMode;
+    const isItemSelected = selectionStore.isSelected(itemId.value);
+    console.log('CardEditWrapper - Computing showEdit', {
+        itemId: itemId.value,
+        collection: props.collection,
+        isEditMode,
+        isItemSelected,
+        result: isEditMode && isItemSelected
+    });
+    return isEditMode && isItemSelected;
+});
 
 // Optional debug watcher
 watch(
@@ -38,10 +63,27 @@ watch(
     { immediate: true }
 );
 
-function onSave(event: any) {
-    cardStore.updateCard(props.collection, props.dataItem._id, event);
+async function onSave(event: any) {
+    const id = itemId.value;
+    console.log('CardEditWrapper - Starting save', { id });
+    await cardStore.updateCard(props.collection, id, event);
+    console.log('CardEditWrapper - Card updated');
+
     emit('save', event);
-    selectionStore.deselect(props.dataItem._id);
+    console.log('CardEditWrapper - Save emitted');
+
+    console.log('CardEditWrapper - Before deselect', {
+        isSelected: selectionStore.isSelected(props.dataItem._id)
+    });
+
+    await selectionStore.deselect(props.dataItem._id);
+
+    // Wait for state updates
+    await nextTick();
+
+    console.log('CardEditWrapper - After deselect', {
+        isSelected: selectionStore.isSelected(props.dataItem._id)
+    });
 }
 </script>
 
