@@ -1,6 +1,6 @@
 <template>
     <transition name="card-text">
-        <header class="card-text-wrapper" v-if="!showEdit">
+        <header class="card-text-wrapper">
             <div class="card-details">
                 <slot />
             </div>
@@ -8,33 +8,7 @@
     </transition>
 </template>
 
-<script setup>
-import { computed } from 'vue';
-import { useModeStore } from '~/stores/useModeStore';
-import { useSelectedStore } from '~/stores/useSelectedStore';
-
-const props = defineProps({});
-
-const modeStore = useModeStore();
-const selectionStore = useSelectedStore();
-
-// Use the same logic as CardEditWrapper
-const showEdit = computed(() => modeStore.isEditMode && selectionStore.isSelected(props.id));
-
-// Debug watcher if needed
-watch(
-    showEdit,
-    (newValue) => {
-        console.log('CardTextWrapper visibility:', {
-            id: props.id,
-            mode: modeStore.currentMode,
-            isSelected: selectionStore.isSelected(props.id),
-            showEdit: newValue
-        });
-    },
-    { immediate: true }
-);
-</script>
+<script setup></script>
 
 <style lang="scss">
 .card-text-wrapper {

@@ -50,6 +50,11 @@ const model = ref([
                 to: '/new/tasks'
             },
             {
+                label: 'Tasks List Test',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/tasks-test'
+            },
+            {
                 label: 'Messages',
                 icon: 'pi pi-fw pi-comments',
                 to: '/new/message/inbox'

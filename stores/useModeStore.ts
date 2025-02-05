@@ -1,26 +1,29 @@
 import { defineStore } from 'pinia';
 
-type FunctionMode = 'view' | 'select' | 'edit' | 'order';
+export type ModeType = 'view' | 'select' | 'edit' | 'order';
 
-export const useModeStore = defineStore('mode', {
-    state: () => ({
-        mode: 'view' as FunctionMode
-    }),
-
-    actions: {
-        setMode(newMode: FunctionMode) {
-            this.mode = newMode;
+// Factory function: each grid gets its own store instance
+export const createModeStore = (gridId: string) =>
+    defineStore(`mode-${gridId}`, {
+        state: () => ({
+            selectedMode: 'view' as ModeType
+        }),
+        actions: {
+            initialize(initialMode: ModeType) {
+                // Only set if not already set - this maintains persistence
+                if (this.selectedMode === 'view') {
+                    this.selectedMode = initialMode;
+                }
+            },
+            setMode(mode: ModeType) {
+                this.selectedMode = mode;
+            }
         },
-        reset() {
-            this.mode = 'view';
+        getters: {
+            isEditMode: (state) => state.selectedMode === 'edit',
+            isSelectMode: (state) => state.selectedMode === 'select',
+            isViewMode: (state) => state.selectedMode === 'view',
+            isOrderMode: (state) => state.selectedMode === 'order',
+            currentMode: (state) => state.selectedMode
         }
-    },
-
-    getters: {
-        isEditMode: (state) => state.mode === 'edit',
-        isSelectMode: (state) => state.mode === 'select',
-        isViewMode: (state) => state.mode === 'view',
-        isOrderMode: (state) => state.mode === 'order',
-        currentMode: (state) => state.mode
-    }
-});
+    });

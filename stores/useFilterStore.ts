@@ -19,38 +19,40 @@ interface FilterState {
     >;
 }
 
-export const useFilterStore = defineStore('filter', {
-    state: (): FilterState => ({
-        selectedFilters: {},
-        filterFields: {}
-    }),
+// Convert to factory pattern
+export const createFilterStore = (gridId: string) =>
+    defineStore(`filter-${gridId}`, {
+        state: (): FilterState => ({
+            selectedFilters: {},
+            filterFields: {}
+        }),
 
-    actions: {
-        setFilter(field: string, selected: any[]) {
-            this.selectedFilters[field] = selected;
+        actions: {
+            setFilter(field: string, selected: any[]) {
+                this.selectedFilters[field] = selected;
+            },
+
+            setFilterField(field: string, options: FilterOption[]) {
+                this.filterFields[field] = {
+                    field,
+                    options
+                };
+            },
+
+            clearFilter(field: string) {
+                this.selectedFilters[field] = [];
+            },
+
+            clearAllFilters() {
+                this.selectedFilters = {};
+            }
         },
 
-        setFilterField(field: string, options: FilterOption[]) {
-            this.filterFields[field] = {
-                field,
-                options
-            };
-        },
+        getters: {
+            getSelectedFilters: (state) => (field: string) => state.selectedFilters[field] || [],
 
-        clearFilter(field: string) {
-            this.selectedFilters[field] = [];
-        },
+            getFilterOptions: (state) => (field: string) => state.filterFields[field]?.options || [],
 
-        clearAllFilters() {
-            this.selectedFilters = {};
+            hasActiveFilters: (state) => Object.values(state.selectedFilters).some((filters) => filters.length > 0)
         }
-    },
-
-    getters: {
-        getSelectedFilters: (state) => (field: string) => state.selectedFilters[field] || [],
-
-        getFilterOptions: (state) => (field: string) => state.filterFields[field]?.options || [],
-
-        hasActiveFilters: (state) => Object.values(state.selectedFilters).some((filters) => filters.length > 0)
-    }
-});
+    });

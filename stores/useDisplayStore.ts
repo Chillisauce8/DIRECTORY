@@ -17,19 +17,29 @@ export const CARD_SIZES: readonly CardSize[] = [
     { label: 'List', icon: 'list', display: 'display-list' }
 ] as const;
 
-export const useDisplayStore = defineStore('display', {
-    state: () => ({
-        selectedSize: null as CardSize | null
-    }),
+export const createDisplayStore = (gridId: string) =>
+    defineStore(`display-${gridId}`, {
+        state: () => ({
+            selectedSize: null as CardSize | null
+        }),
 
-    actions: {
-        setSize(size: CardSize) {
-            this.selectedSize = size;
+        actions: {
+            initialize(initialSize: string) {
+                // Only set if not already set - this maintains persistence
+                if (!this.selectedSize) {
+                    const size = CARD_SIZES.find((size) => size.label === initialSize);
+                    if (size) {
+                        this.selectedSize = size;
+                    }
+                }
+            },
+            setSize(size: CardSize) {
+                this.selectedSize = size;
+            }
+        },
+
+        getters: {
+            currentSize: (state) => state.selectedSize || CARD_SIZES.find((size) => size.label === 'Big Cards') || CARD_SIZES[1],
+            displayClass: (state) => state.selectedSize?.display || CARD_SIZES[1].display
         }
-    },
-
-    getters: {
-        currentSize: (state) => state.selectedSize || CARD_SIZES.find((size) => size.label === 'Big Cards') || CARD_SIZES[1],
-        displayClass: (state) => state.selectedSize?.display || CARD_SIZES[1].display
-    }
-});
+    });

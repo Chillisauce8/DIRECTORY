@@ -1,19 +1,19 @@
 <template>
     <div class="search-control">
         <InputText v-model="searchValue" type="text" placeholder="Search" />
-        <i v-if="searchValue" class="pi pi-times" @click="clearSearch" />
+        <i v-if="searchStore.searchQuery" class="pi pi-times" @click="clearSearch" />
         <i v-else class="pi pi-search" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, inject, onMounted } from 'vue';
 import type { PropType } from 'vue';
 import InputText from 'primevue/inputtext';
-import { useSearchStore } from '~/stores/useSearchStore';
+import { createSearchStore } from '~/stores/useSearchStore';
 
 // Use type from store
-type SearchField = NonNullable<ReturnType<typeof useSearchStore>['searchFields']>[number];
+type SearchField = Parameters<ReturnType<typeof createSearchStore>['setSearch']>[1][number];
 
 const props = defineProps({
     searchFields: {
@@ -30,11 +30,15 @@ const emit = defineEmits<{
     'update:modelValue': (value: string) => void;
 }>();
 
-const searchStore = useSearchStore();
+// Try to inject the grid-specific search store provided by GridContainer
+const injectedSearchStore = inject('searchStore');
 
-// Simplified computed that updates both v-model and store
+// Use the injected store or fall back to a global store instance
+const searchStore = injectedSearchStore || createSearchStore('global')();
+
+// Update computed to use store directly
 const searchValue = computed({
-    get: () => props.modelValue,
+    get: () => searchStore.searchQuery,
     set: (value: string) => {
         emit('update:modelValue', value);
         searchStore.setSearch(value, props.searchFields);
@@ -46,7 +50,12 @@ function clearSearch() {
     searchStore.clear();
 }
 
-// Remove handleInput function as it's no longer needed since the store handles everything
+onMounted(() => {
+    // Initialize input value from store state if it exists
+    if (searchStore.searchQuery) {
+        emit('update:modelValue', searchStore.searchQuery);
+    }
+});
 </script>
 
 <style lang="scss">

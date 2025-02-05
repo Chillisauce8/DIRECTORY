@@ -10,13 +10,10 @@
     >
         <card-picture v-if="hasValidImage" :_id="imageId" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
 
-        <!-- Show CardTextWrapper only when not in edit mode or card not selected -->
-        <card-text-wrapper v-if="!showEditWrapper">
+        <header class="card-details" v-if="!showEditWrapper">
             <slot name="card-content" :data="cardData" />
-        </card-text-wrapper>
-
-        <!-- Show CardEditWrapper only when in edit mode and card is selected -->
-        <CardEditWrapper v-if="showEditWrapper" :collection="collection" :data-item="cardData" @save="handleEditSave" />
+        </header>
+        <CardEditWrapper v-if="showEditWrapper" :collection="collection" :data-item="cardData" :grid-id="gridId" @save="handleEditSave" />
 
         <div v-if="modeStore.currentMode" class="mode-icons">
             <SvgIcon :svg="modeIcon" :class="modeStore.currentMode" />
@@ -28,9 +25,8 @@
 // Import required dependencies
 import { computed, ref, watch } from 'vue';
 import { useCardStore } from '~/stores/useCardStore';
-import { useSelectedStore } from '~/stores/useSelectedStore';
-import { useModeStore } from '~/stores/useModeStore';
-import { useShowStore } from '~/stores/useShowStore';
+import { createSelectedStore } from '~/stores/useSelectedStore';
+import { createModeStore } from '~/stores/useModeStore';
 
 // Define component props with their types and defaults
 const props = defineProps({
@@ -39,7 +35,8 @@ const props = defineProps({
     clickable: { type: Boolean, default: true },
     loveable: { type: Boolean, default: false },
     gallery: { type: String, default: 'gallery' },
-    imageIdPath: { type: String, required: false } // path to find image ID in dataItem
+    imageIdPath: { type: String, required: false }, // path to find image ID in dataItem
+    gridId: { type: String, required: true }
 });
 
 // Function to get nested value from object using dot notation
@@ -58,8 +55,8 @@ const emit = defineEmits(['update:data-item']);
 
 // Initialize store instances
 const cardStore = useCardStore();
-const selectionStore = useSelectedStore();
-const modeStore = useModeStore();
+const selectionStore = createSelectedStore(props.gridId)();
+const modeStore = createModeStore(props.gridId)();
 
 // Computed properties
 // Get card data from store or props
@@ -133,13 +130,22 @@ const isDragging = ref(false);
     border-radius: var(--corner-outer);
     box-shadow: var(--box-shadow);
     transition: all 1s ease;
+    .card-details {
+        position: relative;
+        padding: 5%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: stretch;
+        overflow: hidden;
+    }
 
-    &:has(.card-text-wrapper.hide) {
+    &:has(.card-details.hide) {
         .swp-picture img {
             border-radius: var(--corner-outer);
         }
     }
-
     .swp-picture {
         img {
             transition: all 0.7s ease;
@@ -151,25 +157,6 @@ const isDragging = ref(false);
             @include aspect-ratio(3, 2);
         }
     }
-
-    &.selected {
-        img {
-            filter: brightness(40%);
-        }
-        .icon {
-            background-color: var(--primary-color);
-        }
-        &.select,
-        &.edit {
-            .mode-icons {
-                opacity: 1;
-                svg {
-                    stroke: white;
-                }
-            }
-        }
-    }
-
     &.select,
     &.view,
     &.edit,
@@ -188,19 +175,35 @@ const isDragging = ref(false);
                 border-radius: 50%;
                 width: 24px;
                 height: 24px;
+                svg {
+                    stroke: var(--primary-color);
+                }
             }
         }
-
         &:hover {
             img {
                 filter: brightness(80%);
             }
             .mode-icons {
                 opacity: 1;
-                .icon svg {
-                    stroke: var(--primary-color);
+            }
+        }
+    }
+    &.selected {
+        &.select,
+        &.edit {
+            .mode-icons {
+                opacity: 1;
+                .icon {
+                    background-color: var(--primary-color);
+                    svg {
+                        stroke: white;
+                    }
                 }
             }
+        }
+        img {
+            filter: brightness(40%);
         }
     }
 

@@ -3,9 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, watch } from 'vue';
+import { onMounted, computed, watch, inject } from 'vue';
 import { getNestedValue } from '~/composables/useFilters';
-import { useFilterStore } from '~/stores/useFilterStore';
+import { createFilterStore } from '~/stores/useFilterStore';
 
 // --- Internal Types ---
 interface FilterOption {
@@ -38,17 +38,16 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue']);
 
-const filterStore = useFilterStore();
+// Try to inject the grid-specific filter store provided by GridContainer
+const injectedFilterStore = inject('filterStore');
 
-// Two-way binding computed property for selected values.
+// Use the injected store or fall back to a global store instance
+const filterStore = injectedFilterStore || createFilterStore('global')();
+
+// Move selectedFilters here since it handles the v-model binding
 const selected = computed({
-    get: () => props.modelValue,
+    get: () => filterStore.getSelectedFilters(props.filterField),
     set: (value) => {
-        console.debug('FilterControl value changed:', {
-            newValue: value,
-            computedOptions: computedOptions.value,
-            filterField: props.filterField
-        });
         emit('update:modelValue', value);
         filterStore.setFilter(props.filterField, value);
     }

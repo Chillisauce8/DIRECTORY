@@ -4,12 +4,7 @@
             <Toast />
             <ConfirmDialog />
             <div class="filter-controls">
-                <!-- Default Controls -->
-                <ModeControl v-model="modeStore.currentMode" @update:modelValue="onModeUpdate" :display="modeControlDisplay" :visibleControls="visibleModeControls" :defaultControl="defaultModeControl" />
-
                 <slot name="controls" :items="listings" />
-
-                <DisplayControl :visibleSizes="visibleCardSizes" :defaultSize="defaultCardSize" />
                 <slot name="add-controls">
                     <template v-if="props.listingCollection">
                         <CrudControl :collection="listingCollection" function="create" @save="handleCreateSave">
@@ -60,21 +55,19 @@
 // ==========================================================
 import { ref, computed, watch, onMounted, inject, unref } from 'vue';
 import { getNestedValue } from '~/composables/useFilters';
-import { useSelectedStore } from '~/stores/useSelectedStore';
-import { useModeStore } from '~/stores/useModeStore';
-// Updated import for CARD_SIZES and CardSize from useDisplayStore
-import { useDisplayStore, CARD_SIZES, type CardSize } from '~/stores/useDisplayStore';
-import { useShowStore } from '~/stores/useShowStore';
-import { useSearchStore } from '~/stores/useSearchStore';
-import { useFilterStore } from '~/stores/useFilterStore';
+import { createSelectedStore } from '~/stores/useSelectedStore';
+import { createModeStore } from '~/stores/useModeStore';
+import { createSortStore } from '~/stores/useSortStore';
+import { createShowStore } from '~/stores/useShowStore';
+import { createSearchStore } from '~/stores/useSearchStore';
+import { createFilterStore } from '~/stores/useFilterStore';
 import { VueDraggable } from 'vue-draggable-plus';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import CrudControl from '../controls/CrudControl.vue';
 import { uniqBy, uniq } from '~/service/utils';
+import { createDisplayStore } from '~/stores/useDisplayStore';
 
-import ModeControl from '../controls/ModeControl.vue';
-import DisplayControl from '../controls/DisplayControl.vue';
 import Toast from 'primevue/toast';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Button from 'primevue/button';
@@ -110,8 +103,6 @@ interface Listing {
 
 import { useSortStore, type SortOption } from '~/stores/useSortStore';
 
-const sortStore = useSortStore();
-
 // ==========================================================
 // Injected Functions (CRUD Handlers)
 // ==========================================================
@@ -130,9 +121,8 @@ const handleDeleteNodeFn = inject(GridRemoveNodeFn) as GridModifyNodeFn;
 // Models, Props and Emits
 // ==========================================================
 const props = defineProps({
-    modeControlDisplay: { type: String as PropType<'text' | 'icon'>, default: 'text' },
-    visibleModeControls: { type: Array as PropType<ModeType[] | null>, default: () => ['view', 'select', 'edit', 'order'] },
-    defaultModeControl: { type: String as PropType<ModeType>, default: 'view' },
+    gridId: { type: String, required: true },
+    // Remove display-related props
     visibleCardSizes: { type: Array as PropType<string[] | null>, default: () => ['Small Cards', 'Big Cards', 'List'] },
     defaultCardSize: { type: String, default: 'Big Cards' },
     gallery: { type: String, default: 'gallery' },
@@ -144,8 +134,15 @@ const props = defineProps({
     listings: { type: Array as PropType<Listing[]>, default: () => [] },
     listingCollection: { type: String },
     onItemCreated: { type: Function as PropType<(item: any) => Promise<void>>, default: null },
-    sort: { type: Object as PropType<SortOption | null>, default: null },
-    searchQuery: { type: String, default: '' }
+    sortOptions: {
+        type: Array as PropType<SortOption[]>,
+        default: () => []
+    },
+    searchQuery: { type: String, default: '' },
+    showSelectedOptions: {
+        type: Array as PropType<string[]>,
+        default: () => []
+    }
 });
 const emit = defineEmits<{
     'add-selected': [string[]];
@@ -159,17 +156,18 @@ const confirm = useConfirm();
 const toast = useToast();
 
 const listings = ref<Listing[]>(props?.listings ?? useListings());
-const selectedStore = useSelectedStore();
-const modeStore = useModeStore();
-const displayStore = useDisplayStore();
-const showStore = useShowStore();
-const searchStore = useSearchStore();
-const filterStore = useFilterStore();
+const selectedStore = createSelectedStore(props.gridId)();
+const modeStore = createModeStore(props.gridId)();
+const showStore = createShowStore(props.gridId)();
+const searchStore = createSearchStore(props.gridId)();
+const filterStore = createFilterStore(props.gridId)();
+const sortStore = createSortStore(props.gridId)();
+const displayStore = createDisplayStore(props.gridId)();
 
 // ==========================================================
 // Computed Properties
 // ==========================================================
-// Check if any items are currently selected
+// Change this computed property to use the store's getter
 const hasSelectedCards = computed(() => selectedStore.hasSelectedItems);
 
 // Filter listings based on search and filters; then sort if needed
@@ -229,7 +227,10 @@ const isAllSelected = computed(() => {
 });
 
 // Manage container CSS classes based on display and mode
-const containerClasses = computed(() => [displayStore.displayClass, modeStore.currentMode]);
+const containerClasses = computed(() => [
+    modeStore.currentMode,
+    displayStore.displayClass // Add this back to include display classes
+]);
 
 // ==========================================================
 // Methods: CRUD Operations, Selections, Drag Handlers, etc.
@@ -334,10 +335,6 @@ function onEnd(): void {
 }
 
 // Handles mode changes; clears selection if switching away from edit/select modes
-function onModeUpdate(newMode: ModeType) {
-    modeStore.setMode(newMode);
-    selectedStore.clear();
-}
 
 // ==========================================================
 // Watchers: React to Changes in Listings, Mode, etc.
@@ -362,35 +359,27 @@ watch(
     }
 );
 
-// Add watcher for sort prop changes
-watch(
-    () => props.sort,
-    (newSort) => {
-        if (newSort) {
-            sortStore.setSort(newSort);
-        }
-    }
-);
-
 // ==========================================================
 // Lifecycle: onMounted Initialization
 // ==========================================================
 onMounted(() => {
-    if (props.defaultCardSize) {
-        const defaultSize = CARD_SIZES.find((size) => size.label === props.defaultCardSize);
-        if (defaultSize) {
-            displayStore.setSize(defaultSize);
-        }
-    }
     if (props.sort) {
         sortStore.setSort(props.sort);
     }
+    // Add this initialization
+    const showSelectedOptions = props.showSelectedOptions ?? [];
+    showStore.initialize(showSelectedOptions);
+    // Remove mode initialization since it's now handled by ModeControl
 });
 
 // ==========================================================
 // Update Handlers and Provides: Handling external updates to listings
 // ==========================================================
 async function handleCreateSave(savedData: any) {
+    // First update internal listings
+    await handleItemCreated(savedData);
+
+    // Then call the optional callback if provided
     if (props.onItemCreated) {
         await props.onItemCreated(savedData);
     }
@@ -415,11 +404,20 @@ function updateDbNodeInListingList(dbNode: DbNode) {
 }
 
 // Provide functions for external usage
+
 provide('handleDbNodeUpdate', handleDbNodeUpdate);
 provide('handleItemCreated', handleItemCreated);
 provide('updateArrayField', updateArrayField);
-provide('updateShow', (fields: string[]) => (displayStore.show = fields));
+
 provide('updateItemsSorting', (sort: SortOption) => sortStore.setSort(sort));
+
+provide('filterStore', filterStore);
+provide('showStore', showStore);
+provide('searchStore', searchStore);
+provide('selectedStore', selectedStore);
+provide('displayStore', displayStore);
+provide('modeStore', modeStore);
+provide('sortStore', sortStore);
 </script>
 
 <style lang="scss">

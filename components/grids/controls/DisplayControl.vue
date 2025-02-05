@@ -7,8 +7,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, watch, onMounted } from 'vue';
-import { useDisplayStore, type CardSize, CARD_SIZES } from '~/stores/useDisplayStore';
+import { computed, type PropType, inject, onMounted } from 'vue';
+import { createDisplayStore, type CardSize, CARD_SIZES } from '~/stores/useDisplayStore';
 
 const props = defineProps({
     visibleSizes: {
@@ -18,28 +18,39 @@ const props = defineProps({
     defaultSize: {
         type: String,
         default: 'Big Cards'
+    },
+    gridId: {
+        type: String,
+        required: true
     }
 });
 
-const displayStore = useDisplayStore();
+// Try to inject the grid-specific display store provided by GridContainer
+const injectedDisplayStore = inject('displayStore');
+
+// Use the injected store or fall back to a grid-specific store instance
+const displayStore = injectedDisplayStore || createDisplayStore(props.gridId)();
 
 const showSelector = computed(() => Array.isArray(props.visibleSizes) && props.visibleSizes.length > 1);
 
-const filteredSizes = computed(() => CARD_SIZES.filter((size) => props.visibleSizes?.includes(size.label)));
-
-// Add computed for current size to ensure reactivity
-const currentSize = computed(() => displayStore.currentSize);
-
-// Initialize on component mount
-onMounted(() => {
-    const defaultSize = CARD_SIZES.find((size) => size.label === props.defaultSize);
-    if (defaultSize) {
-        displayStore.setSize(defaultSize);
+const filteredSizes = computed(() => {
+    if (!Array.isArray(props.visibleSizes) || props.visibleSizes.length === 0) {
+        const defaultSize = CARD_SIZES.find((size) => size.label === props.defaultSize);
+        return defaultSize ? [defaultSize] : [CARD_SIZES[1]];
     }
+    return CARD_SIZES.filter((size) => props.visibleSizes?.includes(size.label));
 });
 
-// Update the updateSize function to ensure proper reactivity
+const currentSize = computed(() => displayStore.currentSize);
+
 function updateSize(newSize: CardSize) {
     displayStore.setSize(newSize);
 }
+
+onMounted(() => {
+    // Initialize with default size
+    if (props.defaultSize) {
+        displayStore.initialize(props.defaultSize);
+    }
+});
 </script>

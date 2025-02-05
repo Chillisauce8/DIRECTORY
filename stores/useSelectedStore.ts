@@ -1,52 +1,37 @@
 import { defineStore } from 'pinia';
 
-export const useSelectedStore = defineStore('selection', {
-    state: () => ({
-        selectedItems: new Set<string>()
-    }),
-
-    actions: {
-        select(id: string) {
-            console.log('SelectedStore - Selecting:', { id, currentItems: Array.from(this.selectedItems) });
-            if (!id) {
-                console.warn('SelectedStore - Attempted to select with undefined id');
-                return;
-            }
-            this.selectedItems.add(id);
-        },
-        deselect(id: string) {
-            console.log('SelectedStore - Deselecting', { id, before: this.selectedItems });
-            this.selectedItems.delete(id);
-            console.log('SelectedStore - After deselect', { after: this.selectedItems });
-        },
-        toggle(id: string) {
-            console.log('SelectedStore - Toggling:', {
-                id,
-                currentItems: Array.from(this.selectedItems),
-                hasId: !!id,
-                currentlySelected: this.selectedItems.has(id)
-            });
-            if (!id) {
-                console.warn('SelectedStore - Attempted to toggle with undefined id');
-                return;
-            }
-            if (this.selectedItems.has(id)) {
-                this.selectedItems.delete(id);
-            } else {
+// Factory function: each grid gets its own store instance
+export const createSelectedStore = (gridId: string) =>
+    defineStore(`selected-${gridId}`, {
+        state: () => ({
+            selectedItems: new Set<string>()
+        }),
+        actions: {
+            select(id: string) {
                 this.selectedItems.add(id);
+            },
+            deselect(id: string) {
+                this.selectedItems.delete(id);
+            },
+            toggle(id: string) {
+                if (this.selectedItems.has(id)) {
+                    this.selectedItems.delete(id);
+                } else {
+                    this.selectedItems.add(id);
+                }
+            },
+            clear() {
+                this.selectedItems.clear();
+            },
+            setMultiple(ids: string[]) {
+                this.clear();
+                ids.forEach((id) => this.selectedItems.add(id));
             }
         },
-        clear() {
-            this.selectedItems.clear();
-        },
-        setMultiple(ids: string[]) {
-            this.selectedItems = new Set(ids);
+        getters: {
+            isSelected: (state) => (id: string) => state.selectedItems.has(id),
+            selectedCount: (state) => state.selectedItems.size,
+            hasSelections: (state) => state.selectedItems.size > 0,
+            hasSelectedItems: (state) => state.selectedItems.size > 0
         }
-    },
-
-    getters: {
-        isSelected: (state) => (id: string) => state.selectedItems.has(id),
-        selectedItemsArray: (state) => Array.from(state.selectedItems),
-        hasSelectedItems: (state) => state.selectedItems.size > 0
-    }
-});
+    });

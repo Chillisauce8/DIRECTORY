@@ -5,23 +5,30 @@
  */
 import { defineStore } from 'pinia';
 
-export const useShowStore = defineStore('show', {
-    state: () => ({
-        currentShow: ['name'] as string[]
-    }),
+// Factory function: each grid gets its own store instance
+export const createShowStore = (gridId: string) =>
+    defineStore(`show-${gridId}`, {
+        state: () => ({
+            currentShow: [] as string[] // Remove default ['name']
+        }),
 
-    actions: {
-        setShow(show: string | string[]) {
-            const newShow = Array.isArray(show) ? show : [show];
-            this.currentShow = [...newShow];
-        },
+        actions: {
+            initialize(initialOptions: string[]) {
+                if (this.currentShow.length === 0 && initialOptions.length > 0) {
+                    this.currentShow = [...initialOptions];
+                }
+            },
+            setShow(show: string | string[]) {
+                const newShow = Array.isArray(show) ? show : [show];
+                this.currentShow = [...newShow];
+            },
 
-        toggleField(field: string) {
-            if (this.currentShow.includes(field)) {
-                this.currentShow = this.currentShow.filter((f) => f !== field);
-            } else {
-                this.currentShow = [...this.currentShow, field];
+            toggleField(field: string) {
+                if (this.currentShow.includes(field)) {
+                    this.currentShow = this.currentShow.filter((f) => f !== field);
+                } else {
+                    this.currentShow = [...this.currentShow, field];
+                }
             }
         }
-    }
-});
+    });

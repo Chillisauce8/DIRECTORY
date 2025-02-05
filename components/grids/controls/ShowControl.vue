@@ -1,48 +1,37 @@
 <template>
     <div class="show-control">
-        <MultiSelect v-model="selectedFields" :options="allFields" display="chip" placeholder="Show Fields" @change="handleShowChange" />
+        <MultiSelect v-model="selectedOptions" :options="allOptions" display="chip" placeholder="Show Fields" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, type PropType, onMounted } from 'vue';
-import { useShowStore } from '~/stores/useShowStore';
+import { computed, inject } from 'vue';
+import { createShowStore } from '~/stores/useShowStore';
 
 const props = defineProps({
-    modelValue: {
-        type: Array as PropType<[string, boolean][]>,
+    showAllOptions: {
+        type: Array as PropType<string[]>,
+        required: true
+    },
+    gridId: {
+        type: String,
         required: true
     }
+    // Remove showSelectedOptions prop as it's handled by GridContainer
 });
 
-const emit = defineEmits<{
-    'update:modelValue': [value: [string, boolean][]];
-}>();
+// Try to inject the grid-specific show store provided by GridContainer
+const injectedShowStore = inject('showStore');
 
-const showStore = useShowStore();
+// Use the injected store or fall back to a grid-specific store instance
+const showStore = injectedShowStore || createShowStore(props.gridId)();
 
-const selectedFields = computed(() => {
-    const fields = props.modelValue.filter(([_, isSelected]) => isSelected).map(([field]) => field);
-    console.debug('ShowControl selectedFields:', fields);
-    return fields;
+// Remove onMounted initialization since it's handled by GridContainer
+
+const selectedOptions = computed({
+    get: () => showStore.currentShow,
+    set: (value: string[]) => showStore.setShow(value)
 });
 
-const allFields = computed(() => props.modelValue.map(([field]) => field));
-
-onMounted(() => {
-    const initialSelected = props.modelValue.filter(([_, isSelected]) => isSelected).map(([field]) => field);
-    console.debug('ShowControl initializing with:', initialSelected);
-    showStore.setShow(initialSelected);
-});
-
-const handleShowChange = (event: any) => {
-    const selectedValues = Array.isArray(event.value) ? event.value : [event.value];
-    const newConfig = props.modelValue.map(([field]) => {
-        const isSelected = selectedValues.includes(field);
-        return [field, isSelected] as [string, boolean];
-    });
-
-    showStore.setShow(selectedValues);
-    emit('update:modelValue', newConfig);
-};
+const allOptions = computed(() => props.showAllOptions);
 </script>
