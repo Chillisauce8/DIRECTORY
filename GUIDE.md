@@ -23,6 +23,93 @@ Uses "\_id" throughout the application, when referencing to node/document ID's. 
     - Files: PascalCase (e.g., `MyComponent.vue`)
     - Root element class: kebab-case (e.g., `my-component`)
 
+### Naming Conventions
+
+1. Components
+
+    - Use PascalCase for component names (e.g., UserProfile.vue, NavigationBar.vue)
+    - Examples with prefixes:
+        - Base/UI components: BaseButton.vue, BaseInput.vue, UiModal.vue
+        - Layout components: LayoutDefault.vue, LayoutAdmin.vue
+        - Feature components: UserProfile.vue, ProductCard.vue
+        - Form components: FormLogin.vue, FormRegistration.vue
+    - Folder structure:
+        - /components/base/ - Base components
+        - /components/layout/ - Layout components
+        - /components/forms/ - Form components
+        - /components/features/ - Feature-specific components
+        - /components/[feature-name]/ - Feature-grouped components
+
+2. Properties and Methods
+
+    - Use camelCase for props, methods, and variables
+    - Props naming:
+        - Boolean props: isLoading, hasError, shouldValidate
+        - Required props: append 'Required' for clarity (e.g., titleRequired)
+        - Model props: modelValue (v-model default)
+    - Methods naming:
+        - Event handlers: handleClick, handleSubmit
+        - Getters: getUserData, getFormattedDate
+        - Actions: submitForm, fetchData, updateUser
+        - Computed: userFullName, isFormValid
+    - Event naming:
+        - Use kebab-case
+        - Format: [namespace]-[action] (e.g., form-submit, user-updated)
+
+3. Composables
+
+    - Always prefix with "use"
+    - Examples by category:
+        - State: useState, useStore
+        - Features: useAuth, useCart
+        - Utils: useFormatter, useValidation
+        - API: useApi, useHttp
+    - Folder structure:
+        - /composables/state/
+        - /composables/features/
+        - /composables/utils/
+        - /composables/api/
+
+4. Pages and Routes
+
+    - Use kebab-case for files and routes
+    - Folder structure:
+        - /pages/index.vue - Home page
+        - /pages/[feature]/ - Feature pages
+        - /pages/[feature]/[id].vue - Dynamic routes
+        - /pages/admin/ - Admin pages
+        - /pages/auth/ - Authentication pages
+
+5. Store (Pinia)
+
+    - File naming: useFeatureStore.ts
+    - State properties: camelCase
+    - Getters: camelCase, descriptive (e.g., filteredUsers)
+    - Actions:
+        - Async: fetchUsers, updateProfile
+        - Sync: setUser, clearState
+    - Folder structure:
+        - /stores/useAuthStore.ts
+        - /stores/modules/[feature]/useFeatureStore.ts
+
+6. Plugins and Middleware
+
+    - Plugins:
+        - Feature plugins: authPlugin.ts, analyticsPlugin.ts
+        - UI plugins: primeVuePlugin.ts
+    - Middleware:
+        - Authentication: authMiddleware.ts
+        - Role-based: adminMiddleware.ts, userMiddleware.ts
+    - Types:
+        - Plugin types: /types/plugins/
+        - Middleware types: /types/middleware/
+
+7. Types and Interfaces
+    - Interfaces: Prefix with 'I' (e.g., IUser)
+    - Types: Descriptive PascalCase (e.g., UserResponse)
+    - Enums: PascalCase with Enum suffix (e.g., UserRoleEnum)
+    - Place in /types directory with feature-based organization
+
 ### CSS Standards
 
 1. Structure

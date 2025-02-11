@@ -1,5 +1,5 @@
 <template>
-    <BaseCard :dataItem="dataItem" collection="files">
+    <BaseCard :dataItem="dataItem" collection="files" :grid-id="gridId" class="media-card" :image-id-path="imageIdPath">
         <template #card-content="{ data }">
             <h1 v-if="showStore.currentShow.includes('name')" class="name">{{ data.name }}</h1>
             <h1 v-if="showStore.currentShow.includes('categories')" class="categories">
@@ -11,8 +11,13 @@
 
 <script setup lang="ts">
 import type { Files } from '@/types/collections/Files';
-import { useShowStore } from '~/stores/useShowStore';
+import { createShowStore } from '~/stores/useShowStore';
 
-defineProps<{ dataItem: Files }>();
-const showStore = useShowStore();
+const imageIdPath = '_id';
+
+const props = defineProps<{
+    dataItem: Files;
+    gridId: string;
+}>();
+const showStore = createShowStore(props.gridId)();
 </script>

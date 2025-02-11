@@ -1,18 +1,24 @@
 <template>
-    <card-wrapper class="model-card">
-        <swp-picture v-if="images" :images="images" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
-        <card-text-wrapper>
+    <BaseCard :data-item="cardData" collection="models" :grid-id="gridId" image-id-path="" class="model-card">
+        <template #card-content>
             <h1 class="name">
                 <div class="make">{{ make }}</div>
                 <div class="name">{{ name }}</div>
             </h1>
             <div class="years">{{ years[0] }} to {{ years[years.length - 1] }}</div>
-        </card-text-wrapper>
-    </card-wrapper>
+        </template>
+    </BaseCard>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['images', 'name', 'make', 'years']);
+const props = defineProps(['images', 'name', 'make', 'years', 'gridId']);
+
+// Create a data object that matches what BaseCard expects
+const cardData = {
+    _id: props.images?.[0] || 'default-id',
+    name: props.name
+    // Add any other properties BaseCard needs
+};
 </script>
 
 <style lang="scss">

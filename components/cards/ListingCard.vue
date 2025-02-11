@@ -1,30 +1,35 @@
 <template>
-    <card-wrapper class="listing-card">
-        <swp-picture v-if="images" :images="images" :src="images[0]" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
+    <BaseCard :data-item="cardData" collection="listings" :grid-id="gridId" image-id-path="" class="listing-card">
+        <template #image>
             <SvgIcon svg="heart" class="heart" />
             <div class="location">
                 <span class="fi fi-gb flag"></span>
                 <span class="address"> Yeovil, UK </span>
             </div>
-        </swp-picture>
-        <card-text-wrapper>
+        </template>
+        <template #card-content>
             <div class="sale-type">{{ saleType }}</div>
             <h1 class="name">{{ year }} {{ name }}</h1>
-
             <div v-if="price" class="price">£{{ price }}</div>
-
             <div class="specs">
                 <span v-if="engine" class="engine">{{ engine }}</span>
                 <span v-if="odometer" class="odometer">{{ odometer }}</span>
                 <span v-if="transmission" class="transmission">{{ transmission }}</span>
                 <span v-if="stearingSide" class="stearing-side">{{ stearingSide }}</span>
             </div>
-        </card-text-wrapper>
-    </card-wrapper>
+        </template>
+    </BaseCard>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['images', 'name', 'saleType', 'year', 'price', 'engine', 'odometer', 'transmission', 'stearingSide']);
+const props = defineProps(['images', 'name', 'saleType', 'year', 'price', 'engine', 'odometer', 'transmission', 'stearingSide', 'gridId']);
+
+// Create a data object that matches what BaseCard expects
+const cardData = {
+    _id: props.images?.[0] || 'default-id',
+    name: props.name
+    // Add any other properties BaseCard needs
+};
 </script>
 
 <style lang="scss">

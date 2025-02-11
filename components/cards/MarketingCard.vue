@@ -1,19 +1,32 @@
 <template>
-    <card-wrapper class="marketing-card" :class="{ 'X-Center': props.svg, link: props.link }" :link="props.link">
-        <swp-picture v-if="images" :images="images" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
-        <LazySvgIcon v-else-if="props.svg" :svg="props.svg" />
-        <card-text-wrapper>
-            <h1 v-if="props.title">{{ props.title }}</h1>
-            <div v-if="props.copy" class="copy">
-                {{ props.copy }}
+    <BaseCard :data-item="cardData" collection="marketing" :grid-id="gridId" class="marketing-card" :class="{ 'X-Center': svg, link }">
+        <template #card-content>
+            <LazySvgIcon v-if="svg" :svg="svg" />
+            <h1 v-if="title">{{ title }}</h1>
+            <div v-if="copy" class="copy">
+                {{ copy }}
             </div>
-        </card-text-wrapper>
-    </card-wrapper>
+        </template>
+    </BaseCard>
 </template>
 
-<script>
-export default {
-    props: ['props']
+<script setup lang="ts">
+interface MarketingCardProps {
+    images?: string[];
+    title?: string;
+    copy?: string;
+    svg?: string;
+    link?: string;
+    gridId?: string;
+}
+
+const props = withDefaults(defineProps<MarketingCardProps>(), {
+    gridId: 'marketing'
+});
+
+const cardData = {
+    _id: props.images?.[0] || 'marketing-card',
+    name: props.title
 };
 </script>
 

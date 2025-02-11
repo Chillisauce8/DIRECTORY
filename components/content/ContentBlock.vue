@@ -2,7 +2,7 @@
     <section class="content-block">
         <div class="content" :class="layoutClass">
             <div class="left">
-                <swp-picture :images="images" :class="imageClass" loading="lazy" widths="400:1200" sizes="40vw" />
+                <picture-image :images="images" :class="imageClass" loading="lazy" widths="400:1200" sizes="40vw" />
             </div>
             <div class="right">
                 <h2 :class="titleClass">{{ title }}</h2>
@@ -16,7 +16,7 @@
 const props = defineProps<{
     title: string;
     text: string[];
-    images: { id: string; alt: string }[];
+    images: { id?: string; _id?: string; alt: string }[]; // Update interface to support both id types
 }>();
 
 const imageCount = props.images.length;

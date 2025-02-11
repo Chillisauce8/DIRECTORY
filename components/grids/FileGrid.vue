@@ -1,22 +1,12 @@
 <template>
-    <grid-container
-        :grid-id="gridId"
-        :mode-control-display="modeControlDisplay"
-        :filters="filters"
-        :visible-mode-controls="visibleModeControls"
-        :default-mode-control="defaultModeControl"
-        :default-card-size="defaultCardSize"
-        :visible-card-sizes="visibleCardSizes"
-        :search-fields="searchFields"
-        :listings="listingList"
-        :listing-collection="collectionName"
-        :sort-options="sortOptions"
-    >
+    <grid-container :grid-id="gridId" :filters="filters" :listings="listingList" :listing-collection="collectionName" :sort-options="sortOptions" :show-selected-options="showSelectedOptions">
         <template #controls>
+            <ModeControl :display="modeControlDisplay" :visible-controls="visibleModeControls" :default-control="defaultModeControl" :grid-id="gridId" />
             <FilterControl :options="listingList" :filter-field="filterField" :placeholder="filterPlaceholder" v-model="selectedFilters" />
-            <ShowControl v-model="showFields" />
+            <ShowControl :show-all-options="showAllOptions" :grid-id="gridId" />
             <SortControl :sort-options="sortOptions" />
             <SearchControl :search-fields="searchFields" />
+            <DisplayControl :visible-sizes="visibleCardSizes" :default-size="defaultCardSize" :grid-id="gridId" />
         </template>
 
         <template #edit-controls>
@@ -24,7 +14,7 @@
         </template>
 
         <template #card="{ listing }">
-            <TaskCard :data-item="listing" />
+            <MediaCard :data-item="listing" :grid-id="gridId" />
         </template>
     </grid-container>
 </template>
@@ -32,19 +22,19 @@
 <script setup lang="ts">
 import type { Event } from '~/types/collections/Events';
 import GridContainer from '~/components/grids/common/GridContainer.vue';
-import { ref, computed, watch } from 'vue';
-import { useFilterStore } from '~/stores/useFilterStore';
+import { ref, computed } from 'vue';
 
-const gridId = 'taskGridTest';
+// Grid Configuration
+const gridId = 'fileGrid';
 
 // Collection Configuration
-const collectionName = 'events';
+const collectionName = 'files';
 const { listingList } = await useGrid<Event>({ collectionName });
 
 // Mode Control Configuration
 const modeControlDisplay = 'icon';
 const visibleModeControls = ['view', 'select', 'edit', 'order'] as const;
-const defaultModeControl = 'view';
+const defaultModeControl = 'select';
 
 // Display Control Configuration
 const defaultCardSize = 'Big Cards';
@@ -52,26 +42,22 @@ const visibleCardSizes = ['Small Cards', 'Big Cards', 'List'] as const;
 
 // Filter Control Configuration
 const filterPlaceholder = 'Filter by Category';
-const filterField = 'categories.name';
+const filterField = 'name';
 
-// Filter Configuration
-const filterStore = useFilterStore();
+// Add definition for selectedFilters, used with v-model on <FilterControl>
+const selectedFilters = ref([]);
 
-// Keep only the filters configuration
+// Simplify filters computation
 const filters = computed(() => [
     {
         field: filterField,
-        selected: filterStore.getSelectedFilters(filterField)
+        selected: [] // GridContainer will handle the selected state
     }
 ]);
 
 // Show Control Configuration
-const showFields = ref([
-    ['name', true],
-    ['categories', true],
-    ['description', false],
-    ['start', false]
-]);
+const showAllOptions = ['name', 'categories', 'description', 'start'];
+const showSelectedOptions = ['name', 'categories'];
 
 // Sort Control Configuration
 const sortOptions = [
@@ -85,6 +71,6 @@ const searchFields = [
     { field: 'categories', label: 'Categories' }
 ] as const;
 
-// Edit Control Configuration
+// Edit Control Configuration // Currently not working
 const editField = 'categories';
 </script>

@@ -120,6 +120,13 @@ export default defineNuxtConfig({
 
     vite: {
         plugins: [
+            {
+                name: 'custom-blocks',
+                transform(code, id) {
+                    if (!/vue&type=custom-docs/.test(id)) return;
+                    return `export default ${JSON.stringify(code)}`;
+                }
+            },
             commonjs({
                 filter(id) {
                     if (id.includes('node_modules/')) {

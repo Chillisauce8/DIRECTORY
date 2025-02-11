@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-const listings = useListings();
+//const listings = useListings();
 
 const heroHeaderProps = {
     title: 'Rolls-Royce',
@@ -21,7 +21,7 @@ const heroHeaderProps = {
     widths: '400:2000',
     images: [
         {
-            id: '66365a43e70ac51006d4d811',
+            _id: '66365a43e70ac51006d4d811',
             alt: 'hero header image alt description'
         }
     ],

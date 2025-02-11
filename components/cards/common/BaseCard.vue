@@ -8,118 +8,113 @@
         :id="props.dataItem._id"
         @click="handleClick"
     >
-        <card-picture v-if="hasValidImage" :_id="imageId" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy" />
-
-        <header class="card-details" v-if="!showEditWrapper">
-            <slot name="card-content" :data="cardData" />
-        </header>
-        <CardEditWrapper v-if="showEditWrapper" :collection="collection" :data-item="cardData" :grid-id="gridId" @save="handleEditSave" />
+        <PictureImage v-if="hasValidImage" :_id="imageId" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
+            <template #default>
+                <div class="overlay">
+                    <slot name="image" />
+                    <SvgIcon v-if="props.loveable" svg="heart" class="heart" :class="{ loved: isLoved }" @click.stop="toggleLoved" />
+                </div>
+            </template>
+        </PictureImage>
 
         <div v-if="modeStore.currentMode" class="mode-icons">
             <SvgIcon :svg="modeIcon" :class="modeStore.currentMode" />
+        </div>
+
+        <div class="card-content">
+            <header class="card-read" v-if="!showEditWrapper">
+                <slot name="card-content" :data="cardData" />
+            </header>
+
+            <div v-if="showEditWrapper" class="card-edit">
+                <CrudControl :collection="collection" function="update" :dialogEdit="false" :itemId="editItemId" :initialItem="cardData" noButton preventDefault @save="handleEditSave" />
+            </div>
         </div>
     </component>
 </template>
 
 <script setup lang="ts">
-// Import required dependencies
 import { computed, ref, watch } from 'vue';
 import { useCardStore } from '~/stores/useCardStore';
 import { createSelectedStore } from '~/stores/useSelectedStore';
 import { createModeStore } from '~/stores/useModeStore';
+import type { DbNode } from '~/types';
 
-// Define component props with their types and defaults
-const props = defineProps({
-    dataItem: { type: Object, required: true },
-    collection: { type: String, required: true },
-    clickable: { type: Boolean, default: true },
-    loveable: { type: Boolean, default: false },
-    gallery: { type: String, default: 'gallery' },
-    imageIdPath: { type: String, required: false }, // path to find image ID in dataItem
-    gridId: { type: String, required: true }
+// Props with better typing
+interface CardProps {
+    dataItem: DbNode;
+    collection: string;
+    clickable?: boolean;
+    loveable?: boolean;
+    gallery?: string;
+    imageIdPath?: string;
+    gridId: string;
+    loved?: boolean;
+}
+
+const props = withDefaults(defineProps<CardProps>(), {
+    clickable: true,
+    loveable: false,
+    gallery: 'gallery',
+    loved: false
 });
 
-// Function to get nested value from object using dot notation
-const getNestedValue = (obj: any, path: string) => {
-    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-};
-
-// Compute all card properties from dataItem directly
-const cardProperties = computed(() => ({
-    _id: props.dataItem._id,
-    name: props.dataItem.name
-}));
-
-// Define emitted events
-const emit = defineEmits(['update:data-item']);
-
-// Initialize store instances
+// Initialize stores (moved after props definition)
 const cardStore = useCardStore();
 const selectionStore = createSelectedStore(props.gridId)();
 const modeStore = createModeStore(props.gridId)();
 
-// Computed properties
-// Get card data from store or props
-const cardData = computed(() => {
-    const storeData = cardStore.getCard(props.collection, cardProperties.value._id);
-    return storeData || props.dataItem;
-});
+// Core computed values
+const cardData = computed(() => cardStore.getCard(props.collection, props.dataItem._id) || props.dataItem);
+const isSelected = computed(() => selectionStore.isSelected(props.dataItem._id));
+const showEditWrapper = computed(() => modeStore.isEditMode && isSelected.value);
+const editItemId = computed(() => cardData.value?._id);
 
-// Check if card is selected
-const isSelected = computed(() => selectionStore.isSelected(cardProperties.value._id));
-
-// Add computed properties for image handling
-const imageId = computed(() => (props.imageIdPath ? getNestedValue(props.dataItem, props.imageIdPath) : undefined));
+// Image handling
+const imageId = computed(() => (props.imageIdPath ? props.imageIdPath.split('.').reduce((obj, key) => obj?.[key], props.dataItem) : undefined));
 const hasValidImage = computed(() => typeof imageId.value === 'string' && imageId.value.length > 0);
-const fullSizeSrc = computed(() => (hasValidImage.value ? `/api/images/${imageId.value}` : undefined));
+const fullSizeSrc = computed(() => (hasValidImage.value ? `https://media.chillisauce.com/image/upload/${imageId.value}` : undefined));
 
-// Determine which mode icon to display
+// UI state
+const isLoved = ref(props.loved);
+const isDragging = ref(false);
+
+// Classes and icons
 const modeIcon = computed(() => {
-    const baseIcons = {
-        select: 'check-circle',
-        edit: 'edit',
-        view: 'eye',
-        order: 'move'
-    };
-
-    if (isSelected.value && modeStore.isEditMode) {
-        return 'check-circle';
-    }
-
-    return modeStore.currentMode ? baseIcons[modeStore.currentMode] : '';
+    if (isSelected.value && modeStore.isEditMode) return 'check-circle';
+    const icons = { select: 'check-circle', edit: 'edit', view: 'eye', order: 'move' };
+    return modeStore.currentMode ? icons[modeStore.currentMode] : '';
 });
 
-// Generate CSS classes for the card
 const cardClasses = computed(() => ({
     selected: isSelected.value,
     [modeStore.currentMode]: true,
     'is-dragging': isDragging.value
 }));
 
-// Add new computed property to control wrapper visibility
-const showEditWrapper = computed(() => modeStore.isEditMode && isSelected.value);
-
 // Event handlers
-const handleEditSave = (event: any) => {
-    cardStore.updateCard(props.collection, cardProperties.value._id, event);
-    emit('update:data-item', event);
-    selectionStore.deselect(cardProperties.value._id);
-};
-
 const handleClick = (event: MouseEvent) => {
     if (props.clickable && !event.defaultPrevented) {
-        selectionStore.toggle(cardProperties.value._id);
+        selectionStore.toggle(props.dataItem._id);
     }
 };
 
-// Remove console.log watcher and keep simple selection state watcher
-watch(
-    () => selectionStore.isSelected(cardProperties.value._id),
-    () => {}
-);
+const handleEditSave = async (event: DbNode) => {
+    await cardStore.updateCard(props.collection, props.dataItem._id, event);
+    emit('update:data-item', event);
+    await selectionStore.deselect(props.dataItem._id);
+};
 
-// State for drag support
-const isDragging = ref(false);
+const toggleLoved = () => {
+    isLoved.value = !isLoved.value;
+    emit('update:loved', isLoved.value);
+};
+
+// Watch props
+watch(
+    () => props.loved,
+    (val) => (isLoved.value = val)
+);
 </script>
 
 <style lang="scss">
@@ -130,33 +125,40 @@ const isDragging = ref(false);
     border-radius: var(--corner-outer);
     box-shadow: var(--box-shadow);
     transition: all 1s ease;
-    .card-details {
-        position: relative;
-        padding: 5%;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        align-items: stretch;
-        overflow: hidden;
-    }
 
-    &:has(.card-details.hide) {
-        .swp-picture img {
-            border-radius: var(--corner-outer);
-        }
-    }
-    .swp-picture {
+    .picture-image {
         img {
             transition: all 0.7s ease;
-            border-top-left-radius: var (--corner-outer);
-            border-top-right-radius: var (--corner-outer);
+            border-top-left-radius: var(--corner-outer);
+            border-top-right-radius: var(--corner-outer);
         }
 
         picture {
             @include aspect-ratio(3, 2);
         }
     }
+
+    &:has(.card-read:empty) {
+        .picture-image img {
+            border-radius: var(--corner-outer);
+        }
+    }
+
+    .card-content {
+        &:has(> .card-edit),
+        &:has(> .card-read:not(:empty)) {
+            padding: 5%;
+        }
+        .card-read {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: stretch;
+            overflow: hidden;
+        }
+    }
+
     &.select,
     &.view,
     &.edit,
@@ -170,40 +172,42 @@ const isDragging = ref(false);
             padding: 5px;
             opacity: 0;
             transition: all 1s ease;
+            svg {
+                stroke: white;
+            }
 
             .icon {
                 border-radius: 50%;
                 width: 24px;
                 height: 24px;
-                svg {
-                    stroke: var(--primary-color);
-                }
             }
         }
+
         &:hover {
             img {
-                filter: brightness(80%);
+                filter: brightness(60%);
             }
+
             .mode-icons {
                 opacity: 1;
             }
         }
     }
+
     &.selected {
         &.select,
         &.edit {
             .mode-icons {
                 opacity: 1;
+
                 .icon {
                     background-color: var(--primary-color);
-                    svg {
-                        stroke: white;
-                    }
                 }
             }
         }
+
         img {
-            filter: brightness(40%);
+            filter: brightness(30%);
         }
     }
 

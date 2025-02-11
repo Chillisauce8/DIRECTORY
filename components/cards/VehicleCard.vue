@@ -1,15 +1,30 @@
 <template>
-    <card-wrapper class="vehicle-card">
-        <swp-picture v-if="images" :images="images" widths="290:870" :increment="145" aspectRatio="3:2" loading="lazy"> </swp-picture>
-        <card-text-wrapper>
+    <BaseCard :data-item="cardData" collection="vehicles" :grid-id="gridId" class="vehicle-card">
+        <template #card-content>
             <div v-if="nickname" class="nickname">"{{ nickname }}"</div>
             <h1 class="name">{{ year }} {{ make }} {{ name }}</h1>
-        </card-text-wrapper>
-    </card-wrapper>
+        </template>
+    </BaseCard>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['images', 'name', 'nickname', 'make', 'year']);
+interface VehicleCardProps {
+    images?: string[];
+    name: string;
+    nickname?: string;
+    make: string;
+    year: string | number;
+    gridId?: string;
+}
+
+const props = withDefaults(defineProps<VehicleCardProps>(), {
+    gridId: 'vehicle-list'
+});
+
+const cardData = {
+    _id: props.images?.[0] || 'vehicle-card',
+    name: `${props.year} ${props.make} ${props.name}`
+};
 </script>
 
 <style lang="scss">

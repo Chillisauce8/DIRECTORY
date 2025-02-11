@@ -40,20 +40,11 @@ const model = ref([
             },
 
             {
-                label: 'Task List v1',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/tasklist/IndexTest'
-            },
-            {
                 label: 'Tasks List v2',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/tasks'
             },
-            {
-                label: 'Tasks List Test',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/tasks-test'
-            },
+
             {
                 label: 'Messages',
                 icon: 'pi pi-fw pi-comments',

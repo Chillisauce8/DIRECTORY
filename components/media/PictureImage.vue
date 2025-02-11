@@ -1,5 +1,5 @@
 <template>
-    <div class="swp-picture">
+    <div class="picture-image">
         <!-- Loop over images, rendering a <picture> tag for each -->
         <picture v-for="(image, index) in normalizedImages" :key="index" :class="'image-' + (index + 1)">
             <!-- Render sources only if `src` prop is not provided -->
@@ -25,10 +25,11 @@ const baseUrl = 'https://media.chillisauce.com/image/upload/';
 
 // Define component props
 const props = defineProps<{
-    _id?: string; // Changed from id to _id
+    _id?: string;
+    id?: string; // Add legacy id prop
     alt?: string;
     src?: string;
-    images?: Array<{ _id: string; alt?: string }>; // Changed from id to _id
+    images?: Array<{ _id?: string; id?: string; alt?: string }>; // Support both id types in images
     loading?: 'eager' | 'lazy';
     widths: string;
     sizes?: string;
@@ -51,7 +52,20 @@ const emit = defineEmits(['update:src']);
 const defaultSizes = (widthRange: string): string => `${widthRange.split(':')[0]}px`;
 
 // Normalize images array; use props if images prop is empty
-const normalizedImages = computed(() => (props.images?.length ? props.images : [{ _id: props._id!, alt: props.alt }]));
+const normalizedImages = computed(() => {
+    if (props.images?.length) {
+        return props.images.map((img) => ({
+            _id: img._id || img.id, // Handle both id types
+            alt: img.alt
+        }));
+    }
+    return [
+        {
+            _id: props._id || props.id, // Handle both id types
+            alt: props.alt
+        }
+    ];
+});
 
 // Normalize sources array; default to one source if sources prop is empty
 const normalizedSources = computed(() => (props.sources?.length ? props.sources : [{ media: '', sizes: defaultSizes(props.widths), widths: props.widths, modifiers: [], aspectRatio: props.aspectRatio ?? '', increment: props.increment ?? 200 }]));
@@ -73,14 +87,17 @@ const constructSrcSet = (source: { widths: string; modifiers?: string[]; aspectR
 
 // Compute the full-size image src for the fallback img tag
 const fullSizeImageModifiers = ['c_fill', 'q_auto', 'f_auto'];
-const fullSizeSrc = computed(() => (props._id ? `${baseUrl}${fullSizeImageModifiers.join(',')}/${props._id}` : ''));
+const fullSizeSrc = computed(() => {
+    const imageId = props._id || props.id;
+    return imageId ? `${baseUrl}${fullSizeImageModifiers.join(',')}/${imageId}` : '';
+});
 
 // Emit full-size src to parent component on mount
 emit('update:src', fullSizeSrc.value);
 </script>
 
 <style lang="scss">
-.swp-picture {
+.picture-image {
     position: relative;
     &.darken img {
         filter: brightness(50%);
@@ -158,5 +175,67 @@ emit('update:src', fullSizeSrc.value);
     }
 }
 </style>
+<custom-docs>
+USAGE EXAMPLES: 1. Basic Usage (Single Image with ID):
+<PictureImage _id="abc123" widths="200:800" />
 
-/* To use, put the image dimensions on 'picture' and use ''.overlay' to design any overlay elements. */
+Renders:
+<picture>
+<img src="https://media.chillisauce.com/image/upload/c_fill,q_auto,f_auto,dpr_1/abc123" 
+         srcset="https://media.chillisauce.com/image/upload/w_200,c_fill,q_auto,f_auto,dpr_1/abc123 200w, 
+                 https://media.chillisauce.com/image/upload/w_400,c_fill,q_auto,f_auto,dpr_1/abc123 400w,
+                 https://media.chillisauce.com/image/upload/w_600,c_fill,q_auto,f_auto,dpr_1/abc123 600w,
+                 https://media.chillisauce.com/image/upload/w_800,c_fill,q_auto,f_auto,dpr_1/abc123 800w"
+         loading="lazy"
+         alt="">
+</picture>
+
+2. Multiple Images Array:
+   <PictureImage
+       :images="[
+           { _id: 'abc123', alt: 'First image' },
+           { _id: 'def456', alt: 'Second image' }
+       ]"
+       widths="200:800"
+   />
+
+Renders:
+
+<div class="picture-image">
+    <picture class="image-1">
+        <!-- srcset for first image -->
+    </picture>
+    <picture class="image-2">
+        <!-- srcset for second image -->
+    </picture>
+</div>
+
+3. Custom Responsive Sources:
+   <PictureImage
+       _id="abc123"
+       :sources="[
+           {
+               media: '(min-width: 1024px)',
+               widths: '800:1200',
+               aspectRatio: '16:9'
+           },
+           {
+               media: '(min-width: 640px)',
+               widths: '400:800',
+               aspectRatio: '4:3'
+           },
+           {
+               media: '',
+               widths: '200:400',
+               aspectRatio: '1:1'
+           }
+       ]"
+   />
+
+4. With Custom Overlay:
+   <PictureImage _id="abc123" widths="200:800">
+    <div class="custom-overlay">
+    <h2>Overlay Content</h2>
+    </div>
+    </PictureImage>
+</custom-docs>

@@ -1,14 +1,13 @@
 <template>
     <div class="hero-header">
-        <swp-picture :images="props.images" :sources="props.sources"
-                     :widths="props.widths" loading="eager" class="darken">
+        <picture-image :images="props.images" :sources="props.sources" :widths="props.widths" loading="eager" class="darken">
             <div class="content">
                 <h1 class="text-1">{{ props.title }}</h1>
                 <h2 class="text-2">
                     {{ props.subTitle }}
                 </h2>
             </div>
-        </swp-picture>
+        </picture-image>
 
         <!--<PageNav></PageNav> -->
     </div>
@@ -29,7 +28,7 @@ export default {
         @include parallax(3);
     }
     & .images,
-    .swp-picture {
+    .picture-image {
         height: 120vh;
         width: auto;
     }

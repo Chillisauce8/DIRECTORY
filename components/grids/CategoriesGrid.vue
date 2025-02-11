@@ -44,6 +44,9 @@ const visibleCardSizes = ['Small Cards', 'Big Cards', 'List'] as const;
 const filterPlaceholder = 'Filter by Type';
 const filterField = 'type';
 
+// Add definition for selectedFilters, used with v-model on <FilterControl>
+const selectedFilters = ref([]);
+
 // Simplify filters computation
 const filters = computed(() => [
     {

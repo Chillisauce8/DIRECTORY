@@ -1,5 +1,11 @@
 <template>
     <BaseCard :data-item="dataItem" collection="events" :grid-id="gridId" image-id-path="" class="task-card">
+        <template #image>
+            <!-- Any content you want to overlay on the image -->
+            <div class="image-overlay">
+                <!-- Your overlay content here -->
+            </div>
+        </template>
         <template #card-content="{ data }">
             <h1 v-if="showStore.currentShow.includes('name')" class="name">{{ data.name }}</h1>
             <h1 v-if="showStore.currentShow.includes('categories') && data.categories" class="categories">

@@ -1,35 +1,27 @@
 <template>
-    <card-wrapper class="make-card">
-        <swp-picture v-if="images" :images="images" :max="1" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
-            <!--
-      <SvgIcon svg="heart" class="heart" />
-      <div class="location">
-        <span class="fi fi-gb flag"></span>
-        <span class="address"> Yeovil, UK </span>
-      </div>
-    -->
-        </swp-picture>
-        <card-text-wrapper>
-            <!--     <div class="sale-type">{{ saleType }}</div> -->
+    <BaseCard :data-item="cardData" collection="makes" :grid-id="gridId" class="make-card">
+        <template #card-content>
             <h1 class="name">{{ name }}</h1>
-
-            <!--  <div class="price">{{ price }}</div>
-
-      <div class="specs">
-        <span v-if="engine" class="engine">{{ engine }}</span>
-        <span v-if="odometer" class="odometer">{{ odometer }}</span>
-        <span v-if="transmission" class="transmission">{{ transmission }}</span>
-        <span v-if="stearingSide" class="stearing-side">{{
-          stearingSide
-        }}</span>
-      </div>
-    -->
-        </card-text-wrapper>
-    </card-wrapper>
+        </template>
+    </BaseCard>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['images', 'name']);
+interface MakeCardProps {
+    images?: string[];
+    name: string;
+    gridId: string;
+}
+
+const props = withDefaults(defineProps<MakeCardProps>(), {
+    gridId: 'make-list'
+});
+
+// Create a data object that matches what BaseCard expects
+const cardData = {
+    _id: props.images?.[0] || 'default-id',
+    name: props.name
+};
 </script>
 
 <style lang="scss">
