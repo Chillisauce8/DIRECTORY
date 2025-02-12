@@ -1,5 +1,11 @@
 <template>
-    <BaseCard :data-item="cardData" collection="listings" :grid-id="gridId" image-id-path="" class="listing-card">
+    <BaseCard 
+        :data-item="dataItem" 
+        collection="listings" 
+        :grid-id="gridId" 
+        image-id-path="" 
+        class="listing-card"
+    >
         <template #image>
             <SvgIcon svg="heart" class="heart" />
             <div class="location">
@@ -7,29 +13,27 @@
                 <span class="address"> Yeovil, UK </span>
             </div>
         </template>
-        <template #card-content>
-            <div class="sale-type">{{ saleType }}</div>
-            <h1 class="name">{{ year }} {{ name }}</h1>
-            <div v-if="price" class="price">£{{ price }}</div>
+        <template #card-content="{ data }">
+            <div class="sale-type">{{ data.sale?.saleType }}</div>
+            <h1 class="name">{{ data.spec?.year }} {{ data.content?.name }}</h1>
+            <div v-if="data.sale?.price" class="price">£{{ data.sale.price }}</div>
             <div class="specs">
-                <span v-if="engine" class="engine">{{ engine }}</span>
-                <span v-if="odometer" class="odometer">{{ odometer }}</span>
-                <span v-if="transmission" class="transmission">{{ transmission }}</span>
-                <span v-if="stearingSide" class="stearing-side">{{ stearingSide }}</span>
+                <span v-if="data.spec?.engine" class="engine">{{ data.spec.engine }}</span>
+                <span v-if="data.spec?.odometer" class="odometer">{{ data.spec.odometer }}</span>
+                <span v-if="data.spec?.transmission" class="transmission">{{ data.spec.transmission }}</span>
+                <span v-if="data.spec?.stearingSide" class="stearing-side">{{ data.spec.stearingSide }}</span>
             </div>
         </template>
     </BaseCard>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['images', 'name', 'saleType', 'year', 'price', 'engine', 'odometer', 'transmission', 'stearingSide', 'gridId']);
+import type { PartialListingNode } from '~/service/cars/listings.service';
 
-// Create a data object that matches what BaseCard expects
-const cardData = {
-    _id: props.images?.[0] || 'default-id',
-    name: props.name
-    // Add any other properties BaseCard needs
-};
+const props = defineProps<{
+    dataItem: PartialListingNode;
+    gridId: string;
+}>();
 </script>
 
 <style lang="scss">

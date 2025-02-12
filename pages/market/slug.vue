@@ -27,6 +27,7 @@
           </layout-grid>
         </template>
       </DataView>
+      <!--
       <DataView v-if="listingList.length" :value="listingList" paginator :rows="7" layout="grid" :sortOrder="listingSortOrder" :sortField="listingSortField">
         <template #header>
           <div class="flex flex-column sm:flex-row sm:align-items-center sm:justify-content-between gap-3">
@@ -48,10 +49,13 @@
               :odometer="item.spec.odometer"
               :transmission="item.spec.transmission"
               :stearingSide="item.spec.stearingSide"
+              :grid-id="gridId"
             />
           </layout-grid>
         </template>
       </DataView>
+    -->
+      <ListingGrid :listings="listingList" />
     </div>
   </div>
 </template>
@@ -60,7 +64,7 @@
 import { ref } from 'vue';
 import {type Market, useMarketsService} from '~/service/cars/markets.service';
 import type {PartialListingNode} from '~/service/cars/listings.service';
-import {useListingsService} from '~/service/cars/listings.service';
+import {useListingsService}from '~/service/cars/listings.service';
 
 
 const marketsService = useMarketsService();
@@ -96,6 +100,7 @@ const home = ref({
   url: '/market'
 });
 
+const gridId = 'listingGrid';
 
 function navigateToSubmarket(submarket: Market): void {
   const url = '/market/' + submarket.path.map(i => i.slug).join('/');

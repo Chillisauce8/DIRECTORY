@@ -228,7 +228,11 @@ watch(
             filter: brightness(30%);
         }
     }
-
+    &.view,
+    &.select,
+    &.edit {
+        cursor: pointer;
+    }
     &.order {
         cursor: move;
     }
