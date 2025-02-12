@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Message } from '~/types/message';
-import { useMailUtils } from '~/composables/useMessageUtils';
 
 interface Props {
     mode?: 'new' | 'reply';
@@ -16,8 +15,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 // Use defineModel for v-model support
 const modelVisible = defineModel('dialogVisible');
-
-const { generateId, generateDate } = useMailUtils();
 const router = useRouter();
 
 // Reactive state with type
@@ -42,14 +39,13 @@ const emit = defineEmits<{
 function sendMail() {
     const mail: Message = {
         ...mailContent.value,
-        id: generateId(),
         sent: true,
         archived: false,
         trash: false,
         spam: false,
         starred: false,
         important: false,
-        date: generateDate(),
+        date: new Date().toISOString(),
         image: 'avatar.png'
     };
 

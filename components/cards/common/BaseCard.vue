@@ -10,10 +10,8 @@
     >
         <PictureImage v-if="hasValidImage" :_id="imageId" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
             <template #default>
-                <div class="overlay">
-                    <slot name="image" />
-                    <SvgIcon v-if="props.loveable" svg="heart" class="heart" :class="{ loved: isLoved }" @click.stop="toggleLoved" />
-                </div>
+                <slot name="image" />
+                <SvgIcon v-if="props.loveable" svg="heart" class="heart" :class="{ loved: isLoved }" @click.stop="toggleLoved" />
             </template>
         </PictureImage>
 
@@ -34,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, nextTick } from 'vue';
 import { useCardStore } from '~/stores/useCardStore';
 import { createSelectedStore } from '~/stores/useSelectedStore';
 import { createModeStore } from '~/stores/useModeStore';
@@ -58,6 +56,12 @@ const props = withDefaults(defineProps<CardProps>(), {
     gallery: 'gallery',
     loved: false
 });
+
+// Add this after props definition
+const emit = defineEmits<{
+    'update:data-item': [DbNode];
+    'update:loved': [boolean];
+}>();
 
 // Initialize stores (moved after props definition)
 const cardStore = useCardStore();
@@ -87,7 +91,7 @@ const modeIcon = computed(() => {
 });
 
 const cardClasses = computed(() => ({
-    selected: isSelected.value,
+    selected: (modeStore.currentMode === 'select' || modeStore.currentMode === 'edit') && isSelected.value,
     [modeStore.currentMode]: true,
     'is-dragging': isDragging.value
 }));
@@ -100,9 +104,23 @@ const handleClick = (event: MouseEvent) => {
 };
 
 const handleEditSave = async (event: DbNode) => {
-    await cardStore.updateCard(props.collection, props.dataItem._id, event);
-    emit('update:data-item', event);
-    await selectionStore.deselect(props.dataItem._id);
+    try {
+        // First update the card
+        await cardStore.updateCard(props.collection, props.dataItem._id, event);
+        emit('update:data-item', event);
+
+        // Then deselect and log for debugging
+        console.log('Before deselect - Selected:', isSelected.value);
+        await selectionStore.deselect(props.dataItem._id);
+        console.log('After deselect - Selected:', isSelected.value);
+
+        // Force a recompute of card classes
+        nextTick(() => {
+            console.log('Next tick - Selected:', isSelected.value);
+        });
+    } catch (error) {
+        console.error('Save failed:', error);
+    }
 };
 
 const toggleLoved = () => {

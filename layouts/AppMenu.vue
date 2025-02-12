@@ -18,29 +18,18 @@ const model = ref([
                 to: '/new/calendar'
             },
             {
-                label: 'Files Grid',
+                label: 'Files',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/new/files-grid'
+                to: '/new/files'
             },
             {
-                label: 'Categories Grid',
+                label: 'Categories',
                 icon: 'pi pi-fw pi-check-square',
-                to: '/new/categories-grid'
-            },
-            {
-                label: 'Markets Grid',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/market'
+                to: '/new/categories'
             },
 
             {
-                label: 'Vehicle Page Design',
-                icon: 'pi pi-fw pi-check-square',
-                to: '/new/car'
-            },
-
-            {
-                label: 'Tasks List v2',
+                label: 'Tasks',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/tasks'
             },
@@ -49,6 +38,17 @@ const model = ref([
                 label: 'Messages',
                 icon: 'pi pi-fw pi-comments',
                 to: '/new/message/inbox'
+            },
+            {
+                label: 'Markets',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/market'
+            },
+
+            {
+                label: 'Vehicle Page Design',
+                icon: 'pi pi-fw pi-check-square',
+                to: '/new/car'
             },
 
             {

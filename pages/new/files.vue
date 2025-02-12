@@ -1,7 +1,7 @@
-<template>
-    <MediaGrid />
-</template>
-
 <script setup lang="ts"></script>
 
-<style lang="scss"></style>
+<template>
+    <FileGrid />
+</template>
+
+<style scoped lang="scss"></style>
