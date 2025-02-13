@@ -72,6 +72,10 @@ import Toast from 'primevue/toast';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Button from 'primevue/button';
 import ToggleButton from 'primevue/togglebutton';
+import { get, set, debounce } from 'lodash-es'; // Add 'set' to the import
+
+import { createGridDataStore } from '~/stores/useGridDataStore';
+import { useDebouncedRef } from '~/composables/useDebounce';
 
 // ...other component imports (ModeControl, DisplayControl, Toast, ConfirmDialog, etc.)
 
@@ -164,56 +168,53 @@ const filterStore = createFilterStore(props.gridId)();
 const sortStore = createSortStore(props.gridId)();
 const displayStore = createDisplayStore(props.gridId)();
 
+// Initialize GridDataStore
+const gridDataStore = createGridDataStore(props.gridId)();
+
 // ==========================================================
 // Computed Properties
 // ==========================================================
 // Change this computed property to use the store's getter
 const hasSelectedCards = computed(() => selectedStore.hasSelectedItems);
 
-// Filter listings based on search and filters; then sort if needed
-const filteredListings = computed(() => {
-    let result = listings.value;
-    // Cache the lowercased search query once
-    const searchQuery = searchStore.searchQuery.toLowerCase();
+// Remove the first filteredListings computed and keep only the simplified version
+// Add memoized sort values
+const sortedItemsCache = new Map<string, {value: string, item: any}[]>();
 
-    // Apply search filtering (only if there's a query)
-    if (searchQuery) {
-        result = result.filter((item) =>
-            searchStore.searchFields.some((field) => {
-                const value = item[field.field];
-                return value && String(value).toLowerCase().includes(searchQuery);
-            })
-        );
-    }
+// Split computed properties for better reactivity
+const filteredResults = computed(() => gridDataStore.filteredByFilters);
 
-    // Apply custom filters
-    if (props.filters?.length) {
-        props.filters.forEach((filter) => {
-            const selectedValues = filterStore.getSelectedFilters(filter.field);
-            if (selectedValues?.length) {
-                result = result.filter((item) => {
-                    const fieldValue = getNestedValue(item, filter.field);
-                    if (!fieldValue) return false;
-                    // Normalize item values once for each item
-                    const itemValues = Array.isArray(fieldValue) ? fieldValue.map((v) => (typeof v === 'object' ? v.name : v)) : [typeof fieldValue === 'object' ? fieldValue.name : fieldValue];
-                    return selectedValues.some((selected) => itemValues.includes(typeof selected === 'object' ? selected.value : selected));
-                });
-            }
-        });
-    }
-
-    // Apply sorting if needed with proper type guard
-    const currentSort = sortStore.currentSort;
-    if (currentSort && currentSort.sort) {
-        result = [...result].sort((a, b) => {
-            const aVal = a[currentSort.sort];
-            const bVal = b[currentSort.sort];
-            return currentSort.order === 'asc' ? String(aVal).localeCompare(String(bVal)) : String(bVal).localeCompare(String(aVal));
-        });
-    }
-
-    return result;
+const sortKey = computed(() => {
+    const sort = sortStore.currentSort;
+    return sort ? `${sort.sort}-${sort.order}` : '';
 });
+
+const sortedItems = computed(() => {
+    const result = filteredResults.value;
+    const key = sortKey.value;
+    
+    if (!key) return result;
+    
+    // Check cache
+    if (!sortedItemsCache.has(key)) {
+        const items = result.map(item => ({
+            item,
+            value: String(get(item, sortStore.currentSort?.sort || '') || '')
+        }));
+        sortedItemsCache.set(key, items);
+    }
+    
+    const cached = sortedItemsCache.get(key)!;
+    return cached
+        .sort((a, b) => 
+            sortStore.currentSort?.order === 'asc' 
+                ? a.value.localeCompare(b.value)
+                : b.value.localeCompare(a.value))
+        .map(({ item }) => item);
+});
+
+// Final computed property combines everything
+const filteredListings = computed(() => sortedItems.value);
 
 // Track draggable version of listings
 const draggableListings = ref([...filteredListings.value]);
@@ -221,8 +222,7 @@ const draggableListings = ref([...filteredListings.value]);
 // Check if all visible listings are selected
 const isAllSelected = computed(() => {
     const filteredIds = filteredListings.value.map((listing) => listing._id);
-    // Convert selected items to a Set for O(1) lookups
-    const selectedSet = new Set(selectedStore.selectedItems);
+    const selectedSet = selectedStore.selectedItemsSet;
     return filteredIds.length > 0 && filteredIds.every((id) => selectedSet.has(id));
 });
 
@@ -312,15 +312,23 @@ const updateArrayField: UpdateArrayFieldFn = async (field, items, action) => {
         if (!listing) continue;
         const dbNode = listing.dbNode;
         let fieldValues;
+        
+        // Use get for nested path access
+        const currentValues = get(dbNode, field, []);
+        
         if (action === 'add') {
-            fieldValues = [...dbNode[field], ...items];
+            fieldValues = [...currentValues, ...items];
             if (fieldValues.length) {
                 fieldValues = fieldValues[0].id ? uniqBy(fieldValues, 'id') : uniq(fieldValues);
             }
         } else {
-            fieldValues = dbNode[field].filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id));
+            fieldValues = currentValues.filter((item: Item) => !items.some((toRemove) => toRemove.id === item.id));
         }
-        const updatedDbNode = { ...dbNode, [field]: fieldValues };
+
+        // Use set for nested path updates
+        const updatedDbNode = { ...dbNode };
+        set(updatedDbNode, field, fieldValues);
+        
         await handleUpdateNodeFn(updatedDbNode);
     }
     selectedStore.clear();
@@ -358,6 +366,173 @@ watch(
         }
     }
 );
+
+// Update watchers
+watch(() => props.listings, (newListings) => {
+    gridDataStore.originalData = newListings;
+    // Clear sort cache when data changes
+    sortedItemsCache.clear();
+}, { immediate: true });
+
+// Clear sort cache when sort changes
+watch(sortKey, () => {
+    sortedItemsCache.clear();
+});
+
+// Use debounce for search/filter updates
+const updateFilters = debounce((selectedFilters) => {
+    if (selectedFilters.length) {
+        gridDataStore.addFilter('filters', (items) => 
+            items.filter(item => 
+                selectedFilters.every(([field, selectedValues]) => {
+                    if (!selectedValues?.length) return true;
+                    const fieldValue = get(item, field);
+                    if (!fieldValue) return false;
+                    const itemValues = Array.isArray(fieldValue) 
+                        ? fieldValue.map(v => typeof v === 'object' ? v.name : v)
+                        : [typeof fieldValue === 'object' ? fieldValue.name : fieldValue];
+                    return selectedValues.some(selected => 
+                        itemValues.includes(typeof selected === 'object' ? selected.value : selected)
+                    );
+                })
+            )
+        );
+    } else {
+        gridDataStore.removeFilter('filters');
+    }
+}, 100);
+
+// Watch for filter changes
+watch(
+    () => [...Object.entries(filterStore.$state.selectedFilters)],
+    (selectedFilters) => {
+        if (selectedFilters.length) {
+            gridDataStore.addFilter('filters', (items) => 
+                items.filter(item => 
+                    selectedFilters.every(([field, selectedValues]) => {
+                        if (!selectedValues?.length) return true;
+                        
+                        const fieldValue = get(item, field);
+                        if (!fieldValue) return false;
+                        
+                        const itemValues = Array.isArray(fieldValue) 
+                            ? fieldValue.map(v => typeof v === 'object' ? v.name : v)
+                            : [typeof fieldValue === 'object' ? fieldValue.name : fieldValue];
+                            
+                        return selectedValues.some(selected => 
+                            itemValues.includes(typeof selected === 'object' ? selected.value : selected)
+                        );
+                    })
+                )
+            );
+        } else {
+            gridDataStore.removeFilter('filters');
+        }
+    },
+    { deep: true }
+);
+
+// Watch for search changes - replace the existing watch with this optimized version
+watch(
+    () => searchStore.searchQuery,
+    (query) => {
+        if (query) {
+            const searchRegex = new RegExp(escapeRegExp(query), 'i');
+            
+            gridDataStore.addFilter('search', (items) => 
+                items.filter(item => 
+                    searchStore.searchFields.some(field => {
+                        const value = get(item, field.field);
+                        return value && searchRegex.test(String(value));
+                    })
+                )
+            );
+        } else {
+            gridDataStore.removeFilter('search');
+        }
+    }
+);
+
+// Add utility function
+function escapeRegExp(string: string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Combine the duplicate watchers into one efficient watcher
+watch(
+    filteredListings,
+    (newItems) => {
+        // Check for auto-update filters once
+        const hasAutoUpdateFilters = document.querySelector('[auto-update="true"]');
+        
+        // Only update filter options if needed
+        if (hasAutoUpdateFilters) {
+            updateFilterOptions(newItems);
+        }
+
+        // Always update selections visibility
+        const visibleIds = new Set(newItems.map(l => l._id));
+        selectedStore.filterSelections(visibleIds);
+    },
+    { immediate: true }
+);
+
+// Add debounced update function
+const updateFilterOptions = debounce((items: any[]) => {
+    filterStore.updateFilterOptionsFromItems(items);
+}, 300);
+
+// Remove registration system and simplify
+watch(
+    filteredListings,
+    (newItems) => {
+        const filterControls = document.querySelectorAll('filter-control');
+        const hasAutoUpdateFilters = Array.from(filterControls).some(control => 
+            control.getAttribute(':auto-update') === 'true' || 
+            control.getAttribute('auto-update') === 'true'
+        );
+        
+        if (hasAutoUpdateFilters) {
+            updateFilterOptions(newItems);
+        }
+    },
+    { immediate: true }
+);
+
+// Add this watcher for filtered results
+watch(
+    filteredListings,
+    (newItems) => {
+        // Only update store if there are auto-update filters
+        const filterControls = document.querySelectorAll('[auto-update="true"]');
+        if (filterControls.length > 0) {
+            filterStore.updateFilterOptionsFromItems(newItems);
+        }
+    },
+    { immediate: true }
+);
+
+// Single, efficient watcher for filtered results
+watch(
+    filteredListings,
+    (newItems) => {
+        // For filter updates - using proper attribute check
+        const hasAutoUpdateFilters = document.querySelector('[auto-update="true"]');
+        if (hasAutoUpdateFilters) {
+            filterStore.updateFilterOptionsFromItems(newItems);
+        }
+
+        // For selection tracking
+        const visibleIds = new Set(newItems.map(l => l._id));
+        selectedStore.filterSelections(visibleIds);
+
+        // For draggable updates
+        draggableListings.value = [...newItems];
+    },
+    { immediate: true }
+);
+
+// Remove all other filteredListings watchers
 
 // ==========================================================
 // Lifecycle: onMounted Initialization

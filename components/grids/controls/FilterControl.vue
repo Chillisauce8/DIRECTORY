@@ -1,11 +1,20 @@
 <template>
-    <MultiSelect v-model="selected" :options="computedOptions" optionLabel="label" :placeholder="placeholder" class="w-full" display="chip" :maxSelectedLabels="2" />
+    <MultiSelect 
+        v-model="selected" 
+        :options="computedOptions" 
+        optionLabel="label" 
+        :placeholder="placeholder" 
+        class="w-full" 
+        display="chip" 
+        :maxSelectedLabels="2"
+        :auto-update="autoUpdate"
+    />
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed, watch, inject } from 'vue';
-import { getNestedValue } from '~/composables/useFilters';
+import { onMounted, computed, inject, ref, nextTick, onUnmounted } from 'vue';
 import { createFilterStore } from '~/stores/useFilterStore';
+import { get } from 'lodash-es';  // Add this import
 
 // --- Internal Types ---
 interface FilterOption {
@@ -13,6 +22,14 @@ interface FilterOption {
     label: string; // Display label (value + count)
     count: number; // How many documents contain this value
 }
+
+/**
+ * FilterControl: Displays a MultiSelect dropdown for filtering data
+ * 
+ * autoUpdate modes:
+ * - false (default): Computes options from direct props, maintains its own counts
+ * - true: Uses store options that reflect current filtered dataset
+ */
 
 // --- Props ---
 // Note: We now expect `options` to be an array of full documents,
@@ -33,6 +50,10 @@ const props = defineProps({
     placeholder: {
         type: String,
         default: ''
+    },
+    autoUpdate: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -53,40 +74,42 @@ const selected = computed({
     }
 });
 
-/**
- * computedOptions: Process the full list of documents (props.options) to extract
- * the values for the given filterField (which can be a nested path) and count their occurrences.
- */
-const computedOptions = computed<FilterOption[]>(() => {
-    const counts = new Map<string | number, number>();
+// Simplified computedOptions - cleaner logic flow
+const computedOptions = computed(() => {
+    if (!props.autoUpdate) {
+        return computeOptionsFromData(props.options);
+    }
 
-    props.options.forEach((doc) => {
-        let values: (string | number)[] = [];
-        const extracted = getNestedValue(doc, props.filterField);
+    const storeOptions = filterStore.getFilterOptions(props.filterField);
+    // Always return store options when in auto-update mode
+    // This ensures we stay reactive to store updates
+    return storeOptions?.length ? storeOptions : computeOptionsFromData(props.options);
+});
+
+// Extract the computation logic to a reusable function
+function computeOptionsFromData(data: any[]) {
+    const counts = new Map<string | number, number>();
+    data.forEach((doc) => {
+        const extracted = get(doc, props.filterField);
         if (Array.isArray(extracted)) {
             extracted.forEach((val) => {
-                // If the value is an object with a name property, use that
                 const actualValue = typeof val === 'object' ? val.name : val;
-                values.push(actualValue);
+                counts.set(actualValue, (counts.get(actualValue) || 0) + 1);
             });
         } else if (extracted !== undefined && extracted !== null) {
             const actualValue = typeof extracted === 'object' ? extracted.name : extracted;
-            values = [actualValue];
+            counts.set(actualValue, (counts.get(actualValue) || 0) + 1);
         }
-        values.forEach((val) => {
-            counts.set(val, (counts.get(val) || 0) + 1);
-        });
     });
 
-    // Now separate the actual value from its display label
     return Array.from(counts.entries())
         .map(([value, count]) => ({
-            value: value, // The actual value to be used for filtering
-            label: `${value} (${count})`, // Only used for display
+            value,
+            label: `${value} (${count})`,
             count
         }))
         .sort((a, b) => String(a.value).localeCompare(String(b.value)));
-});
+}
 
 /**
  * Emit the updated selection when the MultiSelect changes.
@@ -96,42 +119,14 @@ const handleChange = (event: { value: any[] }) => {
     emit('update:modelValue', event.value);
 };
 
-/**
- * onMounted hook: Ensure modelValue is defined as an array.
- */
+// onMounted simplified - only sets store when needed
 onMounted(() => {
-    filterStore.setFilterField(props.filterField, computedOptions.value);
+    // Always set initial options in store
+    const initialOptions = computeOptionsFromData(props.options);
+    filterStore.setFilterField(props.filterField, initialOptions);
+    
     if (!props.modelValue) {
         emit('update:modelValue', []);
     }
 });
-
-/**
- * Watch for changes in the documents. If the available options change,
- * validate the current selection to ensure it only contains valid values.
- */
-watch(
-    () => props.options,
-    (newOptions) => {
-        if (props.modelValue?.length) {
-            // Build a set of valid values from the updated options
-            const validValues = new Set<string | number>();
-            newOptions.forEach((doc) => {
-                const extracted = getNestedValue(doc, props.filterField);
-                if (Array.isArray(extracted)) {
-                    extracted.forEach((val) => validValues.add(val));
-                } else if (extracted !== undefined && extracted !== null) {
-                    validValues.add(extracted);
-                }
-            });
-            // Filter out any selected values that are no longer valid.
-
-            const validSelection = props.modelValue.filter((item: any) => validValues.has(item));
-            if (validSelection.length !== props.modelValue.length) {
-                emit('update:modelValue', validSelection);
-            }
-        }
-    },
-    { deep: true }
-);
 </script>

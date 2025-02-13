@@ -15,7 +15,7 @@
         </template>
         <template #card-content="{ data }">
             <div class="sale-type">{{ data.sale?.saleType }}</div>
-            <h1 class="name">{{ data.spec?.year }} {{ data.content?.name }}</h1>
+            <h1 class="name"> {{ data.content?.name }}</h1>
             <div v-if="data.sale?.price" class="price">£{{ data.sale.price }}</div>
             <div class="specs">
                 <span v-if="data.spec?.engine" class="engine">{{ data.spec.engine }}</span>

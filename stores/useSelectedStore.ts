@@ -1,37 +1,51 @@
 import { defineStore } from 'pinia';
 
-// Factory function: each grid gets its own store instance
+interface SelectedState {
+    selectedItems: string[];  // Changed from Set to array
+}
+
 export const createSelectedStore = (gridId: string) =>
     defineStore(`selected-${gridId}`, {
-        state: () => ({
-            selectedItems: new Set<string>()
+        state: (): SelectedState => ({
+            selectedItems: []
         }),
         actions: {
             select(id: string) {
-                this.selectedItems.add(id);
+                if (!this.selectedItems.includes(id)) {
+                    this.selectedItems.push(id);
+                }
             },
             deselect(id: string) {
-                this.selectedItems.delete(id);
+                const index = this.selectedItems.indexOf(id);
+                if (index !== -1) {
+                    this.selectedItems.splice(index, 1);
+                }
             },
             toggle(id: string) {
-                if (this.selectedItems.has(id)) {
-                    this.selectedItems.delete(id);
+                const index = this.selectedItems.indexOf(id);
+                if (index !== -1) {
+                    this.selectedItems.splice(index, 1);
                 } else {
-                    this.selectedItems.add(id);
+                    this.selectedItems.push(id);
                 }
             },
             clear() {
-                this.selectedItems.clear();
+                this.selectedItems = [];
             },
             setMultiple(ids: string[]) {
-                this.clear();
-                ids.forEach((id) => this.selectedItems.add(id));
+                // Ensure uniqueness
+                this.selectedItems = [...new Set(ids)];
+            },
+            // New method to filter selections by visible items
+            filterSelections(visibleIds: Set<string>) {
+                this.selectedItems = this.selectedItems.filter(id => visibleIds.has(id));
             }
         },
         getters: {
-            isSelected: (state) => (id: string) => state.selectedItems.has(id),
-            selectedCount: (state) => state.selectedItems.size,
-            hasSelections: (state) => state.selectedItems.size > 0,
-            hasSelectedItems: (state) => state.selectedItems.size > 0
+            isSelected: (state) => (id: string) => state.selectedItems.includes(id),
+            selectedCount: (state) => state.selectedItems.length,
+            hasSelectedItems: (state) => state.selectedItems.length > 0,
+            // New getter to get selections as a Set for O(1) lookups
+            selectedItemsSet: (state) => new Set(state.selectedItems)
         }
     });
