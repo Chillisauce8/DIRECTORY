@@ -6,7 +6,7 @@
         :placeholder="placeholder" 
         class="w-full" 
         display="chip" 
-        :maxSelectedLabels="2"
+        :maxSelectedLabels="1"
         :auto-update="autoUpdate"
     />
 </template>

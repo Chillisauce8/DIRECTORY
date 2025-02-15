@@ -3,11 +3,12 @@
         :data-item="dataItem" 
         collection="listings" 
         :grid-id="gridId" 
+        :src="dataItem.content?.imageURLs?.[0]"
         image-id-path="" 
         class="listing-card"
     >
         <template #image>
-            <SvgIcon svg="heart" class="heart" />
+          <!--  <SvgIcon svg="heart" class="heart" /> -->
             <div class="location">
                 <span class="fi fi-gb flag"></span>
                 <span class="address"> Yeovil, UK </span>

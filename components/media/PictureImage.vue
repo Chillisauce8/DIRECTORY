@@ -6,7 +6,7 @@
             <template v-if="!src">
                 <source v-for="(source, srcIndex) in normalizedSources" :key="srcIndex" :media="source.media" :srcset="constructSrcSet(source, image._id)" :sizes="sizes || source.sizes || defaultSizes(source.widths)" />
             </template>
-            <!-- Fallback image with src from prop or constructed srcset -->
+            <!-- When src is provided, it's used directly here -->
             <img :src="src || constructSrcSet(normalizedSources[0], image._id).split(',')[0].split(' ')[0]" :alt="image.alt || ''" :loading="loading || 'lazy'" />
         </picture>
 

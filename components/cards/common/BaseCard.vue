@@ -8,7 +8,7 @@
         :id="props.dataItem._id"
         @click="handleClick"
     >
-        <PictureImage v-if="hasValidImage" :_id="imageId" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
+        <PictureImage v-if="hasValidImage" :_id="imageId" :src="props.src" widths="290:870" :increment="290" aspectRatio="3:2" loading="lazy">
             <template #default>
                 <slot name="image" />
                 <SvgIcon v-if="props.loveable" svg="heart" class="heart" :class="{ loved: isLoved }" @click.stop="toggleLoved" />
@@ -48,6 +48,7 @@ interface CardProps {
     imageIdPath?: string;
     gridId: string;
     loved?: boolean;
+    src?: string;  // Add this prop
 }
 
 const props = withDefaults(defineProps<CardProps>(), {
@@ -76,8 +77,8 @@ const editItemId = computed(() => cardData.value?._id);
 
 // Image handling
 const imageId = computed(() => (props.imageIdPath ? props.imageIdPath.split('.').reduce((obj, key) => obj?.[key], props.dataItem) : undefined));
-const hasValidImage = computed(() => typeof imageId.value === 'string' && imageId.value.length > 0);
-const fullSizeSrc = computed(() => (hasValidImage.value ? `https://media.chillisauce.com/image/upload/${imageId.value}` : undefined));
+const hasValidImage = computed(() => props.src || (typeof imageId.value === 'string' && imageId.value.length > 0));
+const fullSizeSrc = computed(() => props.src || (hasValidImage.value ? `https://media.chillisauce.com/image/upload/${imageId.value}` : undefined));
 
 // UI state
 const isLoved = ref(props.loved);

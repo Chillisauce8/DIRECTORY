@@ -1,6 +1,7 @@
 <template>
     <div>
         <h1>Welcome</h1>
+        <ListingSearch />
     </div>
 </template>
 

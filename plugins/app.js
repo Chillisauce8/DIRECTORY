@@ -1,4 +1,4 @@
-import BlockViewer from '~/components/DeleteBlockViewer.vue';
+
 import InputText from 'primevue/inputtext';
 import AutoComplete from "primevue/autocomplete";
 import Textarea from "primevue/textarea";
@@ -11,7 +11,7 @@ import InputChips from "primevue/inputchips";
 import DatePicker from "primevue/datepicker";
 
 export default defineNuxtPlugin((nuxtApp) => {
-    nuxtApp.vueApp.component('BlockViewer', BlockViewer);
+
     nuxtApp.vueApp.component('InputText', InputText);
     nuxtApp.vueApp.component('AutoComplete', AutoComplete);
     nuxtApp.vueApp.component('Textarea', Textarea);

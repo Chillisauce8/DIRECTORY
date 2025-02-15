@@ -24,7 +24,7 @@
                 :placeholder="filterPlaceholder2" 
                 v-model="selectedFilters2" 
             />
-            <ShowControl :show-all-options="showAllOptions" :grid-id="gridId" />
+    <!--        <ShowControl :show-all-options="showAllOptions" :grid-id="gridId" /> -->
             <SortControl :sort-options="sortOptions" />
             <SearchControl :search-fields="searchFields" />
             <DisplayControl :visible-sizes="visibleCardSizes" :default-size="defaultCardSize" :grid-id="gridId" />
@@ -91,8 +91,8 @@ const filters = computed(() => [
 ]);
 
 // Show Control Configuration
-const showAllOptions = ['content.name', 'spec.year', 'sale.price', 'spec.engine'];
-const showSelectedOptions = ['content.name', 'sale.price'];
+//const showAllOptions = ['content.name', 'spec.year', 'sale.price', 'spec.engine'];
+//const showSelectedOptions = ['content.name', 'sale.price'];
 
 // Sort Control Configuration
 const sortOptions = [

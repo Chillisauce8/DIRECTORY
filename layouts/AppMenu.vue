@@ -70,6 +70,11 @@ const model = ref([
                 label: 'Images Fetching',
                 icon: 'pi pi-fw pi-check-square',
                 to: '/new/images-fetching'
+            },
+            {
+                label: 'Admin Tools',
+                icon: 'pi pi-fw pi-cog',
+                to: '/admin'
             }
         ]
     }

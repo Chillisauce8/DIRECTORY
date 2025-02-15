@@ -42,10 +42,20 @@
         </vue-draggable>
 
         <div v-else class="list-grid">
-            <template v-for="listing in filteredListings" :key="listing._id">
+            <template v-for="listing in paginatedListings" :key="listing._id">
                 <slot name="card" :listing="listing" />
             </template>
         </div>
+
+        <!-- Add Paginator -->
+        <Paginator
+            v-model:first="first"
+            v-model:rows="rows"
+            :total-records="totalRecords"
+            :rows-per-page-options="[12, 24, 48, 96]"
+            template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink RowsPerPageDropdown"
+            class="grid-paginator"
+        />
     </div>
 </template>
 
@@ -76,6 +86,7 @@ import { get, set, debounce } from 'lodash-es'; // Add 'set' to the import
 
 import { createGridDataStore } from '~/stores/useGridDataStore';
 import { useDebouncedRef } from '~/composables/useDebounce';
+import Paginator from 'primevue/paginator';
 
 // ...other component imports (ModeControl, DisplayControl, Toast, ConfirmDialog, etc.)
 
@@ -231,6 +242,18 @@ const containerClasses = computed(() => [
     modeStore.currentMode,
     displayStore.displayClass // Add this back to include display classes
 ]);
+
+// Add pagination state
+const first = ref(0);
+const rows = ref(24);
+
+// Add computed properties for pagination
+const totalRecords = computed(() => filteredListings.value.length);
+const paginatedListings = computed(() => {
+    const start = first.value;
+    const end = start + rows.value;
+    return filteredListings.value.slice(start, end);
+});
 
 // ==========================================================
 // Methods: CRUD Operations, Selections, Drag Handlers, etc.
@@ -688,6 +711,16 @@ provide('sortStore', sortStore);
     }
     .p-selectbutton button {
         overflow: visible;
+    }
+
+    .grid-paginator {
+        padding: var(--grid-gap);
+        background: var(--surface-card);
+        border-top: var(--surface-border);
+        
+        .p-paginator-current {
+            min-width: 120px;
+        }
     }
 }
 
