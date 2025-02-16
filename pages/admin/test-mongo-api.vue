@@ -282,6 +282,33 @@ const testQueries = [
         $command: {
           listDatabases: 1
         }
+      },
+      expectedType: 'command',
+      expectedFormat: {
+        ok: 1,
+        databases: 'array'
+      }
+    }
+  },
+  {
+    name: 'List Collections',
+    expectedType: 'command',
+    expectedFormat: {
+      ok: 1,
+      cursor: 'object'
+    },
+    request: {
+      collection: 'admin',
+      h: {
+        $command: {
+          listCollections: 1,
+          nameOnly: true
+        }
+      },
+      expectedType: 'command',
+      expectedFormat: {
+        ok: 1,
+        cursor: 'object'
       }
     }
   }

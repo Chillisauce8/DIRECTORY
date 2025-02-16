@@ -1,15 +1,14 @@
 <template>
     <div class="hero-header">
         <picture-image :images="props.images" :sources="props.sources" :widths="props.widths" loading="eager" class="darken">
-            <div class="content">
-                <h1 class="text-1">{{ props.title }}</h1>
-                <h2 class="text-2">
+            <div class="content" v-if="props.title || props.subTitle">
+                <h1 class="title" v-if="props.title">{{ props.title }}</h1>
+                <h2 class="sub-title" v-if="props.subTitle">
                     {{ props.subTitle }}
                 </h2>
             </div>
+            <slot />
         </picture-image>
-
-        <!--<PageNav></PageNav> -->
     </div>
 </template>
 

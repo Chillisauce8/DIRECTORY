@@ -9,7 +9,17 @@ const { DefaultTheme } = useTheme();
 
 export default defineNuxtConfig({
     //  extends: [process.env.NUXT_UI_PRO_PATH || '@nuxt/ui-pro'],
-    modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image', '@vueuse/motion/nuxt'],
+    modules: ['@nuxt/fonts', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-delay-hydration', '@primevue/nuxt-module', '@nuxtjs/tailwindcss', '@nuxt/image', '@vueuse/motion/nuxt', '@sidebase/nuxt-auth'],
+
+    auth: {
+        baseURL: process.env.NUXT_PUBLIC_AUTH_ORIGIN || 'http://localhost:3000',
+        globalMiddlewareOptions: {
+            allow404WithoutAuth: true
+        },
+        provider: {
+            type: 'authjs'
+        }
+    },
 
     primevue: {
         autoImport: true,
@@ -654,7 +664,10 @@ export default defineNuxtConfig({
 
     nitro: {
         devProxy: environment.devProxy ?? {},
-        routeRules: environment?.routeRules ?? {}
+        routeRules: {
+            '/api/auth/**': { cors: true, security: { xframe: 'DENY' } },
+            ...environment?.routeRules ?? {}
+        }
     },
 
     compatibilityDate: '2024-10-14',

@@ -253,7 +253,7 @@ const processMarkets = async (missingOnly: boolean = false) => {
         if (market.url !== url) {
           const updatedMarket = await httpService.update('/api/update/markets', {
             _id: market._id,
-            url: url
+            $set: { url: url }  // Using $set to only update the url field
           })
           results.value.push(updatedMarket.data)
           
