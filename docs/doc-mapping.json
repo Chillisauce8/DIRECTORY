@@ -1,0 +1,30 @@
+{
+  "codeToDocMap": {
+    "/server/api/plugins/db-indexes.ts": {
+      "docFile": "/docs/database/DATABASE.md",
+      "description": "Database indexes and collection structure",
+      "interfaces": ["IUser", "IAccount", "ISession", "IVerificationToken", "ITwoFactorAuth"]
+    },
+    "/server/api/auth/[...auth].ts": {
+      "docFile": "/docs/auth/AUTH.md",
+      "description": "Authentication implementation",
+      "relatedFiles": ["/middleware/auth.ts"]
+    }
+  },
+  "featureToDocMap": {
+    "authentication": {
+      "primaryDoc": "/docs/auth/AUTH.md",
+      "relatedDocs": ["/docs/database/DATABASE.md"],
+      "keyFiles": [
+        "/server/api/auth/[...auth].ts",
+        "/middleware/auth.ts"
+      ]
+    },
+    "database": {
+      "primaryDoc": "/docs/database/DATABASE.md",
+      "keyFiles": [
+        "/server/api/plugins/db-indexes.ts"
+      ]
+    }
+  }
+}

@@ -667,7 +667,13 @@ export default defineNuxtConfig({
         routeRules: {
             '/api/auth/**': { cors: true, security: { xframe: 'DENY' } },
             ...environment?.routeRules ?? {}
-        }
+        },
+        publicAssets: [
+            {
+                dir: 'docs/**/*',
+                maxAge: 60 * 60 * 24 * 7 // Cache for 1 week
+            }
+        ]
     },
 
     compatibilityDate: '2024-10-14',

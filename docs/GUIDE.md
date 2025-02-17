@@ -172,6 +172,15 @@ Uses "\_id" throughout the application, when referencing to node/document ID's. 
 4. Write clear, concise comments
 5. Regularly refactor for maintainability
 
+## Documentation Structure
+
+The `/docs` folder contains detailed documentation for key aspects of the application:
+
+- [Authentication Setup](./auth/AUTH.md) - Complete authentication system setup and configuration
+- [Database Structure](./database/DATABASE.md) - Database schema, indexes, and relationships
+- [Project Architecture](./architecture/ARCHITECTURE.md) - Application structure and design decisions
+- [Development Workflow](./workflow/WORKFLOW.md) - Development processes and guidelines
+
 ## Additional Resources
 
 -   [PrimeVue Documentation](https://primevue.org/)
