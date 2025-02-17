@@ -1,21 +1,27 @@
-$breakpoint: 992px !default;
+@use 'sass:map';
+@use 'variables/breakpoints' as breakpoints;
+@use 'variables/common' as common;
+@use 'variables/light' as light;
+@use 'variables/dark' as dark;
 
-@import './variables/_common';
-@import './variables/_light';
-@import './variables/_dark';
-@import './_fonts';
-@import './_main';
-@import './_sidebar_vertical';
-@import './_sidebar_slim';
-@import './_sidebar_slim_plus';
-@import './_sidebar_horizontal';
-@import './_sidebar_reveal';
-@import './_sidebar_drawer';
-@import './menutheme/_menutheme';
-@import './_responsive';
-@import './_topbar';
-@import './_breadcrumb';
-@import './_profile';
-@import './_config';
-@import './_content';
-@import './_utils';
+// Component styles
+@use 'fonts';
+@use 'main';
+@use 'topbar';
+@use 'breadcrumb';
+@use 'profile';
+@use 'config';
+@use 'content';
+@use 'utils';
+
+// Sidebar components
+@use 'sidebar_vertical';
+@use 'sidebar_slim';
+@use 'sidebar_slim_plus';
+@use 'sidebar_horizontal';
+@use 'sidebar_reveal';
+@use 'sidebar_drawer';
+
+// Menu theme and responsive styles
+@use 'menutheme/menutheme';
+@use 'responsive';

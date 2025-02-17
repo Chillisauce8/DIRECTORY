@@ -137,6 +137,8 @@ watch(
 </script>
 
 <style lang="scss">
+@use '~/assets/css/mixins' as *;  // Add this import at the top
+
 .base-card {
     position: relative;
     background: var(--surface-card);

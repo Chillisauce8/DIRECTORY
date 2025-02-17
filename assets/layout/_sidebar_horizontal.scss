@@ -1,4 +1,6 @@
-@media screen and (min-width: $breakpoint) {
+@use 'variables/breakpoints' as breakpoints;
+
+@media screen and (min-width: breakpoints.$breakpoint) {
     .layout-container {
         &.layout-horizontal {
             .layout-topbar {

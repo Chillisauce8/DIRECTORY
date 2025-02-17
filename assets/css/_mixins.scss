@@ -137,19 +137,27 @@ $dt: 960px;
 // ASPECT RATIO To create an aspect ratio: https://keithjgrant.com/posts/2017/03/aspect-ratios/
 
 @mixin aspect-ratio($width, $height) {
-    @supports (aspect-ratio: auto) {
-        aspect-ratio: calc($width / $height);
+    position: relative;
+    &::before {
+        content: "";
+        display: block;
+        padding-top: calc(($height / $width) * 100%);
     }
-    @supports not (aspect-ratio: auto) {
-        &:before {
-            content: '';
-            float: left;
-            padding-bottom: calc($height / $width * 100%);
+    > * {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    @supports (aspect-ratio: 1) {
+        aspect-ratio: #{$width} / #{$height};
+        &::before {
+            content: none;
         }
-        &:after {
-            clear: left;
-            content: '';
-            display: table;
+        > * {
+            position: static;
         }
     }
 }

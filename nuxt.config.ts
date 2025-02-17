@@ -158,7 +158,11 @@ export default defineNuxtConfig({
         css: {
             preprocessorOptions: {
                 scss: {
-                    additionalData: '@use "@/assets/css/vars.scss" as *;'
+                    additionalData: `
+                        @use "sass:math";
+                        @use "@/assets/css/_mixins.scss" as *;
+                        @use "@/assets/css/vars.scss" as *;
+                    `
                 }
             }
         },

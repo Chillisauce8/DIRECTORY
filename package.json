@@ -13,10 +13,11 @@
     "lint:fix": "eslint --fix --ext \".js,.vue\" --ignore-path .gitignore .",
     "format": "prettier --write \"**/*.{js,vue,d.ts}\"",
     "docs:bot": "ts-node scripts/docs-bot.ts",
-    "docs:watch": "nodemon --watch server --watch types -e ts,vue scripts/docs-bot.ts",
+    "docs:watch": "nodemon --watch 'server/**/*.ts' --watch 'types/**/*.ts' --exec 'npm run check-docs'",
     "prepare": "husky install",
     "generate-types": "ts-node scripts/generateTypes.ts",
-    "test-generate-types": "ts-node scripts/testGenerateTypes.ts"
+    "test-generate-types": "ts-node scripts/testGenerateTypes.ts",
+    "check-docs": "ts-node scripts/docs-bot.ts"
   },
   "dependencies": {
     "@auth/core": "^0.37.4",

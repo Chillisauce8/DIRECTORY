@@ -483,25 +483,31 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
     // min-height: 100%;
 
     .form {
-        // Container query rules
-
-        @container form (min-width: 600px) {
-            //      --background-color: rgb(220, 203, 203);
-            --base-font-size: 14px;
-        }
-        @container form  (max-width: 500px) {
-            //     --background-color: rgb(221, 224, 221);
-            --base-font-size: 12px;
-        }
-        @container form (max-width: 400px) {
-            //     --background-color: white;
-            --base-font-size: 10px;
-        }
-
         background-color: var(--background-color);
         font-size: var(--base-font-size);
         width: 100%;
         max-width: var(--form-max-width);
+
+        @container form (min-width: 600px) {
+            //      --background-color: rgb(220, 203, 203);
+            & {
+                --base-font-size: 14px;
+            }
+        }
+        
+        @container form (max-width: 500px) {
+            //     --background-color: rgb(221, 224, 221);
+            & {
+                --base-font-size: 12px;
+            }
+        }
+        
+        @container form (max-width: 400px) {
+            //     --background-color: white;
+            & {
+                --base-font-size: 10px;
+            }
+        }
 
         > .title {
             font-size: var(--form-title-size);

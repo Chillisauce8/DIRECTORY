@@ -1,3 +1,5 @@
+@use '../variables/breakpoints' as breakpoints;
+
 .layout-transparent-menu {
     --logo-color: var(--primary-color);
     --menu-bg: var(--surface-overlay);
@@ -10,7 +12,7 @@
     --popup-submenu-item-hover-bg-color: var(--surface-hover);
 }
 
-@media screen and (min-width: $breakpoint) {
+@media screen and (min-width: breakpoints.$breakpoint) {
     .layout-container.layout-transparent-menu {
         &.layout-static,
         &.layout-slim,

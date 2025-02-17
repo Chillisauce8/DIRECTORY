@@ -1,18 +1,15 @@
-@charset "UTF-8";
+
+
+
+
+@use 'reset';
+@use 'themes';
+@use 'font-family';
+@use 'transitions';
+@use 'css-variables';
 
 main {
     container-type: inline-size;
     container-name: main;
     width: 100%; // Add explicit width
 }
-
-/*
-@layer reset {
-@import 'reset';
-}
-*/
-@import 'reset';
-@import 'themes';
-@import 'font-family';
-@import 'transitions';
-@import 'css-variables';

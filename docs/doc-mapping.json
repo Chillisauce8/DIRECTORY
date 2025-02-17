@@ -9,6 +9,12 @@
       "docFile": "/docs/auth/AUTH.md",
       "description": "Authentication implementation",
       "relatedFiles": ["/middleware/auth.ts"]
+    },
+    "server/types/": {
+      "docFile": "docs/api/types.md"
+    },
+    "types/": {
+      "docFile": "docs/frontend/types.md"
     }
   },
   "featureToDocMap": {

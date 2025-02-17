@@ -1,4 +1,4 @@
-@media screen and (min-width: $breakpoint) {
+@media screen and (min-width: var(--breakpoint)) {
     .layout-container {
         &.layout-reveal {
             .layout-topbar {
