@@ -43,8 +43,12 @@ const env: EnvironmentConfiguration =  {
   IS_LOCAL: true,
   IS_LIVE: false,
   // ST_SITE_REFERENCE: 'test_chillisaucelimited97423',
+  mongodb: {
+    uri: process.env.MONGODB_URI || 'your_mongodb_connection_string'
+  }
 };
 
+console.log('Testing MongoDB connection:', process.env.MONGODB_URI?.replace(/\/\/[^:]+:[^@]+@/, '//***:***@'));
 
 export default env;
 

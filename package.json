@@ -14,7 +14,9 @@
     "format": "prettier --write \"**/*.{js,vue,d.ts}\"",
     "docs:bot": "ts-node scripts/docs-bot.ts",
     "docs:watch": "nodemon --watch server --watch types -e ts,vue scripts/docs-bot.ts",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "generate-types": "ts-node scripts/generateTypes.ts",
+    "test-generate-types": "ts-node scripts/testGenerateTypes.ts"
   },
   "dependencies": {
     "@auth/core": "^0.37.4",

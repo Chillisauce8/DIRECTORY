@@ -120,6 +120,33 @@ How it works:
         </li>
       </ul>
     </div>
+    
+    <!-- Test Single Market Section -->
+    <div class="test-section">
+      <h3>Test Single Market</h3>
+      <div class="p-inputgroup">
+        <InputText v-model="testMarketId" placeholder="Enter market ID" />
+        <Button 
+          label="Test Update" 
+          @click="testSingleMarket"
+          severity="secondary"
+          :loading="isTestingMarket"
+        />
+      </div>
+      
+      <!-- Test Results -->
+      <div v-if="testResult" class="test-result">
+        <h4>Test Results:</h4>
+        <div class="result-item">
+          <strong>Before:</strong>
+          <pre>{{ JSON.stringify(testResult.before, null, 2) }}</pre>
+        </div>
+        <div class="result-item">
+          <strong>After:</strong>
+          <pre>{{ JSON.stringify(testResult.after, null, 2) }}</pre>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -281,6 +308,77 @@ const processMarkets = async (missingOnly: boolean = false) => {
     isPaused.value = false
   }
 }
+
+const testMarketId = ref('')
+const isTestingMarket = ref(false)
+const testResult = ref(null)
+
+const testSingleMarket = async () => {
+  if (!testMarketId.value) return
+  
+  isTestingMarket.value = true
+  testResult.value = null
+  
+  try {
+    console.log('Fetching market with ID:', testMarketId.value)
+    
+    // Fetch original market document with all fields
+    const originalResponse = await httpService.get('/api/query', {
+      collection: 'markets',
+      q: { 
+        _id: testMarketId.value  // Remove $oid operator
+      }
+    })
+    
+    console.log('Query response:', originalResponse)
+    
+    if (!originalResponse.data || originalResponse.data.length === 0) {
+      throw new Error(`Market with ID ${testMarketId.value} not found`)
+    }
+    
+    const market = originalResponse.data[0]
+    
+    // Store original state
+    testResult.value = {
+      before: market
+    }
+    
+    // Generate new URL
+    const url = market.path.map((p: any) => p.slug).join('/')
+    console.log('Generated URL:', url)
+    
+    // Update market
+    const updatedMarket = await httpService.update('/api/update/markets', {
+      _id: testMarketId.value,  // Remove $oid operator
+      $set: { url: url }
+    })
+    
+    // Fetch the complete updated document
+    const afterResponse = await httpService.get('/api/query', {
+      collection: 'markets',
+      q: { 
+        _id: testMarketId.value  // Remove $oid operator
+      }
+    })
+    
+    if (!afterResponse.data || afterResponse.data.length === 0) {
+      throw new Error('Failed to fetch updated market')
+    }
+    
+    // Store updated state
+    testResult.value.after = afterResponse.data[0]
+    console.log('Update successful:', testResult.value)
+    
+  } catch (error) {
+    console.error('Test failed:', error)
+    testResult.value = { 
+      error: error.message,
+      details: error.toString()
+    }
+  } finally {
+    isTestingMarket.value = false
+  }
+}
 </script>
 
 <style lang="scss">
@@ -432,6 +530,33 @@ const processMarkets = async (missingOnly: boolean = false) => {
   
   .p-button {
     min-width: 200px;
+  }
+}
+
+.test-section {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: var(--surface-50);
+  border-radius: 6px;
+  
+  .p-inputgroup {
+    max-width: 500px;
+    margin: 1rem 0;
+  }
+}
+
+.test-result {
+  margin-top: 1rem;
+  
+  .result-item {
+    margin: 1rem 0;
+    
+    pre {
+      background: var(--surface-100);
+      padding: 1rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
   }
 }
 </style>
