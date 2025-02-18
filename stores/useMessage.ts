@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import type { Message } from '~/types/message';
 
-export const useMailStore = defineStore('mail', () => {
+export const useMessage = defineStore('mail', () => {
     const messages = ref<Message[]>([]);
     const filteredMessages = ref<Record<string, Message[]>>({});
     const activeFolder = ref('inbox');

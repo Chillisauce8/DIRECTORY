@@ -52,7 +52,7 @@ function sendMail() {
     emit('save', mail);
 
     if (props.mode === 'new') {
-        router.push({ name: 'mail-inbox' });
+        router.push({ name: 'new-message-inbox' });
     } else {
         modelVisible.value = false;
         mailContent.value = {};

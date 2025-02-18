@@ -10,7 +10,7 @@ import { defineAsyncComponent } from 'vue';
 // Dynamic component loading for MessageComposer only
 const MessageComposer = defineAsyncComponent(() => import('~/components/message/MessageComposer.vue'));
 
-const store = useMailStore();
+const store = useMessage();
 const toast = useToast();
 const route = useRoute();
 const dialogVisible = ref(false);
@@ -29,7 +29,7 @@ watch(activeFolder, (newFolder) => {
     store.activeFolder = newFolder;
 });
 
-// Computed sidebar items
+// Update route paths to include 'new'
 const sidebarItems = computed(() => [
     { label: 'Inbox', icon: 'pi pi-inbox', badge: store.filteredMessages.inbox?.length || 0, routerLink: '/new/message/inbox' },
     { label: 'Starred', icon: 'pi pi-star', badge: store.filteredMessages.starred?.length || 0, routerLink: '/new/message/starred' },
@@ -113,6 +113,8 @@ const currentComponent = computed(() => {
 </template>
 
 <style lang="scss">
+@use '~/assets/css/_scss-variables' as vars;
+
 .message-container {
     display: flex;
     flex-direction: column;
@@ -120,18 +122,17 @@ const currentComponent = computed(() => {
     padding: 1rem;
     background-color: var(--p-content-background);
 
-    @container main (min-width:  #{$message-container-lg}) {
+    @container main (min-width: #{vars.$message-container-lg}) {
         flex-direction: row;
     }
 
     .sidebar {
         padding: 1rem;
-        @container main (min-width: #{$message-container-lg}) {
+        @container main (min-width: #{vars.$message-container-lg}) {
             width: 170px;
         }
     }
     .content {
-        //width: 100%;
         flex-grow: 1;
     }
 }

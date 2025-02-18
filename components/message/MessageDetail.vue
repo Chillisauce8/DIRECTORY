@@ -2,9 +2,10 @@
 import type { Message } from '~/types/message';
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useMessage } from '~/stores/useMessage';
 
 const emit = defineEmits(['send:message']);
-const store = useMailStore();
+const store = useMessage();
 const route = useRoute();
 const router = useRouter();
 
@@ -35,8 +36,8 @@ function handleReply() {
 }
 
 function goBack() {
-    // Update to use new route name
-    router.push({ name: 'message-inbox' });
+    // Update route name to include 'new'
+    router.push({ name: 'new-message-inbox' });
 }
 </script>
 
