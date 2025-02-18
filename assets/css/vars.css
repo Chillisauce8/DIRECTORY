@@ -4,11 +4,6 @@
     transform: translateY(calc(var(--parallax-speed) * 100px));
   }
 }
-@keyframes grow {
-  to {
-    transform: scale(var(--grow-size));
-  }
-}
 .fib, .fi {
   background-size: contain;
   background-position: 50%;

@@ -37,6 +37,11 @@ const adminTools = [
     name: 'MongoDB API Analysis',
     description: 'Analyze raw MongoDB API requests and responses to debug query issues.',
     path: '/admin/test-mongo-api'
+  },
+  {
+    name: 'Collections Manager',
+    description: 'View and manage collection definitions from the database.',
+    path: '/admin/manage-collections'
   }
 ]
 </script>

@@ -1,8 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import environment from './environment';
-
 import { useTheme } from './composables/useTheme';
-
 import commonjs from 'vite-plugin-commonjs';
 
 const { DefaultTheme } = useTheme();
@@ -129,6 +127,17 @@ export default defineNuxtConfig({
     },
 
     vite: {
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    additionalData: `
+                        @use "sass:math";
+                        @use "@/assets/css/vars" as *;
+                        @use "@/assets/css/_mixins" as *;
+                    `
+                }
+            }
+        },
         plugins: [
             {
                 name: 'custom-blocks',
@@ -144,45 +153,23 @@ export default defineNuxtConfig({
                     }
                 },
                 advanced: {
-                    importRules: (id: string) => {
-                        //
-                        // if (id.includes('/node_modules/lodash/_root.js')) {
-                        //   console.log(id);
-                        //   return `__CJS__import__0__`;
-                        // }
-                        return 'namedFirst';
-                    }
+                    importRules: (id: string) => 'namedFirst'
                 }
             })
         ],
-        css: {
-            preprocessorOptions: {
-                scss: {
-                    additionalData: `
-                        @use "sass:math";
-                        @use "@/assets/css/_mixins.scss" as *;
-                        @use "@/assets/css/vars.scss" as *;
-                    `
-                }
-            }
-        },
-        base: './',
-        esbuild: environment.leaveDebuggers
-            ? undefined
-            : {
-                  drop: ['debugger']
-              },
         optimizeDeps: {
             exclude: ['fsevents'],
-            noDiscovery: true,
-            include: ['quill', 'lodash']
+            include: ['quill', 'lodash'],
+            noDiscovery: true
         },
         build: {
+            sourcemap: false,
             rollupOptions: {
                 output: {}
             }
         }
     },
+
     delayHydration: {
         // enables nuxt-delay-hydration in dev mode for testing
         // NOTE: you should disable this once you've finished testing, it will break HMR

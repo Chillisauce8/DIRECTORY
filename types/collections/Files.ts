@@ -1,10 +1,10 @@
 import type { _Node } from '../_Node';
-import type { _Common } from '../_Common';
+
 import type { _Join } from '../_Join';
 
 export type FileType = 'Image' | 'Video' | 'Document';
 
-export interface Files extends _Node, _Common {
+export interface Files extends _Node{
     type: FileType;
     extension: string;
     size: number;

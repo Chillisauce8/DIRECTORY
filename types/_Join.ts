@@ -1,5 +1,6 @@
 export interface _Join {
-    _id: string;
+    id: string;
     _type: string;
     title: string;
+    collection?: string;
 }

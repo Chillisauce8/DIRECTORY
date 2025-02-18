@@ -19,12 +19,14 @@ export default {
 </script>
 
 <style lang="scss">
+// No need for imports - they're available globally
 .hero-header {
     position: relative;
     z-index: -1;
     figure,
     picture {
         @include parallax(3);
+
     }
     & .images,
     .picture-image {
@@ -47,8 +49,8 @@ export default {
             }
             h1 {
                 @include scale('font-size', 40px, 60px, 1.2);
-                // color: white;
                 @include parallax(-2);
+      
             }
             .make h1 {
                 position: absolute;
@@ -60,8 +62,9 @@ export default {
             }
 
             h2 {
-                @include font-size(0);
+                @include scale('font-size', 18px, 32px, 1.1);
                 @include parallax(-2);
+
             }
         }
     }

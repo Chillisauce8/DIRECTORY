@@ -197,7 +197,7 @@ export default {
     color: white;
     font-size: 16px;
     line-height: 30px;
-    @include links(white, $C31);
+   
     @include mobile() {
         text-align: center;
     }
