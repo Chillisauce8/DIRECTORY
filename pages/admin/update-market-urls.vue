@@ -278,8 +278,12 @@ const processMarkets = async (missingOnly: boolean = false) => {
       try {
         // Only update if URL is different
         if (market.url !== url) {
-          market.url = url;
-          const updatedMarket = await httpService.update('/api/update/markets', market)
+          const response = await httpService.get('/api/query', {
+            collection: 'markets', 'value-id': market._id});
+
+          const fullMarket = response.data;
+          fullMarket.url = url;
+          const updatedMarket = await httpService.update('/api/update/markets', fullMarket);
           results.value.push(updatedMarket.data)
 
           // Update summary
