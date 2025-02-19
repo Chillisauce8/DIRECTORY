@@ -17,17 +17,51 @@ const props = withDefaults(defineProps<Props>(), {
 const modelVisible = defineModel('dialogVisible');
 const router = useRouter();
 
-// Reactive state with type
-const mailContent = ref<Partial<Message>>({});
+// Use a more specific type for mail content
+interface MailContent {
+    subject: string;
+    content: string;
+    recipientType: 'user' | 'group';
+    userRecipients: string[];
+    sender: {
+        id: string;
+        title: string;
+        name: string;
+        _type: 'user';
+    };
+}
 
-// Initialize content based on mode and original message
-watchEffect(() => {
+const mailContent = ref<MailContent>({
+    subject: '',
+    content: '',
+    recipientType: 'user',
+    userRecipients: [],
+    sender: {
+        id: '',
+        title: '',
+        name: '',
+        _type: 'user'
+    }
+});
+
+// Move reply logic to a separate computed
+const replyContent = computed(() => {
     if (props.mode === 'reply' && props.originalMessage) {
-        mailContent.value = {
-            to: props.originalMessage.from,
-            title: `Re: ${props.originalMessage.title}`,
-            from: props.originalMessage.to
+        return {
+            userRecipients: [props.originalMessage.sender.id],
+            subject: `Re: ${props.originalMessage.subject}`,
+            recipientType: 'user' as const,
+            content: ''
         };
+    }
+    return null;
+});
+
+// Watch reply content changes
+watchEffect(() => {
+    const content = replyContent.value;
+    if (content) {
+        mailContent.value = { ...mailContent.value, ...content };
     }
 });
 
@@ -39,15 +73,11 @@ const emit = defineEmits<{
 function sendMail() {
     const mail: Message = {
         ...mailContent.value,
-        sent: true,
-        archived: false,
-        trash: false,
-        spam: false,
-        starred: false,
-        important: false,
-        date: new Date().toISOString(),
-        image: 'avatar.png'
-    };
+        _id: crypto.randomUUID(),
+        _createdAt: new Date().toISOString(),
+        isInitialMessage: true,
+        state: 'sent'
+    } as Message;
 
     emit('save', mail);
 
@@ -66,17 +96,17 @@ function sendMail() {
             <div class="form-field">
                 <IconField class="icon-field">
                     <InputIcon class="pi pi-user" />
-                    <InputText id="to" type="text" v-model="mailContent.to" class="recipient-input" fluid placeholder="To:" />
+                    <InputText id="to" type="text" v-model="mailContent.userRecipients" class="recipient-input" fluid placeholder="To:" />
                 </IconField>
             </div>
             <div class="form-field">
                 <IconField class="icon-field">
                     <InputIcon class="pi pi-pencil" />
-                    <InputText id="subject" type="text" v-model="mailContent.title" placeholder="Subject:" class="subject-input" fluid />
+                    <InputText id="subject" type="text" v-model="mailContent.subject" placeholder="Subject:" class="subject-input" fluid />
                 </IconField>
             </div>
             <div class="form-field">
-                <Editor v-model="mailContent.message" class="message-editor"></Editor>
+                <Editor v-model="mailContent.content" class="message-editor"></Editor>
             </div>
             <div class="actions">
                 <Button type="button" outlined icon="pi pi-image" />
@@ -92,18 +122,18 @@ function sendMail() {
             <div class="form-field">
                 <IconField class="icon-field">
                     <InputIcon class="pi pi-user" />
-                    <InputText id="to" type="text" v-model="mailContent.to" class="recipient-input" fluid placeholder="To:" />
+                    <InputText id="to" type="text" v-model="mailContent.userRecipients" class="recipient-input" fluid placeholder="To:" />
                 </IconField>
             </div>
             <div class="form-field">
                 <IconField class="icon-field">
                     <InputIcon class="pi pi-pencil" />
-                    <InputText id="subject" type="text" v-model="mailContent.title" placeholder="Subject:" class="subject-input" fluid />
+                    <InputText id="subject" type="text" v-model="mailContent.subject" placeholder="Subject:" class="subject-input" fluid />
                 </IconField>
             </div>
 
             <div class="form-field">
-                <Editor v-model="mailContent.message" class="message-editor"></Editor>
+                <Editor v-model="mailContent.content" class="message-editor"></Editor>
             </div>
             <div class="actions">
                 <Button type="button" outlined icon="pi pi-image" />

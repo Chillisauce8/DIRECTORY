@@ -46,21 +46,21 @@ function goBack() {
         <div class="header">
             <div class="sender-info">
                 <Button type="button" icon="pi pi-chevron-left" text plain @click="goBack()"></Button>
-                <Avatar v-if="message && message.image" :image="'/demo/images/avatar/' + message.image" size="large" shape="circle" class="avatar"></Avatar>
+                <Avatar v-if="message.sender?.id" :image="`/demo/images/avatar/${message.sender.id}.png`" size="large" shape="circle" class="avatar"></Avatar>
                 <div class="info">
-                    <span class="name">{{ message?.from }}</span>
-                    <span class="recipient">To: {{ message?.email || message?.to }}</span>
+                    <span class="name">{{ message.sender?.name || message.sender?.title }}</span>
+                    <span class="recipient">To: {{ message.userRecipients?.[0] }}</span>
                 </div>
             </div>
             <div class="actions">
-                <span class="date">{{ message?.date }}</span>
+                <span class="date">{{ new Date(message._createdAt).toLocaleString() }}</span>
                 <Button type="button" icon="pi pi-reply" text plain @click="handleReply()"></Button>
                 <Button type="button" icon="pi pi-ellipsis-v" text plain></Button>
             </div>
         </div>
         <div class="content">
-            <div class="title">{{ message?.title }}</div>
-            <div class="message" v-html="message?.message"></div>
+            <div class="title">{{ message.subject }}</div>
+            <div class="message" v-html="message.content"></div>
 
             <div class="footer">
                 <Button type="button" icon="pi pi-send" label="Send Reply" @click="handleReply()" />

@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import type { Message } from '~/types/message';
 import { useToast } from 'primevue/usetoast';
-import { computed, onMounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import MessageSidebar from '~/components/message/MessageSidebar.vue';
-import MessageListItem from '~/components/message/MessageListItem.vue';
-import { defineAsyncComponent } from 'vue';
-
-// Dynamic component loading for MessageComposer only
-const MessageComposer = defineAsyncComponent(() => import('~/components/message/MessageComposer.vue'));
+import { useMessage } from '~/composables/useMessage';
+import type { Message } from '~/types/message';
+import MessageListItem from './MessageListItem.vue';
+import MessageComposer from './MessageComposer.vue';
+import { ref, onMounted, defineAsyncComponent } from 'vue';
 
 const store = useMessage();
 const toast = useToast();
@@ -16,36 +12,43 @@ const route = useRoute();
 const dialogVisible = ref(false);
 const messageDetail = ref<Message | null>(null);
 
-// Add missing activeFolder computed property
 const activeFolder = computed(() => route.path.split('/')[3] || 'inbox');
+const currentMessages = computed(() => store.filteredMessages[activeFolder.value] || []);
 
+// Move fetch logic into onMounted
 onMounted(async () => {
     store.activeFolder = activeFolder.value;
     await store.fetchMessages();
 });
 
-// Update watch to use computed property
-watch(activeFolder, (newFolder) => {
-    store.activeFolder = newFolder;
+// Watch for route changes after component is mounted
+watch(() => route.path, async () => {
+    store.activeFolder = activeFolder.value;
+    await store.fetchMessages();
 });
 
-// Update route paths to include 'new'
 const sidebarItems = computed(() => [
-    { label: 'Inbox', icon: 'pi pi-inbox', badge: store.filteredMessages.inbox?.length || 0, routerLink: '/new/message/inbox' },
-    { label: 'Starred', icon: 'pi pi-star', badge: store.filteredMessages.starred?.length || 0, routerLink: '/new/message/starred' },
-    { label: 'Spam', icon: 'pi pi-ban', badge: store.filteredMessages.spam?.length || 0, routerLink: '/new/message/spam' },
-    { label: 'Important', icon: 'pi pi-bookmark', badge: store.filteredMessages.important?.length || 0, routerLink: '/new/message/important' },
-    { label: 'Sent', icon: 'pi pi-send', badge: store.filteredMessages.sent?.length || 0, routerLink: '/new/message/sent' },
-    { label: 'Archived', icon: 'pi pi-book', badge: store.filteredMessages.archived?.length || 0, routerLink: '/new/message/archived' },
-    { label: 'Trash', icon: 'pi pi-trash', badge: store.filteredMessages.trash?.length || 0, routerLink: '/new/message/trash' }
-]);
+    { label: 'Inbox', icon: 'pi pi-inbox', badge: store.filteredMessages.inbox?.length },
+    { label: 'Starred', icon: 'pi pi-star', badge: store.filteredMessages.starred?.length },
+    { label: 'Spam', icon: 'pi pi-ban', badge: store.filteredMessages.spam?.length },
+    { label: 'Important', icon: 'pi pi-bookmark', badge: store.filteredMessages.important?.length },
+    { label: 'Sent', icon: 'pi pi-send', badge: store.filteredMessages.sent?.length },
+    { label: 'Archived', icon: 'pi pi-book', badge: store.filteredMessages.archived?.length },
+    { label: 'Trash', icon: 'pi pi-trash', badge: store.filteredMessages.trash?.length }
+].map(item => ({
+    ...item,
+    routerLink: `/new/message/${item.label.toLowerCase()}`
+})));
 
-// Message handlers
 const messageHandlers = {
-    trash: (messages: Message[]) => {
-        messages.forEach((msg) => (msg.trash = true));
-        store.filterMessages();
-        toast.add({ severity: 'info', summary: 'Info', detail: 'Mail moved to trash', life: 3000 });
+    trash: async (messages: Message[]) => {
+        try {
+            messages.forEach((msg) => (msg.trash = true));
+            await store.filterMessages();
+            toast.add({ severity: 'info', summary: 'Info', detail: 'Mail moved to trash', life: 3000 });
+        } catch (error) {
+            handleStoreError(error);
+        }
     },
     spam: (messages: Message[]) => {
         messages.forEach((msg) => (msg.spam = true));
@@ -57,15 +60,11 @@ const messageHandlers = {
     }
 };
 
-// Add toggleFlag handler
 const handleToggleFlag = (flag: 'starred' | 'important', message: Message) => {
-    // Toggle the flag in the store
     message[flag] = !message[flag];
-    // Update filtered messages
     store.filterMessages();
 };
 
-// Dialog handlers
 const showReplyDialog = (message: Message) => {
     dialogVisible.value = true;
     messageDetail.value = message;
@@ -82,13 +81,16 @@ const onChangeDialogVisibility = (isVisible: boolean) => {
     dialogVisible.value = isVisible;
 };
 
-// Add component determination logic
 const currentComponent = computed(() => {
     const routeName = route.name as string;
     if (routeName === 'message-compose') return MessageComposer;
-    if (routeName === 'message-detail') return defineAsyncComponent(() => import('~/components/message/MessageDetail.vue'));
+    if (routeName === 'message-detail') {
+        return defineAsyncComponent(() => import('./MessageDetail.vue'));
+    }
     return MessageListItem;
 });
+
+const routeName = computed(() => route.name as string);
 </script>
 
 <template>
@@ -97,18 +99,29 @@ const currentComponent = computed(() => {
             <MessageSidebar :items="sidebarItems" />
         </div>
         <div class="content">
-            <component
-                :is="currentComponent"
-                :messages="store.filteredMessages[activeFolder]"
-                :mode="$route.name === 'message-compose' ? 'new' : undefined"
-                @action="(type, messages) => messageHandlers[type]?.(messages)"
-                @reply="showReplyDialog"
-                @send:message="onSaveReplyMail"
-                @toggleFlag="handleToggleFlag"
-            />
+            <Suspense>
+                <component
+                    :is="currentComponent"
+                    :messages="currentMessages"
+                    v-bind="routeName === 'message-compose' ? { mode: 'new' } : {}"
+                    v-on="routeName === 'message-compose' ? { 'send:message': onSaveReplyMail } : {}"
+                    @action="(type, messages) => messageHandlers[type]?.(messages)"
+                    @reply="showReplyDialog"
+                    @toggleFlag="handleToggleFlag"
+                />
+                <template #fallback>
+                    <div>Loading...</div>
+                </template>
+            </Suspense>
         </div>
 
-        <MessageComposer mode="reply" v-model:dialogVisible="dialogVisible" :original-message="messageDetail" @save="onSaveReplyMail" @update:dialogVisible="onChangeDialogVisibility" />
+        <MessageComposer 
+            mode="reply" 
+            v-model:dialogVisible="dialogVisible" 
+            :original-message="messageDetail" 
+            @save="onSaveReplyMail" 
+            @update:dialogVisible="onChangeDialogVisibility" 
+        />
     </div>
 </template>
 

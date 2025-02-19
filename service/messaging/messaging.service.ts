@@ -61,16 +61,38 @@ export class MessagingService {
   }
 
   async getUserMessages(userId: string, state: userMessageStates['state'] = 'inbox'): Promise<messages[]> {
-    const response = await this.httpService.post('/api/query', {
-      collection: this.messageStatesCollection,
-      operation: 'find',
-      q: { userId, state },
-      thread: true, // Signal to use thread-aware aggregation
-      sort: { _createdAt: -1 },
-      limit: 50,
-      include: ['replies', 'userData'] // Add userData to include user details
-    });
-    return response.data || [];
+    try {
+        // Ensure collection is specified in the URL params
+        const path = `/api/query?collection=${this.messagesCollection}`;
+        
+        const queryData = {
+            operation: 'find',
+            q: { 
+                $or: [
+                    { 'sender.id': userId },
+                    { userRecipients: userId }
+                ]
+            },
+            sort: { _createdAt: -1 }
+        };
+
+        console.log('Making API request:', {
+            path,
+            queryData
+        });
+
+        const response = await this.httpService.post<{ data: messages[] }>(path, queryData);
+
+        if (!response?.data) {
+            console.warn('No messages found for user:', userId);
+            return [];
+        }
+
+        return response.data;
+    } catch (error) {
+        console.error('Error in getUserMessages:', error);
+        throw new Error('Failed to fetch messages');
+    }
   }
 
   async getThreadMessages(initialMessageId: string): Promise<messages[]> {

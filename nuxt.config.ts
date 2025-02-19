@@ -675,6 +675,6 @@ export default defineNuxtConfig({
     },
 
     runtimeConfig: {
-        // Remove the MongoDB URI as we're using API layer
+        // The runtimeConfig is now empty since we're not using direct MongoDB connection
     }
 });

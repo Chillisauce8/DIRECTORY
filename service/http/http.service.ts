@@ -8,6 +8,7 @@ import { isUndefined } from '../utils';
 import { serverURL } from '~/environment';
 // @ts-ignore
 import { NitroFetchOptions } from 'nitropack';
+import { $fetch } from 'ofetch';
 
 
 
@@ -134,17 +135,30 @@ export class HttpService {
     return this.fetch(path, requestConfig);
   }
 
-  public post<Data = any>(path: string,
-                          data?: HttpRequestData,
-                          headers?: HttpRequestHeaders,): Promise<HttpResponseData<Data>> {
-    const requestConfig = {
-      method: 'post' as AvailableHttpMethods,
-      headers: this.extendDefaultHeaders(headers as HttpRequestHeaders),
-      body: data,
-    };
+  public async post<Data = any>(path: string, data?: HttpRequestData, headers?: HttpRequestHeaders): Promise<HttpResponseData<Data>> {
+    try {
+        if (!path) {
+            throw new Error('Path is required for POST request');
+        }
 
-    return this.fetch(path, requestConfig);
-  }
+        console.log('HTTP POST request:', {
+            path,
+            data,
+            headers: headers || 'default headers'
+        });
+
+        const requestConfig = {
+            method: 'post' as AvailableHttpMethods,
+            headers: this.extendDefaultHeaders(headers as HttpRequestHeaders),
+            body: data
+        };
+
+        return this.fetch(path, requestConfig);
+    } catch (error) {
+        console.error('HTTP error:', error);
+        throw error;
+    }
+}
 
   public update<Data>(path: string,
                       data: HttpRequestData,

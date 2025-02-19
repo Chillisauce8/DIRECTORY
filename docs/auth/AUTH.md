@@ -12,12 +12,15 @@
     "/pages/auth/callback.vue",
     "/components/auth/LoginForm.vue",
     "/components/auth/AuthStatusBar.vue",
-    "/layouts/auth.vue"
+    "/layouts/auth.vue",
+    "/nuxt.config.ts"
   ],
   "dependencies": [
     "@sidebase/nuxt-auth",
     "@auth/core",
-    "primevue"
+    "@auth/mongodb-adapter",
+    "primevue",
+    "bcrypt"
   ],
   "last_validated": "2024-01-22T00:00:00.000Z"
 }
@@ -206,3 +209,68 @@ definePageMeta({
 - [Nuxt Auth Documentation](https://sidebase.io/nuxt-auth)
 - [PrimeVue Components](https://primevue.org/)
 - [Auth.js (NextAuth)](https://authjs.dev/)
+
+## Working Set Files
+
+### Core Authentication
+1. `/server/api/auth/[...auth].ts`
+   - Main authentication handler
+   - Manages providers and callbacks
+   - Dependencies: `@auth/core`, `@sidebase/nuxt-auth`
+
+2. `/middleware/auth.ts`
+   - Route protection middleware
+   - Session validation
+   - Dependencies: `#auth`
+
+### Pages
+3. `/pages/auth/login.vue`
+   - Login page wrapper
+   - Uses: `LoginForm.vue`, `auth` layout
+   
+4. `/pages/auth/register.vue`
+   - User registration
+   - Form validation
+   - Dependencies: `PrimeVue` components
+
+5. `/pages/auth/logout.vue`
+   - Logout handler
+   - Session cleanup
+   - Dependencies: `#auth`, `ProgressSpinner`
+
+6. `/pages/auth/callback.vue`
+   - OAuth callback handler
+   - Dependencies: `ProgressSpinner`
+
+### Components
+7. `/components/auth/LoginForm.vue`
+   - Login form component
+   - Validation logic
+   - Dependencies: `PrimeVue`, `#auth`
+
+8. `/components/auth/AuthStatusBar.vue`
+   - Auth status display
+   - Quick logout
+   - Dependencies: `PrimeVue`, `#auth`
+
+### Layouts
+9. `/layouts/auth.vue`
+   - Authentication layout
+   - Used by all auth pages
+   - Dependencies: `PrimeVue` styling
+
+### Configuration
+10. `/nuxt.config.ts`
+    - Auth module configuration
+    - Provider settings
+    - Dependencies: `@sidebase/nuxt-auth`
+
+## File Dependencies Map
+```mermaid
+graph TD
+    A[nuxt.config.ts] --> B([...auth].ts)
+    B --> C[middleware/auth.ts]
+    C --> D[pages/auth/*]
+    D --> E[components/auth/*]
+    D --> F[layouts/auth.vue]
+    E --> F

@@ -17,6 +17,14 @@ const props = withDefaults(defineProps<Props>(), {
     messages: () => []
 });
 
+watchEffect(() => {
+    console.log('MessageListItem updated:', {
+        hasMessages: Array.isArray(props.messages),
+        messageCount: props.messages?.length || 0,
+        firstMessage: props.messages?.[0]
+    });
+});
+
 const emit = defineEmits<Emits>();
 
 // Use refs with proper typing
@@ -113,7 +121,12 @@ function onNavigateToDetailPage(id: string) {
 </script>
 
 <template>
+    <div v-if="!messages?.length" class="p-4 text-center text-gray-500">
+        No messages found in this folder
+    </div>
+    
     <DataTable
+        v-else
         ref="messageTable"
         class="message-types"
         :value="messages"
@@ -122,9 +135,9 @@ function onNavigateToDetailPage(id: string) {
         :rows="20"
         paginator
         :rowsPerPageOptions="[10, 20, 30]"
-        dataKey="id"
+        dataKey="_id"
         rowHover
-        :globalFilterFields="['from', 'to', 'title', 'message']"
+        :globalFilterFields="['from', 'to', 'subject', 'content']"
     >
         <Column class="selection-column" selectionMode="multiple" />
 
