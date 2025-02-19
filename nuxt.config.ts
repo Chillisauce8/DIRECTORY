@@ -672,5 +672,9 @@ export default defineNuxtConfig({
     imports: {
         autoImport: true,
         dirs: ['composables/**', 'utils/**']
+    },
+
+    runtimeConfig: {
+        // Remove the MongoDB URI as we're using API layer
     }
 });

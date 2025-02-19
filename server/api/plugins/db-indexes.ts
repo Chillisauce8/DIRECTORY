@@ -46,6 +46,40 @@ export default defineNitroPlugin(async (nitroApp) => {
       { unique: true }
     )
 
+    // Message system indexes
+    await db.collection('messages').createIndex(
+      { "initialMessageId": 1 },
+      { background: true }
+    )
+    await db.collection('messages').createIndex(
+      { "sender.id": 1 },
+      { background: true }
+    )
+    await db.collection('messages').createIndex(
+      { "_createdAt": -1 },
+      { background: true }
+    )
+
+    // Message states indexes
+    await db.collection('userMessageStates').createIndex(
+      { "userId": 1, "state": 1 },
+      { background: true }
+    )
+    await db.collection('userMessageStates').createIndex(
+      { "messageId": 1 },
+      { background: true }
+    )
+    await db.collection('userMessageStates').createIndex(
+      { "conversationId": 1 },
+      { background: true }
+    )
+
+    // Compound index for efficient message filtering
+    await db.collection('userMessageStates').createIndex(
+      { "userId": 1, "state": 1, "_createdAt": -1 },
+      { background: true }
+    )
+
     console.log('MongoDB indexes created successfully')
   } catch (error) {
     console.error('Error creating MongoDB indexes:', error)
