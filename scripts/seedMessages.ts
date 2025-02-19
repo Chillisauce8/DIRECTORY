@@ -11,7 +11,7 @@ interface DemoUser {
 
 async function seedMessages() {
     console.log('Starting message seeding process...');
-    
+
     try {
         console.log('Creating/verifying demo users...');
         const demoUsers: DemoUser[] = [
@@ -28,7 +28,7 @@ async function seedMessages() {
         for (const user of demoUsers) {
             try {
                 // Check for existing user exactly like update-market-urls.vue
-                const response = await seederHttpService.get('/api/query', {
+                const response: any = await seederHttpService.get('/api/query', {
                     collection: 'users',
                     q: JSON.stringify({ email: user.email })
                 });
@@ -40,7 +40,7 @@ async function seedMessages() {
                 }
 
                 // Create new user matching update-market-urls pattern
-                const newUser = await seederHttpService.post('users', {
+                const newUser: any = await seederHttpService.post('/users', {
                     email: user.email,
                     name: user.name,
                     createdAt: new Date().toISOString()
@@ -61,13 +61,10 @@ async function seedMessages() {
 
         // Create a default user if none exist
         if (userMap.size === 0) {
-            const defaultUser = await seederHttpService.post('/api/query', {
-                collection: 'users',
-                data: {
-                    email: 'default@example.com',
-                    name: 'Default User',
-                    createdAt: new Date().toISOString()
-                }
+            const defaultUser: any = await seederHttpService.post('/users', {
+                email: 'default@example.com',
+                name: 'Default User',
+                createdAt: new Date().toISOString()
             });
             userMap.set('default@example.com', defaultUser.data.insertedId);
         }
@@ -80,7 +77,7 @@ async function seedMessages() {
         const jsonPath = path.join(process.cwd(), 'public', 'demo', 'data', 'mail.json');
         const rawData = await fs.readFile(jsonPath, 'utf-8');
         const demoData = JSON.parse(rawData);
-        
+
         // Transform demo data but keep all needed fields
         const messages = demoData.data.map(item => ({
             subject: item.subject || item.title,
@@ -109,35 +106,29 @@ async function seedMessages() {
                 });
 
                 // Create message with guaranteed sender/recipient
-                const message = await seederHttpService.post('/api/query', {
-                    collection: 'messages',
-                    data: {
-                        subject: item.subject,
-                        content: item.content,
-                        sender: {
-                            id: senderId,
-                            _type: 'user',
-                            title: item.from || 'Unknown Sender'
-                        },
-                        recipientType: 'user',
-                        userRecipients: [recipientId],
-                        groupRecipients: [],
-                        isInitialMessage: true,
-                        _createdAt: new Date().toISOString()
-                    }
+                const message: any = await seederHttpService.post('/messages', {
+                    subject: item.subject,
+                    content: item.content,
+                    sender: {
+                        id: senderId,
+                        _type: 'user',
+                        title: item.from || 'Unknown Sender'
+                    },
+                    recipientType: 'user',
+                    userRecipients: [recipientId],
+                    groupRecipients: [],
+                    isInitialMessage: true,
+                    _createdAt: new Date().toISOString()
                 });
 
                 // Create message state with guaranteed IDs
-                await seederHttpService.post('/api/query', {
-                    collection: 'userMessageStates',
-                    data: {
-                        userId: recipientId,
-                        messageId: message.data.insertedId,
-                        state: 'inbox',
-                        isStarred: item.isStarred || false,
-                        isImportant: item.isImportant || false,
-                        _createdAt: new Date().toISOString()
-                    }
+                await seederHttpService.post('/userMessageStates', {
+                    userId: recipientId,
+                    messageId: message.data.insertedId,
+                    state: 'inbox',
+                    isStarred: item.isStarred || false,
+                    isImportant: item.isImportant || false,
+                    _createdAt: new Date().toISOString()
                 });
 
                 successCount++;
