@@ -1,7 +1,7 @@
 <!-- SortControl.vue -->
 <template>
     <div class="sort-control">
-        <Dropdown v-model="selectedSort" :options="props.sortOptions" optionLabel="label" placeholder="Sort by..." />
+        <Select v-model="selectedSort" :options="props.sortOptions" optionLabel="label" placeholder="Sort by..." />
     </div>
 </template>
 

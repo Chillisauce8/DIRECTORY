@@ -10,8 +10,8 @@
 
 <script setup lang="ts">
 const heroHeaderProps = {
-  //  title: 'Rolls-Royce',
-   // subTitle: 'Phantom 2001',
+    title: 'Rolls-Royce',
+    subTitle: 'Phantom 2001',
     widths: '400:2000',
     images: [
         {

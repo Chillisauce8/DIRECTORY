@@ -156,7 +156,7 @@ const props = defineProps({
     searchQuery: { type: String, default: '' },
     showSelectedOptions: {
         type: Array as PropType<string[]>,
-        default: () => []
+        default: undefined
     }
 });
 const emit = defineEmits<{

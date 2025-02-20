@@ -12,10 +12,27 @@
     </div>
 </template>
 
-<script>
-export default {
-    props: ['props']
-};
+<script setup lang="ts">
+interface Props {
+    props: {
+        title?: string;
+        subTitle?: string;
+        widths: string;
+        images: Array<{
+            _id: string;
+            alt: string;
+        }>;
+        sources: Array<{
+            media: string;
+            aspectRatio: string;
+            widths: string;
+            sizes: string;
+            increment: number;
+        }>;
+    }
+}
+
+defineProps<Props>();
 </script>
 
 <style lang="scss">

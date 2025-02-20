@@ -1,5 +1,11 @@
 <template>
-    <grid-container :grid-id="gridId" :filters="filters" :listings="listingList" :listing-collection="collectionName" :sort-options="sortOptions" :show-selected-options="showSelectedOptions">
+    <grid-container 
+        :grid-id="gridId" 
+        :filters="filters" 
+        :listings="listingList" 
+        :listing-collection="collectionName" 
+        :sort-options="sortOptions"
+    >
         <template #controls>
             <ModeControl :display="modeControlDisplay" :visible-controls="visibleModeControls" :default-control="defaultModeControl" :grid-id="gridId" />
             <FilterControl :options="listingList" :filter-field="filterField" :placeholder="filterPlaceholder" v-model="selectedFilters" />
@@ -56,8 +62,7 @@ const filters = computed(() => [
 ]);
 
 // Show Control Configuration
-// const showAllOptions = ['name', 'categories', 'description', 'start'];
-// const showSelectedOptions = ['name', 'categories'];
+//const showSelectedOptions = ['name', 'categories']; 
 
 // Sort Control Configuration
 const sortOptions = [

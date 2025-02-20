@@ -32,7 +32,7 @@ export default defineNuxtConfig({
             }
         },
         components: {
-            include: ['Password', 'InputText', 'Button', 'Dialog']
+            include: '*'  // This will include all PrimeVue components
         },
         directives: {
             include: ['Tooltip', 'ripple']

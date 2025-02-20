@@ -3,7 +3,7 @@ import AppLayout from './AppLayout.vue';
 </script>
 
 <template>
-     <AuthStatusBar />
+    <AuthStatusBar /> 
     <AppLayout>
         <slot />
     </AppLayout>

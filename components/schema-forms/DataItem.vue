@@ -143,7 +143,11 @@ const props = withDefaults(defineProps<FieldProps>(), {
     dialogEdit: false,
     dialogHeader: '',
     visible: false,
-    deleteButtonProps: () => ({})
+    deleteButtonProps: () => ({}),
+    defaultView: false,
+    saveButton: true,
+    cancelButton: true,
+    deleteButton: false
 });
 // @ts-ignore
 const emits = defineEmits(['mounted', 'changed', 'cancel', 'save', 'delete', 'update:visible']);
@@ -470,7 +474,7 @@ function mergeSchemaAndItem(schemaPart: any, nodePart: any) {
     --field-subtext-color: grey;
     --error-message-color: crimson;
 
-    --min-button-width: 200px;
+    --min-button-width: 100px;
 
     // Enable container queries
     width: 100%; // Required - container needs dimension
