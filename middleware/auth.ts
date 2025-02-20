@@ -1,25 +1,24 @@
+import { defineNuxtRouteMiddleware, navigateTo } from '#app'
+import type { NavigationFailure } from '#app'
 import { useAuth } from '#auth'
 
-export default defineNuxtRouteMiddleware((to) => {
-  const { data } = useAuth()
-
-  // Skip middleware if route has auth:false meta
-  if (to.meta.auth === false) {
+export default defineNuxtRouteMiddleware(async (to): Promise<void | NavigationFailure> => {
+  const { status } = useAuth()
+  
+  // If auth is required and user is not authenticated
+  // Redirect to login unless the page is marked as public
+  if (to.meta.auth === false || to.path.startsWith('/auth/')) {
+    if (status.value === 'authenticated' && to.path.startsWith('/auth/')) {
+      return navigateTo('/')
+    }
     return
   }
 
-  // If user is not authenticated and trying to access a protected route
-  if (!data.value?.user && to.path !== '/auth/login') {
-    return navigateTo('/auth/login', {
-      redirectCode: 401,
-      replace: true
-    })
-  }
-
-  // If user is authenticated and trying to access login page
-  if (data.value?.user && to.path === '/auth/login') {
-    return navigateTo('/', {
-      replace: true
+  if (status.value !== 'authenticated') {
+    return navigateTo('/auth/login', { 
+      query: { 
+        redirect: to.fullPath 
+      }
     })
   }
 })

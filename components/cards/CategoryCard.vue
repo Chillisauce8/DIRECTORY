@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Categories } from '@/types/collections/Categories';
+import type { Categories } from '~/types/collections/categories';
 
 defineProps<{ dataItem: Categories }>();
 </script>

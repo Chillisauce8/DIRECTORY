@@ -48,8 +48,6 @@ const env: EnvironmentConfiguration =  {
   }
 };
 
-console.log('Testing MongoDB connection:', process.env.MONGODB_URI?.replace(/\/\/[^:]+:[^@]+@/, '//***:***@'));
-
 export default env;
 
 

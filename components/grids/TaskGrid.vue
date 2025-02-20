@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Event } from '~/types/collections/Events';
+import type { Event } from '~/types/collections/events';
 import GridContainer from '~/components/grids/common/GridContainer.vue';
 import { ref, computed } from 'vue';
 

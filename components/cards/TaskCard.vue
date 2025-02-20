@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Event } from '@/types/collections/Events';
+import type { Event } from '~/types/collections/events';
 import { createShowStore } from '~/stores/useShowStore';
 
 const props = defineProps<{

@@ -1,111 +1,85 @@
 <template>
-  <div class="flex align-items-center justify-content-center">
-    <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
-      <h2 class="text-center text-2xl mb-4">Create Account</h2>
-      <form @submit.prevent="handleSubmit">
-        <div class="mb-4">
-          <span class="p-float-label">
-            <InputText 
-              id="name" 
-              v-model="form.name" 
-              class="w-full" 
-              :class="{'p-invalid': errors.name}"
-            />
-            <label for="name">Name</label>
-          </span>
-          <small class="p-error" v-if="errors.name">{{ errors.name }}</small>
+  <div class="flex align-items-center justify-content-center min-h-screen">
+    <div class="surface-card p-4 shadow-2 border-round" style="width: 100%; max-width: 450px;">
+      <h2 class="text-center mb-5">Register</h2>
+      <form @submit.prevent="handleRegister">
+        <div class="mb-3">
+          <label for="name" class="block mb-2">Name</label>
+          <InputText id="name" v-model="form.name" class="w-full" />
         </div>
-
-        <div class="mb-4">
-          <span class="p-float-label">
-            <InputText 
-              id="email" 
-              v-model="form.email" 
-              type="email" 
-              class="w-full" 
-              :class="{'p-invalid': errors.email}"
-            />
-            <label for="email">Email</label>
-          </span>
-          <small class="p-error" v-if="errors.email">{{ errors.email }}</small>
+        <div class="mb-3">
+          <label for="email" class="block mb-2">Email</label>
+          <InputText id="email" v-model="form.email" type="email" class="w-full" />
         </div>
-
-        <div class="mb-4">
-          <span class="p-float-label">
-            <Password 
-              id="password" 
-              v-model="form.password" 
-              class="w-full" 
-              :class="{'p-invalid': errors.password}"
-              :feedback="true"
-              toggleMask
-            />
-            <label for="password">Password</label>
-          </span>
-          <small class="p-error" v-if="errors.password">{{ errors.password }}</small>
+        <div class="mb-3">
+          <label for="password" class="block mb-2">Password</label>
+          <Password id="password" v-model="form.password" class="w-full" toggleMask />
         </div>
-
-        <Button 
-          type="submit" 
-          label="Register" 
-          class="w-full"
-          :loading="loading"
-        />
+        <Button type="submit" label="Register" class="w-full" :loading="loading" />
+        
+        <div class="mt-3 text-center">
+          <router-link to="/auth/login" class="text-sm">Already have an account? Sign in</router-link>
+        </div>
       </form>
-      
-      <div class="text-center mt-4">
-        <router-link to="/auth/login" class="text-primary">Already have an account?</router-link>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useAuth } from '#imports'
+import Password from 'primevue/password'
+import InputText from 'primevue/inputtext'
+import Button from 'primevue/button'
+
 definePageMeta({
-  layout: 'auth',
-  auth: false
+  auth: {
+    unauthenticatedOnly: true,
+    navigateAuthenticatedTo: '/'
+  }
 })
 
-const router = useRouter()
 const loading = ref(false)
 const form = reactive({
   name: '',
   email: '',
   password: ''
 })
-const errors = ref({
-  name: '',
-  email: '',
-  password: ''
-})
 
-const validateForm = () => {
-  errors.value = {
-    name: '',
-    email: '',
-    password: ''
-  }
-  
-  if (!form.name) errors.value.name = 'Name is required'
-  if (!form.email) errors.value.email = 'Email is required'
-  if (!form.password) errors.value.password = 'Password is required'
-  
-  return !errors.value.name && !errors.value.email && !errors.value.password
-}
+const router = useRouter()
 
-const handleSubmit = async () => {
-  if (!validateForm()) return
-  
-  loading.value = true
+async function handleRegister() {
   try {
-    // Implementation depends on your API
-    await $fetch('/api/auth/register', {
+    loading.value = true
+
+    // First create the user in the database (without hashing for now)
+    await $fetch('/api/query', {
       method: 'POST',
-      body: form
+      body: {
+        collection: 'users',
+        operation: 'insertOne',
+        document: {
+          name: form.name,
+          email: form.email,
+          password: form.password  // Temporarily store as plain text
+        }
+      }
     })
-    router.push('/auth/login')
-  } catch (e: any) {
-    errors.value.email = e.message || 'Registration failed'
+
+    // Then sign in
+    const { signIn } = useAuth()
+    const result = await signIn('credentials', {
+      email: form.email,
+      password: form.password,
+      redirect: false,
+    })
+    
+    if (result?.error) {
+      throw new Error(result.error)
+    }
+    
+    await router.push('/')
+  } catch (error) {
+    console.error('Registration error:', error)
   } finally {
     loading.value = false
   }

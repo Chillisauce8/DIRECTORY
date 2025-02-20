@@ -1,9 +1,13 @@
 <template>
   <div class="min-h-screen flex align-items-center justify-content-center bg-surface-ground">
-    <slot />
+    <NuxtLayout>
+      <slot />
+    </NuxtLayout>
   </div>
 </template>
 
 <script setup lang="ts">
-// No additional logic needed for now
+definePageMeta({
+  layout: false
+})
 </script>

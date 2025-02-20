@@ -11,11 +11,13 @@ export default defineNuxtConfig({
 
     auth: {
         baseURL: process.env.NUXT_PUBLIC_AUTH_ORIGIN || 'http://localhost:3000',
-        globalMiddlewareOptions: {
-            allow404WithoutAuth: true
-        },
+        globalMiddleware: true,
         provider: {
             type: 'authjs'
+        },
+        pages: {
+            signIn: '/auth/login',
+            register: '/auth/register'
         }
     },
 
@@ -29,8 +31,11 @@ export default defineNuxtConfig({
                 }
             }
         },
+        components: {
+            include: ['Password', 'InputText', 'Button', 'Dialog']
+        },
         directives: {
-            include: ['Tooltip']
+            include: ['Tooltip', 'ripple']
         }
     },
 

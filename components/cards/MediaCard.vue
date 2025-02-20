@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Files } from '@/types/collections/Files';
+import type { Files } from '~/types/collections/files';
 import { createShowStore } from '~/stores/useShowStore';
 
 const imageIdPath = '_id';

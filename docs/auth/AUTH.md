@@ -1,276 +1,128 @@
-# Authentication System Documentation
+# Authentication Implementation with @sidebase/nuxt-auth
 
-<!--
-@ai-doc-markers
-{
-  "source_files": [
-    "/server/api/auth/[...auth].ts",
-    "/middleware/auth.ts",
-    "/pages/auth/login.vue",
-    "/pages/auth/register.vue",
-    "/pages/auth/logout.vue",
-    "/pages/auth/callback.vue",
-    "/components/auth/LoginForm.vue",
-    "/components/auth/AuthStatusBar.vue",
-    "/layouts/auth.vue",
-    "/nuxt.config.ts"
-  ],
-  "dependencies": [
-    "@sidebase/nuxt-auth",
-    "@auth/core",
-    "@auth/mongodb-adapter",
-    "primevue",
-    "bcrypt"
-  ],
-  "last_validated": "2024-01-22T00:00:00.000Z"
-}
-@end-ai-doc-markers
--->
+## Overview
+We are implementing authentication using [@sidebase/nuxt-auth](https://github.com/sidebase/nuxt-auth), which is a Nuxt 3 module that integrates Auth.js (formerly NextAuth.js) with Nuxt.
 
 ## Current Implementation Status
 
-The authentication system is partially implemented with the following components:
+### Completed
+1. Basic Auth Setup
+   - Installed `@sidebase/nuxt-auth` and `@auth/core`
+   - Configured auth module in `nuxt.config.ts`
+   - Created basic auth handler in `server/api/auth/[...].ts`
+   - Implemented login/register pages
+   - Added AuthStatusBar component
 
-### Core Components
-- Base authentication handler (`[...auth].ts`)
-- Route protection middleware
-- Login/Register/Logout pages
-- Authentication layout
-- Status bar component
+2. Configuration
+   ```typescript
+   // nuxt.config.ts
+   auth: {
+     baseURL: process.env.NUXT_PUBLIC_AUTH_ORIGIN || 'http://localhost:3000',
+     globalMiddleware: true,
+     provider: {
+       type: 'authjs'
+     },
+     pages: {
+       signIn: '/auth/login',
+       register: '/auth/register'
+     }
+   }
+   ```
 
-### File Structure
-```
-├── server/api/auth/
-│   └── [...auth].ts          # Auth API handler
-├── middleware/
-│   └── auth.ts               # Route protection
-├── pages/auth/
-│   ├── login.vue            # Login page
-│   ├── register.vue         # Registration page
-│   ├── logout.vue           # Logout handler
-│   └── callback.vue         # OAuth callback
-├── components/auth/
-│   ├── LoginForm.vue        # Login form component
-│   └── AuthStatusBar.vue    # Auth status display
-└── layouts/
-    └── auth.vue             # Auth pages layout
-```
-
-## Current Features
-
-### Authentication Flow
-1. Protected route access via middleware
-2. Credentials-based authentication
-3. Session management with JWT
-4. Login/Register forms with validation
-5. Logout functionality
-6. Auth status display component
-
-### Components Overview
-
-#### Auth API Handler (`[...auth].ts`)
-```typescript
-// Current implementation includes:
-- Credentials provider setup
-- JWT token handling
-- Session callbacks
-```
-
-#### Auth Middleware (`auth.ts`)
-```typescript
-// Features:
-- Route protection
-- Authentication state checking
-- Login redirect handling
-- Protected route management
-```
-
-#### Login Component (`LoginForm.vue`)
-```typescript
-// Implements:
-- Email/password form
-- Form validation
-- Error handling
-- Loading states
-- PrimeVue UI components
-```
-
-#### Register Component (`register.vue`)
-```typescript
-// Includes:
-- User registration form
-- Field validation
-- API integration
-- Error handling
-```
-
-## UI Framework Integration
-
-The authentication system uses PrimeVue components:
-- InputText
-- Password
-- Button
-- ProgressSpinner
-
-## Pending Implementation
+### Pending Implementation
 
 1. Database Integration
-   - MongoDB adapter setup
-   - User schema implementation
-   - Session storage
+   - Create `/server/api/users` endpoints:
+     - POST `/api/users/register` - User registration
+     - GET `/api/users/me` - Current user
+     - PUT `/api/users/me` - Update user
+   - Add user schema validation
+   - Implement proper error handling
 
-2. Security Enhancements
-   - Password hashing
-   - Rate limiting
-   - Email verification
+2. Auth Flow Enhancements
+   - Add password hashing (bcrypt)
+   - Add email verification
+   - Implement password reset
+   - Add remember me functionality
 
-3. OAuth Providers
-   - Provider configuration
-   - Social login buttons
-   - Callback handling
+3. Security Features
+   - Add rate limiting
+   - Implement CSRF protection
+   - Add session management
+   - Setup secure headers
 
-4. Error Handling
-   - Comprehensive error messages
-   - Error boundaries
-   - Toast notifications
+4. UI/UX Improvements
+   - Add form validation messages
+   - Implement loading states
+   - Add success/error notifications
+   - Improve redirect handling
 
 ## Required Environment Variables
 ```env
-NUXT_AUTH_SECRET=           # Required: JWT secret key
-NUXT_PUBLIC_AUTH_ORIGIN=    # Required: Auth API base URL
+NUXT_AUTH_SECRET=your-jwt-secret-key
+NUXT_PUBLIC_AUTH_ORIGIN=http://localhost:3000
+MONGODB_URI=your-mongodb-connection-string
 ```
 
 ## Next Steps
 
-1. Implement MongoDB adapter:
-   - Update [...auth].ts
-   - Add database connection
-   - Create user model
-
-2. Add password hashing:
-   - Install bcrypt
-   - Update registration flow
-   - Update login validation
-
-3. Enhance error handling:
-   - Add toast notifications
-   - Improve error messages
-   - Add form feedback
-
-4. Add OAuth providers:
-   - Configure providers
-   - Update UI
-   - Test flows
-
-## Related Components
-
-### AuthStatusBar Usage
-```vue
-<AuthStatusBar /> <!-- Add to layout for persistent auth status -->
+1. Create User Management API:
+```typescript
+// TODO: Create these endpoints
+/server/api/users/register.post.ts
+/server/api/users/me.get.ts
+/server/api/users/me.put.ts
 ```
 
-### Protected Route Example
-```vue
-<script setup>
-definePageMeta({
-  middleware: ['auth']
-})
-</script>
+2. Add Database Schema:
+```typescript
+// TODO: Create user type
+interface User {
+  _id: string;
+  email: string;
+  password: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 ```
 
-### Auth Layout Usage
-```vue
-<script setup>
-definePageMeta({
-  layout: 'auth'
-})
-</script>
+3. Implement Error Handling:
+```typescript
+// TODO: Create error handler
+/server/utils/handleError.ts
 ```
 
-## Testing Requirements
+## Current File Structure
+```
+├── server/api/
+│   ├── auth/
+│   │   └── [...].ts              # Auth handler (implemented)
+│   └── users/                    # TODO: Create these endpoints
+├── pages/auth/
+│   ├── login.vue                 # Implemented
+│   └── register.vue              # Implemented
+└── components/auth/
+    └── AuthStatusBar.vue         # Implemented
+```
 
-1. Authentication Flow
-   - Login success/failure
-   - Registration validation
-   - Protected route access
-   - Session persistence
+## Reference Implementation
+Our implementation follows the sidebase example:
+https://github.com/sidebase/nuxt-auth-example
 
-2. Form Validation
-   - Required fields
-   - Email format
-   - Password requirements
+## Progress Tracking
+- [x] Basic auth setup
+- [x] Login/Register pages
+- [x] Auth middleware
+- [x] Status bar component
+- [ ] User management API
+- [ ] Password hashing
+- [ ] Error handling
+- [ ] Email verification
+- [ ] Session management
+- [ ] Security enhancements
 
-3. Error Scenarios
-   - Invalid credentials
-   - Network failures
-   - Session expiration
-
-## References
-- [Nuxt Auth Documentation](https://sidebase.io/nuxt-auth)
-- [PrimeVue Components](https://primevue.org/)
-- [Auth.js (NextAuth)](https://authjs.dev/)
-
-## Working Set Files
-
-### Core Authentication
-1. `/server/api/auth/[...auth].ts`
-   - Main authentication handler
-   - Manages providers and callbacks
-   - Dependencies: `@auth/core`, `@sidebase/nuxt-auth`
-
-2. `/middleware/auth.ts`
-   - Route protection middleware
-   - Session validation
-   - Dependencies: `#auth`
-
-### Pages
-3. `/pages/auth/login.vue`
-   - Login page wrapper
-   - Uses: `LoginForm.vue`, `auth` layout
-   
-4. `/pages/auth/register.vue`
-   - User registration
-   - Form validation
-   - Dependencies: `PrimeVue` components
-
-5. `/pages/auth/logout.vue`
-   - Logout handler
-   - Session cleanup
-   - Dependencies: `#auth`, `ProgressSpinner`
-
-6. `/pages/auth/callback.vue`
-   - OAuth callback handler
-   - Dependencies: `ProgressSpinner`
-
-### Components
-7. `/components/auth/LoginForm.vue`
-   - Login form component
-   - Validation logic
-   - Dependencies: `PrimeVue`, `#auth`
-
-8. `/components/auth/AuthStatusBar.vue`
-   - Auth status display
-   - Quick logout
-   - Dependencies: `PrimeVue`, `#auth`
-
-### Layouts
-9. `/layouts/auth.vue`
-   - Authentication layout
-   - Used by all auth pages
-   - Dependencies: `PrimeVue` styling
-
-### Configuration
-10. `/nuxt.config.ts`
-    - Auth module configuration
-    - Provider settings
-    - Dependencies: `@sidebase/nuxt-auth`
-
-## File Dependencies Map
-```mermaid
-graph TD
-    A[nuxt.config.ts] --> B([...auth].ts)
-    B --> C[middleware/auth.ts]
-    C --> D[pages/auth/*]
-    D --> E[components/auth/*]
-    D --> F[layouts/auth.vue]
-    E --> F
+## Documentation Links
+- [Nuxt Auth Documentation](https://sidebase.io/nuxt-auth/getting-started)
+- [Auth.js Documentation](https://authjs.dev/)
+- [Example Repository](https://github.com/sidebase/nuxt-auth-example)

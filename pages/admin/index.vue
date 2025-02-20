@@ -22,7 +22,16 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  middleware: ['auth']
+})
+
 const adminTools = [
+  {
+    name: 'Authentication Test Suite',
+    description: 'Test and debug authentication flows including registration, login, and session management.',
+    path: '/auth/test'
+  },
   {
     name: 'Market URL Manager',
     description: 'Generate and update URL fields for market entries based on their path structure.',

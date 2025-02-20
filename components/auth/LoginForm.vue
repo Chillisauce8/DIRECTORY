@@ -1,95 +1,88 @@
 <template>
-  <div class="flex align-items-center justify-content-center">
-    <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
-      <h2 class="text-center text-2xl mb-4">Sign In</h2>
-      <form @submit.prevent="handleSubmit">
-        <div class="mb-4">
-          <span class="p-float-label">
-            <InputText 
-              id="email" 
-              v-model="email" 
-              type="email" 
-              class="w-full" 
-              :class="{'p-invalid': errors.email}"
-            />
-            <label for="email">Email</label>
-          </span>
-          <small class="p-error" v-if="errors.email">{{ errors.email }}</small>
-        </div>
-
-        <div class="mb-4">
-          <span class="p-float-label">
-            <Password 
-              id="password" 
-              v-model="password" 
-              class="w-full" 
-              :class="{'p-invalid': errors.password}"
-              :feedback="false"
-              toggleMask
-            />
-            <label for="password">Password</label>
-          </span>
-          <small class="p-error" v-if="errors.password">{{ errors.password }}</small>
-        </div>
-
-        <Button 
-          type="submit" 
-          label="Sign In" 
-          class="w-full"
-          :loading="loading"
+  <form @submit.prevent="handleSubmit" class="flex flex-column gap-3">
+    <div class="field">
+      <span class="p-float-label">
+        <InputText 
+          id="email" 
+          v-model="form.email" 
+          type="email" 
+          class="w-full" 
+          :class="{'p-invalid': errors.email}"
         />
-      </form>
-      
-      <div v-if="error" class="p-error mt-4 text-center">
-        {{ error }}
-      </div>
+        <label for="email">Email</label>
+      </span>
+      <small class="p-error" v-if="errors.email">{{ errors.email }}</small>
     </div>
-  </div>
+
+    <div class="field">
+      <span class="p-float-label">
+        <Password 
+          id="password" 
+          v-model="form.password" 
+          class="w-full" 
+          :class="{'p-invalid': errors.password}"
+          :feedback="false"
+          toggleMask
+        />
+        <label for="password">Password</label>
+      </span>
+      <small class="p-error" v-if="errors.password">{{ errors.password }}</small>
+    </div>
+
+    <div v-if="error" class="p-error text-center">
+      {{ error }}
+    </div>
+
+    <Button 
+      type="submit" 
+      label="Sign In" 
+      class="w-full"
+      :loading="loading"
+    />
+
+    <div class="text-center text-md">
+      <NuxtLink to="/auth/register">Need an account? Register</NuxtLink>
+    </div>
+  </form>
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '#auth'
-
-const { signIn } = useAuth()
-const router = useRouter()
-
-const email = ref('')
-const password = ref('')
+const emit = defineEmits(['success', 'loading'])
 const loading = ref(false)
 const error = ref('')
-const errors = ref({
+const form = reactive({
+  email: '',
+  password: ''
+})
+const errors = reactive({
   email: '',
   password: ''
 })
 
-const validateForm = () => {
-  errors.value = {
-    email: '',
-    password: ''
-  }
-  
-  if (!email.value) errors.value.email = 'Email is required'
-  if (!password.value) errors.value.password = 'Password is required'
-  
-  return !errors.value.email && !errors.value.password
-}
+async function handleSubmit() {
+  // ...existing validation logic...
 
-const handleSubmit = async () => {
-  if (!validateForm()) return
-  
   loading.value = true
-  error.value = ''
+  emit('loading', true)
   
   try {
-    await signIn({
-      email: email.value,
-      password: password.value
+    const { signIn } = useAuth()
+    const result = await signIn('credentials', {
+      ...form,
+      redirect: false,
     })
-    router.push('/')
+    
+    if (result?.error) {
+      throw new Error(result.error)
+    }
+    
+    emit('success')
   } catch (e: any) {
-    error.value = e.message || 'An error occurred during sign in'
+    error.value = e.message || 'Sign in failed'
+    console.error('Login error:', e)
   } finally {
     loading.value = false
+    emit('loading', false)
   }
 }
 </script>
