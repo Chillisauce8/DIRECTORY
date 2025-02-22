@@ -22,15 +22,27 @@ export class PathTreeNode {
 
 
 export class SchemaParser {
-
+  /**
+   * Creates a new SchemaParser instance
+   * @param schemaJson JSON schema to parse
+   */
   constructor(private schemaJson: any) {
     //
   }
 
+  /**
+   * Checks if schema uses multiple groups
+   * @returns boolean indicating multi-group usage
+   */
   isMultiGroupSchema(): boolean {
     return !!this.schemaJson.useMultiGroups;
   }
 
+  /**
+   * Parses a schema item at given path
+   * @param path Path to schema item
+   * @returns Parsed item object
+   */
   parseItem(path: string): Object {
     const item = this.getItem(path);
 

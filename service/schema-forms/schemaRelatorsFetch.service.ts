@@ -9,6 +9,13 @@ export class SchemaRelatorsFetchService {
   ) {
   }
 
+  /**
+   * Fetches relator choices for a given schema and path
+   * @param schemaName Name of the schema to fetch from
+   * @param path Path within schema to fetch
+   * @param limitWithIdList Optional list of IDs to limit results
+   * @returns Promise resolving with sorted relator choices
+   */
   getRelatorChoice(schemaName: string, path: string, limitWithIdList?: Array<string>): Promise<any> {
     return this.httpService.post('/api/relator',
       {schema: schemaName, path: path, limitWithIdList: limitWithIdList})
@@ -20,6 +27,11 @@ export class SchemaRelatorsFetchService {
       });
   }
 
+  /**
+   * Fetches multiple relator choices in bulk
+   * @param params Array of bulk request parameters
+   * @returns Promise resolving with bulk relator data
+   */
   getRelatorChoiceInBulk(params: Array<any>): Promise<any> {
     return this.httpService.post('/api/relators/bulk', params)
       .then((result: any) => {
@@ -27,6 +39,11 @@ export class SchemaRelatorsFetchService {
       });
   }
 
+  /**
+   * Sorts relator data alphabetically by title
+   * @param relatorData Array of relator items to sort
+   * @returns Sorted array of relator items
+   */
   private _sortAlphanumeric(relatorData: Array<any>) {
     return relatorData.sort(function sortFunction(item1: any, item2: any) {
       let name1 = item1.title ? item1.title.toLowerCase() : item1.title;

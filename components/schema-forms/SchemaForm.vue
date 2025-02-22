@@ -27,8 +27,10 @@ import DynamicFieldBlock from '~/components/schema-forms/DynamicFieldBlock.vue';
 import type { FormLabelProps } from '~/types/schema-forms';
 import type { FormLabelType, FloatLabelVariant } from '~/types/schema-forms';
 
-// Combine types instead of extending
-// Props that define the form's basic structure and behavior
+/**
+ * Combined props type for form configuration
+ * Extends BaseFieldProps with additional form-specific properties
+ */
 export type FormProps = BaseFieldProps & {
     id?: string;
     title?: string;
@@ -167,24 +169,25 @@ function initField() {
 }
 
 /**
- * Update the form's model with new values
- * @param value - New model value
- * @param updated - Whether the model was updated
+ * Updates the form's model with new values
+ * @param value New model value
+ * @param updated Whether the model was updated
  */
 function setModel(value: any, updated?: boolean) {
     return setModelBase(value, true);
 }
 
 /**
- * Get the name of the current form
+ * Gets the name of the current form
+ * @returns Form name string
  */
 function getFormName(): string {
     return props.formName;
 }
 
 /**
- * Handle changes to inner form models and trigger form processing
- * @param value - Changed model value
+ * Processes changes to inner form models
+ * @param value Changed model value
  */
 function processInnerModelChanged(value?: any) {
     processInnerModelChangedBase(value);
@@ -192,8 +195,8 @@ function processInnerModelChanged(value?: any) {
 }
 
 /**
- * Handle model changes and emit to parent component
- * @param value - New model value
+ * Handles model changes and emits to parent
+ * @param value New model value
  */
 function onModelChange(value: any) {
     vm.model = value;
@@ -203,8 +206,8 @@ function onModelChange(value: any) {
 }
 
 /**
- * Handle model changes for a specific path in the form
- * @param value - New value for the path
+ * Handles model changes for a specific path
+ * @param value New value for the path
  */
 function onModelChangeByPath(value: any) {
     if (!isEqual(vm.model[props.description.header.name], value)) {
@@ -216,8 +219,7 @@ function onModelChangeByPath(value: any) {
 }
 
 /**
- * Initialize settings for whether header names should be added to model paths
- * Used for proper model path construction in nested forms
+ * Initializes header name to model path settings
  */
 function initShouldAddHeaderNameToModelPath() {
     im.shouldAddHeaderNameToModelPathValues = [];
@@ -229,8 +231,8 @@ function initShouldAddHeaderNameToModelPath() {
 }
 
 /**
- * Determine if a header name should be added to the model path
- * @param contentDescription - Description of the content field
+ * Determines if header name should be added to model path
+ * @param contentDescription Description of content field
  * @returns boolean indicating if header name should be added
  */
 function shouldAddHeaderNameToModelPath(contentDescription: any): boolean {

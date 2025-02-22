@@ -15,7 +15,12 @@ import { schemaPaths } from '~/service/schema-forms/schemaPaths.service';
 import { useToast } from 'primevue/usetoast';
 import { sysService } from '~/service/http/sys.service';
 
-
+/**
+ * Composable for managing schema form state and operations
+ * @param formName Name of the form to control
+ * @param fields Optional fields configuration
+ * @returns Form controller state and functions
+ */
 export default function useSchemaFormController(formName: string, fields?: Object): any {
 
   const toast = useToast();
@@ -42,50 +47,97 @@ export default function useSchemaFormController(formName: string, fields?: Objec
 
 
   const sharedFunctions = {
+    /**
+     * Initializes form when component is mounted
+     */
     doOnMounted: (): void => {
       init();
     },
 
+    /**
+     * Cleanup when component is deactivated
+     */
     onDeactivated: (): void => {
       schemaFormsProcessingHelper.unRegisterForm(vm.name);
     },
 
+    /**
+     * Creates a new target entity
+     * @param dataToSave Data to save
+     */
     createTarget: async (dataToSave: any): Promise<any> => {
       return null;
     },
 
+    /**
+     * Updates an existing target entity
+     * @param dataToSave Data to save
+     */
     updateTarget: async (dataToSave: any): Promise<any> => {
       return null;
     },
 
+    /**
+     * Deletes a target entity
+     * @param dataId ID of the data to delete
+     */
     deleteTarget: async (dataId: string): Promise<any> => {
       return null;
     },
 
+    /**
+     * Gets the name of the target entity
+     * @returns Target name
+     */
     getTargetName: (): string => {
       return '';
     },
 
+    /**
+     * Gets the name of the schema
+     * @returns Schema name
+     */
     getSchemaName: (): string => {
       return '';
     },
 
+    /**
+     * Checks if the form is in edit mode
+     * @returns True if in edit mode, false otherwise
+     */
     isEditMode: (): boolean => {
       return false;
     },
 
+    /**
+     * Callback for when a new entity is created
+     * @param id ID of the created entity
+     */
     onCreated: (id: string): void => {
       //
     },
 
+    /**
+     * Gets the target entity data
+     * @returns Target data
+     */
     getTarget: async (): Promise<any> => {
       return null;
     },
 
+    /**
+     * Checks if the page needs to be reloaded
+     * @returns True if reload is needed, false otherwise
+     */
     needPageReload: (): boolean => {
       return false;
     },
 
+    /**
+     * Gets the schema for the form
+     * @param fields Optional fields configuration
+     * @returns Schema data
+     */
     getSchema: async (fields?: Object): Promise<any> => {
       const schemaName = sharedFunctions.getSchemaName();
       return sysService.getSchema(schemaName)
@@ -94,14 +146,26 @@ export default function useSchemaFormController(formName: string, fields?: Objec
         });
     },
 
+    /**
+     * Builds the form description
+     * @returns Form description
+     */
     buildFormDescription: async (): Promise<any> => {
       return null;
     },
 
+    /**
+     * Deletes raw data
+     * @param dataId ID of the data to delete
+     */
     deleteRaw: async (dataId: string): Promise<void> => {
       return sharedFunctions.deleteTarget(dataId);
     },
 
+    /**
+     * Saves raw data
+     * @param dataToSave Data to save
+     */
     saveRaw: async (dataToSave: any): Promise<void> => {
       let savePromise;
       if (dataToSave?._id) {
@@ -120,6 +184,10 @@ export default function useSchemaFormController(formName: string, fields?: Objec
         });
     },
 
+    /**
+     * Saves the form data
+     * @param dataToSave Data to save
+     */
     save: async (dataToSave: any): Promise<void> => {
       vm.saveError = '';
       vm.isFormNotValid = false;
@@ -171,6 +239,11 @@ export default function useSchemaFormController(formName: string, fields?: Objec
     }
   };
 
+  /**
+   * Filters data before saving by removing null properties and stripping special fields
+   * @param dataToSave Raw data to filter
+   * @returns Filtered data ready for saving
+   */
   function filterDataToSave(dataToSave: any) {
     const _dataToSave = cloneDeep(dataToSave);
     deleteNullProperties(_dataToSave, true);
@@ -188,6 +261,10 @@ export default function useSchemaFormController(formName: string, fields?: Objec
   //     vm.schemaFormsBuildHelper.isStructureTag(key), true);
   // }
 
+  /**
+   * Handles save errors
+   * @param result Error result
+   */
   function saveErrorHandler(result: any) {
     if (!result) {
       return;
@@ -200,6 +277,10 @@ export default function useSchemaFormController(formName: string, fields?: Objec
     toast.add({ severity: 'error', summary: 'Error Message', detail: `Failed ${errorMessage}`, life: 3000 });
   }
 
+  /**
+   * Clears obsolete fields from the data to save
+   * @param dataToSave Data to save
+   */
   function clearObsoleteFields(dataToSave: any) {
     let knownFields = vm.schemaFormsBuildHelper.schemaParser.getAllPaths();
 
@@ -248,6 +329,9 @@ export default function useSchemaFormController(formName: string, fields?: Objec
     });
   }
 
+  /**
+   * Initializes the form
+   */
   function init() {
     vm.model = {};
     vm.formTarget = sharedFunctions.getTargetName();
@@ -310,6 +394,11 @@ export default function useSchemaFormController(formName: string, fields?: Objec
     );
   }
 
+  /**
+   * Gets all settings for the form
+   * @param fields Optional fields configuration
+   * @returns Promise resolving when all settings are loaded
+   */
   async function getAllSettings(fields?: Object): Promise<any> {
     const promises = [sharedFunctions.getSchema(vm.editMode ? fields : undefined)];
 
@@ -333,6 +422,11 @@ export default function useSchemaFormController(formName: string, fields?: Objec
     return Promise.all(promises);
   }
 
+  /**
+   * Loads additional schema definitions
+   * @param model Model data
+   * @returns Promise resolving when additional definitions are loaded
+   */
   async function loadAdditionalDefinitions(model: any): Promise<any> {
     if (!model) {
       return null;
@@ -351,6 +445,11 @@ export default function useSchemaFormController(formName: string, fields?: Objec
     }
 }
 
+  /**
+   * Finds additional schema definitions in the model
+   * @param model Model data
+   * @returns List of additional definitions to load
+   */
   function findAdditionalDefinitions(model: any): any[] {
     if (model['variable'] && model['type']) {
       return [model['type']];
@@ -370,6 +469,11 @@ export default function useSchemaFormController(formName: string, fields?: Objec
     return uniq(definitions);
   }
 
+  /**
+   * Recursively lists all fields in the model
+   * @param data Model data
+   * @returns List of fields
+   */
   function _recListModelFields(data: any) {
     const fields: any[] = [];
 

@@ -6,10 +6,12 @@
                 <h2 class="sub-title" v-if="props.subTitle">
                     {{ props.subTitle }}
                 </h2>
+                <MarketSearch />
             </div>
             <slot />
         </picture-image>
     </div>
+    
 </template>
 
 <script setup lang="ts">
@@ -39,7 +41,7 @@ defineProps<Props>();
 // No need for imports - they're available globally
 .hero-header {
     position: relative;
-    z-index: -1;
+//    z-index: -1;
     figure,
     picture {
         @include parallax(3);

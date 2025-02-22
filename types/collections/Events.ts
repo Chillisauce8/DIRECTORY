@@ -6,7 +6,7 @@ export interface Event extends _Node, _Card {
     description?: string;
     vehicles?: { name: string }[];
     status?: string;
-    files?: any[];
+    files?: any[];  // Consider typing this more specifically if you know the file structure
     start?: string;
     end?: string;
     duration?: string;

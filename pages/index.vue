@@ -1,11 +1,10 @@
 <template>
-    <div>
+
         <hero-header :props="heroHeaderProps" >
-            <MarketSearch />
+  
         </hero-header>
 
 
-    </div>
 </template>
 
 <script setup lang="ts">

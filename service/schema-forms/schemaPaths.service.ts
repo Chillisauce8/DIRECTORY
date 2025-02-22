@@ -12,6 +12,11 @@ export class SchemaPaths {
     //
   }
 
+  /**
+   * Adds a new schema to the parser cache
+   * @param schemaName Name of schema to add
+   * @returns Promise resolving with SchemaParser instance
+   */
   async addSchema(schemaName: string): Promise<SchemaParser> {
     if (this.parsersMap[schemaName]) {
       return this.parsersMap[schemaName];
@@ -24,6 +29,12 @@ export class SchemaPaths {
       });
   }
 
+  /**
+   * Gets a schema item at a specific path
+   * @param schemaName Name of schema
+   * @param path Path to item
+   * @returns Schema item or null if not found
+   */
   getItem(schemaName: string, path: string): any {
     const schemaParser: SchemaParser = this.parsersMap[schemaName];
 

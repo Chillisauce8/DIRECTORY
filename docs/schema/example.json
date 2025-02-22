@@ -1,0 +1,209 @@
+{
+  "_id": "example-schema",
+  "_qname": "example",
+  "type": "object",
+  "title": "Modern Schema Example",
+  "description": "Demonstrates all modern schema features",
+  
+  "properties": {
+    "basicInfo": {
+      "type": "container",
+      "title": "Basic Information",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "Name",
+          "component": "InputText",
+          "props": {
+            "placeholder": "Enter name",
+            "autocomplete": "off",
+            "aria-label": "Name Input"
+          }
+        },
+        "type": {
+          "type": "string",
+          "title": "Type",
+          "component": "Dropdown",
+          "props": {
+            "filter": true,
+            "showClear": true
+          },
+          "enum": ["Type A", "Type B", "Type C"]
+        },
+        "description": {
+          "type": "string",
+          "title": "Description",
+          "component": "Textarea",
+          "props": {
+            "autoResize": true,
+            "rows": 3
+          }
+        }
+      }
+    },
+
+    "advanced": {
+      "type": "container", 
+      "title": "Advanced Settings",
+      "hide": {
+        "if": "!this.basicInfo.type",
+        "value": true,
+        "persist": true
+      },
+      "properties": {
+        "category": {
+          "type": "object",
+          "title": "Category",
+          "join": {
+            "collection": "categories",
+            "select": ["name", "rules", "options"],
+            "mappings": [
+              {
+                "from": "name",
+                "to": "name"
+              }
+            ]
+          }
+        },
+        "subCategories": {
+          "type": "array",
+          "title": "Sub Categories",
+          "component": "MultiSelect",
+          "props": {
+            "filter": true,
+            "display": "chip"
+          },
+          "hide": {
+            "if": "!this.advanced.category",
+            "value": true
+          },
+          "filter": "this.item.parentCategory === this.advanced.category.id"
+        }
+      }
+    },
+
+    "validation": {
+      "type": "container",
+      "properties": {
+        "email": {
+          "type": "string",
+          "title": "Email",
+          "component": "InputText",
+          "props": {
+            "type": "email"
+          },
+          "pattern": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+          "required": {
+            "if": "this.basicInfo.type === 'Type A'",
+            "value": true
+          }
+        },
+        "phone": {
+          "type": "string",
+          "title": "Phone",
+          "component": "InputMask",
+          "props": {
+            "mask": "(999) 999-9999"
+          }
+        }
+      }
+    },
+
+    "dynamicContent": {
+      "type": "container",
+      "properties": {
+        "items": {
+          "type": "array",
+          "title": "Dynamic Items",
+          "component": "DataTable",
+          "props": {
+            "paginator": true,
+            "rows": 10
+          },
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "component": "InputText"
+              },
+              "quantity": {
+                "type": "number",
+                "component": "InputNumber",
+                "props": {
+                  "min": 0,
+                  "showButtons": true
+                }
+              }
+            }
+          },
+          "minItems": {
+            "if": "this.basicInfo.type === 'Type A'",
+            "then": 2,
+            "else": 1
+          },
+          "maxItems": 5
+        },
+        "total": {
+          "type": "number",
+          "title": "Total",
+          "component": "InputNumber",
+          "props": {
+            "readonly": true,
+            "mode": "currency",
+            "currency": "USD"
+          },
+          "calculate": "this.dynamicContent.items.reduce((sum, item) => sum + item.quantity, 0)"
+        }
+      }
+    },
+
+    "layout": {
+      "type": "container",
+      "properties": {
+        "leftColumn": {
+          "type": "string",
+          "component": "InputText",
+          "flex": 50,
+          "line": 1
+        },
+        "rightColumn": {
+          "type": "string", 
+          "component": "InputText",
+          "flex": 50,
+          "line": 1
+        },
+        "fullWidth": {
+          "type": "string",
+          "component": "InputText",
+          "flex": 100,
+          "line": 2
+        }
+      }
+    },
+
+    "conditionalTitle": {
+      "type": "string",
+      "x-title": {
+        "if": "this.basicInfo.type === 'Type A'",
+        "then": {
+          "value": ["Special ", "&basicInfo.name", " Settings"]
+        },
+        "else": {
+          "value": ["Standard Settings"]
+        }
+      },
+      "component": "InputText"
+    },
+
+    "dynamicEnum": {
+      "type": "string",
+      "component": "Dropdown",
+      "x-enum": {
+        "enum": "&advanced.category.options",
+        "title-path": "label",
+        "value-path": "id"
+      }
+    }
+  }
+}

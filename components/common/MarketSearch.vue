@@ -6,33 +6,38 @@
       :find="{}"
       :fields="{
         '_id': 1,
-        'name': 1,
+        'fullName': 1,
         'url': 1
       }"
       v-slot="{ items, loading }">
-      <AutoComplete
-        v-model="selected"
-        :suggestions="suggestions"
-        @complete="search"
-        @item-select="onSelect"
-        :loading="loading"
-        placeholder="Search markets..."
-        class="w-full"
-        optionLabel="fullName"
-      >
-        <template #item="slotProps">
-          <div class="search-item">
-            <span>{{ slotProps.item.fullName }}</span>
-          </div>
-        </template>
-      </AutoComplete>
+      <div class="search-wrapper">
+        <AutoComplete
+          v-model="selected"
+          :suggestions="suggestions"
+          @complete="search"
+          @item-select="onSelect"
+          :loading="loading"
+          placeholder="Search markets..."
+          class="w-full"
+          optionLabel="fullName"
+        >
+          <template #item="slotProps">
+            <div class="search-item">
+              <span v-if="highlightResults" v-html="highlightMatch(slotProps.item.fullName, searchQuery)"></span>
+              <span v-else>{{ slotProps.item.fullName }}</span>
+            </div>
+          </template>
+        </AutoComplete>
+        <i v-if="selected" class="pi pi-times" @click="clearSearch" />
+        <i v-else class="pi pi-search" />
+      </div>
       <template v-if="processItems(items)" />
     </DataItem>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 
 interface Market {
@@ -40,49 +45,95 @@ interface Market {
   url: string
 }
 
+interface Props {
+  highlightResults?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  highlightResults: false // CURRENTLY DOESNT WORK
+})
+
 const router = useRouter()
 const selected = ref<Market | null>(null)
 const suggestions = ref<Market[]>([])
 const markets = ref<Market[]>([]) // Initialize with empty array
+const event = ref<{ query: string } | null>(null) // Add query ref to store current search term
+const currentQuery = ref(''); // Add currentQuery ref to store the actual search term
+const searchQuery = ref(''); // Add searchQuery ref to store the actual search term for highlighting
 
+// Cache the normalized market names to avoid recomputing
+const normalizedMarketNames = ref(new Map<string, string>());
+
+// Optimize processItems to do normalization once
 function processItems(items: any[] | undefined) {
   if (!items?.length) return false
-  console.log('Raw item example:', JSON.stringify(items[0], null, 2)) // Debug full item structure
   
   try {
-    markets.value = items.map(item => {
-      // Assuming the field is actually called 'name' instead of 'fullName'
-      return {
-        fullName: item.name || 'Unknown Market',  // Changed from item.fullName to item.name
-        url: item.url || ''
-      }
-    }).filter(item => item.url) // Only filter on URL presence
+    // Clear the cache when processing new items
+    normalizedMarketNames.value.clear();
     
-    console.log('First processed market:', markets.value[0])
+    markets.value = items.reduce((acc: Market[], item) => {
+      if (item.url) {
+        const fullName = item.fullName || 'Unknown Market';
+        // Cache the normalized name
+        normalizedMarketNames.value.set(fullName, normalizeString(fullName));
+        acc.push({ fullName, url: item.url });
+      }
+      return acc;
+    }, []);
   } catch (error) {
-    console.error('Error processing items:', error)
-    markets.value = []
+    console.error('Error processing items:', error);
+    markets.value = [];
+    normalizedMarketNames.value.clear();
   }
-  return false
+  return false;
 }
 
-function search(event: { query: string }) {
-  console.log('Search triggered with:', event.query) // Debug search query
-  console.log('Available markets:', markets.value.length) // Debug available markets
+// Add helper function for string normalization
+function normalizeString(str: string): string {
+  return str.toLowerCase().replace(/-/g, ' ').trim();
+}
+
+// Optimize getSearchScore to use cached normalized names
+function getSearchScore(fullName: string, normalizedQuery: string): number {
+  const normalizedName = normalizedMarketNames.value.get(fullName) || normalizeString(fullName);
   
-  if (!markets.value?.length || !event.query) {
-    suggestions.value = []
-    return
+  if (normalizedName.startsWith(normalizedQuery)) return 3;
+  
+  // Cache word splits for performance
+  const words = normalizedName.split(' ');
+  if (words.some(word => word.startsWith(normalizedQuery))) return 2;
+  
+  if (normalizedName.includes(normalizedQuery)) return 1;
+  
+  return 0;
+}
+
+// Update highlight function to handle word boundaries
+function highlightMatch(text: string, query: string): string {
+  if (!query) return text;
+  
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape regex special characters
+  const regex = new RegExp(`(${escapedQuery})`, 'gi');
+  return text.replace(regex, '<strong>$1</strong>');
+}
+
+// Optimize search function
+function search(ev: { query: string }) {
+  if (!markets.value?.length || !ev.query) {
+    suggestions.value = [];
+    return;
   }
 
-  const query = event.query.toLowerCase().trim()
-  suggestions.value = markets.value.filter(market => {
-    const match = market.fullName.toLowerCase().includes(query)
-    console.log(`Checking "${market.fullName}" against "${query}": ${match}`) // Debug matching
-    return match
-  })
-
-  console.log('Found suggestions:', suggestions.value.length) // Debug results count
+  const normalizedQuery = normalizeString(ev.query);
+  
+  // Use array filter + sort instead of map + filter + sort
+  suggestions.value = markets.value
+    .filter(market => getSearchScore(market.fullName, normalizedQuery) > 0)
+    .sort((a, b) => 
+      getSearchScore(b.fullName, normalizedQuery) - 
+      getSearchScore(a.fullName, normalizedQuery)
+    );
 }
 
 function onSelect(event: { value: Market }) {
@@ -102,6 +153,7 @@ function clearSearch() {
   margin: 0 auto;
   display: flex;
   justify-content: center;
+
   .data-item {
     width: 400px;
     .p-autocomplete input {
@@ -109,9 +161,39 @@ function clearSearch() {
     }
   }
 
+  .search-item {
+    padding: 0.5rem;
+    strong {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+  }
 
-.search-item {
-  padding: 0.5rem;
-}
+  .search-wrapper {
+    position: relative;
+    width: 100%;
+
+    .p-autocomplete {
+      width: 100%;
+      
+      input {
+        width: 100%;
+        padding-right: 2rem; // Make room for the icon
+      }
+    }
+
+    i {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 0.75rem;
+      color: var(--text-color-secondary);
+      cursor: pointer;
+      
+      &.pi-times:hover {
+        color: var(--text-color); // Darker on hover
+      }
+    }
+  }
 }
 </style>

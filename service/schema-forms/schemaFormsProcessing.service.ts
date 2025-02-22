@@ -33,6 +33,11 @@ export class SchemaFormsProcessingHelper {
       this._processFormChanges(formName), 300);
   }
 
+  /**
+   * Subscribes to form update events
+   * @param handler Handler function to call on form updates
+   * @returns Subscription to form updates
+   */
   onFormUpdated(handler: EventEmitterHandler<any>): EventEmitterSubscription {
     return this.formUpdatedEmitter.subscribe();
       // .pipe(
@@ -40,7 +45,10 @@ export class SchemaFormsProcessingHelper {
       // );
   }
 
-  // TODO: isReadOnlyMode
+  /**
+   * Checks if the current user has read-only access
+   * @returns Boolean indicating read-only status
+   */
   isReadOnlyMode(): boolean {
     // const routeStaticData = (this.route).routeConfig.data;
     // const permissionName = routeStaticData['needEditPermissions'] || routeStaticData['needPermissions'];
@@ -48,6 +56,12 @@ export class SchemaFormsProcessingHelper {
     return false
   }
 
+  /**
+   * Deep search for a value in a context object
+   * @param context Context object to search
+   * @param path Path to search for
+   * @param indexLastChunk Whether to index the last chunk
+   */
   deepFindValueInContext(context: any, path: string, indexLastChunk = false) {
     if (path.startsWith('this.')) {
       path = path.replace('this.', '');

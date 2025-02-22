@@ -10,6 +10,11 @@ export interface BlockDescription {
 }
 
 
+/** 
+ * Extracts binding information from schema description
+ * @param description Schema description object
+ * @returns Array of bindings or empty array if no bindings found
+ */
 export function getDescriptionBinding(description: any) {
   const joinSchema = description._relator || description.join;
 
@@ -55,18 +60,32 @@ export class SchemaFormsBuildHelper {
   ) {
   }
 
+  /** 
+   * Clears the list of promises waiting to be resolved
+   */
   clearPromisesList() {
     this.waitPromises = [];
   }
 
+  /**
+   * Clears the parameters for bulk relator requests
+   */
   clearRelatorsBulkRequestParams() {
     this.relatorsBulkRequestParams = [];
   }
 
+  /**
+   * Clears form containers list
+   */
   clearFormContainers() {
     this.internalContainers = [];
   }
 
+  /**
+   * Adds relator to bulk request queue
+   * @param path Schema path
+   * @param resultObj Result object to store values
+   */
   _addRelatorsToBulkRequest(path: string, resultObj: Object) {
     // if (this.schemaPath) {
     //   path = this.schemaPath + '.' + path;
@@ -75,6 +94,11 @@ export class SchemaFormsBuildHelper {
     this.relatorsBulkRequestParams.push({'schema': this.schemaName, 'path': path, 'resultObj': resultObj});
   }
 
+  /**
+   * Fetches relator choices in bulk
+   * Groups similar requests and fetches them together
+   * @returns Promise resolving with fetched choices
+   */
   async fetchRelatorChoicesInBulk(): Promise<any> {
     const groupedRelatorsBulkRequestParams = this._groupRelatorsBulkRequestParams();
 
