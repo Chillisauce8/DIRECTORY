@@ -1,123 +1,87 @@
 <script setup lang="ts">
-import { FilterMatchMode } from '@primevue/core/api';
 import type { Message } from '~/types/message';
+import { FilterMatchMode } from '@primevue/core/api';
 
-// Define props with TypeScript interface
 interface Props {
     messages?: Message[];
 }
 
-interface Emits {
-    (e: 'action', type: string, messages: Message[]): void;
-    (e: 'toggleFlag', flag: 'starred' | 'important', message: Message): void;
-    (e: 'reply', message: Message): void;
-}
-
+// Props and emits
 const props = withDefaults(defineProps<Props>(), {
     messages: () => []
 });
 
-watchEffect(() => {
-    console.log('MessageListItem updated:', {
-        hasMessages: Array.isArray(props.messages),
-        messageCount: props.messages?.length || 0,
-        firstMessage: props.messages?.[0]
-    });
-});
+const emit = defineEmits<{
+    action: [type: string, messages: Message[]];
+    toggleFlag: [flag: 'starred' | 'important', message: Message];
+    reply: [message: Message];
+    'show-detail': [message: Message];
+}>();
 
-const emit = defineEmits<Emits>();
+// Composables
+const store = useMessage();
+const toast = useToast();
 
-// Use refs with proper typing
+// Reactive state
 const messageTable = ref<InstanceType<typeof DataTable> | null>(null);
 const selectedMessages = ref<Message[]>([]);
 const menuRef = ref<InstanceType<typeof Menu> | null>(null);
-const rowRefs = ref<Map<string, HTMLElement>>(new Map());
-
-// Composable for router
-const router = useRouter();
-
-// Reactive menu items
-const menuItems = computed(() => [
-    { label: 'Archive', icon: 'pi pi-file', command: () => handleMessageAction('archive', selectedMessages.value) },
-    { label: 'Spam', icon: 'pi pi-ban', command: () => handleMessageAction('spam', selectedMessages.value) },
-    { label: 'Delete', icon: 'pi pi-trash', command: () => handleMessageAction('trash', selectedMessages.value) }
-]);
-
-// Table filter with type
+const hoveredRowId = ref<string | null>(null);
 const filterTable = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 
-/**
- * Registers row ref
- */
-function registerRowRef(el: HTMLElement | null, id: string) {
-    if (!el) return;
-    rowRefs.value.set(id, el);
-}
+// Menu items
+const menuItems = computed(() => [
+    { 
+        label: 'Archive', 
+        icon: 'pi pi-file', 
+        command: () => handleMessageAction('archive', selectedMessages.value) 
+    },
+    { 
+        label: 'Delete', 
+        icon: 'pi pi-trash', 
+        command: () => handleMessageAction('trash', selectedMessages.value) 
+    }
+]);
 
-/**
- * Toggles visibility of action buttons in table row
- */
-function toggleRowActions(id: string, show: boolean) {
-    const row = rowRefs.value.get(id);
-    if (!row) return;
-
-    row.classList.toggle('show-action-buttons', show);
-    row.classList.toggle('show-date-text', !show);
-}
-
-/**
- * Resets boolean flags on message
- * DUMMY: Should be replaced with proper database update
- */
-function clearMessageActions(message: Message) {
-    const booleanFlags = ['trash', 'spam', 'archived', 'starred', 'important'];
-    booleanFlags.forEach((flag) => {
-        if (typeof message[flag] === 'boolean') {
-            message[flag] = false;
-        }
-    });
-}
-
-/**
- * Handles message actions (archive, spam, trash)
- */
-const handleMessageAction = (type: string, messages: Message | Message[]) => {
+// Actions
+const handleMessageAction = async (type: string, messages: Message | Message[]) => {
     const messageArray = Array.isArray(messages) ? messages : [messages];
-    messageArray.forEach((msg) => clearMessageActions(msg));
-    emit('action', type, messageArray);
+    await Promise.all(messageArray.map(msg => 
+        store.updateMessageState(msg._id, { state: type as any })
+    ));
     selectedMessages.value = [];
 };
 
-/**
- * Handles flag toggles (starred, important)
- * Simplified to just emit the event with current message
- */
-const toggleMessageFlag = (flag: 'starred' | 'important', message: Message) => {
-    emit('toggleFlag', flag, message);
+const toggleMessageFlag = async (flag: 'isStarred' | 'isImportant', message: Message) => {
+    try {
+        await store.toggleFlag(message._id, flag);
+        toast.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: `Message ${flag.replace('is', '').toLowerCase()} updated`,
+            life: 3000
+        });
+    } catch (error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Could not update message flag',
+            life: 3000
+        });
+    }
 };
 
-/**
- * Handles reply action
- */
+const onNavigateToDetailPage = (message: Message) => {
+    emit('show-detail', message);
+};
+
 const handleReply = (message: Message) => {
     emit('reply', message);
 };
 
-/**
- * Navigates to message detail page
- */
-function onNavigateToDetailPage(id: string) {
-    router.push({
-        name: 'message-detail',
-        params: { id: id.toString() }, // Fix: Ensure id is string
-        path: `/messages/detail/${id}` // Add explicit path
-    });
-}
-
-// Rest of the component logic with updated types...
-// ...existing code...
+// ...existing template...
 </script>
 
 <template>
@@ -138,6 +102,8 @@ function onNavigateToDetailPage(id: string) {
         dataKey="_id"
         rowHover
         :globalFilterFields="['from', 'to', 'subject', 'content']"
+        @row-mouseenter="(e) => handleHover(e.data._id)"
+        @row-mouseleave="() => handleHover(null)"
     >
         <Column class="selection-column" selectionMode="multiple" />
 
@@ -152,9 +118,12 @@ function onNavigateToDetailPage(id: string) {
 
         <Column class="star-column">
             <template #body="{ data }">
-                <div v-if="!data.trash && !data.spam" class="cell-content">
-                    <span class="cursor-pointer" @click.stop="toggleMessageFlag('starred', data)">
-                        <i class="pi pi-fw text-xl" :class="{ 'pi-star-fill': data.starred, 'pi-star': !data.starred }" />
+                <div class="cell-content">
+                    <span class="cursor-pointer" @click.stop="toggleMessageFlag('isStarred', data)">
+                        <i class="pi pi-fw text-xl" :class="{ 
+                            'pi-star-fill': data.messageState?.isStarred, 
+                            'pi-star': !data.messageState?.isStarred 
+                        }" />
                     </span>
                 </div>
             </template>
@@ -162,9 +131,12 @@ function onNavigateToDetailPage(id: string) {
 
         <Column class="important-column">
             <template #body="{ data }">
-                <div v-if="!data.trash && !data.spam" class="cell-content">
-                    <span class="cursor-pointer" @click.stop="toggleMessageFlag('important', data)">
-                        <i class="pi pi-fw text-xl" :class="{ 'pi-bookmark-fill': data.important, 'pi-bookmark': !data.important }" />
+                <div class="cell-content">
+                    <span class="cursor-pointer" @click.stop="toggleMessageFlag('isImportant', data)">
+                        <i class="pi pi-fw text-xl" :class="{ 
+                            'pi-bookmark-fill': data.messageState?.isImportant, 
+                            'pi-bookmark': !data.messageState?.isImportant 
+                        }" />
                     </span>
                 </div>
             </template>
@@ -174,7 +146,7 @@ function onNavigateToDetailPage(id: string) {
             <template #body="{ data }">
                 <div class="cell-content">
                     <Avatar v-if="!data.image" icon="pi pi-user" shape="circle" />
-                    <Avatar v-else @click="onNavigateToDetailPage(data.id)" :id="data.id" :image="`/demo/images/avatar/${data.image ? data.image : '.png'}`" class="cursor-pointer" />
+                    <Avatar v-else @click="onNavigateToDetailPage(data)" :id="data.id" :image="`/demo/images/avatar/${data.image ? data.image : '.png'}`" class="cursor-pointer" />
                 </div>
             </template>
         </Column>
@@ -197,15 +169,16 @@ function onNavigateToDetailPage(id: string) {
                 </IconField>
             </template>
             <template #body="{ data }">
-                <div class="cell-content cursor-pointer" @click="onNavigateToDetailPage(data.id)" :ref="(el) => registerRowRef(el, data.id)" @mouseenter="toggleRowActions(data.id, true)" @mouseleave="toggleRowActions(data.id, false)">
+                <div class="cell-content cursor-pointer" 
+                    @click="onNavigateToDetailPage(data)">
                     <div class="title-wrapper">
                         <div class="title-top">
                             <div class="mail-info-mobile">{{ data.from || data.to }}</div>
                             <div class="date-text-mobile">
-                                {{ data.date }}
+                                {{ data.created?.date || 'No date' }}
                             </div>
                         </div>
-                        <div class="mail-title">{{ data.title }}</div>
+                        <div class="mail-title">{{ data.subject }}</div>
                     </div>
                 </div>
             </template>
@@ -213,15 +186,15 @@ function onNavigateToDetailPage(id: string) {
 
         <Column field="date" class="date-column">
             <template #body="{ data }">
-                <div class="cell-content show-date-text" :ref="(el) => registerRowRef(el, data.id)" @mouseenter="toggleRowActions(data.id, true)" @mouseleave="toggleRowActions(data.id, false)">
+                <div class="cell-content">
                     <div class="date-wrapper">
                         <div class="date-text">
-                            {{ data.date }}
+                            {{ data.created?.date || 'No date' }}
                         </div>
                         <div class="action-buttons">
-                            <Button @click="handleReply(data)" type="button" icon="pi pi-reply" class="action-button" v-tooltip.top="'Reply'" />
-                            <Button @click="handleMessageAction('archive', data)" type="button" icon="pi pi-inbox" class="action-button" v-tooltip.top="'Archive'" />
-                            <Button @click="handleMessageAction('trash', data)" type="button" icon="pi pi-trash" class="action-button" severity="danger" v-tooltip.top="'Trash'" />
+                            <Button @click.stop="handleReply(data)" type="button" icon="pi pi-reply" class="action-button" v-tooltip.top="'Reply'" />
+                            <Button @click.stop="handleMessageAction('archive', data)" type="button" icon="pi pi-inbox" class="action-button" v-tooltip.top="'Archive'" />
+                            <Button @click.stop="handleMessageAction('trash', data)" type="button" icon="pi pi-trash" class="action-button" severity="danger" v-tooltip.top="'Trash'" />
                         </div>
                     </div>
                 </div>
@@ -358,31 +331,42 @@ function onNavigateToDetailPage(id: string) {
             font-weight: 600;
             white-space: nowrap;
 
-            &.show-action-buttons {
-                .action-buttons {
-                    display: flex;
-                }
-                .date-text {
-                    display: none;
-                }
+            .date-wrapper {
+                position: relative;
+                width: 100%;
             }
 
-            &.show-date-text {
-                .action-buttons {
-                    display: none;
-                }
-                .date-text {
-                    display: flex;
-                }
+            .date-text {
+                display: flex;
+                justify-content: flex-end;
             }
 
             .action-buttons {
+                display: none;
+             
+      
                 gap: 0.5rem;
                 justify-content: flex-end;
-
+                
                 .action-button {
                     height: 2rem;
                     width: 2rem;
+                }
+            }
+        }
+    }
+
+    // Add hover effect at the row level
+    .p-datatable-tbody {
+        tr:hover {
+            .date-column {
+                .cell-content {
+                    .date-text {
+                        display: none;
+                    }
+                    .action-buttons {
+                        display: flex;
+                    }
                 }
             }
         }

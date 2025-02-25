@@ -1,7 +1,7 @@
 <template>
     <div class="grid-container" :class="containerClasses">
         <div class="grid-controls">
-            <Toast />
+      
             <ConfirmDialog />
             <div class="filter-controls">
                 <slot name="controls" :items="listings" />

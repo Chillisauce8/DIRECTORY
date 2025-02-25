@@ -1,4 +1,29 @@
 <script setup lang="ts">
+/**
+ * Message Composer Component
+ * 
+ * Handles message composition in both new message and reply modes
+ * 
+ * Features:
+ * - Rich text editor integration
+ * - Recipient selection
+ * - Draft saving
+ * - Reply threading
+ * 
+ * Props:
+ * - mode: 'new' | 'reply'
+ * - dialogVisible: Controls visibility in reply mode
+ * - originalMessage: Original message when replying
+ * 
+ * Events:
+ * - save: Emitted when message is sent
+ * - update:dialogVisible: For v-model binding
+ * 
+ * States:
+ * - Draft management
+ * - Validation
+ * - Loading states
+ */
 import type { Message } from '~/types/message';
 
 interface Props {
@@ -74,7 +99,14 @@ function sendMail() {
     const mail: Message = {
         ...mailContent.value,
         _id: crypto.randomUUID(),
-        _createdAt: new Date().toISOString(),
+        created: {
+            id: '', // Will be set by backend
+            name: '', // Will be set by backend
+            userType: 'user',
+            date: new Date().toISOString(), // This is now correctly typed as AuditRecord
+            isTest: false,
+            environment: 'development'
+        },
         isInitialMessage: true,
         state: 'sent'
     } as Message;
@@ -91,7 +123,12 @@ function sendMail() {
 </script>
 
 <template>
-    <div v-if="mode === 'new'" class="message-composer">
+    <Dialog 
+        v-model:visible="modelVisible" 
+        :header="mode === 'new' ? 'New Message' : 'Reply'" 
+        modal 
+        class="message-reply-dialog"
+    >
         <div class="compose-form">
             <div class="form-field">
                 <IconField class="icon-field">
@@ -113,34 +150,7 @@ function sendMail() {
                 <Button type="button" outlined icon="pi pi-paperclip" />
                 <Button type="button" icon="pi pi-send" label="Send Message" @click="sendMail()" />
             </div>
-        </div>
-    </div>
-
-    <Dialog v-else v-model:visible="modelVisible" header="Reply" modal class="message-reply-dialog">
-        <div class="compose-form">
-            <!-- Reuse the same form structure -->
-            <div class="form-field">
-                <IconField class="icon-field">
-                    <InputIcon class="pi pi-user" />
-                    <InputText id="to" type="text" v-model="mailContent.userRecipients" class="recipient-input" fluid placeholder="To:" />
-                </IconField>
-            </div>
-            <div class="form-field">
-                <IconField class="icon-field">
-                    <InputIcon class="pi pi-pencil" />
-                    <InputText id="subject" type="text" v-model="mailContent.subject" placeholder="Subject:" class="subject-input" fluid />
-                </IconField>
-            </div>
-
-            <div class="form-field">
-                <Editor v-model="mailContent.content" class="message-editor"></Editor>
-            </div>
-            <div class="actions">
-                <Button type="button" outlined icon="pi pi-image" />
-                <Button type="button" outlined icon="pi pi-paperclip" />
-                <Button type="button" icon="pi pi-send" label="Send" @click="sendMail()" />
-            </div>
-            <div v-if="originalMessage?.message" class="message-preview">
+            <div v-if="mode === 'reply' && originalMessage?.message" class="message-preview">
                 <div class="message-content" v-html="originalMessage.message"></div>
             </div>
         </div>

@@ -33,17 +33,9 @@ useSeoMeta({
 
 <template>
   <div>
+    <!-- Make sure there's NO Toast component here -->
     <NuxtLayout>
-      <client-only>
-        <NuxtLoadingIndicator />
-      </client-only>
-
-      <div>
-        <NuxtPage />
-      </div>
+      <NuxtPage />
     </NuxtLayout>
-
-<!--    <UNotifications />-->
-<!--    <UModals />-->
   </div>
 </template>

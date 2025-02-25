@@ -230,12 +230,8 @@ export default defineNuxtConfig({
                 children: [
                     {
                         path: '',
+                        name: 'message-index', // Add name to remove warning
                         redirect: '/new/message/inbox'
-                    },
-                    {
-                        path: 'inbox',
-                        name: 'message-inbox',
-                        props: true
                     },
                     {
                         path: 'compose',
@@ -275,6 +271,39 @@ export default defineNuxtConfig({
                     {
                         path: 'trash',
                         name: 'message-trash',
+                        props: true
+                    }
+                ]
+            });
+            pages.push({
+                name: 'message',
+                path: '/new/message',
+                file: '@/pages/new/Message.vue',
+                children: [
+                    {
+                        path: '',
+                        name: 'message-index',
+                        redirect: '/new/message/inbox'
+                    },
+                    {
+                        path: 'inbox',
+                        name: 'message-inbox',
+                        file: '@/pages/new/message/[folder].vue'
+                    },
+                    {
+                        path: 'compose',
+                        name: 'message-compose',
+                        props: { mode: 'new' }
+                    },
+                    {
+                        path: 'thread/:id',
+                        name: 'message-thread',
+                        props: true
+                    },
+                    {
+                        path: ':folder',
+                        name: 'message-folder',
+                        file: '@/pages/new/message/[folder].vue',
                         props: true
                     }
                 ]

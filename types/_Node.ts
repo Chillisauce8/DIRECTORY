@@ -1,22 +1,25 @@
-// _Node.types.ts (or just _Node.ts)
-interface AuditRecord {
-    name: string;
-    userType: string;
-    date: string;
-    isTest: boolean;
-    environment: 'development' | 'staging' | 'production';
-}
+export type Environment = 'development' | 'staging' | 'production';
+export type UserType = 'system' | 'user' | 'admin';
 
-interface CreationRecord extends AuditRecord {
-    id: string;
+/**
+ * Base document type for database entities
+ * All database documents extend from this interface
+ */
+export interface AuditRecord {
+    readonly id: string;
+    readonly name: string;
+    readonly userType: UserType;
+    readonly date: string;  // ISO 8601 date string
+    readonly isTest: boolean;
+    readonly environment: Environment;
 }
 
 export interface _Node {
-    _id: string;
-    _type: string;
-    _hash: number;  // Changed from string to number based on the example
-    created: CreationRecord;  // Now properly typed
-    lastUpdated: AuditRecord;  // Now properly typed
-    lastEdited: AuditRecord;  // Now properly typed
+    readonly _id: string;  // Mark as readonly since it shouldn't change
+    readonly _type: string;
+    readonly _hash?: number;
+    readonly created: AuditRecord;
+    readonly lastUpdated?: AuditRecord;
+    readonly lastEdited?: AuditRecord;
     title: string;
 }

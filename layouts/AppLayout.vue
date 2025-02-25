@@ -44,6 +44,7 @@ const containerClass = computed(() => {
         <AppSidebar />
 
         <div class="layout-content-wrapper">
+            <AuthStatusBar /> 
             <TopNav />
             <!--       <AppTopbar /> -->
             <!--  <AppBreadCrumb class="content-breadcrumb"></AppBreadCrumb> -->
@@ -55,7 +56,6 @@ const containerClass = computed(() => {
         <AppProfileSidebar />
         <AppConfig />
 
-        <Toast></Toast>
         <div class="layout-mask"></div>
     </div>
 </template>

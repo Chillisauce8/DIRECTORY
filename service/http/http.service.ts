@@ -16,6 +16,8 @@ export type HttpRequestHeaders = Record<string, string>;
 export type HttpRequestQueryParams = Record<string, any>;
 export type HttpRequestData = Record<string, any> | any[];
 
+export type HttpResult<T> = Promise<HttpResponse<T>>;
+export type QueryParams = Record<string, string | number | boolean | null>;
 
 type AvailableHttpMethods = 'get' | 'post' | 'put' | 'delete';
 
@@ -53,6 +55,34 @@ export interface CommonHttpResponseData<Data extends unknown = any> extends Base
 
 export type HttpResponseData<Data extends unknown> =
   Data extends CustomHttpResponseData ? Data : CommonHttpResponseData<Data>;
+
+
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+
+export interface HttpOptions {
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
+    timeout?: number;
+    withCredentials?: boolean;
+}
+
+export interface HttpResponse<T = any> {
+    data?: T;
+    status: number;
+    headers?: Record<string, string>;
+}
+
+export interface HttpError extends Error {
+    status?: number;
+    response?: HttpResponse;
+}
+
+export interface HttpService {
+    get<T>(url: string, options?: HttpOptions): Promise<HttpResponse<T>>;
+    post<T>(url: string, data?: unknown, options?: HttpOptions): Promise<HttpResponse<T>>;
+    put<T>(url: string, data?: unknown, options?: HttpOptions): Promise<HttpResponse<T>>;
+    delete<T>(url: string, options?: HttpOptions): Promise<HttpResponse<T>>;
+}
 
 
 export class HttpService {
@@ -135,29 +165,24 @@ export class HttpService {
     return this.fetch(path, requestConfig);
   }
 
-  public async post<Data = any>(path: string, data?: HttpRequestData, headers?: HttpRequestHeaders): Promise<HttpResponseData<Data>> {
-    try {
-        if (!path) {
-            throw new Error('Path is required for POST request');
-        }
+  public async post<T>(path: string, data?: unknown, headers?: HttpRequestHeaders): HttpResult<T> {
+    if (!path) throw new Error('Path is required for POST request');
 
-        console.log('HTTP POST request:', {
-            path,
-            data,
-            headers: headers || 'default headers'
-        });
+    console.log('HTTP request:', {
+        method: 'POST',
+        path,
+        body: data, // Log the full request body
+        hasData: !!data,
+        timestamp: new Date().toISOString()
+    });
 
-        const requestConfig = {
-            method: 'post' as AvailableHttpMethods,
-            headers: this.extendDefaultHeaders(headers as HttpRequestHeaders),
-            body: data
-        };
+    const requestConfig = {
+        method: 'post' as const,
+        headers: this.extendDefaultHeaders(headers ?? {}),
+        body: data
+    };
 
-        return this.fetch(path, requestConfig);
-    } catch (error) {
-        console.error('HTTP error:', error);
-        throw error;
-    }
+    return this.fetch<T>(path, requestConfig).catch(this.handleError);
 }
 
   public update<Data>(path: string,
@@ -384,6 +409,19 @@ export class HttpService {
     // }
   }
 
+  private handleError(error: unknown): never {
+    const message = error instanceof Error 
+        ? error.message 
+        : 'Unknown error occurred';
+        
+    console.error('HTTP error:', {
+        message,
+        timestamp: new Date().toISOString()
+    });
+    
+    throw new Error(message);
+}
+
   private isResponseFromAnotherHost(response: AsyncData<any, any>) {
     // if (process.server) {
     //   return false;
@@ -395,4 +433,59 @@ export class HttpService {
 }
 
 
-export const httpService = new HttpService($fetch);
+export const httpService = {
+  async get(url, config = {}) {
+    console.log(`📡 HTTP GET: ${url}`);
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          ...config.headers
+        },
+        ...config
+      });
+      
+      if (!response.ok) {
+        console.error(`❌ HTTP Error: ${response.status} ${response.statusText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log(`✅ HTTP Response: ${url}`, data);
+      return data;
+    } catch (error) {
+      console.error(`❌ HTTP Request Failed: ${url}`, error);
+      throw error;
+    }
+  },
+  
+  async post(url, data = {}, config = {}) {
+    console.log(`📡 HTTP POST: ${url}`, data);
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...config.headers
+        },
+        body: JSON.stringify(data),
+        ...config
+      });
+      
+      if (!response.ok) {
+        console.error(`❌ HTTP Error: ${response.status} ${response.statusText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const responseData = await response.json();
+      console.log(`✅ HTTP Response: ${url}`, responseData);
+      return responseData;
+    } catch (error) {
+      console.error(`❌ HTTP Request Failed: ${url}`, error);
+      throw error;
+    }
+  },
+  
+  // ...existing code for other methods...
+}
