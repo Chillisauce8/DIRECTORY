@@ -93,6 +93,62 @@ interface User {
 /server/utils/handleError.ts
 ```
 
+## Backend Implementation Details
+
+### User Management API Endpoints
+
+1. **POST `/api/users/register`**:
+   - Endpoint for user registration.
+   - Validate user data.
+   - Hash the password before storing it in the database.
+   - Return the created user data.
+
+2. **GET `/api/users/me`**:
+   - Endpoint to fetch the current user's data.
+   - Ensure the user is authenticated.
+   - Return the user's data.
+
+3. **PUT `/api/users/me`**:
+   - Endpoint to update the current user's data.
+   - Validate the updated data.
+   - Ensure the user is authenticated.
+   - Update the user's data in the database.
+   - Return the updated user data.
+
+### User Schema Validation
+
+- Use a validation library (e.g., Joi, Yup) to validate user data.
+- Ensure that the email is in a valid format.
+- Ensure that the password meets security requirements (e.g., minimum length, complexity).
+
+### Password Hashing
+
+- Use bcrypt to hash passwords before storing them in the database.
+- Ensure that the hashing process is secure and follows best practices.
+
+### Error Handling
+
+- Create a utility function to handle errors consistently across the application.
+- Return meaningful error messages and status codes.
+
+### Security Features
+
+1. **Rate Limiting**:
+   - Implement rate limiting to prevent abuse of the API.
+   - Use a library like express-rate-limit.
+
+2. **CSRF Protection**:
+   - Implement CSRF protection to prevent cross-site request forgery attacks.
+   - Use a library like csurf.
+
+3. **Session Management**:
+   - Ensure that sessions are managed securely.
+   - Implement session expiration and renewal mechanisms.
+
+4. **Secure Headers**:
+   - Set secure headers to protect against common web vulnerabilities.
+   - Use a library like helmet.
+
 ## Current File Structure
 ```
 ├── server/api/
@@ -101,7 +157,10 @@ interface User {
 │   └── users/                    # TODO: Create these endpoints
 ├── pages/auth/
 │   ├── login.vue                 # Implemented
-│   └── register.vue              # Implemented
+│   ├── register.vue              # Implemented
+│   ├── callback.vue              # Implemented
+│   ├── logout.vue                # Implemented
+│   └── test.vue                  # Implemented
 └── components/auth/
     └── AuthStatusBar.vue         # Implemented
 ```
@@ -115,6 +174,9 @@ https://github.com/sidebase/nuxt-auth-example
 - [x] Login/Register pages
 - [x] Auth middleware
 - [x] Status bar component
+- [x] Callback page
+- [x] Logout page
+- [x] Test page
 - [ ] User management API
 - [ ] Password hashing
 - [ ] Error handling
