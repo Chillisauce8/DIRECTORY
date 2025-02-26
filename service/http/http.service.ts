@@ -331,11 +331,6 @@ export class HttpService {
       }
 
       if (val instanceof Array) {
-        // val.forEach((item: any) => {
-        //   const value = (typeof item === 'string') ? item : JSON.stringify(item);
-        //   searchParams[key] = value;
-        // });
-
         searchParams[key] = JSON.stringify(val);
 
         continue;
@@ -410,15 +405,15 @@ export class HttpService {
   }
 
   private handleError(error: unknown): never {
-    const message = error instanceof Error 
-        ? error.message 
+    const message = error instanceof Error
+        ? error.message
         : 'Unknown error occurred';
-        
+
     console.error('HTTP error:', {
         message,
         timestamp: new Date().toISOString()
     });
-    
+
     throw new Error(message);
 }
 
@@ -433,59 +428,62 @@ export class HttpService {
 }
 
 
-export const httpService = {
-  async get(url, config = {}) {
-    console.log(`📡 HTTP GET: ${url}`);
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          ...config.headers
-        },
-        ...config
-      });
-      
-      if (!response.ok) {
-        console.error(`❌ HTTP Error: ${response.status} ${response.statusText}`);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log(`✅ HTTP Response: ${url}`, data);
-      return data;
-    } catch (error) {
-      console.error(`❌ HTTP Request Failed: ${url}`, error);
-      throw error;
-    }
-  },
-  
-  async post(url, data = {}, config = {}) {
-    console.log(`📡 HTTP POST: ${url}`, data);
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...config.headers
-        },
-        body: JSON.stringify(data),
-        ...config
-      });
-      
-      if (!response.ok) {
-        console.error(`❌ HTTP Error: ${response.status} ${response.statusText}`);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const responseData = await response.json();
-      console.log(`✅ HTTP Response: ${url}`, responseData);
-      return responseData;
-    } catch (error) {
-      console.error(`❌ HTTP Request Failed: ${url}`, error);
-      throw error;
-    }
-  },
-  
-  // ...existing code for other methods...
-}
+export const httpService = new HttpService($fetch);
+
+
+// export const httpService = {
+//   async get(url, config = {}) {
+//     console.log(`📡 HTTP GET: ${url}`);
+//     try {
+//       const response = await fetch(url, {
+//         method: 'GET',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           ...config.headers
+//         },
+//         ...config
+//       });
+//
+//       if (!response.ok) {
+//         console.error(`❌ HTTP Error: ${response.status} ${response.statusText}`);
+//         throw new Error(`HTTP error! status: ${response.status}`);
+//       }
+//
+//       const data = await response.json();
+//       console.log(`✅ HTTP Response: ${url}`, data);
+//       return data;
+//     } catch (error) {
+//       console.error(`❌ HTTP Request Failed: ${url}`, error);
+//       throw error;
+//     }
+//   },
+//
+//   async post(url, data = {}, config = {}) {
+//     console.log(`📡 HTTP POST: ${url}`, data);
+//     try {
+//       const response = await fetch(url, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           ...config.headers
+//         },
+//         body: JSON.stringify(data),
+//         ...config
+//       });
+//
+//       if (!response.ok) {
+//         console.error(`❌ HTTP Error: ${response.status} ${response.statusText}`);
+//         throw new Error(`HTTP error! status: ${response.status}`);
+//       }
+//
+//       const responseData = await response.json();
+//       console.log(`✅ HTTP Response: ${url}`, responseData);
+//       return responseData;
+//     } catch (error) {
+//       console.error(`❌ HTTP Request Failed: ${url}`, error);
+//       throw error;
+//     }
+//   },
+//
+//   // ...existing code for other methods...
+// }
