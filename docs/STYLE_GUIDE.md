@@ -1,5 +1,7 @@
 # AI Style Guide for Nuxt 3 / Vue 3 Application
 
+This document establishes the coding standards, naming conventions, and best practices for development across the application, ensuring consistency and maintainability throughout the codebase.
+
 ## Project Overview
 
 -   **Framework:** Nuxt 3 with Vue 3
@@ -176,10 +178,10 @@ Uses "\_id" throughout the application, when referencing to node/document ID's. 
 
 The `/docs` folder contains detailed documentation for key aspects of the application:
 
+- [Project Overview](./READ_ME.md) - High-level overview of the application and documentation structure
 - [Authentication Setup](./auth/AUTH.md) - Complete authentication system setup and configuration
 - [Database Structure](./database/DATABASE.md) - Database schema, indexes, and relationships
 - [Project Architecture](./architecture/ARCHITECTURE.md) - Application structure and design decisions
-- [Development Workflow](./workflow/WORKFLOW.md) - Development processes and guidelines
 
 ## Additional Resources
 

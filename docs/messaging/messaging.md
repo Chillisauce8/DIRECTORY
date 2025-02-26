@@ -1,20 +1,142 @@
-# Messaging System Documentation
+# Messaging System - Feature Document
 
-## Overview
+## Status
+Implemented - In Production
 
-The messaging system provides a complete solution for handling user-to-user and user-to-group communications within the application. Built with a Gmail-like interface, the system supports core messaging features including message composition, organization, thread management, and state tracking.
+## 1. Overview
+- **Feature Name**: Messaging System
+- **Description**: A complete solution for handling user-to-user and user-to-group communications within the application
+- **Purpose**: To provide Gmail-like messaging capabilities including composition, organization, thread management, and state tracking
+- **Target Users**: All application users who need to communicate with other users or groups
 
-## Architecture
+## 2. User Stories
+- As a user, I want to send messages to other users so that I can communicate directly with them
+- As a user, I want to see my messages organized in folders so I can easily manage my communications
+- As a user, I want to star important messages so I can find them quickly later
+- As a user, I want to mark messages as read/unread to track what I've reviewed
+- As a user, I want to archive messages I no longer need in my inbox but want to keep
+- As a user, I want to send messages to groups so I can communicate with multiple people at once
 
-### Core Components
+## 3. Technical Architecture
+### 3.1 Data Models
+```typescript
+// Core TypeScript interfaces for this feature
+export interface IMessage extends _Node {
+  readonly subject?: string;
+  readonly content: string;
+  readonly sender: MessageParticipant;
+  readonly recipientType: RecipientType;
+  readonly userRecipients: readonly string[];
+  readonly groupRecipients: readonly string[];
+  readonly isInitialMessage: boolean;
+  readonly replyTo?: string;
+  readonly threadId?: string;
+}
 
-- **Message Store**: Central state management for messages via Pinia
-- **Message Composable**: Provides reusable messaging logic
-- **Message UI Components**: Modular components for message display
-- **Message Service**: Handles API communication for messages
+export interface IUserMessageState {
+  userId: string;
+  messageId: string;
+  state: MessageState;
+  isRead: boolean;
+  isStarred: boolean;
+  isImportant: boolean;
+}
 
-### File Structure
+export interface IMessageUI extends Omit<IMessage, '_type' | '_hash'> {
+  messageState?: {
+    state?: MessageState;
+    isStarred: boolean;
+    isImportant: boolean;
+    isRead: boolean;
+  };
+}
 
+export enum MessageStateEnum {
+  INBOX = 'inbox',
+  SENT = 'sent',
+  ARCHIVED = 'archived',
+  TRASH = 'trash'
+}
+
+export type RecipientType = 'user' | 'group';
+```
+
+### 3.2 Component Architecture
+- **MessageContainer**:
+  - **Purpose**: Main wrapper component for message display
+  - **Props**: folder, messageId
+  - **Emits**: folder-changed, message-selected
+  - **Location**: /components/message/MessageContainer.vue
+  - **PrimeVue Components**: PCard, PSplitButton
+
+- **MessageSidebar**:
+  - **Purpose**: Navigation for message folders
+  - **Props**: unreadCounts, selectedFolder
+  - **Emits**: folder-selected
+  - **Location**: /components/message/MessageSidebar.vue
+  - **PrimeVue Components**: PMenu, PBadge
+
+- **MessageListItem**:
+  - **Purpose**: Individual message in lists
+  - **Props**: message, selected
+  - **Emits**: message-selected, star-toggled
+  - **Location**: /components/message/MessageListItem.vue
+  - **PrimeVue Components**: PCheckbox, PButton
+
+- **MessageDetail**:
+  - **Purpose**: Detailed message view
+  - **Props**: message, showActions
+  - **Emits**: reply, forward, archive, delete
+  - **Location**: /components/message/MessageDetail.vue
+  - **PrimeVue Components**: PDialog, PEditor, PButton
+
+### 3.3 State Management
+- **Pinia Store**: /stores/useMessageStore.ts
+- **Key State Elements**:
+  - `messages`: All loaded messages
+  - `folderCounts`: Count of messages by folder
+  - `selectedFolder`: Currently selected folder
+  - `selectedMessageId`: Currently selected message
+- **Actions**:
+  - `fetchMessages`: Load messages from API
+  - `sendMessage`: Send a new message
+  - `updateMessageState`: Change a message's state
+  - `markAsRead/Unread`: Update read status
+  - `starMessage`: Toggle star status
+  - `markAsImportant`: Toggle important status
+- **Getters**:
+  - `filteredMessages`: Messages filtered by folder
+  - `messageById`: Get specific message by ID
+  - `unreadCountByFolder`: Count of unread messages
+
+### 3.4 API Endpoints
+- **MongoDB Collections**:
+  - `messages`: Stores message content and metadata
+  - `userMessageStates`: Stores per-user message state
+  - `messageRecipients`: Maps recipients to messages
+- **API Routes**:
+  - `GET /api/messages`: Fetch messages for current user
+  - `POST /api/query`: Create a new message (using the generic query API)
+  - `POST /api/messages/move`: Move message to a different folder (inbox, archived, trash)
+  - `POST /api/messages/flag`: Toggle message flags (starred, important)
+  - `POST /api/query/session`: Start a database transaction
+  - `POST /api/query/commit`: Commit a database transaction
+  - `POST /api/query/abort`: Abort a database transaction
+- **Data Flow**:
+  - Messages are fetched from API and transformed to UI format
+  - State changes update local store first, then persist to API
+  - New messages are sent to API and added to store
+
+### 3.5 Form Validation (if applicable)
+- **Validation Strategy**: Vuelidate for new message composition
+- **Validation Rules**:
+  - Recipients: required, at least one valid recipient
+  - Subject: optional but recommended
+  - Content: required, minimum length
+- **Error Handling**: Inline validation errors display below form fields
+
+## 4. Implementation Details
+### 4.1 File Structure
 ```
 car/
 ├── components/message/
@@ -40,209 +162,170 @@ car/
 │       └── messageRecipients.ts # Recipient definitions
 ```
 
-## Data Model
+### 4.2 Key Components
+The messaging system consists of four main components:
 
-### Message Types
+1. **MessageContainer**: Acts as the parent container for the messaging interface, managing the layout and coordination between child components.
 
-#### Database Message Schema
-```typescript
-interface Message extends _Node {
-  readonly subject?: string;
-  readonly content: string;
-  readonly sender: MessageParticipant;
-  readonly recipientType: RecipientType;
-  readonly userRecipients: readonly string[];
-  readonly groupRecipients: readonly string[];
-  readonly isInitialMessage: boolean;
-  readonly replyTo?: string;
-  readonly threadId?: string;
-}
+2. **MessageSidebar**: Displays the folder navigation with unread counts and allows users to switch between different message views (inbox, sent, archived, etc.).
+
+3. **MessageListItem**: Renders individual messages in a list format, showing sender, subject preview, date, and status indicators (read/unread, starred, important).
+
+4. **MessageDetail**: Displays the complete message content when a message is selected, with options to reply, forward, archive, or delete.
+
+### 4.3 State Management Implementation
+The messaging system uses a Pinia store with these key features:
+
+- **Centralized Message Cache**: All loaded messages are stored in a normalized format
+- **Reactive Folder Filtering**: Messages are dynamically filtered by folder
+- **Optimistic Updates**: UI state changes immediately before API confirmation
+- **Message Transformations**: DB messages are transformed to UI format with state information
+
+### 4.4 Integration Points
+The messaging system integrates with:
+
+- **User System**: For sender and recipient information
+- **Groups System**: For group messaging capabilities
+- **Notification System**: To alert users of new messages
+- **Dashboard**: For displaying message notifications and quick actions
+
+### 4.5 UI Implementation
+- **PrimeVue Components Used**:
+  - `PDialog`: For displaying message composition and details
+  - `PEditor`: Rich text editing for message composition
+  - `PSplitButton`: For message actions
+  - `PMenu`: For folder navigation
+  - `PBadge`: For unread message counts
+  - `PButton`: For various actions
+  - `PDataTable`: For message lists
+- **Custom Styling**:
+  - Custom styling for read/unread messages
+  - Star and important indicators with animated transitions
+  - Responsive design for different screen sizes
+- **Responsive Design**:
+  - Sidebar collapses to top navigation on mobile
+  - Message list adapts columns based on screen width
+  - Composition dialog adjusts size for mobile
+
+## 5. Testing
+- **Test Approach**: Unit tests for store actions and composables, component tests for UI behavior
+- **Key Test Cases**:
+  - Message filtering by folder
+  - State changes (read/unread, star, important)
+  - Message composition and sending
+  - Recipient validation
+- **Test Status**: Core functionality covered, additional edge cases pending
+
+## 6. Development Status
+- [x] Feature Planning
+- [x] Core Implementation
+- [x] UI Implementation
+- [x] API Integration
+- [] Testing
+- [x] Documentation
+- [] Deployment
+
+## 7. Known Issues and Limitations
+1. Message threading is partially implemented but may require additional work for complex conversations
+2. Large message lists may need pagination for performance optimization
+3. Real-time updates require separate websocket integration
+
+## 8. Future Enhancements
+1. Advanced search functionality for messages
+2. Message templates for common communications
+3. Scheduled sending for messages
+4. Message recall within time limit
+5. Enhanced threading for complex conversations
+6. Real-time chat integration
+
+## 9. Documentation and Usage Examples
+
+### 9.1 Component Usage
+```vue
+<template>
+  <!-- Example usage of the MessageContainer component -->
+  <MessageContainer
+    :folder="currentFolder"
+    :message-id="selectedMessageId"
+    @folder-changed="handleFolderChange"
+    @message-selected="handleMessageSelect"
+  />
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { MessageContainer } from '@/components/message';
+import { useMessage } from '@/composables/useMessage';
+
+const currentFolder = ref('inbox');
+const selectedMessageId = ref(null);
+
+const { navigateToFolder } = useMessage();
+
+const handleFolderChange = (folder: string) => {
+  currentFolder.value = folder;
+  navigateToFolder(folder);
+};
+
+const handleMessageSelect = (id: string) => {
+  selectedMessageId.value = id;
+};
+</script>
 ```
 
-#### UI Message
-The UI version of messages includes state information:
-
+### 9.2 Store Usage
 ```typescript
-interface MessageUI extends Omit<DBMessage, '_type' | '_hash'> {
-  messageState?: {
-    state?: MessageState;
-    isStarred: boolean;
-    isImportant: boolean;
-    isRead: boolean;
-  };
-}
-```
+// Example of how to use the message store
+import { useMessageStore } from '@/stores/useMessageStore';
+import { storeToRefs } from 'pinia';
 
-### Message State
-
-Message state is tracked per user:
-
-```typescript
-type MessageState = 'inbox' | 'sent' | 'archived' | 'trash';
-
-interface UserMessageState {
-  userId: string;
-  messageId: string;
-  state: MessageState;
-  isRead: boolean;
-  isStarred: boolean;
-  isImportant: boolean;
-}
-```
-
-## Folder System
-
-The messaging system uses a Gmail-style folder/label approach:
-
-### Primary Folders
-- **Inbox**: Unarchived messages sent to the user
-- **Sent**: Messages sent by the user
-- **Archived**: Messages moved out of the inbox
-- **Trash**: Deleted messages
-
-### Special Folders
-- **Starred**: Messages marked with a star
-- **Important**: Messages flagged as important
-
-> **Note**: Messages always exist in exactly one primary folder (inbox, sent, archived, trash) and can simultaneously appear in any number of special folders (starred, important).
-
-## State Management
-
-### Message Store
-
-The `useMessageStore` provides centralized state management with these key features:
-
-- Message fetching and caching
-- Filtering messages by folder
-- Message state tracking (read/unread, starred, important)
-- Actions for common message operations
-
-### Message Composable
-
-The `useMessage` composable provides a simplified API for components to interact with messages:
-
-- Current folder tracking
-- Message selection
-- Common message actions (mark as read, star, etc.)
-- Message transformations
-
-## UI Components
-
-### MessageSidebar
-
-Navigation component displaying message folders with unread counts.
-
-Key features:
-- Folder navigation
-- Message count badges 
-- Responsive design (horizontal on mobile, vertical on desktop)
-
-### MessageListItem
-
-Displays a single message in a list format.
-
-Key features:
-- Sender information
-- Subject preview
-- Date/time
-- Read/unread state
-- Star/important flags
-
-### MessageDetail
-
-Displays the full content of a message.
-
-Key features:
-- Complete message content
-- Sender information
-- Reply functionality
-- Dialog-based display
-
-## Routing
-
-The messaging system uses the following routes:
-
-- `/new/message` - Main message view
-- `/new/message/[folder]` - Folder-specific views
-  - Example folders: inbox, sent, starred, important, archived, trash
-- `/new/message/detail/[id]` - Individual message view
-
-## Data Flow
-
-1. **Message Loading**:
-   - Messages are fetched via `messaging.service.ts`
-   - Transformed using `transformMessageForUI()`
-   - Stored in the message store
-
-2. **Message Display**:
-   - The store provides filtered messages by folder
-   - Components reactively display messages from the store
-
-3. **Message Actions**:
-   - UI triggers actions (star, archive, etc.)
-   - Actions update local state via the store
-   - Changes are persisted to the backend via the service
-
-## Usage Examples
-
-### Accessing Messages in a Component
-
-```typescript
-// Import the store or composable
 const messageStore = useMessageStore();
-const { filteredMessages } = storeToRefs(messageStore);
+const { filteredMessages, unreadCountByFolder } = storeToRefs(messageStore);
+
+// Fetch messages
+await messageStore.fetchMessages();
 
 // Access messages in a particular folder
 const inboxMessages = computed(() => filteredMessages.value.inbox || []);
-```
 
-### Performing Message Actions
-
-```typescript
-// Using the store
-const messageStore = useMessageStore();
+// Perform actions
 await messageStore.markAsRead(messageId);
 await messageStore.starMessage(messageId, true);
-
-// Using the composable
-const message = useMessage();
-message.markAsRead(messageId);
-message.toggleStar(messageId);
+await messageStore.updateMessageState(messageId, 'archived');
 ```
 
-### Creating a New Message
-
+### 9.3 API Usage
 ```typescript
+// Example of messaging API interactions
+import { messagingService } from '@/service/messaging/messaging.service';
+
+// Fetch messages
+const messages = await messagingService.getMessages({
+  folder: 'inbox',
+  limit: 20,
+  offset: 0
+});
+
+// Send a new message
 const newMessage = {
   subject: "Meeting Tomorrow",
   content: "<p>Let's discuss the project.</p>",
   recipientType: "user",
   userRecipients: ["user-123"],
-  isInitialMessage: true,
-  // Other required fields...
+  isInitialMessage: true
 };
+const result = await messagingService.sendMessage(newMessage);
 
-const messageStore = useMessageStore();
-await messageStore.sendMessage(newMessage);
+// Update message state
+await messagingService.updateMessageState(messageId, {
+  state: 'archived',
+  isRead: true
+});
 ```
 
-## Debugging
+## Document Revision History
 
-The messaging system includes extensive debug logging:
-
-- Folder count tracking
-- Message state change monitoring
-- Special folder history for starred/important messages
-
-## Best Practices
-
-1. **Always use transformations**: When working with messages, ensure proper transformation between DB and UI formats
-2. **Leverage the store for state**: Avoid direct API calls when store methods are available
-3. **Handle loading states**: Messages may not be immediately available, use proper loading indicators
-4. **Respect folder system**: Don't manually change primary folders; use the proper actions
-
-## Known Limitations
-
-1. Message threading is partially implemented but may require additional work for complex conversations
-2. Large message lists may need pagination for performance optimization
-3. Real-time updates require separate websocket integration
+| Date | Updated By | Changes |
+|------|------------|---------|
+| 2023-11-15 | System | Initial document creation |
+| 2023-11-16 | James Baddiley | Updated to standard format |
