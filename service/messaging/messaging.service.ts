@@ -1,17 +1,17 @@
 /**
  * Messaging Service
- * 
+ *
  * Handles all message-related API operations:
  * - Message CRUD operations
  * - Message state management
  * - Thread management
- * 
+ *
  * Features:
  * - Transaction support
  * - Error handling
  * - Message state tracking
  * - Thread organization
- * 
+ *
  * API Integration:
  * - Messages collection operations
  * - Message states management
@@ -65,12 +65,12 @@ export class MessagingService {
 
   async sendMessage(options: SendMessageOptions): Promise<messages> {
     const session = await this.startTransaction();
-    
+
     try {
       const message = await this.createMessage(options, session);
       await this.createMessageStates(
-        message._id, 
-        options.recipientId, 
+        message._id,
+        options.recipientId,
         options.recipientType,
         options.threadId,  // Pass thread ID
         session
@@ -87,7 +87,7 @@ export class MessagingService {
   async getUserMessages(userId: string): Promise<messages[]> {
     const response = await this.query({
       operation: 'find',
-      q: { 
+      q: {
         $or: [
           { 'sender.id': userId },
           { userRecipients: userId }
@@ -111,8 +111,8 @@ export class MessagingService {
   }
 
   async updateMessageState(
-    messageId: string, 
-    userId: string, 
+    messageId: string,
+    userId: string,
     updates: Partial<userMessageStates>
   ): Promise<userMessageStates> {
     console.log('Updating message state:', { messageId, userId, updates });
@@ -122,7 +122,7 @@ export class MessagingService {
       const existingState = await this.query<userMessageStates[]>({
         collection: this.collections.states,
         operation: 'find',
-        q: { 
+        q: {
           messageId,
           userId
         }
@@ -147,9 +147,9 @@ export class MessagingService {
       const response = await this.query<userMessageStates>({
         collection: this.collections.states,
         operation: 'upsert',
-        q: { 
+        q: {
           messageId,
-          userId 
+          userId
         },
         data: {
           ...stateDoc,
@@ -163,7 +163,7 @@ export class MessagingService {
       const updatedDoc = await this.query({
         collection: this.collections.states,
         operation: 'find',
-        q: { 
+        q: {
           messageId,
           userId
         }
@@ -174,7 +174,7 @@ export class MessagingService {
         userId,
         before: existingState.data?.[0],
         after: updatedDoc.data?.[0],
-        updateSuccessful: !!updatedDoc.data?.[0] && 
+        updateSuccessful: !!updatedDoc.data?.[0] &&
                           updatedDoc.data?.[0].state === updates.state // Verify state change
       });
 
@@ -207,7 +207,7 @@ export class MessagingService {
 
   // Private methods for API operations
   private async query<T>(params: Record<string, any>): Promise<{ data: T }> {
-    return this.httpService.post(`${this.endpoints.query}?collection=${params.collection || this.collections.messages}`, params);
+    return this.httpService.get(`${this.endpoints.query}?collection=${params.collection || this.collections.messages}`, params);
   }
 
   private async startTransaction() {
@@ -262,8 +262,8 @@ export class MessagingService {
   }
 
   private async createMessageStates(
-    messageId: string, 
-    recipientId: string, 
+    messageId: string,
+    recipientId: string,
     recipientType: 'user' | 'group',
     threadId?: string,  // Add thread ID
     session?: any
@@ -312,42 +312,42 @@ export const messagingService = {
       throw error;
     }
   },
-  
+
   async moveMessage(messageId, folder) {
     console.log(`🔄 messagingService: Moving message(s) to ${folder}`, messageId);
     try {
       const payload = { messageId, folder };
       const response = await httpService.post('/api/messages/move', payload);
-      
+
       // Verify response structure
       console.log('📤 messagingService: Move response', response);
-      
+
       return response;
     } catch (error) {
       console.error('📛 messagingService: Error moving message', error);
       throw error;
     }
   },
-  
+
   async toggleFlag(messageId, flag, value) {
     console.log(`🔄 messagingService: Toggling ${flag} for message`, messageId);
     try {
       const payload = { messageId, flag, value };
       const response = await httpService.post('/api/messages/flag', payload);
-      
+
       // Verify response structure
       console.log('📤 messagingService: Flag toggle response', response);
-      
+
       return response;
     } catch (error) {
       console.error('📛 messagingService: Error toggling flag', error);
       throw error;
     }
   },
-  
+
   // ...existing code for other methods...
 }
 
-export const useMessagingService = serviceComposableFactory('messagingService', () => 
+export const useMessagingService = serviceComposableFactory('messagingService', () =>
   new MessagingService(httpService)
 );
