@@ -115,13 +115,18 @@ export type RecipientType = 'user' | 'group';
   - `userMessageStates`: Stores per-user message state
   - `messageRecipients`: Maps recipients to messages
 - **API Routes**:
-  - `GET /api/messages`: Fetch messages for current user
-  - `POST /api/query`: Create a new message (using the generic query API)
-  - `POST /api/messages/move`: Move message to a different folder (inbox, archived, trash)
-  - `POST /api/messages/flag`: Toggle message flags (starred, important)
-  - `POST /api/query/session`: Start a database transaction
-  - `POST /api/query/commit`: Commit a database transaction
-  - `POST /api/query/abort`: Abort a database transaction
+  - `GET /api/messages`: Custom endpoint to fetch messages for current user
+  - `GET /api/query`: Generic data query endpoint (used by messaging service)
+  - `POST /api/query`: Generic data query endpoint for creating messages
+  - `POST /api/create/:collection`: Generic endpoint for creating documents in a collection
+  - `PUT /api/update/:collection`: Generic endpoint for updating documents in a collection
+  - `POST /api/messages/move`: Custom endpoint to move messages between folders
+  - `POST /api/messages/flag`: Custom endpoint to toggle message flags
+  - `GET /api/get/:collection/:id`: Generic endpoint to retrieve a specific document
+  - `DELETE /api/delete/:collection/:id`: Generic endpoint for deleting documents
+
+  > **Note**: The transaction-related endpoints `/api/query/session`, `/api/query/commit`, and `/api/query/abort` used in the messaging service may be custom implementations or legacy endpoints, as they don't appear in the core API routes.
+
 - **Data Flow**:
   - Messages are fetched from API and transformed to UI format
   - State changes update local store first, then persist to API

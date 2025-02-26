@@ -43,8 +43,14 @@ interface MessageQueryParams {
 }
 
 export class MessagingService {
+  // Updated endpoints to match route configuration
   private readonly endpoints = {
     query: '/api/query',
+    create: '/api/create',
+    update: '/api/update',
+    delete: '/api/delete',
+    get: '/api/get',
+    // Transaction endpoints appear to be custom
     session: '/api/query/session',
     commit: '/api/query/commit',
     abort: '/api/query/abort'
@@ -72,7 +78,7 @@ export class MessagingService {
         message._id,
         options.recipientId,
         options.recipientType,
-        options.threadId,  // Pass thread ID
+        options.threadId,
         session
       );
       await this.commitTransaction(session);
@@ -85,6 +91,7 @@ export class MessagingService {
   }
 
   async getUserMessages(userId: string): Promise<messages[]> {
+    // Using the GET /api/query endpoint
     const response = await this.query({
       operation: 'find',
       q: {
@@ -101,6 +108,7 @@ export class MessagingService {
 
   // Add thread support
   async getThreadMessages(threadId: string): Promise<messages[]> {
+    // Using the GET /api/query endpoint
     const response = await this.query({
         operation: 'find',
         q: { threadId },
@@ -144,45 +152,46 @@ export class MessagingService {
       };
 
       // 3. If state exists, update it. If not, create new.
-      const response = await this.query<userMessageStates>({
-        collection: this.collections.states,
-        operation: 'upsert',
-        q: {
-          messageId,
-          userId
-        },
-        data: {
-          ...stateDoc,
-          // Only include _id if updating existing doc
-          _id: existingState.data?.[0]?._id
-        },
-        upsert: true
-      });
+      // Update to use PUT /api/update/:collection endpoint for updates
+      const stateId = existingState?.data?.[0]?._id;
+      let response;
+      
+      if (stateId) {
+        // Use update endpoint for existing state
+        response = await this.httpService.put<{ data: userMessageStates }>(
+          `${this.endpoints.update}/${this.collections.states}`, 
+          {
+            _id: stateId,
+            ...stateDoc
+          }
+        );
+      } else {
+        // Use create endpoint for new state
+        response = await this.httpService.post<{ data: userMessageStates }>(
+          `${this.endpoints.create}/${this.collections.states}`,
+          stateDoc
+        );
+      }
 
       // Verify the update was successful - FIXED to ensure state isn't lost
-      const updatedDoc = await this.query({
-        collection: this.collections.states,
-        operation: 'find',
-        q: {
-          messageId,
-          userId
-        }
-      });
+      const updatedDoc = await this.httpService.get(
+        `${this.endpoints.get}/${this.collections.states}/${response.data.data._id}`
+      );
 
       console.log('State update verification:', {
         messageId,
         userId,
-        before: existingState.data?.[0],
-        after: updatedDoc.data?.[0],
-        updateSuccessful: !!updatedDoc.data?.[0] &&
-                          updatedDoc.data?.[0].state === updates.state // Verify state change
+        before: existingState?.data?.[0],
+        after: updatedDoc.data,
+        updateSuccessful: !!updatedDoc.data && 
+                          updatedDoc.data.state === updates.state // Verify state change
       });
 
-      if (!response?.data) {
+      if (!response?.data?.data) {
         throw new Error('Failed to update message state');
       }
 
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error updating message state:', error);
       throw error;
@@ -191,6 +200,7 @@ export class MessagingService {
 
   // Add method to fetch message states for debugging
   async getMessageStates(messageId: string): Promise<userMessageStates[]> {
+    // Using the GET /api/query endpoint
     const response = await this.query({
       collection: this.collections.states,
       operation: 'find',
@@ -207,6 +217,7 @@ export class MessagingService {
 
   // Private methods for API operations
   private async query<T>(params: Record<string, any>): Promise<{ data: T }> {
+    // Using GET /api/query with query params
     return this.httpService.get(`${this.endpoints.query}?collection=${params.collection || this.collections.messages}`, params);
   }
 
@@ -244,19 +255,20 @@ export class MessagingService {
     threadId,
     session
   }: SendMessageOptions & { session: any }): Promise<messages> {
-    const message = await this.httpService.post<messages>('/api/query', {
-      collection: this.collections.messages,
-      data: {
+    // Update to use POST /api/create/:collection endpoint
+    const message = await this.httpService.post<messages>(
+      `${this.endpoints.create}/${this.collections.messages}`, 
+      {
         content,
         recipientType,
         [recipientType === 'user' ? 'userRecipients' : 'groupRecipients']: [recipientId],
         replyTo: replyToMessageId,
         isInitialMessage: !replyToMessageId,
         initialMessageId: replyToMessageId || undefined,
-        threadId  // Add thread ID
-      },
-      session
-    });
+        threadId,  // Add thread ID
+        _session: session // Pass session in request body
+      }
+    );
 
     return message.data!;
   }
@@ -265,7 +277,7 @@ export class MessagingService {
     messageId: string,
     recipientId: string,
     recipientType: 'user' | 'group',
-    threadId?: string,  // Add thread ID
+    threadId?: string,
     session?: any
   ): Promise<void> {
     const states: Partial<userMessageStates>[] = [
@@ -283,12 +295,14 @@ export class MessagingService {
       }
     ];
 
-    await this.httpService.post('/api/query', {
-      collection: this.collections.states,
-      operation: 'insert',
-      data: states,
-      session
-    });
+    // Update to use POST /api/create/:collection for batch inserts
+    await this.httpService.post(
+      `${this.endpoints.create}/${this.collections.states}`,
+      { 
+        data: states,
+        _session: session // Pass session in request body
+      }
+    );
   }
 
   private logError(method: string, error: unknown): void {
@@ -305,6 +319,7 @@ export const messagingService = {
   async getMessages() {
     console.log('🔄 messagingService: Fetching messages');
     try {
+      // This is a custom endpoint that would be implemented separately
       const response = await httpService.get('/api/messages');
       return response;
     } catch (error) {
@@ -317,6 +332,7 @@ export const messagingService = {
     console.log(`🔄 messagingService: Moving message(s) to ${folder}`, messageId);
     try {
       const payload = { messageId, folder };
+      // This is a custom endpoint that would be implemented separately
       const response = await httpService.post('/api/messages/move', payload);
 
       // Verify response structure
@@ -333,6 +349,7 @@ export const messagingService = {
     console.log(`🔄 messagingService: Toggling ${flag} for message`, messageId);
     try {
       const payload = { messageId, flag, value };
+      // This is a custom endpoint that would be implemented separately
       const response = await httpService.post('/api/messages/flag', payload);
 
       // Verify response structure
