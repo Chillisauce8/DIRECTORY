@@ -1,0 +1,2 @@
+import { DefaultRefreshHandler } from '/Users/jamesbaddiley/Library/Mobile Documents/com~apple~CloudDocs/Documents/Websites/DIRECTORY/base/node_modules/@sidebase/nuxt-auth/dist/runtime/utils/refreshHandler'
+export const _refreshHandler = new DefaultRefreshHandler({"enablePeriodically":false,"enableOnWindowFocus":true})

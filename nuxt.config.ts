@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { resolve } from 'path';
 import environment from './environment';
 import { useTheme } from './composables/useTheme';
 import commonjs from 'vite-plugin-commonjs';
@@ -45,7 +46,16 @@ export default defineNuxtConfig({
 
     ssr: environment.ssr ?? true,
 
-    css: ['@/assets/css/global.scss', '@/assets/styles.scss', '@/assets/tailwind.css', 'primeicons/primeicons.css', '@uppy/core/dist/style.css', '@uppy/dashboard/dist/style.css', '@uppy/drag-drop/dist/style.css', '@uppy/progress-bar/dist/style.css'],
+    css: [
+        resolve(__dirname, './assets/css/global.scss'),
+        resolve(__dirname, './assets/styles.scss'),
+        resolve(__dirname, './assets/tailwind.css'),
+        'primeicons/primeicons.css',
+        '@uppy/core/dist/style.css',
+        '@uppy/dashboard/dist/style.css',
+        '@uppy/drag-drop/dist/style.css',
+        '@uppy/progress-bar/dist/style.css'
+    ],
 
     image: {
         cloudinary: {
@@ -131,14 +141,20 @@ export default defineNuxtConfig({
         // },
     },
 
+    alias: {
+        '@': resolve(__dirname, './'),
+        '~': resolve(__dirname, './'),
+        quill: process.dev ? 'quill/dist/quill.js' : 'quill'
+    },
+
     vite: {
         css: {
             preprocessorOptions: {
                 scss: {
                     additionalData: `
                         @use "sass:math";
-                        @use "@/assets/css/vars" as *;
-                        @use "@/assets/css/_mixins" as *;
+                        @use "${resolve(__dirname, './assets/css/vars')}" as *;
+                        @use "${resolve(__dirname, './assets/css/_mixins')}" as *;
                     `
                 }
             }
@@ -183,7 +199,11 @@ export default defineNuxtConfig({
         replayClick: true
     },
 
-    plugins: [{ src: '~/plugins/app.js' }, { src: '~/plugins/default-http-interceptors.ts' }, { src: '~/plugins/js-extend.ts' }],
+    plugins: [
+        { src: resolve(__dirname, './plugins/app.js') },
+        { src: resolve(__dirname, './plugins/default-http-interceptors.ts') },
+        { src: resolve(__dirname, './plugins/js-extend.ts') }
+    ],
 
     components: {
         dirs: [
@@ -205,28 +225,28 @@ export default defineNuxtConfig({
             pages.push({
                 name: 'Edit Test Form',
                 path: '/new/test-form/:id',
-                file: '@/pages/new/test-form.vue'
+                file: resolve(__dirname, './pages/new/test-form.vue')
             });
             pages.push({
                 name: 'Market List',
                 path: '/market',
-                file: '@/pages/market/list.vue'
+                file: resolve(__dirname, './pages/market/list.vue')
             });
             pages.push({
                 name: 'Market',
                 path: '/market/:slug+',
-                file: '@/pages/market/slug.vue'
+                file: resolve(__dirname, './pages/market/slug.vue')
             });
 
             pages.push({
                 name: 'index',
                 path: '/',
-                file: '@/pages/index.vue'
+                file: resolve(__dirname, './pages/index.vue')
             });
             pages.push({
                 name: 'message',
                 path: '/new/message',
-                file: '@/pages/new/Message.vue',
+                file: resolve(__dirname, './pages/new/Message.vue'),
                 children: [
                     {
                         path: '',
@@ -278,7 +298,7 @@ export default defineNuxtConfig({
             pages.push({
                 name: 'message',
                 path: '/new/message',
-                file: '@/pages/new/Message.vue',
+                file: resolve(__dirname, './pages/new/Message.vue'),
                 children: [
                     {
                         path: '',
@@ -288,7 +308,7 @@ export default defineNuxtConfig({
                     {
                         path: 'inbox',
                         name: 'message-inbox',
-                        file: '@/pages/new/message/[folder].vue'
+                        file: resolve(__dirname, './pages/new/message/[folder].vue')
                     },
                     {
                         path: 'compose',
@@ -303,7 +323,7 @@ export default defineNuxtConfig({
                     {
                         path: ':folder',
                         name: 'message-folder',
-                        file: '@/pages/new/message/[folder].vue',
+                        file: resolve(__dirname, './pages/new/message/[folder].vue'),
                         props: true
                     }
                 ]

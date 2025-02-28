@@ -137,7 +137,8 @@ watch(
 </script>
 
 <style lang="scss">
-@use '~/assets/css/mixins' as *;  // Add this import at the top
+// Remove the explicit import since it's being injected by the Vite config
+// @use '~/assets/css/mixins' as *;  
 
 .base-card {
     position: relative;

@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-ui-pro-template-dashboard",
+  "name": "base",
   "private": true,
   "type": "module",
   "scripts": {
@@ -107,5 +107,6 @@
     "vite-plugin-commonjs": "^0.10.4",
     "vitest": "^3.0.3",
     "vue-tsc": "^2.0.7"
-  }
+  },
+  "main": "./nuxt.config.ts"
 }
