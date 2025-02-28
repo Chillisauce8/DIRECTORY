@@ -35,4 +35,3 @@ yarn-error.log*
 layout.css
 .sass-cache
 theme-*.map
-node_modules/
