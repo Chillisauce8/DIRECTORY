@@ -15,6 +15,8 @@ import { useMessage } from '~/composables/useMessage';
 import { useRoute } from 'vue-router';
 import { computed, watchEffect, onMounted, ref, watch } from 'vue';
 import type { RouteLocationRaw } from 'vue-router';
+import { useMessageStore } from '~/stores/useMessageStore'; // Add this missing import
+import { storeToRefs } from 'pinia'; // Add this missing import
 
 interface MenuItem {
     label: string;

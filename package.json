@@ -9,11 +9,19 @@
     "dev:base": "cd base && npm run dev",
     "dev:car": "cd car && npm run dev",
     "build:base": "cd base && npm run build",
-    "build:car": "cd car && npm run build"
+    "build:car": "cd car && npm run build",
+    "prepare:base": "cd base && npx nuxt prepare",
+    "prepare:car": "cd car && npx nuxt prepare",
+    "prepare": "npm run prepare:base && npm run prepare:car"
   },
   "devDependencies": {
     "eslint": "^9.21.0",
     "husky": "^9.1.7",
-    "prettier": "^3.5.2"
+    "prettier": "^3.5.2",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "es-module-lexer": "^1.4.1",
+    "tailwindcss": "^3.4.0"
   }
 }

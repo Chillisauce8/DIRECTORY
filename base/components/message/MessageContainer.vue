@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'; // Critical for proper reactivity
 import type { Message } from '~/types/message';
 import { useMessageStore } from '~/stores/useMessageStore';
 
+
 /**
  * Message Container Component
  * 

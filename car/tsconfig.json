@@ -1,0 +1,22 @@
+{
+  // Extend the base tsconfig
+  "extends": "../base/tsconfig.json",
+  "compilerOptions": {
+    // Ensure TypeScript can find types in the base layer
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"],
+      "@/*": ["./*"],
+      "@base/*": ["../base/*"]
+    }
+  },
+  // Include types from both car and base layers
+  "include": [
+    "./**/*.ts",
+    "./**/*.d.ts",
+    "./**/*.tsx",
+    "./**/*.vue",
+    "../base/types/**/*.ts",
+    "../base/types/**/*.d.ts"
+  ]
+}

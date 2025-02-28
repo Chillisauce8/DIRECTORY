@@ -15,9 +15,11 @@ export default defineNuxtConfig({
     }
   },
   
-  // Add the color mode module
+  // Add the color mode module with explicit path resolution
   modules: [
-    '@nuxtjs/color-mode'
+    // Add VueUse module that's available in base but missing in car
+    '@vueuse/nuxt',
+    require.resolve('@nuxtjs/color-mode')
   ],
   
   // Configure color mode options (match the configuration from base app)
