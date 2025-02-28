@@ -1,0 +1,249 @@
+/* This file bridges to the base layer global styles */
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  vertical-align: baseline;
+  font-family: inherit;
+  font-style: inherit;
+  text-transform: inherit;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  text-rendering: optimizeLegibility;
+  background-color: transparent;
+  border-spacing: 0;
+}
+
+*:focus {
+  outline: none;
+}
+
+/* BODY */
+html {
+  overflow-x: hidden;
+  position: relative;
+}
+
+:root {
+  --round-outer: 5px;
+  --round-inner: 3px;
+  --round-none: 0px;
+  --elevation-high: 2px 5px 7px rgba(0, 0, 0, 0.2);
+  --elevation-flat: none;
+  --card-with-border: transparent 5px solid;
+  --card-without-border: none;
+  --primary-font-family: "EuclidFlex", "Oswald", sans-serif;
+  --surface-semi-transparent: rgba(255, 255, 255, 0.3);
+}
+
+:root body.theme-rounding-rounded {
+  --corner-outer: var(--round-outer);
+  --corner-inner: var(--round-inner);
+}
+
+:root body.theme-rounding-square {
+  --corner-outer: var(--round-none);
+  --corner-inner: var(--round-none);
+}
+
+:root body.theme-elevation-high {
+  --box-shadow: var(--elevation-high);
+}
+
+:root body.theme-elevation-flat {
+  --box-shadow: var(--elevation-flat);
+}
+
+:root body.theme-card-polaroid {
+  --card-border: var(--card-with-border);
+}
+
+:root body.theme-card-simple {
+  --card-border: var(--card-without-border);
+}
+
+/*
+FONTS TO CONSIDER
+Brandon Grotesque - https://fonts.adobe.com/fonts/brandon-grotesque 
+
+*/
+@font-face {
+  font-family: "EuclidFlex";
+  font-display: swap;
+  font-weight: 300;
+  src: url("assets/fonts/euclid/EuclidFlex-Light-WebS.woff2") format("woff2");
+}
+@font-face {
+  font-family: "EuclidFlex";
+  font-display: swap;
+  font-weight: 400;
+  src: url("assets/fonts/euclid/EuclidFlex-Regular-WebS.woff2") format("woff2");
+}
+@font-face {
+  font-family: "EuclidFlex";
+  font-display: swap;
+  font-weight: 500;
+  src: url("assets/fonts/euclid/EuclidFlex-Medium-WebS.woff2") format("woff2");
+}
+@font-face {
+  font-family: "EuclidFlex";
+  font-display: swap;
+  font-weight: 600;
+  src: url("assets/fonts/euclid/EuclidFlex-Semibold-WebS.woff2") format("woff2");
+}
+/*
+
+@font-face {
+  font-family: 'EuclidTriangle';
+  font-display: swap;
+  font-weight: 300;
+  src: url('assets/fonts/euclid/EuclidTriangle-Light-WebS.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EuclidTriangle';
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/euclid/EuclidTriangle-Regular-WebS.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EuclidTriangle';
+  font-display: swap;
+  font-weight: 500;
+  src: url('assets/fonts/euclid/EuclidTriangle-Medium-WebS.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EuclidTriangle';
+  font-display: swap;
+  font-weight: 600;
+  src: url('assets/fonts/euclid/EuclidTriangle-Semibold-WebS.woff2') format('woff2');
+}
+
+/*
+
+@font-face {
+  font-family: 'EuclidCircularA';
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/euclid/EuclidCircularA-Regular-WebS.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EuclidCircularB';
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/euclid/EuclidCircularB-Regular-WebS.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EuclidSquare';
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/euclid/EuclidSquare-Regular-WebS.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EuclidTriangle';
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/euclid/EuclidTriangle-Regular-WebS.woff2') format('woff2');
+}
+
+
+@font-face {
+  font-family: 'EuclidFlex';
+  font-display: swap;
+  font-weight: 300;
+  src: url('assets/fonts/euclid/EuclidFlex-Light-WebS.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EuclidFlex';
+  font-display: swap;
+  font-weight: 400;
+  src: url('assets/fonts/euclid/EuclidFlex-Regular-WebS.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EuclidFlex';
+  font-display: swap;
+  font-weight: 500;
+  src: url('assets/fonts/euclid/EuclidFlex-Medium-WebS.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'EuclidFlex';
+  font-display: swap;
+  font-weight: 600;
+  src: url('assets/fonts/euclid/EuclidFlex-Semibold-WebS.woff2') format('woff2');
+}
+
+/*
+@font-face {
+  font-family: 'EuclidFlex';
+  font-display: swap;
+  font-weight: 700;
+  src: url('assets/fonts/euclid/EuclidFlex-Bold-WebS.woff2') format('woff2');
+}
+*/
+/* Enter animations */
+.form-field-enter-active {
+  animation: fadein 0.5s ease-in forwards, update-height 0.5s ease-in forwards;
+}
+
+/* Leave animations */
+.form-field-leave-active {
+  animation: fadeout 0.5s ease-out forwards, collapse-height 0.5s ease-out forwards;
+}
+
+.card-edit-enter-active {
+  animation: fadein 1s ease-in forwards, update-height 1s ease-in forwards;
+}
+
+.card-edit-leave-active {
+  animation: fadeout 0.5s ease-in forwards, collapse-height 1s ease-in forwards;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes update-height {
+  0% {
+    max-height: 0px;
+    overflow: hidden;
+  }
+  99% {
+    overflow: hidden;
+  }
+  100% {
+    max-height: 500px;
+    overflow: initial;
+  }
+}
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes collapse-height {
+  0% {
+    max-height: 500px;
+    overflow: hidden;
+  }
+  100% {
+    max-height: 0px;
+    overflow: hidden;
+  }
+}
+:root {
+  --not-an-empty-rule-set: 10px;
+}
+
+main {
+  container-type: inline-size;
+  container-name: main;
+  width: 100%;
+}/*# sourceMappingURL=global.css.map */
