@@ -31,13 +31,13 @@ const cardData = {
 .vehicle-card {
     figure,
     picture {
-        @include aspect-ratio(3, 2);
+        aspect-ratio: 3 / 2;
     }
     .overlay-testing {
         background-color: pink;
     }
     header {
-        @include aspect-ratio(3, 1);
+        aspect-ratio: 3 / 2;
         //     min-height: 150px;
     }
 

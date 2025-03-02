@@ -25,7 +25,6 @@ const themeOptions = ref([
     { name: 'Dark', value: true }
 ]);
 const darkTheme = ref(layoutConfig.darkTheme);
-const menuMode = ref(layoutConfig.menuMode);
 const menuTheme = ref(layoutConfig.menuTheme);
 
 const { DefaultTheme } = useTheme();
@@ -273,51 +272,6 @@ function onPresetChange() {
             </div>
 
             <template v-if="!simple">
-                <div>
-                    <div class="flex flex-col gap-2">
-                        <span class="text-lg font-semibold">Menu Type</span>
-                        <div class="flex flex-wrap flex-col gap-3">
-                            <div class="flex">
-                                <div class="flex items-center gap-2 w-1/2">
-                                    <RadioButton name="menuMode" value="static" v-model="menuMode" @update:modelValue="setMenuMode" inputId="mode1"></RadioButton>
-                                    <label for="mode1">Static</label>
-                                </div>
-
-                                <div class="flex items-center gap-2 w-1/2">
-                                    <RadioButton name="menuMode" value="overlay" v-model="menuMode" @update:modelValue="setMenuMode" inputId="mode2"></RadioButton>
-                                    <label for="mode2">Overlay</label>
-                                </div>
-                            </div>
-                            <div class="flex">
-                                <div class="flex items-center gap-2 w-1/2">
-                                    <RadioButton name="menuMode" value="slim" v-model="menuMode" @update:modelValue="setMenuMode" inputId="mode3"></RadioButton>
-                                    <label for="mode2">Slim</label>
-                                </div>
-                                <div class="flex items-center gap-2 w-1/2">
-                                    <RadioButton name="menuMode" value="slim-plus" v-model="menuMode" @update:modelValue="setMenuMode" inputId="mode4"></RadioButton>
-                                    <label for="mode3">Slim+</label>
-                                </div>
-                            </div>
-                            <div class="flex">
-                                <div class="flex items-center gap-2 w-1/2">
-                                    <RadioButton name="menuMode" value="reveal" v-model="menuMode" @update:modelValue="setMenuMode" inputId="mode5"></RadioButton>
-                                    <label for="mode4">Reveal</label>
-                                </div>
-                                <div class="flex items-center gap-2 w-1/2">
-                                    <RadioButton name="menuMode" value="drawer" v-model="menuMode" @update:modelValue="setMenuMode" inputId="mode6"></RadioButton>
-                                    <label for="mode5">Drawer</label>
-                                </div>
-                            </div>
-                            <div class="flex">
-                                <div class="flex items-center gap-2 w-1/2">
-                                    <RadioButton name="menuMode" value="horizontal" v-model="menuMode" @update:modelValue="setMenuMode" inputId="mode7"></RadioButton>
-                                    <label for="mode7">Horizontal</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div>
                     <div class="flex flex-col gap-2">
                         <span class="text-lg font-semibold">Menu Theme</span>

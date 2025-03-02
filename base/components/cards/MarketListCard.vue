@@ -37,11 +37,10 @@ const cardData = {
     max-width: 300px;
 
     figure {
-        //@include aspect-ratio(1, 5);
+       
     }
     header {
-        //@include aspect-ratio(5, 1);
-        //     min-height: 150px;
+    
     }
     .header {
         text-align: center;

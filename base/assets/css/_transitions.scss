@@ -60,3 +60,9 @@
         overflow: hidden;
     }
 }
+
+@keyframes parallax {
+    to {
+        transform: translateY(calc(var(--parallax-speed) * 100px));
+    }
+}

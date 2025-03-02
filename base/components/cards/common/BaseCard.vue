@@ -156,7 +156,7 @@ watch(
         }
 
         picture {
-            @include aspect-ratio(3, 2);
+            aspect-ratio: 3 / 2;
         }
     }
 

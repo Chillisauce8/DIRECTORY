@@ -67,7 +67,8 @@ defineProps<Props>();
                 color: white;
             }
             h1 {
-                @include scale('font-size', 40px, 60px, 1.2);
+                // @include scale('font-size', 40px, 60px, 1.2);
+                font-size: clamp(40px, calc(40px + 1.25vw), 60px);
                 @include parallax(-2);
       
             }
@@ -76,12 +77,14 @@ defineProps<Props>();
                 left: 0;
                 bottom: 0;
                 background-color: black;
-                @include scale('font-size', 24px, 48px, 1.1);
+                // @include scale('font-size', 24px, 48px, 1.1);
+                font-size: clamp(24px, calc(24px + 1.5vw), 48px);
                 padding: 0 0.5em 0;
             }
 
             h2 {
-                @include scale('font-size', 18px, 32px, 1.1);
+                // @include scale('font-size', 18px, 32px, 1.1);
+                font-size: clamp(18px, calc(18px + 0.85vw), 32px);
                 @include parallax(-2);
 
             }

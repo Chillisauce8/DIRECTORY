@@ -15,12 +15,13 @@
 @use 'utils';
 
 // Sidebar components
-@use 'sidebar_vertical';
-@use 'sidebar_slim';
-@use 'sidebar_slim_plus';
-@use 'sidebar_horizontal';
-@use 'sidebar_reveal';
-@use 'sidebar_drawer';
+@use 'sidebar_main';
+@use 'sidebar_vertical'; // Restore vertical sidebar
+// @use 'sidebar_slim'; // Already removed
+// @use 'sidebar_slim_plus'; // Already removed
+// @use 'sidebar_horizontal'; // Already removed
+// @use 'sidebar_reveal'; // Already removed
+// @use 'sidebar_drawer'; // Already removed
 
 // Menu theme and responsive styles
 @use 'menutheme/menutheme';

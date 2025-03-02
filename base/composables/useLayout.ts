@@ -33,7 +33,7 @@ const layoutConfig = reactive<LayoutConfig>({
     primary: 'emerald',
     surface: null,
     darkTheme: false,
-    menuMode: 'static',
+    menuMode: 'main', // Default to main but still allow others
     menuTheme: 'colorScheme',
     elevation: 'high',
     rounding: 'rounded',

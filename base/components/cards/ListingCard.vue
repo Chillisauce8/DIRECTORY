@@ -41,11 +41,11 @@ const props = defineProps<{
 .listing-card {
     //  width: 300px;
     picture {
-        @include aspect-ratio(3, 2);
+        aspect-ratio: 3 / 2;
     }
     header {
-        @include aspect-ratio(3, 2);
-        //     min-height: 150px;
+        aspect-ratio: 3 / 2;
+       
     }
     .name {
         font-family: var(--primary-font-family);

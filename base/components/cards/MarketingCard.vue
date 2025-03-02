@@ -39,7 +39,7 @@ const cardData = {
     }
 
     & figure {
-        @include aspect-ratio(2, 1);
+        aspect-ratio: 2 / 1;
     }
     & header {
         text-align: center;

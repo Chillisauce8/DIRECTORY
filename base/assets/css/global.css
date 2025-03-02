@@ -231,6 +231,11 @@ Brandon Grotesque - https://fonts.adobe.com/fonts/brandon-grotesque
     overflow: hidden;
   }
 }
+@keyframes parallax {
+  to {
+    transform: translateY(calc(var(--parallax-speed) * 100px));
+  }
+}
 :root {
   --not-an-empty-rule-set: 10px;
 }

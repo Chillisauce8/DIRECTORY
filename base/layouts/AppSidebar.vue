@@ -27,7 +27,12 @@ function onMouseLeave() {
 <template>
     <div class="layout-sidebar" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
         <div class="sidebar-header">
-            <button class="layout-sidebar-anchor z-20 mb-2" type="button" @click="onAnchorToggle"></button>
+            <button 
+                class="layout-sidebar-anchor z-20" 
+                type="button" 
+                @click="onAnchorToggle"
+                v-tooltip.bottom="layoutState.anchored ? 'Unpin Menu' : 'Pin Menu'"
+            ></button>
         </div>
         <div class="layout-menu-container">
             <AppMenu />

@@ -2,19 +2,8 @@
 
 $dt: 960px;
 
-@use 'sass:math';
 
 
-
-
-
-@function strip-units($number) {
-    @return math.div($number, ($number * 0 + 1));
-}
-
-@mixin scale($property, $min, $max, $rate, $start: 320px) {
-    #{$property}: clamp(#{$min}, calc(#{$min} + ((#{strip-units($min)} * (#{$rate} - 1) * ((100vw - #{$start}) / #{strip-units($start)})))), #{$max});
-}
 
 
 @mixin desktop() {
@@ -31,31 +20,7 @@ $dt: 960px;
 
 // ASPECT RATIO To create an aspect ratio: https://keithjgrant.com/posts/2017/03/aspect-ratios/
 
-@mixin aspect-ratio($width, $height) {
-    position: relative;
-    &::before {
-        content: "";
-        display: block;
-        padding-top: calc(($height / $width) * 100%);
-    }
-    > * {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
 
-    @supports (aspect-ratio: 1) {
-        aspect-ratio: #{$width} / #{$height};
-        &::before {
-            content: none;
-        }
-        > * {
-            position: static;
-        }
-    }
-}
 
 
 @mixin parallax($speed) {
@@ -63,9 +28,4 @@ $dt: 960px;
     animation-timeline: view();
     animation-range: entry 100% cover 100%;
     --parallax-speed: #{$speed};
-}
-@keyframes parallax {
-    to {
-        transform: translateY(calc(var(--parallax-speed) * 100px));
-    }
 }

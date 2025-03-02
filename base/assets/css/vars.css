@@ -1,9 +1,4 @@
 @charset "UTF-8";
-@keyframes parallax {
-  to {
-    transform: translateY(calc(var(--parallax-speed) * 100px));
-  }
-}
 .fib, .fi {
   background-size: contain;
   background-position: 50%;

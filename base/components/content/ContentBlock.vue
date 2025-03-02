@@ -109,7 +109,7 @@ const layoutClass = getLayoutClass(imageCount);
         .images-1 {
             .image-1 {
                 width: 60%;
-                @include aspect-ratio(5, 6);
+                aspect-ratio: 5 / 6;
             }
         }
         .images-2 {
@@ -119,12 +119,12 @@ const layoutClass = getLayoutClass(imageCount);
 
             .image-1 {
                 width: 55%;
-                @include aspect-ratio(3, 4);
+                aspect-ratio: 3 / 4;
                 margin-right: 2%;
             }
             .image-2 {
                 width: 63%;
-                @include aspect-ratio(3, 2);
+                aspect-ratio: 3 / 2;
             }
         }
     }
