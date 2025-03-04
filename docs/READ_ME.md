@@ -53,6 +53,21 @@ For new developers joining the project:
 - **Testing:** Vitest
 - **State Management:** Pinia
 
+## Project Architecture: Nuxt Layers
+
+This project implements [Nuxt Layers](https://nuxt.com/docs/getting-started/layers) to organize code and promote reusability. The architecture consists of:
+
+- **Base Layer**: Located in the `/base` directory, this contains the core framework, shared components, and common functionality
+- **Car App Layer**: Located in the `/car` directory, this extends the base layer with car-specific features and components
+
+When working with this project:
+1. Understand that components, composables, and other assets may be inherited from the base layer
+2. Be mindful of the layer hierarchy when creating or modifying files
+3. Place shared functionality in the base layer, and app-specific features in their respective app layers
+4. Directory paths should respect the layer structure, with shared components in base and specialized components in their app layers
+
+This layered approach allows for code reuse while maintaining separation of concerns between different applications within the project.
+
 ## Development Workflow
 
 [Add information about development workflow, branching strategy, PR process, etc.]

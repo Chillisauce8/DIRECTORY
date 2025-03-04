@@ -72,32 +72,7 @@ const model = ref([
                 icon: 'pi pi-fw pi-cog',
                 to: '/admin'
             },
-            {
-                label: 'Documentation',
-                icon: 'pi pi-fw pi-book',
-                items: [
-                    {
-                        label: 'Getting Started',
-                        icon: 'pi pi-fw pi-home',
-                        to: '/docs'
-                    },
-                    {
-                        label: 'Authentication',
-                        icon: 'pi pi-fw pi-shield',
-                        to: '/docs/auth'
-                    },
-                    {
-                        label: 'Database',
-                        icon: 'pi pi-fw pi-database',
-                        to: '/docs/database'
-                    },
-                    {
-                        label: 'Architecture',
-                        icon: 'pi pi-fw pi-sitemap',
-                        to: '/docs/architecture'
-                    }
-                ]
-            }
+
         ]
     }
 ]);
