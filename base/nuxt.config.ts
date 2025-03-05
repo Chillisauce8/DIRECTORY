@@ -92,8 +92,8 @@ export default defineNuxtConfig({
                 scss: {
                     additionalData: `
                         @use "sass:math";
-                        @use "${resolve(__dirname, './assets/css/vars')}" as *;
-                        @use "${resolve(__dirname, './assets/css/_mixins')}" as *;
+                        @use "./base/assets/css/vars" as *;
+                        @use "./base/assets/css/_mixins" as *;
                     `
                 }
             }

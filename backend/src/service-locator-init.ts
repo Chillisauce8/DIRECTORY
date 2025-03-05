@@ -39,8 +39,6 @@ export async function initCoreServiceLocator() {
 
     await initNodeChangesServices();
 
-    initRedisLock();
-
     console.log('Services initialization done');
 }
 

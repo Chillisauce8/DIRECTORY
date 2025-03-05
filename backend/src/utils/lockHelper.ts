@@ -1,3 +1,6 @@
+import Redis from 'ioredis';
+let Redlock = require('redlock');
+
 import {coreServiceLocator} from '../serviceLocator';
 
 
@@ -15,23 +18,22 @@ export type LockTTL = number;
 export type FnToCallWithLock<Data extends unknown = any> = (lockInstance?: LockInstance) => Promise<Data>;
 
 
-export function initRedisLock() {
+export function initRedisLock(client: Redis) {
 
     const privateSettings = coreServiceLocator.get('privateSettings');
 
-    const haveRedis = privateSettings.CACHE.type === 'redis';
+  if (privateSettings.CACHE.type !== 'redis') {
+    return;
+  }
 
-    if (haveRedis) {
-        let Redlock = require('redlock');
+  if (!client) {
+    return;
+  }
 
-        let client = require('redis').createClient(privateSettings.CACHE.config.port,
-            privateSettings.CACHE.config.endpoint);
-
-        redlock = new Redlock([client], {
-            retryCount: 50,
-            retryDelay: 1000 // time in ms
-        });
-    }
+  redlock = new Redlock([client], {
+    retryCount: 50,
+    retryDelay: 1000 // time in ms
+  });
 }
 
 

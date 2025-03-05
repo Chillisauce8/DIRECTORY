@@ -14,7 +14,6 @@ import type {
 
 import * as _ from 'lodash';
 import {ObjectId} from 'mongodb';
-const iterableHelper = require('../utils/iterableHelper');
 
 
 export type UserFieldsToUpdate = {
@@ -234,10 +233,6 @@ export class UserManagement {
         const user = _.cloneDeep(req['userDetails']);
 
         const savedNode = await this.updateUserFields(req, user.id, userData);
-
-        if (userData.email && userData.email !== user.email) {
-            await iterableHelper.updateUserEmail(req, user.email, userData.email);
-        }
 
         delete savedNode.security;
 

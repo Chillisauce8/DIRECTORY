@@ -75,7 +75,6 @@
     "passport-local": "^1.0.0",
     "pinkie-promise": "^2.0.1",
     "promise-events": "^0.1.4",
-    "redis": "^2.6.2",
     "redlock": "^4.2.0",
     "reflect-metadata": "^0.1.10",
     "reify": "^0.12.3",
@@ -97,7 +96,8 @@
     "web-push": "^3.4.4",
     "x-server-utils": "git+https://github.com/Chillisauce8/x-server-utils.git",
     "x-utils": "git+https://github.com/Chillisauce8/x-utils.git",
-    "xml2js": "*"
+    "xml2js": "*",
+    "ioredis": "^5.4.2"
   },
   "keywords": [
     "SWP"

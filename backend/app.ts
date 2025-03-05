@@ -9,6 +9,8 @@ import {
   isRequestToNuxtStats
 } from './src/utils/renderingHelperFunctions';
 import { BrowserStaticFileWithMeta } from './src/utils';
+import {initRedisLock}  from './src/utils/lockHelper';
+import { connectToRedisAndSaveClient, getRedisClient } from './src/cache/redis/redisConnectHelper';
 
 const cookieParser = require('cookie-parser');
 const express = require('express');
@@ -67,6 +69,15 @@ const startServer = async function() {
 
     const {initCoreServiceLocator} = await import('./src/service-locator-init');
     await initCoreServiceLocator();
+
+    if (privateSettings.CACHE.type === 'redis') {
+      connectToRedisAndSaveClient({
+        host: privateSettings?.CACHE?.config?.endpoint,
+        port: privateSettings?.CACHE?.config?.port,
+      });
+
+      initRedisLock(getRedisClient());
+    }
 
     await connectProjectsDatabase();
 
