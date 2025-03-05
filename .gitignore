@@ -35,3 +35,8 @@ yarn-error.log*
 layout.css
 .sass-cache
 theme-*.map
+
+# backend
+/backend/privateSettings.ts
+/backend/output
+/backend/node_modules
